@@ -476,6 +476,32 @@ Call Now
 
 </div>
 
+<!-- ULTIMATE NUTRITION -->
+
+<div class="card" data-category="whey">
+
+<img src="https://m.media-amazon.com/images/I/71u9t2gqZ8L._SL1500_.jpg">
+
+<h3>Ultimate Nutrition Prostar Whey</h3>
+
+<p>25g Protein • 2.32 Kg (5.28 lbs)</p>
+
+<div class="price">₹5600</div>
+
+<button onclick="openPopup('ultimate-popup')" class="buy-btn buy-call">
+View Details
+</button>
+
+<a href="https://wa.me/919990954574" class="buy-btn buy-wa">
+WhatsApp Order
+</a>
+
+<a href="tel:9990954574" class="buy-btn buy-call">
+Call Now
+</a>
+
+</div>
+
 <!-- GNC -->
 
 <div class="card" data-category="creatine">
@@ -692,6 +718,30 @@ Close
 </p>
 
 <button onclick="closePopup('on-popup')" class="close-btn">
+Close
+</button>
+
+</div>
+</div>
+
+<!-- ULTIMATE POPUP -->
+
+<div id="ultimate-popup" class="popup">
+<div class="popup-box">
+
+<h2>Ultimate Nutrition Prostar Whey</h2>
+
+<p>
+
+✅ 25g Protein Per Serving<br><br>
+✅ 6g+ Naturally Occurring BCAAs<br><br>
+✅ 2.32 Kg (5.28 lbs) Pack<br><br>
+✅ Fast Muscle Recovery & Growth<br><br>
+✅ Micro & Ultra Filtered Whey Blend
+
+</p>
+
+<button onclick="closePopup('ultimate-popup')" class="close-btn">
 Close
 </button>
 
@@ -1161,62 +1211,4 @@ document.getElementById(
 "Invalid Product Code";
 
 document.getElementById(
-"verify-icon"
-).innerHTML =
-"❌";
-
-document.getElementById(
-"verify-status"
-).style.color =
-"red";
-
-document.getElementById(
-"verify-box"
-).style.border =
-"3px solid red";
-
-}
-
-input.value="";
-
-}
-
-/* CLOSE VERIFY */
-
-function closeVerifyPopup(){
-
-document.getElementById(
-"verification-overlay"
-).style.display="none";
-
-}
-
-/* AUTO QR VERIFY */
-
-window.onload=function(){
-
-const params=
-new URLSearchParams(
-window.location.search
-);
-
-const code=params.get("code");
-
-if(code){
-
-document.getElementById(
-"manualCodeInput"
-).value=
-code;
-
-verifyCode();
-
-}
-
-};
-
-</script>
-
-</body>
-  </html>
-  
+"verify-icon
