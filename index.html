@@ -1211,4 +1211,62 @@ document.getElementById(
 "Invalid Product Code";
 
 document.getElementById(
-"verify-icon
+"verify-icon"
+).innerHTML =
+"❌";
+
+document.getElementById(
+"verify-status"
+).style.color =
+"red";
+
+document.getElementById(
+"verify-box"
+).style.border =
+"3px solid red";
+
+}
+
+input.value="";
+
+}
+
+/* CLOSE VERIFY */
+
+function closeVerifyPopup(){
+
+document.getElementById(
+"verification-overlay"
+).style.display="none";
+
+}
+
+/* AUTO QR VERIFY */
+
+window.onload=function(){
+
+const params=
+new URLSearchParams(
+window.location.search
+);
+
+const code=params.get("code");
+
+if(code){
+
+document.getElementById(
+"manualCodeInput"
+).value=
+code;
+
+verifyCode();
+
+}
+
+};
+
+</script>
+
+</body>
+</html>
+
