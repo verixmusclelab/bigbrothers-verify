@@ -977,14 +977,17 @@ document.getElementById(id)
 }
 
 /* VERIFY */
-
 function verifyCode(){
 
-let input=
-document.getElementById("manualCodeInput");
+let input =
+document.getElementById(
+"manualCodeInput"
+);
 
-let code=
-input.value.trim().toUpperCase();
+let code =
+input.value
+.trim()
+.toUpperCase();
 
 if(code===""){
 
@@ -994,6 +997,16 @@ return;
 
 }
 
+let currentTime = new Date().getTime();
+let lockKey = "lock_" + code;
+let lockTime = localStorage.getItem(lockKey);
+
+if(lockTime && currentTime < parseInt(lockTime)){
+  let secondsLeft = Math.ceil((parseInt(lockTime) - currentTime) / 1000);
+  alert("Yeh code block hai! Kripya " + secondsLeft + " second baad try karein.");
+  return;
+}
+
 const products={
 
 "LBR7F29K":"LABRADA NUTRITION",
@@ -1001,7 +1014,7 @@ const products={
 "GNC3M78B":"GNC",
 "PRE9W7K2":"MUSCLETECH PRE WORKOUT",
 "MUL4V8T1":"GNC MULTIVITAMIN",
-"FIS8O2L9":"MUSCLEBLAZE FISH OIL",
+"FIS802L9":"MUSCLEBLAZE FISH OIL",
 "LMG5P62C":"LABRADA MASS GAINER"
 
 };
@@ -1012,38 +1025,31 @@ document.getElementById(
 
 if(products[code]){
 
-document.getElementById(
-"brand-name"
-).innerText=
-products[code];
+  let countKey = "count_" + code;
+  let count = parseInt(localStorage.getItem(countKey) || "0");
 
-document.getElementById(
-"verify-icon"
-).innerHTML="✅";
+  if(count >= 2){
+    localStorage.setItem(lockKey, currentTime + 60000);
 
-document.getElementById(
-"verify-status"
-).innerHTML=
-"PRODUCT VERIFIED SUCCESSFULLY";
+    document.getElementById("brand-name").innerText = products[code];
+    document.getElementById("verify-status").innerHTML = "ALREADY USED";
+    document.getElementById("verify-msg").innerText = "You have already used this code! 1 minute ke liye verification band hai.";
+    document.getElementById("verify-icon").innerHTML = "⚠️";
+    document.getElementById("verify-status").style.color = "#ffcc00";
+    document.getElementById("verify-box").style.border = "3px solid #ffcc00";
+    document.getElementById("verify-box").style.boxShadow = "0 0 25px #ffcc00";
+  }else{
+    count++;
+    localStorage.setItem(countKey, count);
 
-document.getElementById(
-"verify-status"
-).style.color="#00ff00";
-
-document.getElementById(
-"verify-msg"
-).innerText=
-"100% Authentic Product";
-
-document.getElementById(
-"verify-box"
-).style.border=
-"3px solid #00ff00";
-
-document.getElementById(
-"verify-box"
-).style.boxShadow=
-"0 0 25px #00ff00";
+    document.getElementById("brand-name").innerText = products[code];
+    document.getElementById("verify-status").innerHTML = "PRODUCT VERIFIED";
+    document.getElementById("verify-msg").innerText = "100% Authentic (Used " + count + "/2 times)";
+    document.getElementById("verify-icon").innerHTML = "✅";
+    document.getElementById("verify-status").style.color = "#00ff00";
+    document.getElementById("verify-box").style.border = "3px solid #00ff00";
+    document.getElementById("verify-box").style.boxShadow = "0 0 25px #00ff00";
+  }
 
 }
 
@@ -1051,44 +1057,39 @@ else{
 
 document.getElementById(
 "brand-name"
-).innerText=
+).innerText =
 "UNKNOWN PRODUCT";
 
 document.getElementById(
-"verify-icon"
-).innerHTML="❌";
-
-document.getElementById(
 "verify-status"
-).innerHTML=
-"PRODUCT FAILED VERIFICATION";
-
-document.getElementById(
-"verify-status"
-).style.color="red";
+).innerHTML =
+"VERIFICATION FAILED";
 
 document.getElementById(
 "verify-msg"
-).innerText=
+).innerText =
 "Invalid Product Code";
 
 document.getElementById(
-"verify-box"
-).style.border=
-"3px solid red";
+"verify-icon"
+).innerHTML =
+"❌";
+
+document.getElementById(
+"verify-status"
+).style.color =
+"red";
 
 document.getElementById(
 "verify-box"
-).style.boxShadow=
-"0 0 25px red";
+).style.border =
+"3px solid red";
 
 }
-
-/* AUTO CLEAR INPUT */
 
 input.value="";
 
-}
+  }
 
 /* CLOSE VERIFY */
 
