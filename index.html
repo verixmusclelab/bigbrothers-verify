@@ -1050,6 +1050,233 @@ function closeVerifyPopup(){
 window.addEventListener('DOMContentLoaded', () => {
   renderCatalog();
 });
+
+  
+/* ===== PRODUCT FULL DETAILS ADD-ON ===== */
+
+(function () {
+  const detailStyle = document.createElement("style");
+
+  detailStyle.textContent = `
+    .product-info-btn {
+      display:block;
+      width:100%;
+      padding:12px;
+      margin:5px 0 9px;
+      border:1px solid #ffcc00;
+      border-radius:10px;
+      background:#222;
+      color:#ffcc00;
+      font-size:14px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    .product-info-btn:hover {
+      background:#ffcc00;
+      color:#000;
+    }
+    #productInfoModal {
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:1000000;
+      background:rgba(0,0,0,.88);
+      padding:15px;
+      align-items:center;
+      justify-content:center;
+    }
+    .product-info-box {
+      width:100%;
+      max-width:520px;
+      max-height:92vh;
+      overflow-y:auto;
+      background:#141414;
+      color:#fff;
+      border:2px solid #ffcc00;
+      border-radius:18px;
+      padding:20px;
+      position:relative;
+    }
+    .product-info-box h2 {
+      color:#ffcc00;
+      font-size:21px;
+      padding-right:25px;
+      margin-bottom:12px;
+    }
+    .product-info-box img {
+      width:100%;
+      height:220px;
+      object-fit:contain;
+      background:#fff;
+      border-radius:12px;
+      margin-bottom:14px;
+    }
+    .product-info-box p {
+      color:#ddd;
+      font-size:14px;
+      line-height:1.7;
+      margin:8px 0;
+      overflow-wrap:anywhere;
+    }
+    .product-info-box h3 {
+      color:#ffcc00;
+      font-size:16px;
+      margin-top:14px;
+    }
+    .detail-close {
+      position:absolute;
+      right:14px;
+      top:10px;
+      background:none;
+      border:0;
+      color:#fff;
+      font-size:30px;
+      cursor:pointer;
+    }
+    .detail-buy {
+      display:block;
+      width:100%;
+      padding:12px;
+      margin-top:14px;
+      background:#25D366;
+      color:#fff;
+      border:0;
+      border-radius:10px;
+      font-weight:bold;
+      font-size:15px;
+      cursor:pointer;
+    }
+  `;
+
+  document.head.appendChild(detailStyle);
+
+  const modal = document.createElement("div");
+  modal.id = "productInfoModal";
+  modal.innerHTML = `
+    <div class="product-info-box" role="dialog"
+         aria-modal="true" aria-label="Product details">
+      <button class="detail-close" type="button"
+        aria-label="Close" onclick="closeProductDetails()">&times;</button>
+      <img id="detailProductImage" alt="Product image">
+      <h2 id="detailProductName"></h2>
+      <p id="detailProductDescription"></p>
+      <h3>📦 Available Sizes & Prices</h3>
+      <div id="detailProductSizes"></div>
+      <h3>🍫 Available Flavours</h3>
+      <p id="detailProductFlavours"></p>
+      <h3>ℹ️ Product Information</h3>
+      <p id="detailProductUse"></p>
+      <p id="detailProductCaution"></p>
+      <button class="detail-buy" type="button"
+        onclick="closeProductDetails(); document.querySelector('.cart-top-btn').scrollIntoView({behavior:'smooth',block:'center'});">
+        🛒 View Cart
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  function addProductInfoButtons() {
+    document.querySelectorAll("#productGrid .card").forEach((card, index) => {
+      if (card.querySelector(".product-info-btn")) return;
+
+      const desc = card.querySelector(".desc");
+      if (!desc) return;
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "product-info-btn";
+      button.textContent = "📋 Full Details / पूरी जानकारी";
+      button.addEventListener("click", () => openProductDetails(index));
+
+      desc.insertAdjacentElement("afterend", button);
+    });
+  }
+
+  window.openProductDetails = function (index) {
+    const product = catalog[index];
+    if (!product) return;
+
+    document.getElementById("detailProductName").textContent = product.name;
+    document.getElementById("detailProductDescription").textContent =
+      product.desc || "Product details";
+
+    const image = document.getElementById("detailProductImage");
+    image.src = product.img;
+    image.alt = product.name;
+    image.onerror = function () {
+      this.onerror = null;
+      this.style.display = "none";
+    };
+    image.style.display = "block";
+
+    const sizes = document.getElementById("detailProductSizes");
+    sizes.replaceChildren();
+
+    (product.options || []).forEach(option => {
+      const line = document.createElement("p");
+      line.textContent =
+        option.size + " — ₹" +
+        Number(option.price).toLocaleString("en-IN");
+      sizes.appendChild(line);
+    });
+
+    document.getElementById("detailProductFlavours").textContent =
+      (product.flavours || []).join(", ") || "Flavour information unavailable";
+
+    const categoryInfo = {
+      whey: {
+        use: "Whey protein is a milk-derived protein supplement that can help meet daily protein needs. Follow the serving instructions on the product label.",
+        caution: "Contains milk-derived ingredients. Check the label for allergens and ingredients."
+      },
+      gainer: {
+        use: "Mass gainer provides additional calories and nutrients to supplement your regular diet. Serving size and calories vary by product.",
+        caution: "Check sugar, calorie and allergen information on the label. Choose a serving that fits your dietary needs."
+      },
+      creatine: {
+        use: "Creatine monohydrate may support strength and repeated high-intensity exercise. Follow the product label; healthy adults commonly use 3–5 g daily.",
+        caution: "If you have kidney disease, are pregnant, or take relevant medication, consult a healthcare professional before use."
+      },
+      multivitamin: {
+        use: "A multivitamin can help supplement dietary micronutrient intake. Follow the product label and recommended serving.",
+        caution: "Do not exceed the label dose or combine multiple high-dose vitamin products without professional advice."
+      }
+    };
+
+    const info = categoryInfo[product.category] || {
+      use: "Use this product according to its label.",
+      caution: "Read the complete label, ingredients and warnings before use."
+    };
+
+    document.getElementById("detailProductUse").textContent = info.use;
+    document.getElementById("detailProductCaution").textContent = info.caution;
+
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+  };
+
+  window.closeProductDetails = function () {
+    modal.style.display = "none";
+    document.body.style.overflow = "";
+  };
+
+  modal.addEventListener("click", function (event) {
+    if (event.target === modal) closeProductDetails();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closeProductDetails();
+  });
+
+  /* Add buttons whenever the catalog is rendered */
+  const originalRenderCatalog = renderCatalog;
+
+  renderCatalog = function () {
+    originalRenderCatalog();
+    addProductInfoButtons();
+  };
+})();
+
 </script>
 </body>
 </html>
