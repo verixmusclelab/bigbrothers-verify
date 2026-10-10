@@ -327,6 +327,16 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
 
     <!-- RULES & WAIVER -->
     <div class="sec-title">6. नियम, शर्तें एवं दायित्व पत्र (Rules & Waiver)</div>
+        <!-- PAYMENT MODE SELECTION -->
+    <div class="sec-title">6. फीस भुगतान का माध्यम (Payment Mode)</div>
+    <div class="field-group">
+      <label>आप फीस कैसे जमा करेंगे? <span>*</span></label>
+      <select id="paymentMethod" required>
+        <option value="online">📲 ऑनलाइन (UPI / Google Pay / PhonePe / Paytm)</option>
+        <option value="cash">💵 नकद (Cash at Gym Counter)</option>
+      </select>
+    </div>
+    
     <div class="rules-box">
       <p><b>1. फीस एवं उपस्थिति नियम (STRICT):</b> यह अभ्यास संस्थान है। यदि आप महीने में 1 दिन भी आते हैं, तो भी पूरे 1 महीने की फीस देय होगी। 1 दिन आने पर भी पूरा 1 महीना माना जाएगा। अनुपस्थिति पर फीस में कोई छूट या रिफंड नहीं मिलेगा।</p>
       <p><b>2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि आपको जिम छोड़ना है, तो महीना पूरा होते ही तुरंत जिम आना बंद कर दें। बिना फीस दिए नया महीना शुरू करने या बकाया रखने पर प्रबंधन द्वारा बकाया वसूली हेतु सख्त कदम उठाए जाएंगे।</p>
@@ -596,16 +606,23 @@ function validatePhoneNumbers() {
       "सदस्य ने जिम के सभी नियम व फीस नीति स्वीकार की है।";
 
     const directWaUrl = "whatsapp://send?phone=" + UPI_CONFIG.whatsappNumber + "&text=" + encodeURIComponent(waText);
-    const upiUrl = "upi://pay?pa=" + UPI_CONFIG.vpa + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + selectedAmount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + regId + " " + name);
+      const payMode = document.getElementById("paymentMethod").value;
+  const payModeText = (payMode === "cash") ? "💵 नकद (Cash at Gym Counter)" : "📲 ऑनलाइन (UPI Online)";
 
+  const updatedWaUrl = directWaUrl + encodeURIComponent("\n• भुगतान माध्यम: " + payModeText);
+  const upiUrl = "upi://pay?pa=" + UPI_CONFIG.vpa + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + selectedAmount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + regId + " " + name);
+
+  if (payMode === "cash") {
+    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + " (नकद देय)\n\nअब सीधे WhatsApp खुलेगा, जहाँ से आपका फॉर्म जिम को सेंड हो जाएगा।");
+    window.location.href = updatedWaUrl;
+  } else {
     alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + "\n\nअब UPI पेमेंट खुलेगा, उसके बाद WhatsApp पर विवरण सेंड हो जाएगा।");
-
     window.location.href = upiUrl;
-
     setTimeout(() => {
-      window.location.href = directWaUrl;
+      window.location.href = updatedWaUrl;
     }, 2000);
   }
+}
 
   function openAdmin() {
     const pwd = prompt("Admin Password daalein:");
