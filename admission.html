@@ -605,25 +605,22 @@ function validatePhoneNumbers() {
       "• बैच: " + batch + "\n\n" +
       "सदस्य ने जिम के सभी नियम व फीस नीति स्वीकार की है।";
 
-    const directWaUrl = "whatsapp://send?phone=" + UPI_CONFIG.whatsappNumber + "&text=" + encodeURIComponent(waText);
-      const payMode = document.getElementById("paymentMethod").value;
-  const payModeText = (payMode === "cash") ? "💵 नकद (Cash at Gym Counter)" : "📲 ऑनलाइन (UPI Online)";
-
-  const updatedWaUrl = directWaUrl + encodeURIComponent("\n• भुगतान माध्यम: " + payModeText);
+    const cleanPhone = "919990954574";
+  const updatedWaUrl = "https://api.whatsapp.com/send?phone=" + cleanPhone + "&text=" + encodeURIComponent(waText + "\n• भुगतान माध्यम: " + payModeText);
   const upiUrl = "upi://pay?pa=" + UPI_CONFIG.vpa + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + selectedAmount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + regId + " " + name);
 
   if (payMode === "cash") {
-    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + " (नकद देय)\n\nअब सीधे WhatsApp खुलेगा, जहाँ से आपका फॉर्म जिम को सेंड हो जाएगा।");
-    window.location.href = updatedWaUrl;
+    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + " (नकद देय)\n\nअब WhatsApp खुलेगा, 'Send' बटन दबाकर फॉर्म भेज दें।");
+    window.location.assign(updatedWaUrl);
   } else {
-    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + "\n\nअब UPI पेमेंट खुलेगा, उसके बाद WhatsApp पर विवरण सेंड हो जाएगा।");
+    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + "\n\nपहले UPI पेमेंट पूरा करें, फिर WhatsApp पर कन्फर्मेशन भेजें।");
     window.location.href = upiUrl;
     setTimeout(() => {
-      window.location.href = updatedWaUrl;
-    }, 2000);
-  }
-}
-
+      window.location.assign(updatedWaUrl);
+    }, 2500);
+   }
+  }          
+  
   function openAdmin() {
     const pwd = prompt("Admin Password daalein:");
     if(pwd === UPI_CONFIG.adminPassword) {
