@@ -8,105 +8,15 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 body{background:#0a0a0a;color:#fff;padding:15px;display:flex;justify-content:center;position:relative;}
 
-/* WELCOME POPUP MODAL */
-#welcomeModal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.85);
-z-index:999999;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:16px;
-}
-.welcome-card{
-background:#161616;
-border:2px solid #ffcc00;
-border-radius:20px;
-max-width:440px;
-width:100%;
-padding:24px 18px;
-text-align:center;
-box-shadow:0 0 30px rgba(255,204,0,0.35);
-position:relative;
-}
-.close-icon-btn{
-position:absolute;
-top:10px;
-right:14px;
-background:none;
-border:none;
-color:#ffcc00;
-font-size:26px;
-cursor:pointer;
-padding:4px 8px;
-}
-.welcome-badge{
-background:#ffcc00;
-color:#000;
-font-size:11px;
-font-weight:bold;
-padding:4px 12px;
-border-radius:20px;
-display:inline-block;
-margin-bottom:10px;
-text-transform:uppercase;
-}
-.welcome-card h2{
-color:#ffcc00;
-font-size:22px;
-line-height:1.3;
-margin-bottom:8px;
-}
-.welcome-card p{
-color:#ccc;
-font-size:13px;
-line-height:1.5;
-margin-bottom:14px;
-}
-.welcome-features{
-background:#202020;
-border-radius:12px;
-padding:12px;
-text-align:left;
-font-size:12px;
-color:#ddd;
-margin-bottom:16px;
-border-left:3px solid #25D366;
-line-height:1.6;
-}
-.welcome-btn{
-background:#25D366;
-color:#fff;
-font-size:16px;
-font-weight:bold;
-border:none;
-border-radius:12px;
-padding:15px;
-width:100%;
-cursor:pointer;
-box-shadow:0 4px 15px rgba(37,211,102,0.4);
-display:block;
-touch-action:manipulation;
-}
-.welcome-btn:active{
-background:#1fa851;
-transform:scale(0.98);
-}
-
-/* MAIN FORM STYLES */
-.form-container{background:#141414;border:2px solid #ffcc00;border-radius:18px;max-width:650px;width:100%;padding:20px;box-shadow:0 0 25px rgba(255,204,0,0.25);}
+.form-container{background:#141414;border:2px solid #ffcc00;border-radius:18px;max-width:650px;width:100%;padding:20px;box-shadow:0 0 25px rgba(255,204,0,0.25);position:relative;z-index:1;}
 .header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:12px;margin-bottom:18px;}
 .header h1{color:#ffcc00;font-size:24px;text-transform:uppercase;}
 .header p{color:#ddd;font-size:13px;margin-top:4px;}
 .sec-title{color:#ffcc00;font-size:15px;border-left:4px solid #ffcc00;padding-left:8px;margin:18px 0 10px;text-transform:uppercase;font-weight:bold;}
-.field-group{margin-bottom:13px;}
+.field-group{margin-bottom:13px;position:relative;z-index:2;}
 label{display:block;font-size:13px;color:#ccc;margin-bottom:5px;font-weight:600;}
 label span{color:#ff3333;}
-input, select, textarea{width:100%;background:#222;border:1px solid #444;color:#fff;padding:11px;border-radius:10px;font-size:14px;outline:none;}
+input, select, textarea{width:100%;background:#222;border:1px solid #444;color:#fff;padding:11px;border-radius:10px;font-size:14px;outline:none;position:relative;z-index:3;touch-action:manipulation;}
 input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .alert-box{background:#2a1a00;border:1px solid #ff9900;padding:10px;border-radius:10px;font-size:12px;color:#ffcc00;margin-bottom:14px;}
@@ -118,14 +28,13 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
 .rules-box b{color:#ffcc00;}
 .checkbox-line{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#ccc;cursor:pointer;margin-bottom:16px;}
 .checkbox-line input{width:auto;margin-top:3px;}
-.submit-btn{width:100%;background:#25D366;color:#fff;padding:16px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(37,211,102,0.4);display:flex;align-items:center;justify-content:center;gap:8px;}
+.submit-btn{width:100%;background:#25D366;color:#fff;padding:16px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(37,211,102,0.4);display:flex;align-items:center;justify-content:center;gap:8px;position:relative;z-index:5;touch-action:manipulation;}
 .error-msg{color:#ff3333;font-size:12px;margin-top:4px;display:none;font-weight:bold;}
 .photo-preview{width:100px;height:100px;border:2px dashed #ffcc00;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-top:8px;background:#181818;overflow:hidden;}
 .photo-preview img{width:100%;height:100%;object-fit:cover;display:none;}
 .admin-link{text-align:center;margin-top:16px;font-size:12px;}
 .admin-link a{color:#ffcc00;text-decoration:none;}
 
-/* ADMIN MODAL */
 #adminModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999999;justify-content:center;align-items:center;padding:15px;}
 .admin-box{background:#181818;border:2px solid #ffcc00;border-radius:16px;max-width:700px;width:100%;padding:20px;max-height:90vh;overflow-y:auto;}
 .admin-box h3{color:#ffcc00;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
@@ -136,31 +45,11 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
 </head>
 <body>
 
-<!-- WELCOME POPUP MODAL -->
-<div id="welcomeModal" onclick="dismissWelcome(event)">
-  <div class="welcome-card" onclick="event.stopPropagation()">
-    <button type="button" class="close-icon-btn" onclick="hideWelcomeNow()">✕</button>
-    <div class="welcome-badge">Official Portal</div>
-    <h2>Welcome to<br>5 Brother's Fitness Club!</h2>
-    <p style="margin-top:6px; color:#ffcc00; font-weight:bold;">सदस्यता पंजीकरण (Membership) पोर्टल</p>
-    <p>उमराव खेड़ा, अकरमपुर, उन्नाव में आपका स्वागत है। अपनी सही जानकारी भरें और फिटनेस शुरू करें।</p>
-    
-    <div class="welcome-features">
-      <div>✅ <b>स्टूडेंट स्पेशल:</b> स्कूल/कॉलेज आईडी के साथ मात्र ₹300 प्रति माह</div>
-      <div>✅ <b>वर्किंग पर्सन्स:</b> ₹500 प्रति माह व कॉम्बो ऑफर प्लान</div>
-      <div>⚡ <b>ऑनलाइन पेमेंट:</b> UPI भुगतान एवं WhatsApp कन्फर्मेशन</div>
-    </div>
-
-    <button type="button" onclick="hideWelcomeNow()" class="welcome-btn">🚀 फॉर्म भरें (Continue to Form)</button>
-  </div>
-</div>
-
-<!-- MAIN FORM CONTAINER -->
 <div class="form-container">
   <div class="header">
     <h1>5 Brother's Fitness Club</h1>
     <p>उमराव खेड़ा, अकरमपुर, उन्नाव | 9140417259, 9990954574</p>
-    <p style="color:#ffcc00; font-weight:bold; margin-top:4px;">ऑनलाइन एडमिशन एवं मेम्बरशिप फॉर्म (Registration & Fee Pay)</p>
+    <p style="color:#ffcc00; font-weight:bold; margin-top:4px;">ऑनलाइन एडमिशन एवं मेम्बरशिप फॉर्म (Registration Portal)</p>
   </div>
 
   <form id="gymRegForm" onsubmit="handleFormSubmit(event)">
@@ -190,7 +79,6 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       <span id="displayAmount">₹0</span>
     </div>
 
-    <!-- STUDENT SECTION -->
     <div id="studentBox" class="student-section">
       <div style="font-weight:bold; color:#ffcc00; font-size:13px; margin-bottom:8px;">🎓 विद्यार्थी सत्यापन (Student ID Verification Mandatory)</div>
       <div class="field-group">
@@ -207,9 +95,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       </div>
       <p style="font-size:11px; color:#ffb3b3;">⚠️ नोट: डिस्काउंट सिर्फ वैध आई-कार्ड वाले छात्रों (अधिकतम 22 वर्ष तक) के लिए है। फर्जी जानकारी पर सदस्यता बिना रिफंड रद्द कर दी जाएगी।</p>
     </div>
-
-    <!-- PERSONAL DETAILS -->
-    <div class="sec-title">2. व्यक्तिगत विवरण (Personal Details)</div>
+        <div class="sec-title">2. व्यक्तिगत विवरण (Personal Details)</div>
     <div class="row">
       <div class="field-group">
         <label>पूरा नाम (Full Name) <span>*</span></label>
@@ -253,7 +139,6 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       <textarea id="fullAddress" required rows="2" placeholder="मकान नं, मोहल्ला/गांव, शहर"></textarea>
     </div>
 
-    <!-- REFERRAL SCHEME -->
     <div class="sec-title">3. रेफरल जानकारी (Referral / Reference)</div>
     <div class="row">
       <div class="field-group">
@@ -266,7 +151,6 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       </div>
     </div>
 
-    <!-- EMERGENCY CONTACT -->
     <div class="alert-box">
       <b>⚠️ आपातकालीन संपर्क (Emergency Family Contact):</b><br>
       यह नंबर परिवार के सदस्य (माता/पिता/भाई) का होना अनिवार्य है। अपना स्वयं का नंबर डालना सख्त मना है।
@@ -294,7 +178,6 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       <div id="familyError" class="error-msg">⚠️ गलत नंबर! आप अपना खुद का नंबर इमरजेंसी वाले कॉलम में नहीं डाल सकते।</div>
     </div>
 
-    <!-- PHOTO UPLOAD -->
     <div class="sec-title">4. सदस्य की फोटो (Passport Photo)</div>
     <div class="field-group">
       <label>अपनी लाइव फोटो या सेल्फी अपलोड करें <span>*</span></label>
@@ -305,7 +188,6 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       </div>
     </div>
 
-    <!-- BATCH DETAILS -->
     <div class="sec-title">5. फिटनेस एवं बैच समय (Batch Details)</div>
     <div class="row">
       <div class="field-group">
@@ -325,18 +207,16 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       </div>
     </div>
 
-    <!-- RULES & WAIVER -->
-    <div class="sec-title">6. नियम, शर्तें एवं दायित्व पत्र (Rules & Waiver)</div>
-        <!-- PAYMENT MODE SELECTION -->
     <div class="sec-title">6. फीस भुगतान का माध्यम (Payment Mode)</div>
     <div class="field-group">
       <label>आप फीस कैसे जमा करेंगे? <span>*</span></label>
       <select id="paymentMethod" required>
+        <option value="cash" selected>💵 नकद (Cash at Gym Counter)</option>
         <option value="online">📲 ऑनलाइन (UPI / Google Pay / PhonePe / Paytm)</option>
-        <option value="cash">💵 नकद (Cash at Gym Counter)</option>
       </select>
     </div>
-    
+
+    <div class="sec-title">7. नियम, शर्तें एवं दायित्व पत्र (Rules & Waiver)</div>
     <div class="rules-box">
       <p><b>1. फीस एवं उपस्थिति नियम (STRICT):</b> यह अभ्यास संस्थान है। यदि आप महीने में 1 दिन भी आते हैं, तो भी पूरे 1 महीने की फीस देय होगी। 1 दिन आने पर भी पूरा 1 महीना माना जाएगा। अनुपस्थिति पर फीस में कोई छूट या रिफंड नहीं मिलेगा।</p>
       <p><b>2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि आपको जिम छोड़ना है, तो महीना पूरा होते ही तुरंत जिम आना बंद कर दें। बिना फीस दिए नया महीना शुरू करने या बकाया रखने पर प्रबंधन द्वारा बकाया वसूली हेतु सख्त कदम उठाए जाएंगे।</p>
@@ -349,8 +229,8 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       <span>मैंने 5 Brother's Fitness Club के सभी नियमों, एग्जिट पॉलिसी (1 दिन आने पर भी पूरे महीने की फीस) व अनुशासन शर्तों को पढ़ लिया है और मैं पूर्णतः सहमत हूँ।</span>
     </label>
 
-    <button type="submit" class="submit-btn">
-      💳 फीस भरें एवं एडमिशन फॉर्म जमा करें (Pay & Submit)
+    <button type="submit" class="submit-btn" id="submitBtnText">
+      ✅ एडमिशन फॉर्म जमा करें (Submit & Continue)
     </button>
   </form>
 
@@ -359,7 +239,6 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
   </div>
 </div>
 
-<!-- ADMIN MODAL -->
 <div id="adminModal">
   <div class="admin-box">
     <h3>
@@ -376,6 +255,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
             <th>Phone</th>
             <th>Plan</th>
             <th>Fee</th>
+            <th>Pay Mode</th>
             <th>Referral</th>
           </tr>
         </thead>
@@ -384,21 +264,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
     </div>
   </div>
 </div>
-
-<script>
-function hideWelcomeNow() {
-  var modal = document.getElementById("welcomeModal");
-  if(modal) {
-    modal.style.setProperty("display", "none", "important");
-  }
-}
-
-function dismissWelcome(e) {
-  if (e.target && e.target.id === "welcomeModal") {
-    hideWelcomeNow();
-  }
-}
-
+ <script>
 const UPI_CONFIG = {
   vpa: "9990954574@nyes",
   merchantName: "SAURABH SINGH",
@@ -506,111 +372,117 @@ function validatePhoneNumbers() {
 
   if(p1 !== "" && p2 !== "" && p1 === p2) {
     famError.style.display = "block";
-          return false;
-    } else {
-      famError.style.display = "none";
-      return true;
+    return false;
+  } else {
+    famError.style.display = "none";
+    return true;
+  }
+}
+
+function previewImg(input, targetImgId) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.getElementById(targetImgId);
+      img.src = e.target.result;
+      img.style.display = "block";
+      document.getElementById("previewPlaceholder").style.display = "none";
     }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+
+  if(selectedAmount <= 0) {
+    alert("कृपया पहले अपनी श्रेणी और सदस्यता प्लान चुनें!");
+    return;
   }
 
-  function previewImg(input, targetImgId) {
-    if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = document.getElementById(targetImgId);
-        img.src = e.target.result;
-        img.style.display = "block";
-        document.getElementById("previewPlaceholder").style.display = "none";
-      }
-      reader.readAsDataURL(input.files[0]);
-    }
+  if(!validateAgeRules()) {
+    alert("⚠️ अमान्य जन्म तिथि / आयु नियम!\n\nछात्र ऑफर केवल 22 वर्ष तक के विद्यार्थियों के लिए मान्य है। कृपया सही विवरण भरें या वर्किंग प्लान चुनें।");
+    return;
   }
 
-  function handleFormSubmit(e) {
-    e.preventDefault();
+  if(!validatePhoneNumbers()) {
+    alert("त्रुटि: आपका अपना मोबाइल नंबर और परिवार का नंबर एक जैसा नहीं हो सकता!");
+    return;
+  }
 
-    if(selectedAmount <= 0) {
-      alert("कृपया पहले अपनी श्रेणी और सदस्यता प्लान चुनें!");
-      return;
-    }
+  const p1 = document.getElementById("memberPhone").value.trim();
+  const p2 = document.getElementById("familyPhone").value.trim();
+  if(p1.length !== 10 || p2.length !== 10) {
+    alert("कृपया दोनों मोबाइल नंबर 10 अंकों के सही भरें!");
+    return;
+  }
 
-    if(!validateAgeRules()) {
-      alert("⚠️ अमान्य जन्म तिथि / आयु नियम!\n\nछात्र ऑफर केवल 22 वर्ष तक के विद्यार्थियों के लिए मान्य है। कृपया सही विवरण भरें या वर्किंग प्लान चुनें।");
-      return;
-    }
+  const cat = document.getElementById("userCategory").value;
+  const planName = document.getElementById("membershipPlan").value;
+  const name = document.getElementById("fullName").value.trim();
+  const guardian = document.getElementById("guardianName").value.trim();
+  const dobVal = document.getElementById("memberDob").value;
+  const age = getCalculatedAge(dobVal);
+  const gender = document.getElementById("memberGender").value;
+  const address = document.getElementById("fullAddress").value.trim();
+  const emName = document.getElementById("emName").value.trim();
+  const emRel = document.getElementById("emRelation").value;
+  const refName = document.getElementById("refName").value.trim() || "None";
+  const refPhone = document.getElementById("refPhone").value.trim() || "-";
+  const goal = document.getElementById("fitnessGoal").value;
+  const batch = document.getElementById("batchTime").value;
+  const payMode = document.getElementById("paymentMethod").value;
+  const regId = "5BFC-" + Date.now().toString().slice(-5);
+  const submitDate = new Date().toLocaleDateString('en-IN');
 
-    if(!validatePhoneNumbers()) {
-      alert("त्रुटि: आपका अपना मोबाइल नंबर और परिवार का नंबर एक जैसा नहीं हो सकता!");
-      return;
-    }
+  const payModeText = (payMode === "cash") ? "💵 नकद (Cash at Gym Counter)" : "📲 ऑनलाइन (UPI Online)";
 
-    const p1 = document.getElementById("memberPhone").value.trim();
-    const p2 = document.getElementById("familyPhone").value.trim();
-    if(p1.length !== 10 || p2.length !== 10) {
-      alert("कृपया दोनों मोबाइल नंबर 10 अंकों के सही भरें!");
-      return;
-    }
+  try {
+    const memberRecord = {
+      date: submitDate,
+      regId: regId,
+      name: name,
+      phone: p1,
+      plan: planName,
+      fee: selectedAmount,
+      payMode: payModeText,
+      ref: refName + " (" + refPhone + ")"
+    };
+    let database = JSON.parse(localStorage.getItem("5bfc_members") || "[]");
+    database.push(memberRecord);
+    localStorage.setItem("5bfc_members", JSON.stringify(database));
+  } catch(err) {}
 
-    const cat = document.getElementById("userCategory").value;
-    const planName = document.getElementById("membershipPlan").value;
-    const name = document.getElementById("fullName").value.trim();
-    const guardian = document.getElementById("guardianName").value.trim();
-    const dobVal = document.getElementById("memberDob").value;
-    const age = getCalculatedAge(dobVal);
-    const gender = document.getElementById("memberGender").value;
-    const address = document.getElementById("fullAddress").value.trim();
-    const emName = document.getElementById("emName").value.trim();
-    const emRel = document.getElementById("emRelation").value;
-    const refName = document.getElementById("refName").value.trim() || "None";
-    const refPhone = document.getElementById("refPhone").value.trim() || "-";
-    const goal = document.getElementById("fitnessGoal").value;
-    const batch = document.getElementById("batchTime").value;
-    const regId = "5BFC-" + Date.now().toString().slice(-5);
-    const submitDate = new Date().toLocaleDateString('en-IN');
+  let studentDetails = "";
+  if(cat === "student") {
+    const school = document.getElementById("schoolName").value.trim();
+    const course = document.getElementById("courseName").value.trim();
+    studentDetails = "\n• स्कूल/कॉलेज: " + school + "\n• कोर्स: " + course;
+  }
 
-    try {
-      const memberRecord = {
-        date: submitDate,
-        regId: regId,
-        name: name,
-        phone: p1,
-        plan: planName,
-        fee: selectedAmount,
-        ref: refName + " (" + refPhone + ")"
-      };
-      let database = JSON.parse(localStorage.getItem("5bfc_members") || "[]");
-      database.push(memberRecord);
-      localStorage.setItem("5bfc_members", JSON.stringify(database));
-    } catch(err) {}
+  let waText = "🔥 नया ऑनलाइन एडमिशन (" + regId + ")\n\n" +
+    "• नाम: " + name + "\n" +
+    "• प्लान: " + planName + "\n" +
+    "• कुल फीस: ₹" + selectedAmount + "\n" +
+    "• भुगतान माध्यम: " + payModeText + "\n" +
+    "• पिता/माता: " + guardian + "\n" +
+    "• जन्म तिथि: " + dobVal + " (उम्र: " + age + " वर्ष)\n" +
+    "• लिंग: " + gender + "\n" +
+    "• मोबाइल: " + p1 + "\n" +
+    "• पता: " + address + "\n" +
+    "• इमरजेंसी संपर्क: " + emName + " (" + emRel + ") - " + p2 + "\n" +
+    "• रेफरल: " + refName + " (" + refPhone + ")" +
+    studentDetails + "\n" +
+    "• लक्ष्य: " + goal + "\n" +
+    "• बैच: " + batch + "\n\n" +
+    "सदस्य ने जिम के सभी नियम व फीस नीति स्वीकार की है।";
 
-    let studentDetails = "";
-    if(cat === "student") {
-      const school = document.getElementById("schoolName").value.trim();
-      const course = document.getElementById("courseName").value.trim();
-      studentDetails = "\n• स्कूल/कॉलेज: " + school + "\n• कोर्स: " + course;
-    }
-
-    let waText = "🔥 नया ऑनलाइन एडमिशन (" + regId + ")\n\n" +
-      "• नाम: " + name + "\n" +
-      "• प्लान: " + planName + " (₹" + selectedAmount + ")\n" +
-      "• पिता/माता: " + guardian + "\n" +
-      "• जन्म तिथि: " + dobVal + " (उम्र: " + age + " वर्ष)\n" +
-      "• लिंग: " + gender + "\n" +
-      "• मोबाइल: " + p1 + "\n" +
-      "• पता: " + address + "\n" +
-      "• इमरजेंसी संपर्क: " + emName + " (" + emRel + ") - " + p2 + "\n" +
-      "• रेफरल: " + refName + " (" + refPhone + ")" +
-      studentDetails + "\n" +
-      "• लक्ष्य: " + goal + "\n" +
-      "• बैच: " + batch + "\n\n" +
-      "सदस्य ने जिम के सभी नियम व फीस नीति स्वीकार की है।";
-
-    const cleanPhone = "919990954574";
-  const updatedWaUrl = "https://api.whatsapp.com/send?phone=" + cleanPhone + "&text=" + encodeURIComponent(waText + "\n• भुगतान माध्यम: " + payModeText);
+  const cleanPhone = "919990954574";
+  const updatedWaUrl = "https://api.whatsapp.com/send?phone=" + cleanPhone + "&text=" + encodeURIComponent(waText);
   const upiUrl = "upi://pay?pa=" + UPI_CONFIG.vpa + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + selectedAmount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + regId + " " + name);
 
   if (payMode === "cash") {
-    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + " (नकद देय)\n\nअब WhatsApp खुलेगा, 'Send' बटन दबाकर फॉर्म भेज दें।");
+    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + " (नकद देय)\n\nअब सीधे WhatsApp खुलेगा, जहाँ से आपका फॉर्म जिम को सेंड हो जाएगा।");
     window.location.assign(updatedWaUrl);
   } else {
     alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + "\n\nपहले UPI पेमेंट पूरा करें, फिर WhatsApp पर कन्फर्मेशन भेजें।");
@@ -618,52 +490,53 @@ function validatePhoneNumbers() {
     setTimeout(() => {
       window.location.assign(updatedWaUrl);
     }, 2500);
-   }
-  }          
-  
-  function openAdmin() {
-    const pwd = prompt("Admin Password daalein:");
-    if(pwd === UPI_CONFIG.adminPassword) {
-      let list = [];
-      try { list = JSON.parse(localStorage.getItem("5bfc_members") || "[]"); } catch(e){}
-      const tbody = document.getElementById("adminTbody");
-      tbody.innerHTML = "";
-      list.forEach(m => {
-        tbody.innerHTML += `<tr>
-          <td>${m.date}</td>
-          <td><b>${m.name}</b><br><small>${m.regId}</small></td>
-          <td>${m.phone}</td>
-          <td>${m.plan}</td>
-          <td style="color:#25D366; font-weight:bold;">₹${m.fee}</td>
-          <td>${m.ref}</td>
-        </tr>`;
-      });
-      document.getElementById("adminModal").style.display = "flex";
-    } else if(pwd !== null) {
-      alert("Galat Password!");
-    }
   }
+}
 
-  function closeAdmin() {
-    document.getElementById("adminModal").style.display = "none";
-  }
-
-  function exportCSV() {
+function openAdmin() {
+  const pwd = prompt("Admin Password daalein:");
+  if(pwd === UPI_CONFIG.adminPassword) {
     let list = [];
     try { list = JSON.parse(localStorage.getItem("5bfc_members") || "[]"); } catch(e){}
-    if(list.length === 0) { alert("Abhi koi data nahi hai!"); return; }
-
-    let csv = "Date,Reg ID,Name,Phone,Plan,Fee,Referral\n";
+    const tbody = document.getElementById("adminTbody");
+    tbody.innerHTML = "";
     list.forEach(m => {
-      csv += `"${m.date}","${m.regId}","${m.name}","${m.phone}","${m.plan}","${m.fee}","${m.ref}"\n`;
+      tbody.innerHTML += `<tr>
+        <td>${m.date}</td>
+        <td><b>${m.name}</b><br><small>${m.regId}</small></td>
+        <td>${m.phone}</td>
+        <td>${m.plan}</td>
+        <td style="color:#25D366; font-weight:bold;">₹${m.fee}</td>
+        <td>${m.payMode || 'UPI'}</td>
+        <td>${m.ref}</td>
+      </tr>`;
     });
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "5_Brothers_Gym_Members.csv";
-    a.click();
+    document.getElementById("adminModal").style.display = "flex";
+  } else if(pwd !== null) {
+    alert("Galat Password!");
   }
+}
+
+function closeAdmin() {
+  document.getElementById("adminModal").style.display = "none";
+}
+
+function exportCSV() {
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem("5bfc_members") || "[]"); } catch(e){}
+  if(list.length === 0) { alert("Abhi koi data nahi hai!"); return; }
+
+  let csv = "Date,Reg ID,Name,Phone,Plan,Fee,Payment Mode,Referral\n";
+  list.forEach(m => {
+    csv += `"${m.date}","${m.regId}","${m.name}","${m.phone}","${m.plan}","${m.fee}","${m.payMode || 'UPI'}","${m.ref}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "5_Brothers_Gym_Members.csv";
+  a.click();
+}
 </script>
 </body>
 </html>
