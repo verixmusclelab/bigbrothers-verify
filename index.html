@@ -882,75 +882,54 @@ function addToCartByIndex(index, btnElem) {
 
 function showToast(msg) {
   const t = document.getElementById("toast");
-  t.innerText = msg;
+  t.innerHTML = msg;
   t.style.display = "block";
-  setTimeout(() => { t.style.display = "none"; }, 2500);
+  t.style.position = "fixed";
+  t.style.top = "20px";
+  t.style.left = "50%";
+  t.style.transform = "translateX(-50%)";
+  t.style.background = "#ffcc00";
+  t.style.color = "#000";
+  t.style.padding = "16px 24px";
+  t.style.fontSize = "16px";
+  t.style.fontWeight = "bold";
+  t.style.borderRadius = "14px";
+  t.style.zIndex = "9999999";
+  t.style.boxShadow = "0 6px 20px rgba(0,0,0,0.8)";
+  t.style.border = "2px solid #fff";
+  setTimeout(() => { t.style.display = "none"; }, 3000);
 }
 
-function changeQty(id, delta) {
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
+function addToCartByIndex(index, btnElem) {
+  const product = catalog[index];
+  const card = btnElem.closest('.card');
+  const sizeSelect = card.querySelector('.size-select');
+  const flavourSelect = card.querySelector('.flavour-select');
 
-  item.qty += delta;
-  if (item.qty <= 0) {
-    cart = cart.filter(i => i.id !== id);
+  const selectedSize = sizeSelect.options[sizeSelect.selectedIndex].getAttribute('data-size');
+  const selectedPrice = parseInt(sizeSelect.value);
+  const selectedFlavour = flavourSelect.value;
+
+  const cartItemId = `${index}_${selectedSize}_${selectedFlavour}`;
+  const existing = cart.find(item => item.id === cartItemId);
+
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({
+      id: cartItemId,
+      name: product.name,
+      size: selectedSize,
+      flavour: selectedFlavour,
+      price: selectedPrice,
+      qty: 1
+    });
   }
+
   updateCartUI();
+  showToast(`🛒 <b>${product.name}</b> Cart me add ho gaya!<br><span style="font-size:13px; font-weight:normal;">Upar diye gaye Cart button se bill dekhein.</span>`);
 }
 
-function updateCartUI() {
-  const badge = document.getElementById('cartCountBadge');
-  const list = document.getElementById('cartItemsList');
-  const subtotalEl = document.getElementById('billSubtotal');
-  const finalEl = document.getElementById('billFinal');
-
-  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-  badge.innerText = totalCount;
-
-  if (cart.length === 0) {
-    list.innerHTML = `<p style="text-align:center; color:#777; padding:20px 0;">Cart abhi khali hai! Products select karein.</p>`;
-    subtotalEl.innerText = "₹0";
-    finalEl.innerText = "₹0";
-    return;
-  }
-
-  list.innerHTML = "";
-  let totalAmount = 0;
-
-  cart.forEach(item => {
-    const itemTotal = item.price * item.qty;
-    totalAmount += itemTotal;
-
-    list.innerHTML += `
-      <div class="cart-item-row">
-        <div>
-          <div style="font-weight:bold; color:#fff;">${item.name}</div>
-          <div style="color:#aaa; font-size:11px;">${item.size} • ${item.flavour}</div>
-          <div style="color:#ffcc00; margin-top:2px;">₹${item.price} × ${item.qty} = ₹${itemTotal}</div>
-        </div>
-        <div class="cart-qty-ctrl">
-          <button onclick="changeQty('${item.id}', -1)">-</button>
-          <span>${item.qty}</span>
-          <button onclick="changeQty('${item.id}', 1)">+</button>
-        </div>
-      </div>
-    `;
-  });
-
-  subtotalEl.innerText = "₹" + totalAmount.toLocaleString('en-IN');
-  finalEl.innerText = "₹" + totalAmount.toLocaleString('en-IN');
-}
-
-function openCart() {
-  updateCartUI();
-  document.getElementById('cartModal').style.display = "flex";
-}
-
-function closeCart() {
-  document.getElementById('cartModal').style.display = "none";
-}
-
-// CHECKOUT WITH CUSTOMER DETAILS & DIRECT WHATSAPP ORDER ALERT
 function proceedToPay() {
   if (cart.length === 0) {
     alert("Cart khali hai! Pehle product add karein.");
@@ -970,28 +949,27 @@ function proceedToPay() {
 
   const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const selectedPayment = document.querySelector('input[name="payMethod"]:checked').value;
-  const orderId = `BBF${Date.now().toString().slice(-6)}`;
+  const orderId = "BBF" + Date.now().toString().slice(-6);
 
-  // Auto Generate WhatsApp Notification Message for the Store Owner
-  let waMsg = `*🔥 NAYA ORDER RECEIVED (${orderId})* %0A%0A`;
-  waMsg += `*Customer Details:*%0A`;
-  waMsg += `👤 Naam: ${encodeURIComponent(name)}%0A`;
-  waMsg += `📞 Phone: ${encodeURIComponent(phone)}%0A`;
-  waMsg += `🏠 Address: ${encodeURIComponent(address)}, ${encodeURIComponent(city)} - ${encodeURIComponent(pin)}%0A%0A`;
-  waMsg += `*Ordered Products:*%0A`;
+  let waMsg = "*🔥 NAYA ORDER RECEIVED (" + orderId + ")* %0A%0A";
+  waMsg += "*Customer Details:*%0A";
+  waMsg += "👤 Naam: " + encodeURIComponent(name) + "%0A";
+  waMsg += "📞 Phone: " + encodeURIComponent(phone) + "%0A";
+  waMsg += "🏠 Address: " + encodeURIComponent(address) + ", " + encodeURIComponent(city) + " - " + encodeURIComponent(pin) + "%0A%0A";
+  waMsg += "*Ordered Products:*%0A";
 
-    cart.forEach((item, i) => {
+  cart.forEach((item, i) => {
     waMsg += (i + 1) + ". " + encodeURIComponent(item.name) + " (" + item.size + ", " + item.flavour + ") x " + item.qty + " = ₹" + (item.price * item.qty) + "%0A";
   });
 
   waMsg += "%0A*Total Bill:* ₹" + totalAmount + "%0A";
   waMsg += "*Payment Mode:* " + encodeURIComponent(selectedPayment) + "%0A";
-  waMsg += "*Status:* " + (selectedPayment === "Cash on Delivery" ? "Cash on Delivery Requested" : "UPI Payment Initiated");
+  waMsg += "*Status:* Order Placed";
 
   const waOrderUrl = "https://wa.me/" + UPI_CONFIG.whatsappNumber + "?text=" + waMsg;
 
   if (selectedPayment === "Cash on Delivery") {
-    alert("Order Placed!\nOrder ID: " + orderId + "\nTotal: ₹" + totalAmount + "\nHum aapse phone par sampark karenge.");
+    alert("Order Confirm! Total: ₹" + totalAmount);
     cart = [];
     updateCartUI();
     closeCart();
@@ -999,44 +977,26 @@ function proceedToPay() {
     return;
   }
 
+  // UPI Deep Links
   const baseUpiUrl = "upi://pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  if (isMobile) {
-    let appUrl = baseUpiUrl;
-    if (selectedPayment === "Google Pay") {
-      appUrl = "gpay://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
-    } else if (selectedPayment === "PhonePe") {
-      appUrl = "phonepe://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
-    }
-
-    setTimeout(() => {
-      window.open(waOrderUrl, "_blank");
-    }, 1500);
-
-    window.location.href = appUrl;
-  } else {
-    const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(baseUpiUrl);
-    document.getElementById("qrDisplay").src = qrUrl;
-    document.getElementById("qrAmountDisplay").innerText = "₹" + totalAmount.toLocaleString('en-IN');
-    window.currentWaUrl = waOrderUrl;
-    closeCart();
-    document.getElementById("qrModal").style.display = "flex";
+  
+  let targetUpiUrl = baseUpiUrl;
+  if (selectedPayment === "Google Pay") {
+    targetUpiUrl = "gpay://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
+  } else if (selectedPayment === "PhonePe") {
+    targetUpiUrl = "phonepe://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
   }
-}
 
-function closeQrModal() {
-  document.getElementById("qrModal").style.display = "none";
-}
+  // Direct trigger mobile UPI apps
+  closeCart();
+  
+  // WhatsApp par order notify karne ke liye background link
+  setTimeout(() => {
+    window.open(waOrderUrl, '_blank');
+  }, 2000);
 
-function paymentDone() {
-  alert("Payment details verify ki ja rahi hain! Order WhatsApp par notify kar diya gaya hai.");
-  cart = [];
-  updateCartUI();
-  closeQrModal();
-  if (window.currentWaUrl) {
-    window.location.href = window.currentWaUrl;
-  }
+  // Seedhe UPI Gateway par le jana
+  window.location.href = targetUpiUrl;
 }
 
 // AUTHENTICITY CODE VERIFICATION
@@ -1122,3 +1082,6 @@ window.onload = function(){
 </script>
 </body>
 </html>
+
+
+  
