@@ -49,7 +49,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
   <div class="header">
     <h1>5 Brother's Fitness Club</h1>
     <p>उमराव खेड़ा, अकरमपुर, उन्नाव | 9140417259, 9990954574</p>
-    <p style="color:#ffcc00; font-weight:bold; margin-top:4px;">ऑनलाइन एडमिशन एवं मेम्बरशिप फॉर्म (Registration Portal)</p>
+    <p style="color:#ffcc00; font-weight:bold; margin-top:4px;">ऑनलाइन एडमिशन एवं मेम्बरशिप फॉर्म</p>
   </div>
 
   <form id="gymRegForm" onsubmit="handleFormSubmit(event)">
@@ -93,9 +93,9 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
         <label>स्टूडेंट आई-कार्ड की फोटो <span>*</span></label>
         <input type="file" id="idCardPhoto" accept="image/*">
       </div>
-      <p style="font-size:11px; color:#ffb3b3;">⚠️ नोट: डिस्काउंट सिर्फ वैध आई-कार्ड वाले छात्रों (अधिकतम 22 वर्ष तक) के लिए है। फर्जी जानकारी पर सदस्यता बिना रिफंड रद्द कर दी जाएगी।</p>
+      <p style="font-size:11px; color:#ffb3b3;">⚠️ नोट: डिस्काउंट सिर्फ वैध आई-कार्ड वाले छात्रों (अधिकतम 22 वर्ष तक) के लिए है।</p>
     </div>
-        <div class="sec-title">2. व्यक्तिगत विवरण (Personal Details)</div>
+      <div class="sec-title">2. व्यक्तिगत विवरण (Personal Details)</div>
     <div class="row">
       <div class="field-group">
         <label>पूरा नाम (Full Name) <span>*</span></label>
@@ -211,8 +211,8 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
     <div class="field-group">
       <label>आप फीस कैसे जमा करेंगे? <span>*</span></label>
       <select id="paymentMethod" required>
-        <option value="cash" selected>💵 नकद (Cash at Gym Counter)</option>
-        <option value="online">📲 ऑनलाइन (UPI / Google Pay / PhonePe / Paytm)</option>
+        <option value="online">📲 ऑनलाइन भुगतान (Online UPI / QR Code)</option>
+        <option value="cash">💵 ऑफलाइन / नकद भुगतान (Offline / Cash at Counter)</option>
       </select>
     </div>
 
@@ -264,7 +264,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
     </div>
   </div>
 </div>
- <script>
+<script>
 const UPI_CONFIG = {
   vpa: "9990954574@nyes",
   merchantName: "SAURABH SINGH",
@@ -391,8 +391,7 @@ function previewImg(input, targetImgId) {
     reader.readAsDataURL(input.files[0]);
   }
 }
-
-function handleFormSubmit(e) {
+  function handleFormSubmit(e) {
   e.preventDefault();
 
   if(selectedAmount <= 0) {
@@ -435,7 +434,7 @@ function handleFormSubmit(e) {
   const regId = "5BFC-" + Date.now().toString().slice(-5);
   const submitDate = new Date().toLocaleDateString('en-IN');
 
-  const payModeText = (payMode === "cash") ? "💵 नकद (Cash at Gym Counter)" : "📲 ऑनलाइन (UPI Online)";
+  const payModeText = (payMode === "cash") ? "💵 ऑफलाइन / नकद (Cash at Counter)" : "📲 ऑनलाइन (UPI Payment)";
 
   try {
     const memberRecord = {
@@ -482,7 +481,7 @@ function handleFormSubmit(e) {
   const upiUrl = "upi://pay?pa=" + UPI_CONFIG.vpa + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + selectedAmount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + regId + " " + name);
 
   if (payMode === "cash") {
-    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + " (नकद देय)\n\nअब सीधे WhatsApp खुलेगा, जहाँ से आपका फॉर्म जिम को सेंड हो जाएगा।");
+    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + " (ऑफलाइन/नकद देय)\n\nअब सीधे WhatsApp खुलेगा, जहाँ से आपका फॉर्म जिम को सेंड हो जाएगा।");
     window.location.assign(updatedWaUrl);
   } else {
     alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + "\n\nपहले UPI पेमेंट पूरा करें, फिर WhatsApp पर कन्फर्मेशन भेजें।");
