@@ -267,7 +267,6 @@ background:#25D366;
 color:white;
 }
 
-/* Big Notification Toast */
 #toast{
 position:fixed;
 top:20px;
@@ -286,7 +285,6 @@ border:2px solid #fff;
 text-align:center;
 }
 
-/* CART & CHECKOUT MODAL */
 #cartModal{
 display:none;
 position:fixed;
@@ -399,7 +397,6 @@ padding-top:6px;
 margin-top:6px;
 }
 
-/* Customer Address Form */
 .address-form{
 background:#141414;
 border:1px solid #333;
@@ -471,7 +468,6 @@ font-weight:bold;
 cursor:pointer;
 }
 
-/* VERIFY SECTION */
 .verify-section{
 padding:30px 20px;
 text-align:center;
@@ -587,7 +583,6 @@ border-top:3px solid #ffcc00;
 
 <div class="product-grid" id="productGrid"></div>
 
-<!-- CART & CHECKOUT MODAL -->
 <div id="cartModal">
   <div class="cart-box">
     <div class="cart-header">
@@ -612,7 +607,6 @@ border-top:3px solid #ffcc00;
       </div>
     </div>
 
-    <!-- Delivery Address Form -->
     <div class="address-form">
       <h4>📦 Delivery Details</h4>
       <input type="text" id="custName" placeholder="Full Name (Naam)*">
@@ -675,11 +669,11 @@ border-top:3px solid #ffcc00;
   <p>100% Guaranteed Authentic Products</p>
   <br>
   <a href="tel:9990954574" style="color:white; text-decoration:none; font-size:15px;">📞 9990954574</a>
-</footer>
+  </footer>
 
-<script>
+  <script>
 const UPI_CONFIG = {
-  vpa: "9990954574@nyes",8
+  vpa: "9990954574@nyes",
   merchantName: "SAURABH SINGH",
   whatsappNumber: "919990954574"
 };
@@ -699,7 +693,6 @@ const catalog = [
   { category: "whey", name: "Nutrabay Pure 100% Whey Protein", desc: "Zero Carb • 27g Ultra Pure Isolate", img: "https://i.ibb.co/tTztMrJZ/download.jpg", flavours: ["Rich Chocolate", "Vanilla", "Unflavoured"], options: [{ size: "500 Gram", price: 1399 }, { size: "1 Kg", price: 2499 }, { size: "2 Kg", price: 4799 }] },
  
   // MASS GAINERS (10)
-   
   { category: "gainer", name: "Labrada Muscle Mass Gainer", desc: "52g Protein • 1260 Calories", img: "https://i.ibb.co/ccv7zKnP/download-7.webp", flavours: ["Chocolate", "Vanilla", "Strawberry"], options: [{ size: "1 Kg", price: 1499 }, { size: "3 Kg", price: 3199 }, { size: "5 Kg", price: 4899 }] },
   { category: "gainer", name: "KN Nutrition Real Mass Gainer", desc: "Clean Carbs & Fast Weight Gain Support", img: "https://i.ibb.co/m5d7C4HD/IMG-20261010-230035.jpg", flavours: ["Chocolate", "Kulfi", "Vanilla"], options: [{ size: "1 Kg", price: 1500 }, { size: "3 Kg", price: 3200 }, { size: "5 Kg", price: 4900 }] },
   { category: "gainer", name: "Pro Series Power Muscles Gain Mass Gainer", desc: "High Calorie Muscle & Mass Formula", img: "https://i.ibb.co/sJjstZh7/Gainer-Choc-1-K-Front-1200x.jpg", flavours: ["Chocolate", "Vanilla", "Banana"], options: [{ size: "1 Kg", price: 1500 }, { size: "3 Kg", price: 3200 }, { size: "5 Kg", price: 4900 }] },
@@ -709,12 +702,11 @@ const catalog = [
   { category: "gainer", name: "Dymatize Super Mass Gainer", desc: "52g High Quality Protein Blend", img: "https://i.ibb.co/6RBX1WQX/download-4.webp", flavours: ["Rich Chocolate", "Gourmet Vanilla"], options: [{ size: "2.7 Kg (6 lbs)", price: 3799 }, { size: "5.4 Kg (12 lbs)", price: 6899 }] },
   { category: "gainer", name: "GNC Pro Performance Weight Gainer", desc: "73g Protein • High Calorie Support", img: "https://i.ibb.co/4Rc3vFQS/download-5.webp", flavours: ["Dark Chocolate", "Vanilla"], options: [{ size: "1 Kg", price: 1399 }, { size: "3 Kg", price: 2999 }, { size: "5 Kg", price: 4699 }] },
   { category: "gainer", name: "Mutant Mass Gainer", desc: "Extreme Bulking Multi-Stage Protein", img: "https://i.ibb.co/j9B7MDwC/download-6.webp", flavours: ["Triple Chocolate", "Vanilla Ice Cream"], options: [{ size: "2.2 Kg (5 lbs)", price: 3299 }, { size: "6.8 Kg (15 lbs)", price: 7999 }] },
-  { category: "gainer", name: "Endura Mass Weight Gainer", desc: "India's Popular Healthy Weight Gainer", img: "https://i.ibb.co/bgvndWVS/IMG-20261010-030543.jpg", flavours: ["Chocolate", "Vanilla", "Banana"], options: [{ size: "500 Gram", price: 599 }, { size: "1 Kg", price: 1099 }, { size: "3 Kg", price: 2899 }] },
+  { category: "endura", name: "Endura Mass Weight Gainer", desc: "India's Popular Healthy Weight Gainer", img: "https://i.ibb.co/bgvndWVS/IMG-20261010-030543.jpg", flavours: ["Chocolate", "Vanilla", "Banana"], options: [{ size: "500 Gram", price: 599 }, { size: "1 Kg", price: 1099 }, { size: "3 Kg", price: 2899 }] },
+  { category: "gainer", name: "Scitron Mega Mass Gainer", desc: "Added Creatine & Muscle Recovery", img: "https://i.ibb.co/8gQPKqj3/IMG-20261010-030556.jpg", flavours: ["Belgian Chocolate", "Kesar Pista"], options: [{ size: "1 Kg", price: 1199 }, { size: "3 Kg", price: 2699 }, { size: "5 Kg", price: 4299 }] },
   { category: "gainer", name: "Bigmuscles Nutrition Real Mass Gainer", desc: "50g Protein • 1000 Calories", img: "https://i.ibb.co/nqsGF4RG/IMG-20261010-030616.jpg", flavours: ["Chocolate", "Strawberry Twist"], options: [{ size: "1 Kg", price: 999 }, { size: "3 Kg", price: 2299 }, { size: "5 Kg", price: 3450 }] },
-                                                                                                                                                                                                                         
+                                                                                                                                                                                                                            
   // CREATINE MONOHYDRATE (10)
-    
-
   { category: "creatine", name: "GNC Pro Performance Creatine", desc: "100% Micronized Creatine", img: "https://i.ibb.co/kjbvcn2/download-17.webp", flavours: ["Unflavoured", "Fruit Punch"], options: [{ size: "100 Gram", price: 549 }, { size: "250 Gram", price: 899 }] },
   { category: "creatine", name: "Muscletech Platinum 100% Creatine", desc: "HPLC-Tested Micronized Creatine", img: "https://i.ibb.co/DgQWCh9R/IMG-20261010-052518.jpg", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 599 }, { size: "250 Gram", price: 949 }] },
   { category: "creatine", name: "MuscleBlaze Creatine Monohydrate", desc: "MB CreAbsorb Formula for Max Power", img: "https://i.ibb.co/qF2zMxZM/IMG-20261010-052714.jpg", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 489 }, { size: "250 Gram", price: 879 }, { size: "400 Gram", price: 1299 }, { size: "500 Gram", price: 1599 }] },
@@ -978,7 +970,6 @@ function proceedToPay() {
   window.location.href = targetUpiUrl;
 }
 
-// AUTHENTICITY CODE VERIFICATION
 const products = {
   "LBR-W701A":"LABRADA WHEY PROTEIN", "LBR-W702B":"LABRADA WHEY PROTEIN", "LBR-W703C":"LABRADA WHEY PROTEIN",
   "ULT-W501A":"ULTIMATE WHEY PROTEIN", "ULT-W502B":"ULTIMATE WHEY PROTEIN", "ULT-W503C":"ULTIMATE WHEY PROTEIN",
@@ -1052,7 +1043,7 @@ function closeVerifyPopup(){
 window.addEventListener('DOMContentLoaded', () => {
   renderCatalog();
 });
-  /* ===== PRODUCT FULL DETAILS ADD-ON ===== */
+
 (function () {
   const detailStyle = document.createElement("style");
 
@@ -1277,3 +1268,4 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+  
