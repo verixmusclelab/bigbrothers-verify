@@ -146,7 +146,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
     <p>उमराव खेड़ा, अकरमपुर, उन्नाव में आपका स्वागत है। अपनी सही जानकारी भरें और फिटनेस शुरू करें।</p>
     
     <div class="welcome-features">
-      <div>✅ <b>स्टूडेंट स्पेशल:</b> कॉलेज आई-कार्ड के साथ मात्र ₹300 प्रति माह</div>
+      <div>✅ <b>स्टूडेंट स्पेशल:</b> स्कूल/कॉलेज आईडी के साथ मात्र ₹300 प्रति माह</div>
       <div>✅ <b>वर्किंग पर्सन्स:</b> ₹500 प्रति माह व कॉम्बो ऑफर प्लान</div>
       <div>⚡ <b>ऑनलाइन पेमेंट:</b> UPI भुगतान एवं WhatsApp कन्फर्मेशन</div>
     </div>
@@ -205,7 +205,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
         <label>स्टूडेंट आई-कार्ड की फोटो <span>*</span></label>
         <input type="file" id="idCardPhoto" accept="image/*">
       </div>
-      <p style="font-size:11px; color:#ffb3b3;">⚠️ नोट: डिस्काउंट सिर्फ वैध आई-कार्ड वाले छात्रों के लिए है। फर्जी जानकारी पर सदस्यता बिना रिफंड रद्द कर दी जाएगी।</p>
+      <p style="font-size:11px; color:#ffb3b3;">⚠️ नोट: डिस्काउंट सिर्फ वैध आई-कार्ड वाले छात्रों (अधिकतम 22 वर्ष तक) के लिए है। फर्जी जानकारी पर सदस्यता बिना रिफंड रद्द कर दी जाएगी।</p>
     </div>
 
     <!-- PERSONAL DETAILS -->
@@ -223,8 +223,9 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
 
     <div class="row">
       <div class="field-group">
-        <label>आयु (Age in Years) <span>*</span></label>
-        <input type="number" id="memberAge" required placeholder="उदा: 22">
+        <label>जन्म तिथि (Date of Birth) <span>*</span></label>
+        <input type="date" id="memberDob" required onchange="validateAgeRules()">
+        <div id="dobError" class="error-msg"></div>
       </div>
       <div class="field-group">
         <label>लिंग (Gender) <span>*</span></label>
@@ -238,7 +239,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
     <div class="row">
       <div class="field-group">
         <label>व्यवसाय (Occupation)</label>
-        <input type="text" id="occupation" placeholder="उदा: प्राइवेट जॉब, स्टूडेंट">
+        <input type="text" id="occupation" placeholder="उदा: पढ़ाई, प्राइवेट जॉब">
       </div>
       <div class="field-group">
         <label>सदस्य का मोबाइल नंबर <span>*</span></label>
@@ -391,7 +392,8 @@ function dismissWelcome(e) {
 const UPI_CONFIG = {
   vpa: "9990954574@nyes",
   merchantName: "SAURABH SINGH",
-  whatsappNumber: "919990954574"
+  whatsappNumber: "919990954574",
+  adminPassword: "Sau@833699"
 };
 
 let selectedAmount = 0;
@@ -432,6 +434,7 @@ function updatePlanOptions() {
     `;
   }
   calculateFee();
+  validateAgeRules();
 }
 
 function calculateFee() {
@@ -446,6 +449,46 @@ function calculateFee() {
   }
 }
 
+function getCalculatedAge(dobValue) {
+  if (!dobValue) return 0;
+  const birthDate = new Date(dobValue);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+function validateAgeRules() {
+  const dobVal = document.getElementById("memberDob").value;
+  const dobError = document.getElementById("dobError");
+  const cat = document.getElementById("userCategory").value;
+
+  if (!dobVal) {
+    dobError.style.display = "none";
+    return true;
+  }
+
+  const age = getCalculatedAge(dobVal);
+
+  if (age < 14 || age > 75) {
+    dobError.innerText = "⚠️ कृपया अपनी वास्तविक जन्म तिथि दर्ज करें (उम्र 14 से 75 वर्ष होनी चाहिए)।";
+    dobError.style.display = "block";
+    return false;
+  }
+
+  if (cat === "student" && age > 22) {
+    dobError.innerText = "⚠️ आपकी आयु " + age + " वर्ष है! यह स्पेशल डिस्काउंट केवल स्कूल/इंटरमीडिएट (22 वर्ष तक के छात्रों) के लिए है। कृपया 'वर्किंग / जनरल' प्लान चुनें।";
+    dobError.style.display = "block";
+    return false;
+  }
+
+  dobError.style.display = "none";
+  return true;
+}
+
 function validatePhoneNumbers() {
   const p1 = document.getElementById("memberPhone").value.trim();
   const p2 = document.getElementById("familyPhone").value.trim();
@@ -453,151 +496,160 @@ function validatePhoneNumbers() {
 
   if(p1 !== "" && p2 !== "" && p1 === p2) {
     famError.style.display = "block";
-    return false;
-  } else {
-    famError.style.display = "none";
-    return true;
-  }
-}
-
-function previewImg(input, targetImgId) {
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = document.getElementById(targetImgId);
-      img.src = e.target.result;
-      img.style.display = "block";
-      document.getElementById("previewPlaceholder").style.display = "none";
+          return false;
+    } else {
+      famError.style.display = "none";
+      return true;
     }
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
-function handleFormSubmit(e) {
-  e.preventDefault();
-
-  if(selectedAmount <= 0) {
-    alert("कृपया पहले अपनी श्रेणी और सदस्यता प्लान चुनें!");
-    return;
   }
 
-  if(!validatePhoneNumbers()) {
-    alert("त्रुटि: आपका अपना मोबाइल नंबर और परिवार का नंबर एक जैसा नहीं हो सकता!");
-    return;
+  function previewImg(input, targetImgId) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.getElementById(targetImgId);
+        img.src = e.target.result;
+        img.style.display = "block";
+        document.getElementById("previewPlaceholder").style.display = "none";
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
   }
 
-  const p1 = document.getElementById("memberPhone").value.trim();
-  const p2 = document.getElementById("familyPhone").value.trim();
-  if(p1.length !== 10 || p2.length !== 10) {
-    alert("कृपया दोनों मोबाइल नंबर 10 अंकों के सही भरें!");
-    return;
+  function handleFormSubmit(e) {
+    e.preventDefault();
+
+    if(selectedAmount <= 0) {
+      alert("कृपया पहले अपनी श्रेणी और सदस्यता प्लान चुनें!");
+      return;
+    }
+
+    if(!validateAgeRules()) {
+      alert("⚠️ अमान्य जन्म तिथि / आयु नियम!\n\nछात्र ऑफर केवल 22 वर्ष तक के विद्यार्थियों के लिए मान्य है। कृपया सही विवरण भरें या वर्किंग प्लान चुनें।");
+      return;
+    }
+
+    if(!validatePhoneNumbers()) {
+      alert("त्रुटि: आपका अपना मोबाइल नंबर और परिवार का नंबर एक जैसा नहीं हो सकता!");
+      return;
+    }
+
+    const p1 = document.getElementById("memberPhone").value.trim();
+    const p2 = document.getElementById("familyPhone").value.trim();
+    if(p1.length !== 10 || p2.length !== 10) {
+      alert("कृपया दोनों मोबाइल नंबर 10 अंकों के सही भरें!");
+      return;
+    }
+
+    const cat = document.getElementById("userCategory").value;
+    const planName = document.getElementById("membershipPlan").value;
+    const name = document.getElementById("fullName").value.trim();
+    const guardian = document.getElementById("guardianName").value.trim();
+    const dobVal = document.getElementById("memberDob").value;
+    const age = getCalculatedAge(dobVal);
+    const gender = document.getElementById("memberGender").value;
+    const address = document.getElementById("fullAddress").value.trim();
+    const emName = document.getElementById("emName").value.trim();
+    const emRel = document.getElementById("emRelation").value;
+    const refName = document.getElementById("refName").value.trim() || "None";
+    const refPhone = document.getElementById("refPhone").value.trim() || "-";
+    const goal = document.getElementById("fitnessGoal").value;
+    const batch = document.getElementById("batchTime").value;
+    const regId = "5BFC-" + Date.now().toString().slice(-5);
+    const submitDate = new Date().toLocaleDateString('en-IN');
+
+    try {
+      const memberRecord = {
+        date: submitDate,
+        regId: regId,
+        name: name,
+        phone: p1,
+        plan: planName,
+        fee: selectedAmount,
+        ref: refName + " (" + refPhone + ")"
+      };
+      let database = JSON.parse(localStorage.getItem("5bfc_members") || "[]");
+      database.push(memberRecord);
+      localStorage.setItem("5bfc_members", JSON.stringify(database));
+    } catch(err) {}
+
+    let studentDetails = "";
+    if(cat === "student") {
+      const school = document.getElementById("schoolName").value.trim();
+      const course = document.getElementById("courseName").value.trim();
+      studentDetails = "\n• स्कूल/कॉलेज: " + school + "\n• कोर्स: " + course;
+    }
+
+    let waText = "🔥 नया ऑनलाइन एडमिशन (" + regId + ")\n\n" +
+      "• नाम: " + name + "\n" +
+      "• प्लान: " + planName + " (₹" + selectedAmount + ")\n" +
+      "• पिता/माता: " + guardian + "\n" +
+      "• जन्म तिथि: " + dobVal + " (उम्र: " + age + " वर्ष)\n" +
+      "• लिंग: " + gender + "\n" +
+      "• मोबाइल: " + p1 + "\n" +
+      "• पता: " + address + "\n" +
+      "• इमरजेंसी संपर्क: " + emName + " (" + emRel + ") - " + p2 + "\n" +
+      "• रेफरल: " + refName + " (" + refPhone + ")" +
+      studentDetails + "\n" +
+      "• लक्ष्य: " + goal + "\n" +
+      "• बैच: " + batch + "\n\n" +
+      "सदस्य ने जिम के सभी नियम व फीस नीति स्वीकार की है।";
+
+    const directWaUrl = "whatsapp://send?phone=" + UPI_CONFIG.whatsappNumber + "&text=" + encodeURIComponent(waText);
+    const upiUrl = "upi://pay?pa=" + UPI_CONFIG.vpa + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + selectedAmount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + regId + " " + name);
+
+    alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + "\n\nअब UPI पेमेंट खुलेगा, उसके बाद WhatsApp पर विवरण सेंड हो जाएगा।");
+
+    window.location.href = upiUrl;
+
+    setTimeout(() => {
+      window.location.href = directWaUrl;
+    }, 2000);
   }
 
-  const cat = document.getElementById("userCategory").value;
-  const planName = document.getElementById("membershipPlan").value;
-  const name = document.getElementById("fullName").value.trim();
-  const guardian = document.getElementById("guardianName").value.trim();
-    const age = document.getElementById("memberAge").value.trim();
-  const gender = document.getElementById("memberGender").value;
-  const address = document.getElementById("fullAddress").value.trim();
-  const emName = document.getElementById("emName").value.trim();
-  const emRel = document.getElementById("emRelation").value;
-  const refName = document.getElementById("refName").value.trim() || "None";
-  const refPhone = document.getElementById("refPhone").value.trim() || "-";
-  const goal = document.getElementById("fitnessGoal").value;
-  const batch = document.getElementById("batchTime").value;
-  const regId = "5BFC-" + Date.now().toString().slice(-5);
-  const submitDate = new Date().toLocaleDateString('en-IN');
-
-  try {
-    const memberRecord = {
-      date: submitDate,
-      regId: regId,
-      name: name,
-      phone: p1,
-      plan: planName,
-      fee: selectedAmount,
-      ref: refName + " (" + refPhone + ")"
-    };
-    let database = JSON.parse(localStorage.getItem("5bfc_members") || "[]");
-    database.push(memberRecord);
-    localStorage.setItem("5bfc_members", JSON.stringify(database));
-  } catch(err) {}
-
-  let studentDetails = "";
-  if(cat === "student") {
-    const school = document.getElementById("schoolName").value.trim();
-    const course = document.getElementById("courseName").value.trim();
-    studentDetails = "\n• स्कूल/कॉलेज: " + school + "\n• कोर्स: " + course;
+  function openAdmin() {
+    const pwd = prompt("Admin Password daalein:");
+    if(pwd === UPI_CONFIG.adminPassword) {
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem("5bfc_members") || "[]"); } catch(e){}
+      const tbody = document.getElementById("adminTbody");
+      tbody.innerHTML = "";
+      list.forEach(m => {
+        tbody.innerHTML += `<tr>
+          <td>${m.date}</td>
+          <td><b>${m.name}</b><br><small>${m.regId}</small></td>
+          <td>${m.phone}</td>
+          <td>${m.plan}</td>
+          <td style="color:#25D366; font-weight:bold;">₹${m.fee}</td>
+          <td>${m.ref}</td>
+        </tr>`;
+      });
+      document.getElementById("adminModal").style.display = "flex";
+    } else if(pwd !== null) {
+      alert("Galat Password!");
+    }
   }
 
-  let waText = "🔥 नया ऑनलाइन एडमिशन (" + regId + ")\n\n" +
-    "• नाम: " + name + "\n" +
-    "• प्लान: " + planName + " (₹" + selectedAmount + ")\n" +
-    "• पिता/माता: " + guardian + "\n" +
-    "• मोबाइल: " + p1 + "\n" +
-    "• पता: " + address + "\n" +
-    "• इमरजेंसी संपर्क: " + emName + " (" + emRel + ") - " + p2 + "\n" +
-    "• रेफरल: " + refName + " (" + refPhone + ")" +
-    studentDetails + "\n" +
-    "• बैच: " + batch + "\n\n" +
-    "सदस्य ने जिम के सभी नियम व फीस नीति स्वीकार की है।";
+  function closeAdmin() {
+    document.getElementById("adminModal").style.display = "none";
+  }
 
-  const directWaUrl = "whatsapp://send?phone=" + UPI_CONFIG.whatsappNumber + "&text=" + encodeURIComponent(waText);
-  const upiUrl = "upi://pay?pa=" + UPI_CONFIG.vpa + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + selectedAmount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + regId + " " + name);
-
-  alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + "\n\nअब UPI पेमेंट खुलेगा, उसके बाद WhatsApp पर विवरण सेंड हो जाएगा।");
-
-  window.location.href = upiUrl;
-
-  setTimeout(() => {
-    window.location.href = directWaUrl;
-  }, 2000);
-}
-
-function openAdmin() {
-  const pwd = prompt("Admin Password daalein:");
-  if(pwd === "Sau@833699") {
+  function exportCSV() {
     let list = [];
     try { list = JSON.parse(localStorage.getItem("5bfc_members") || "[]"); } catch(e){}
-    const tbody = document.getElementById("adminTbody");
-    tbody.innerHTML = "";
+    if(list.length === 0) { alert("Abhi koi data nahi hai!"); return; }
+
+    let csv = "Date,Reg ID,Name,Phone,Plan,Fee,Referral\n";
     list.forEach(m => {
-      tbody.innerHTML += `<tr>
-        <td>${m.date}</td>
-        <td><b>${m.name}</b><br><small>${m.regId}</small></td>
-        <td>${m.phone}</td>
-        <td>${m.plan}</td>
-        <td style="color:#25D366; font-weight:bold;">₹${m.fee}</td>
-        <td>${m.ref}</td>
-      </tr>`;
+      csv += `"${m.date}","${m.regId}","${m.name}","${m.phone}","${m.plan}","${m.fee}","${m.ref}"\n`;
     });
-    document.getElementById("adminModal").style.display = "flex";
-  } else if(pwd !== null) {
-    alert("Galat Password!");
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "5_Brothers_Gym_Members.csv";
+    a.click();
   }
-}
-
-function closeAdmin() {
-  document.getElementById("adminModal").style.display = "none";
-}
-
-function exportCSV() {
-  let list = [];
-  try { list = JSON.parse(localStorage.getItem("5bfc_members") || "[]"); } catch(e){}
-  if(list.length === 0) { alert("Abhi koi data nahi hai!"); return; }
-
-  let csv = "Date,Reg ID,Name,Phone,Plan,Fee,Referral\n";
-  list.forEach(m => {
-    csv += `"${m.date}","${m.regId}","${m.name}","${m.phone}","${m.plan}","${m.fee}","${m.ref}"\n`;
-  });
-
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "5_Brothers_Gym_Members.csv";
-  a.click();
-}
 </script>
 </body>
 </html>
