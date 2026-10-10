@@ -2,77 +2,82 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>5 Brother's Fitness Club - एडमिशन एवं मेम्बरशिप पोर्टल</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 body{background:#0a0a0a;color:#fff;padding:15px;display:flex;justify-content:center;position:relative;}
 
-/* WELCOME POPUP MODAL STYLES */
+/* WELCOME POPUP MODAL */
 #welcomeModal{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.88);
-backdrop-filter:blur(6px);
+background:rgba(0,0,0,0.85);
 z-index:999999;
 display:flex;
 justify-content:center;
 align-items:center;
-padding:20px;
+padding:16px;
 }
 .welcome-card{
 background:#161616;
 border:2px solid #ffcc00;
 border-radius:20px;
-max-width:480px;
+max-width:440px;
 width:100%;
-padding:26px 20px;
+padding:24px 18px;
 text-align:center;
-box-shadow:0 0 35px rgba(255,204,0,0.4);
-animation:popIn 0.35s ease-out;
+box-shadow:0 0 30px rgba(255,204,0,0.35);
+position:relative;
 }
-@keyframes popIn{
-from{transform:scale(0.85);opacity:0;}
-to{transform:scale(1);opacity:1;}
+.close-icon-btn{
+position:absolute;
+top:10px;
+right:14px;
+background:none;
+border:none;
+color:#ffcc00;
+font-size:26px;
+cursor:pointer;
+padding:4px 8px;
 }
 .welcome-badge{
 background:#ffcc00;
 color:#000;
-font-size:12px;
+font-size:11px;
 font-weight:bold;
 padding:4px 12px;
 border-radius:20px;
 display:inline-block;
-margin-bottom:12px;
+margin-bottom:10px;
 text-transform:uppercase;
 }
 .welcome-card h2{
 color:#ffcc00;
-font-size:23px;
+font-size:22px;
 line-height:1.3;
 margin-bottom:8px;
 }
 .welcome-card p{
 color:#ccc;
 font-size:13px;
-line-height:1.6;
-margin-bottom:16px;
+line-height:1.5;
+margin-bottom:14px;
 }
 .welcome-features{
 background:#202020;
 border-radius:12px;
 padding:12px;
 text-align:left;
-font-size:13px;
+font-size:12px;
 color:#ddd;
-margin-bottom:18px;
+margin-bottom:16px;
 border-left:3px solid #25D366;
+line-height:1.6;
 }
-.welcome-features div{margin-bottom:6px;}
-.welcome-features div:last-child{margin-bottom:0;}
 .welcome-btn{
 background:#25D366;
 color:#fff;
@@ -80,14 +85,20 @@ font-size:16px;
 font-weight:bold;
 border:none;
 border-radius:12px;
-padding:14px 28px;
+padding:15px;
 width:100%;
 cursor:pointer;
 box-shadow:0 4px 15px rgba(37,211,102,0.4);
+display:block;
+touch-action:manipulation;
+}
+.welcome-btn:active{
+background:#1fa851;
+transform:scale(0.98);
 }
 
 /* MAIN FORM STYLES */
-.form-container{background:#141414;border:2px solid #ffcc00;border-radius:18px;max-width:650px;width:100%;padding:22px;box-shadow:0 0 25px rgba(255,204,0,0.25);}
+.form-container{background:#141414;border:2px solid #ffcc00;border-radius:18px;max-width:650px;width:100%;padding:20px;box-shadow:0 0 25px rgba(255,204,0,0.25);}
 .header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:12px;margin-bottom:18px;}
 .header h1{color:#ffcc00;font-size:24px;text-transform:uppercase;}
 .header p{color:#ddd;font-size:13px;margin-top:4px;}
@@ -126,8 +137,9 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
 <body>
 
 <!-- WELCOME POPUP MODAL -->
-<div id="welcomeModal">
-  <div class="welcome-card">
+<div id="welcomeModal" onclick="dismissWelcome(event)">
+  <div class="welcome-card" onclick="event.stopPropagation()">
+    <button type="button" class="close-icon-btn" onclick="hideWelcomeNow()">✕</button>
     <div class="welcome-badge">Official Portal</div>
     <h2>Welcome to<br>5 Brother's Fitness Club!</h2>
     <p style="margin-top:6px; color:#ffcc00; font-weight:bold;">सदस्यता पंजीकरण (Membership) पोर्टल</p>
@@ -139,11 +151,11 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
       <div>⚡ <b>ऑनलाइन पेमेंट:</b> UPI भुगतान एवं WhatsApp कन्फर्मेशन</div>
     </div>
 
-    <button onclick="closeWelcome()" class="welcome-btn">🚀 फॉर्म भरें (Continue to Form)</button>
+    <button type="button" onclick="hideWelcomeNow()" class="welcome-btn">🚀 फॉर्म भरें (Continue to Form)</button>
   </div>
 </div>
 
-<!-- MAIN FORM -->
+<!-- MAIN FORM CONTAINER -->
 <div class="form-container">
   <div class="header">
     <h1>5 Brother's Fitness Club</h1>
@@ -316,7 +328,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
     <div class="sec-title">6. नियम, शर्तें एवं दायित्व पत्र (Rules & Waiver)</div>
     <div class="rules-box">
       <p><b>1. फीस एवं उपस्थिति नियम (STRICT):</b> यह अभ्यास संस्थान है। यदि आप महीने में 1 दिन भी आते हैं, तो भी पूरे 1 महीने की फीस देय होगी। 1 दिन आने पर भी पूरा 1 महीना माना जाएगा। अनुपस्थिति पर फीस में कोई छूट या रिफंड नहीं मिलेगा।</p>
-      <p><b>2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि आपको जिम छोड़ना है, तो महीना पूरा होते ही तुरंत जिम आना बंद कर दें। बिना फीस दिए नया महीना शुरू करने या बकाया रखने पर प्रबंधन द्वारा बकाया वसूली हेतु कानूनी कदम उठाए जाएंगे।</p>
+      <p><b>2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि आपको जिम छोड़ना है, तो महीना पूरा होते ही तुरंत जिम आना बंद कर दें। बिना फीस दिए नया महीना शुरू करने या बकाया रखने पर प्रबंधन द्वारा बकाया वसूली हेतु सख्त कदम उठाए जाएंगे।</p>
       <p><b>3. जिम अनुशासन (DISCIPLINE):</b> जिम के अंदर साफ इनडोर जूते और पर्सनल तौलिया लाना अनिवार्य है। वर्कआउट के बाद डम्बल व प्लेट्स अपनी जगह पर रखें। गुटखा, तंबाकू, धूम्रपान (Smoking) या शराब जिम में पूर्णतः प्रतिबंधित है।</p>
       <p><b>4. स्वास्थ्य जोखिम एवं दायित्व मुक्ति (WAIVER):</b> भारी वजन उठाने में होने वाले खिंचाव या चोट की जिम्मेदारी स्वयं सदस्य की होगी। इसके लिए जिम प्रबंधन कानूनी रूप से जिम्मेदार नहीं होगा।</p>
     </div>
@@ -341,7 +353,7 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
   <div class="admin-box">
     <h3>
       <span>📋 5 Brother's Club Member Database</span>
-      <button onclick="closeAdmin()" style="background:none; border:none; color:#fff; font-size:22px; cursor:pointer;">&times;</button>
+      <button onclick="closeAdmin()" style="background:none; border:none; color:#fff; font-size:22px; cursor:pointer;">✕</button>
     </h3>
     <button onclick="exportCSV()" style="background:#25D366; color:#fff; padding:8px 14px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:10px;">📥 Download Excel / CSV</button>
     <div style="overflow-x:auto;">
@@ -363,9 +375,17 @@ input:focus, select:focus, textarea:focus{border-color:#ffcc00;}
 </div>
 
 <script>
-function closeWelcome() {
-  const modal = document.getElementById("welcomeModal");
-  if(modal) modal.style.display = "none";
+function hideWelcomeNow() {
+  var modal = document.getElementById("welcomeModal");
+  if(modal) {
+    modal.style.setProperty("display", "none", "important");
+  }
+}
+
+function dismissWelcome(e) {
+  if (e.target && e.target.id === "welcomeModal") {
+    hideWelcomeNow();
+  }
 }
 
 const UPI_CONFIG = {
@@ -477,10 +497,107 @@ function handleFormSubmit(e) {
   const planName = document.getElementById("membershipPlan").value;
   const name = document.getElementById("fullName").value.trim();
   const guardian = document.getElementById("guardianName").value.trim();
-  const age = document.getElementById("memberAge").value.trim();
+    const age = document.getElementById("memberAge").value.trim();
   const gender = document.getElementById("memberGender").value;
   const address = document.getElementById("fullAddress").value.trim();
   const emName = document.getElementById("emName").value.trim();
   const emRel = document.getElementById("emRelation").value;
   const refName = document.getElementById("refName").value.trim() || "None";
-  const refPhone = document.getElementById("refPhone").value
+  const refPhone = document.getElementById("refPhone").value.trim() || "-";
+  const goal = document.getElementById("fitnessGoal").value;
+  const batch = document.getElementById("batchTime").value;
+  const regId = "5BFC-" + Date.now().toString().slice(-5);
+  const submitDate = new Date().toLocaleDateString('en-IN');
+
+  try {
+    const memberRecord = {
+      date: submitDate,
+      regId: regId,
+      name: name,
+      phone: p1,
+      plan: planName,
+      fee: selectedAmount,
+      ref: refName + " (" + refPhone + ")"
+    };
+    let database = JSON.parse(localStorage.getItem("5bfc_members") || "[]");
+    database.push(memberRecord);
+    localStorage.setItem("5bfc_members", JSON.stringify(database));
+  } catch(err) {}
+
+  let studentDetails = "";
+  if(cat === "student") {
+    const school = document.getElementById("schoolName").value.trim();
+    const course = document.getElementById("courseName").value.trim();
+    studentDetails = "\n• स्कूल/कॉलेज: " + school + "\n• कोर्स: " + course;
+  }
+
+  let waText = "🔥 नया ऑनलाइन एडमिशन (" + regId + ")\n\n" +
+    "• नाम: " + name + "\n" +
+    "• प्लान: " + planName + " (₹" + selectedAmount + ")\n" +
+    "• पिता/माता: " + guardian + "\n" +
+    "• मोबाइल: " + p1 + "\n" +
+    "• पता: " + address + "\n" +
+    "• इमरजेंसी संपर्क: " + emName + " (" + emRel + ") - " + p2 + "\n" +
+    "• रेफरल: " + refName + " (" + refPhone + ")" +
+    studentDetails + "\n" +
+    "• बैच: " + batch + "\n\n" +
+    "सदस्य ने जिम के सभी नियम व फीस नीति स्वीकार की है।";
+
+  const directWaUrl = "whatsapp://send?phone=" + UPI_CONFIG.whatsappNumber + "&text=" + encodeURIComponent(waText);
+  const upiUrl = "upi://pay?pa=" + UPI_CONFIG.vpa + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + selectedAmount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + regId + " " + name);
+
+  alert("एडमिशन दर्ज हो गया है!\n\nकुल फीस: ₹" + selectedAmount + "\n\nअब UPI पेमेंट खुलेगा, उसके बाद WhatsApp पर विवरण सेंड हो जाएगा।");
+
+  window.location.href = upiUrl;
+
+  setTimeout(() => {
+    window.location.href = directWaUrl;
+  }, 2000);
+}
+
+function openAdmin() {
+  const pwd = prompt("Admin Password daalein:");
+  if(pwd === "5bfc@admin") {
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem("5bfc_members") || "[]"); } catch(e){}
+    const tbody = document.getElementById("adminTbody");
+    tbody.innerHTML = "";
+    list.forEach(m => {
+      tbody.innerHTML += `<tr>
+        <td>${m.date}</td>
+        <td><b>${m.name}</b><br><small>${m.regId}</small></td>
+        <td>${m.phone}</td>
+        <td>${m.plan}</td>
+        <td style="color:#25D366; font-weight:bold;">₹${m.fee}</td>
+        <td>${m.ref}</td>
+      </tr>`;
+    });
+    document.getElementById("adminModal").style.display = "flex";
+  } else if(pwd !== null) {
+    alert("Galat Password!");
+  }
+}
+
+function closeAdmin() {
+  document.getElementById("adminModal").style.display = "none";
+}
+
+function exportCSV() {
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem("5bfc_members") || "[]"); } catch(e){}
+  if(list.length === 0) { alert("Abhi koi data nahi hai!"); return; }
+
+  let csv = "Date,Reg ID,Name,Phone,Plan,Fee,Referral\n";
+  list.forEach(m => {
+    csv += `"${m.date}","${m.regId}","${m.name}","${m.phone}","${m.plan}","${m.fee}","${m.ref}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "5_Brothers_Gym_Members.csv";
+  a.click();
+}
+</script>
+</body>
+</html>
