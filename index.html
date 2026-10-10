@@ -78,14 +78,16 @@ color:white;
 .cart-top-btn{
 background:#007bff;
 color:white;
+font-size:14px;
 }
 
 .cart-badge{
 background:#ff3333;
 color:white;
-font-size:11px;
-padding:2px 7px;
+font-size:12px;
+padding:3px 8px;
 border-radius:20px;
+font-weight:bold;
 }
 
 .menu{
@@ -265,19 +267,23 @@ background:#25D366;
 color:white;
 }
 
-/* Toast Message */
+/* Big Notification Toast */
 #toast{
 position:fixed;
-bottom:20px;
-right:20px;
-background:#25D366;
-color:black;
-padding:12px 20px;
-border-radius:10px;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+background:#ffcc00;
+color:#000;
+padding:16px 24px;
+border-radius:12px;
 font-weight:bold;
+font-size:15px;
 display:none;
-z-index:999999;
-box-shadow:0 4px 12px rgba(0,0,0,0.5);
+z-index:9999999;
+box-shadow:0 6px 20px rgba(0,0,0,0.8);
+border:2px solid #fff;
+text-align:center;
 }
 
 /* CART & CHECKOUT MODAL */
@@ -465,41 +471,6 @@ font-weight:bold;
 cursor:pointer;
 }
 
-/* QR MODAL (DESKTOP) */
-#qrModal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.9);
-z-index:999999;
-justify-content:center;
-align-items:center;
-padding:20px;
-}
-
-.qr-box{
-background:#181818;
-border:2px solid #ffcc00;
-border-radius:18px;
-max-width:360px;
-width:100%;
-padding:22px;
-text-align:center;
-}
-
-.qr-box img{
-width:200px;
-height:200px;
-margin:12px auto;
-background:white;
-padding:6px;
-border-radius:12px;
-display:block;
-}
-
 /* VERIFY SECTION */
 .verify-section{
 padding:30px 20px;
@@ -679,22 +650,7 @@ border-top:3px solid #ffcc00;
   </div>
 </div>
 
-<!-- QR MODAL (DESKTOP) -->
-<div id="qrModal">
-  <div class="qr-box">
-    <h3 style="color:#ffcc00; font-size:18px;">Scan & Pay via UPI</h3>
-    <p style="font-size:12px; color:#aaa; margin-top:4px;">GPay, PhonePe, Navi ya Paytm se scan karein</p>
-    <img id="qrDisplay" src="" alt="UPI QR">
-    <p style="font-size:16px; font-weight:bold; color:white;">Amount: <span id="qrAmountDisplay" style="color:#ffcc00;">₹0</span></p>
-    <p style="font-size:11px; color:#888; margin-top:4px; font-family:monospace;">UPI ID: 9990954574@nyes</p>
-    <div style="display:flex; gap:10px; margin-top:18px;">
-      <button onclick="paymentDone()" style="flex:1; padding:10px; background:#25D366; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Payment Done</button>
-      <button onclick="closeQrModal()" style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast">✅ Product Cart me add ho gaya!</div>
+<div id="toast"></div>
 
 <section class="verify-section">
   <h2 style="color:#ffcc00; font-size:24px;">Verify Product</h2>
@@ -719,9 +675,9 @@ border-top:3px solid #ffcc00;
   <p>100% Guaranteed Authentic Products</p>
   <br>
   <a href="tel:9990954574" style="color:white; text-decoration:none; font-size:15px;">📞 9990954574</a>
-  </footer>
+</footer>
 
-  <script>
+<script>
 const UPI_CONFIG = {
   vpa: "9990954574@nyes",
   merchantName: "SAURABH SINGH",
@@ -729,7 +685,7 @@ const UPI_CONFIG = {
 };
 
 const catalog = [
-  // WHEY PROTEIN
+  // WHEY PROTEIN (10)
   { category: "whey", name: "Labrada 100% Whey Protein", desc: "24g Protein • 5.2g BCAA", img: "https://i.ibb.co/ynbr1YCw/download-1.webp", flavours: ["Chocolate", "Vanilla", "Strawberry", "Cafe Brazil"], options: [{ size: "500 Gram", price: 1799 }, { size: "1 Kg", price: 3199 }, { size: "2 Kg", price: 5999 }, { size: "4 Kg", price: 11499 }] },
   { category: "whey", name: "ON Gold Standard 100% Whey", desc: "24g Isolate Blend • 5.5g BCAA", img: "https://i.ibb.co/Psd0wvRZ/1118910-1-af26fc31-6747-4679-8e5f-00dc04b9aecd.jpg", flavours: ["Double Rich Chocolate", "Extreme Milk Choc", "Vanilla Ice Cream", "Delicious Strawberry"], options: [{ size: "450 Gram", price: 1849 }, { size: "907 Gram (2 lbs)", price: 3299 }, { size: "2.27 Kg (5 lbs)", price: 6499 }, { size: "4.54 Kg (10 lbs)", price: 12499 }] },
   { category: "whey", name: "Muscletech NitroTech Whey", desc: "30g Whey Peptides • 3g Creatine", img: "https://i.ibb.co/MyLYJcjV/HVPM75-X4-2.jpg", flavours: ["Milk Chocolate", "Vanilla", "Strawberry", "Cookies & Cream"], options: [{ size: "1 Kg", price: 2999 }, { size: "1.81 Kg (4 lbs)", price: 5199 }, { size: "3.63 Kg (8 lbs)", price: 9899 }] },
@@ -741,7 +697,7 @@ const catalog = [
   { category: "whey", name: "Avvatar 100% Whey Protein", desc: "Fresh Grass-Fed Whey • 27g Protein", img: "https://i.ibb.co/ynbr1YCw/download-1.webp", flavours: ["Chocolate Fudge", "Malai Kulfi", "Cafe Mocha"], options: [{ size: "1 Kg", price: 2299 }, { size: "2 Kg", price: 4299 }, { size: "4 Kg", price: 8199 }] },
   { category: "whey", name: "Nutrabay Pure 100% Whey Isolate", desc: "Zero Carb • 27g Ultra Pure Isolate", img: "https://i.ibb.co/ynbr1YCw/download-1.webp", flavours: ["Rich Chocolate", "Vanilla", "Unflavoured"], options: [{ size: "500 Gram", price: 1399 }, { size: "1 Kg", price: 2499 }, { size: "2 Kg", price: 4799 }] },
 
-  // MASS GAINERS
+  // MASS GAINERS (10)
   { category: "gainer", name: "Labrada Muscle Mass Gainer", desc: "52g Protein • 1260 Calories", img: "https://i.ibb.co/sJjstZh7/Gainer-Choc-1-K-Front-1200x.jpg", flavours: ["Chocolate", "Vanilla", "Strawberry"], options: [{ size: "1 Kg", price: 1499 }, { size: "3 Kg", price: 3199 }, { size: "5 Kg", price: 4899 }] },
   { category: "gainer", name: "ON Serious Mass Gainer", desc: "50g Protein • 250g Carbs", img: "https://i.ibb.co/sJjstZh7/Gainer-Choc-1-K-Front-1200x.jpg", flavours: ["Chocolate", "Vanilla", "Banana"], options: [{ size: "1 Kg", price: 1799 }, { size: "2.72 Kg (6 lbs)", price: 3699 }, { size: "5.44 Kg (12 lbs)", price: 5999 }] },
   { category: "gainer", name: "MuscleBlaze Super Gainer XXL", desc: "Clean Complex Carbs & Fast Energy", img: "https://i.ibb.co/sJjstZh7/Gainer-Choc-1-K-Front-1200x.jpg", flavours: ["Chocolate", "Kulfi", "Cookies & Cream"], options: [{ size: "1 Kg", price: 1299 }, { size: "3 Kg", price: 2799 }, { size: "5 Kg", price: 4199 }] },
@@ -753,7 +709,7 @@ const catalog = [
   { category: "gainer", name: "Scitron Mega Mass Gainer", desc: "Added Creatine & Muscle Recovery", img: "https://i.ibb.co/sJjstZh7/Gainer-Choc-1-K-Front-1200x.jpg", flavours: ["Belgian Chocolate", "Kesar Pista"], options: [{ size: "1 Kg", price: 1199 }, { size: "3 Kg", price: 2699 }, { size: "5 Kg", price: 4299 }] },
   { category: "gainer", name: "Bigmuscles Nutrition Real Mass Gainer", desc: "50g Protein • 1000 Calories", img: "https://i.ibb.co/sJjstZh7/Gainer-Choc-1-K-Front-1200x.jpg", flavours: ["Chocolate", "Strawberry Twist"], options: [{ size: "1 Kg", price: 999 }, { size: "3 Kg", price: 2299 }, { size: "5 Kg", price: 3499 }] },
 
-  // CREATINE MONOHYDRATE
+  // CREATINE MONOHYDRATE (10)
   { category: "creatine", name: "GNC Pro Performance Creatine", desc: "100% Micronized Creatine", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured", "Fruit Punch"], options: [{ size: "100 Gram", price: 549 }, { size: "250 Gram", price: 899 }, { size: "400 Gram", price: 1399 }] },
   { category: "creatine", name: "Muscletech Platinum 100% Creatine", desc: "HPLC-Tested Micronized Creatine", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 599 }, { size: "250 Gram", price: 949 }, { size: "400 Gram", price: 1499 }] },
   { category: "creatine", name: "MuscleBlaze Creatine Monohydrate", desc: "MB CreAbsorb Formula for Max Power", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured", "Tangy Orange"], options: [{ size: "100 Gram", price: 499 }, { size: "250 Gram", price: 849 }, { size: "400 Gram", price: 1299 }] },
@@ -765,23 +721,24 @@ const catalog = [
   { category: "creatine", name: "Fast&Up Creatine Monohydrate", desc: "Ultra Micronized for Quick Dissolve", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 449 }, { size: "250 Gram", price: 799 }] },
   { category: "creatine", name: "Scitron Pure Creatine Monohydrate", desc: "Boosts Strength & Lean Muscle", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 449 }, { size: "250 Gram", price: 749 }] },
 
-  // MULTIVITAMINS
+  // MULTIVITAMINS (10)
   { category: "multivitamin", name: "GNC Mega Men Sport Multivitamin", desc: "38+ Clinically Studied Nutrients", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 749 }, { size: "60 Tablets", price: 1299 }, { size: "90 Tablets", price: 1799 }] },
   { category: "multivitamin", name: "Muscletech Platinum Multivitamin", desc: "18 High Potency Vitamins & Minerals", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 699 }, { size: "60 Tablets", price: 1149 }, { size: "90 Tablets", price: 1599 }] },
   { category: "multivitamin", name: "MuscleBlaze Daily Multivitamin", desc: "Immunity Boosters + Joint Support", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 349 }, { size: "60 Tablets", price: 599 }, { size: "90 Tablets", price: 849 }] },
-  { category: "multivitamin", name: "ON Opti-Men Multivitamin", desc: "75+ Active Ingredients For Men", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 899 }, { size: "60 Tablets", price: 1599 }, { size: "90 Tablets", price: 2199 }] },
+  { category: "multivitamin", name: "ON Opti-Men Multivitamin", desc: "75+ Active Ingredients For Men", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 899 }, { size: "60 Tablets", price: 1599 }, { size: "2199 Tablets", price: 2199 }] },
   { category: "multivitamin", name: "Universal Nutrition Daily Formula", desc: "Advanced Micronutrient Support", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 599 }, { size: "60 Tablets", price: 999 }, { size: "100 Tablets", price: 1499 }] },
   { category: "multivitamin", name: "Himalayan Organics Multivitamin Men", desc: "Plant Based with Probiotics", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 449 }, { size: "60 Tablets", price: 799 }, { size: "90 Tablets", price: 1149 }] },
   { category: "multivitamin", name: "TrueBasics Multivit Sport", desc: "40 Nutrients with Ashwagandha", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 649 }, { size: "60 Tablets", price: 1099 }, { size: "90 Tablets", price: 1499 }] },
-  { category: "multivitamin", name: "HealthKart HK Vitals Multivitamin", desc: "Ginseng, Vitamin C, D3 & Zinc", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 299 }, { size: "60 Tablets", price: 499 }, { size: "90 Tablets", price: 699 }] },
+  { category: "multivitamin", name: "HealthKart HK Vitals Multivitamin", desc: "Ginseng, Vitamin C, D3 & Zinc", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 299 }, { size: "60 Tablets", price: 499 }, { size: "60 Tablets", price: 699 }] },
   { category: "multivitamin", name: "Carbamide Forte Multivitamin Men", desc: "43 Ingredients Daily Energy Support", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 349 }, { size: "60 Tablets", price: 549 }, { size: "90 Tablets", price: 749 }] },
-  { category: "multivitamin", name: "Centrum Men Daily Multivitamin", desc: "World's #1 Multivitamin Brand", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 399 }, { size: "50 Tablets", price: 599 }, { size: "90 Tablets", price: 949 }] }
-];
+  { category: "multivitamin", name: "Centrum Men Daily Multivitamin", desc: "World's #1 Multivitamin Brand", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 399 }, { size: "50 Tablets", price: 599 }, { size: "90 Tablets", price:       949 }] }
+];                                                                                                       
 
-let cart = [];
+    let cart = [];
 
 function renderCatalog() {
   const grid = document.getElementById("productGrid");
+  if (!grid) return;
   grid.innerHTML = "";
 
   catalog.forEach((item, index) => {
@@ -796,7 +753,7 @@ function renderCatalog() {
 
     card.innerHTML = `
       <div class="img-container">
-        <img src="${item.img}" alt="${item.name}" loading="lazy">
+        <img src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='https://i.ibb.co/fv0J0Lx/multivitamin.jpg'">
       </div>
       <h3>${item.name}</h3>
       <p class="desc">${item.desc}</p>
@@ -849,55 +806,12 @@ function searchSupplements() {
   });
 }
 
-// MULTI-ITEM CART
-function addToCartByIndex(index, btnElem) {
-  const product = catalog[index];
-  const card = btnElem.closest('.card');
-  const sizeSelect = card.querySelector('.size-select');
-  const flavourSelect = card.querySelector('.flavour-select');
-
-  const selectedSize = sizeSelect.options[sizeSelect.selectedIndex].getAttribute('data-size');
-  const selectedPrice = parseInt(sizeSelect.value);
-  const selectedFlavour = flavourSelect.value;
-
-  const cartItemId = `${index}_${selectedSize}_${selectedFlavour}`;
-  const existing = cart.find(item => item.id === cartItemId);
-
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({
-      id: cartItemId,
-      name: product.name,
-      size: selectedSize,
-      flavour: selectedFlavour,
-      price: selectedPrice,
-      qty: 1
-    });
-  }
-
-  updateCartUI();
-  showToast(`🛒 "${product.name}" Cart me add ho gaya!`);
-}
-
 function showToast(msg) {
   const t = document.getElementById("toast");
+  if (!t) return;
   t.innerHTML = msg;
   t.style.display = "block";
-  t.style.position = "fixed";
-  t.style.top = "20px";
-  t.style.left = "50%";
-  t.style.transform = "translateX(-50%)";
-  t.style.background = "#ffcc00";
-  t.style.color = "#000";
-  t.style.padding = "16px 24px";
-  t.style.fontSize = "16px";
-  t.style.fontWeight = "bold";
-  t.style.borderRadius = "14px";
-  t.style.zIndex = "9999999";
-  t.style.boxShadow = "0 6px 20px rgba(0,0,0,0.8)";
-  t.style.border = "2px solid #fff";
-  setTimeout(() => { t.style.display = "none"; }, 3000);
+  setTimeout(() => { t.style.display = "none"; }, 3500);
 }
 
 function addToCartByIndex(index, btnElem) {
@@ -927,12 +841,77 @@ function addToCartByIndex(index, btnElem) {
   }
 
   updateCartUI();
-  showToast(`🛒 <b>${product.name}</b> Cart me add ho gaya!<br><span style="font-size:13px; font-weight:normal;">Upar diye gaye Cart button se bill dekhein.</span>`);
+  showToast(`🛒 <b>${product.name}</b> Cart me add ho gaya!<br><span style="font-size:13px; font-weight:normal;">Upar Cart button par click karke final bill dekhein.</span>`);
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+
+  item.qty += delta;
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
+  }
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartCountBadge');
+  const list = document.getElementById('cartItemsList');
+  const subtotalEl = document.getElementById('billSubtotal');
+  const finalEl = document.getElementById('billFinal');
+
+  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  if (badge) badge.innerText = totalCount;
+
+  if (cart.length === 0) {
+    if (list) list.innerHTML = `<p style="text-align:center; color:#777; padding:20px 0;">Cart abhi khali hai! Products add karein.</p>`;
+    if (subtotalEl) subtotalEl.innerText = "₹0";
+    if (finalEl) finalEl.innerText = "₹0";
+    return;
+  }
+
+  if (list) {
+    list.innerHTML = "";
+    let totalAmount = 0;
+
+    cart.forEach(item => {
+      const itemTotal = item.price * item.qty;
+      totalAmount += itemTotal;
+
+      list.innerHTML += `
+        <div class="cart-item-row">
+          <div>
+            <div style="font-weight:bold; color:#fff;">${item.name}</div>
+            <div style="color:#aaa; font-size:11px;">${item.size} • ${item.flavour}</div>
+            <div style="color:#ffcc00; margin-top:2px;">₹${item.price} × ${item.qty} = ₹${itemTotal}</div>
+          </div>
+          <div class="cart-qty-ctrl">
+            <button onclick="changeQty('${item.id}', -1)">-</button>
+            <span>${item.qty}</span>
+            <button onclick="changeQty('${item.id}', 1)">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    if (subtotalEl) subtotalEl.innerText = "₹" + totalAmount.toLocaleString('en-IN');
+    if (finalEl) finalEl.innerText = "₹" + totalAmount.toLocaleString('en-IN');
+  }
+}
+
+function openCart() {
+  updateCartUI();
+  document.getElementById('cartModal').style.display = "flex";
+}
+
+function closeCart() {
+  document.getElementById('cartModal').style.display = "none";
 }
 
 function proceedToPay() {
   if (cart.length === 0) {
-    alert("Cart khali hai! Pehle product add karein.");
+    alert("Cart khali hai! Pehle supplements add karein.");
     return;
   }
 
@@ -964,12 +943,12 @@ function proceedToPay() {
 
   waMsg += "%0A*Total Bill:* ₹" + totalAmount + "%0A";
   waMsg += "*Payment Mode:* " + encodeURIComponent(selectedPayment) + "%0A";
-  waMsg += "*Status:* Order Placed";
+  waMsg += "*Status:* Order Initiated";
 
   const waOrderUrl = "https://wa.me/" + UPI_CONFIG.whatsappNumber + "?text=" + waMsg;
 
   if (selectedPayment === "Cash on Delivery") {
-    alert("Order Confirm! Total: ₹" + totalAmount);
+    alert("Order Confirmed!\nOrder ID: " + orderId + "\nTotal: ₹" + totalAmount + "\nHum aapse call par delivery verify karenge.");
     cart = [];
     updateCartUI();
     closeCart();
@@ -977,7 +956,7 @@ function proceedToPay() {
     return;
   }
 
-  // UPI Deep Links
+  // Direct Mobile UPI Trigger
   const baseUpiUrl = "upi://pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
   
   let targetUpiUrl = baseUpiUrl;
@@ -987,15 +966,12 @@ function proceedToPay() {
     targetUpiUrl = "phonepe://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
   }
 
-  // Direct trigger mobile UPI apps
   closeCart();
   
-  // WhatsApp par order notify karne ke liye background link
   setTimeout(() => {
     window.open(waOrderUrl, '_blank');
   }, 2000);
 
-  // Seedhe UPI Gateway par le jana
   window.location.href = targetUpiUrl;
 }
 
@@ -1082,6 +1058,5 @@ window.onload = function(){
 </script>
 </body>
 </html>
-
 
   
