@@ -48,15 +48,21 @@ color:#ccc;
 
 .head-btns{
 display:flex;
+align-items:center;
 gap:10px;
 }
 
-.call-btn, .whatsapp-btn{
+.call-btn, .whatsapp-btn, .cart-top-btn{
 padding:10px 16px;
 border-radius:10px;
 text-decoration:none;
 font-weight:bold;
 font-size:13px;
+border:none;
+cursor:pointer;
+display:inline-flex;
+align-items:center;
+gap:6px;
 }
 
 .call-btn{
@@ -67,6 +73,19 @@ color:black;
 .whatsapp-btn{
 background:#25D366;
 color:white;
+}
+
+.cart-top-btn{
+background:#007bff;
+color:white;
+}
+
+.cart-badge{
+background:#ff3333;
+color:white;
+font-size:11px;
+padding:2px 7px;
+border-radius:20px;
 }
 
 .menu{
@@ -222,6 +241,11 @@ cursor:pointer;
 font-size:14px;
 }
 
+.buy-cart{
+background:#007bff;
+color:white;
+}
+
 .buy-call{
 background:#ffcc00;
 color:black;
@@ -230,6 +254,199 @@ color:black;
 .buy-wa{
 background:#25D366;
 color:white;
+}
+
+/* CART & CHECKOUT MODAL */
+#cartModal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+z-index:99999;
+justify-content:center;
+align-items:center;
+padding:15px;
+backdrop-filter:blur(4px);
+}
+
+.cart-box{
+background:#181818;
+border:2px solid #ffcc00;
+border-radius:18px;
+max-width:480px;
+width:100%;
+padding:22px;
+color:white;
+max-height:90vh;
+overflow-y:auto;
+}
+
+.cart-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #333;
+padding-bottom:12px;
+margin-bottom:15px;
+}
+
+.cart-header h3{
+color:#ffcc00;
+font-size:20px;
+}
+
+.cart-close-btn{
+background:none;
+border:none;
+color:#aaa;
+font-size:26px;
+cursor:pointer;
+line-height:1;
+}
+
+.cart-items-list{
+max-height:220px;
+overflow-y:auto;
+margin-bottom:15px;
+padding-right:5px;
+}
+
+.cart-item-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px 0;
+border-bottom:1px solid #252525;
+font-size:13px;
+}
+
+.cart-qty-ctrl{
+display:flex;
+align-items:center;
+gap:8px;
+background:#252525;
+padding:4px 8px;
+border-radius:8px;
+}
+
+.cart-qty-ctrl button{
+background:none;
+border:none;
+color:#ffcc00;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+padding:0 4px;
+}
+
+.bill-card{
+background:#111;
+padding:14px;
+border-radius:12px;
+border:1px solid #292929;
+margin-bottom:15px;
+font-size:14px;
+}
+
+.bill-line{
+display:flex;
+justify-content:space-between;
+margin-bottom:6px;
+color:#ccc;
+}
+
+.bill-total{
+display:flex;
+justify-content:space-between;
+font-size:18px;
+font-weight:bold;
+color:#ffcc00;
+border-top:1px solid #333;
+padding-top:8px;
+margin-top:6px;
+}
+
+.pay-methods{
+margin-bottom:15px;
+}
+
+.pay-methods h4{
+font-size:13px;
+color:#bbb;
+margin-bottom:10px;
+}
+
+.pay-options{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+}
+
+.pay-options label{
+display:flex;
+align-items:center;
+gap:8px;
+background:#222;
+padding:10px;
+border-radius:10px;
+font-size:13px;
+cursor:pointer;
+border:1px solid #333;
+}
+
+.proceed-btn{
+width:100%;
+padding:14px;
+background:#25D366;
+color:white;
+border:none;
+border-radius:12px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+.proceed-btn:hover{
+background:#20ba5a;
+}
+
+/* QR MODAL (DESKTOP) */
+#qrModal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+z-index:999999;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+
+.qr-box{
+background:#181818;
+border:2px solid #ffcc00;
+border-radius:18px;
+max-width:360px;
+width:100%;
+padding:25px;
+text-align:center;
+}
+
+.qr-box img{
+width:220px;
+height:220px;
+margin:15px auto;
+background:white;
+padding:8px;
+border-radius:12px;
+display:block;
 }
 
 /* VERIFY SECTION */
@@ -264,6 +481,7 @@ font-weight:bold;
 font-size:16px;
 cursor:pointer;
 margin-top:14px;
+color:black;
 }
 
 #verification-overlay{
@@ -299,6 +517,7 @@ font-weight:bold;
 cursor:pointer;
 width:100%;
 margin-top:16px;
+color:black;
 }
 
 footer{
@@ -319,6 +538,7 @@ border-top:3px solid #ffcc00;
     <p>100% Authentic Supplements</p>
   </div>
   <div class="head-btns">
+    <button onclick="openCart()" class="cart-top-btn">🛒 Cart <span id="cartCountBadge" class="cart-badge">0</span></button>
     <a href="tel:9990954574" class="call-btn">📞 Call</a>
     <a href="https://wa.me/919990954574" class="whatsapp-btn">WhatsApp</a>
   </div>
@@ -345,6 +565,72 @@ border-top:3px solid #ffcc00;
 
 <div class="product-grid" id="productGrid"></div>
 
+<!-- CART MODAL -->
+<div id="cartModal">
+  <div class="cart-box">
+    <div class="cart-header">
+      <h3>🛒 Shopping Cart</h3>
+      <button class="cart-close-btn" onclick="closeCart()">&times;</button>
+    </div>
+
+    <div id="cartItemsList" class="cart-items-list"></div>
+
+    <div class="bill-card">
+      <div class="bill-line">
+        <span>Subtotal</span>
+        <span id="billSubtotal">₹0</span>
+      </div>
+      <div class="bill-line">
+        <span>Delivery</span>
+        <span style="color:#25D366; font-weight:bold;">FREE</span>
+      </div>
+      <div class="bill-total">
+        <span>Total Payable</span>
+        <span id="billFinal">₹0</span>
+      </div>
+    </div>
+
+    <div class="pay-methods">
+      <h4>Payment Option Chunein:</h4>
+      <div class="pay-options">
+        <label>
+          <input type="radio" name="payMethod" value="Navi UPI" checked>
+          <span>Navi UPI</span>
+        </label>
+        <label>
+          <input type="radio" name="payMethod" value="Google Pay">
+          <span>Google Pay</span>
+        </label>
+        <label>
+          <input type="radio" name="payMethod" value="PhonePe">
+          <span>PhonePe</span>
+        </label>
+        <label>
+          <input type="radio" name="payMethod" value="Cash on Delivery">
+          <span>Cash on Delivery</span>
+        </label>
+      </div>
+    </div>
+
+    <button onclick="proceedToPay()" class="proceed-btn">Proceed to Pay</button>
+  </div>
+</div>
+
+<!-- QR CODE SCANNER MODAL (FOR DESKTOP) -->
+<div id="qrModal">
+  <div class="qr-box">
+    <h3 style="color:#ffcc00; font-size:18px;">Scan & Pay</h3>
+    <p style="font-size:12px; color:#aaa; margin-top:4px;">GPay, PhonePe, Navi ya Paytm se scan karein</p>
+    <img id="qrDisplay" src="" alt="UPI QR">
+    <p style="font-size:16px; font-weight:bold; color:white;">Amount: <span id="qrAmountDisplay" style="color:#ffcc00;">₹0</span></p>
+    <p style="font-size:11px; color:#888; margin-top:4px; font-family:monospace;">UPI ID: 9990954574@nyes</p>
+    <div style="display:flex; gap:10px; margin-top:18px;">
+      <button onclick="paymentDone()" style="flex:1; padding:10px; background:#25D366; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Payment Done</button>
+      <button onclick="closeQrModal()" style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <section class="verify-section">
   <h2 style="color:#ffcc00; font-size:24px;">Verify Product</h2>
   <p style="color:#aaa; font-size:13px; margin-top:4px;">Original Scan Authenticity Check</p>
@@ -368,9 +654,14 @@ border-top:3px solid #ffcc00;
   <p>100% Guaranteed Authentic Products</p>
   <br>
   <a href="tel:9990954574" style="color:white; text-decoration:none; font-size:15px;">📞 9990954574</a>
-</footer>
+  </footer>
 
-<script>
+  <script>
+const UPI_CONFIG = {
+  vpa: "9990954574@nyes",
+  merchantName: "SAURABH SINGH"
+};
+
 const catalog = [
   // WHEY PROTEIN
   { category: "whey", name: "Labrada 100% Whey Protein", desc: "24g Protein • 5.2g BCAA", img: "https://i.ibb.co/ynbr1YCw/download-1.webp", flavours: ["Chocolate", "Vanilla", "Strawberry", "Cafe Brazil"], options: [{ size: "500 Gram", price: 1799 }, { size: "1 Kg", price: 3199 }, { size: "2 Kg", price: 5999 }, { size: "4 Kg", price: 11499 }] },
@@ -405,29 +696,31 @@ const catalog = [
   { category: "creatine", name: "Labrada Creatine Monohydrate", desc: "Pure Muscle Strength & Volume", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 499 }, { size: "250 Gram", price: 849 }, { size: "500 Gram", price: 1499 }] },
   { category: "creatine", name: "AS-IT-IS Nutrition Pure Creatine", desc: "Zero Filler • Fast ATP Regeneration", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 399 }, { size: "250 Gram", price: 699 }, { size: "500 Gram", price: 1199 }] },
   { category: "creatine", name: "Nutrabay Pure Creatine Monohydrate", desc: "Micronized 200 Mesh Powder", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured", "Fruit Punch"], options: [{ size: "100 Gram", price: 449 }, { size: "250 Gram", price: 799 }] },
-  { category: "creatine", name: "Fast&Up Creatine Monohydrate", desc: "Ultra Micronized for Quick Dissolve", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 449 }, { size: "250 Gram", price: 799 }] },
-  { category: "creatine", name: "Scitron Pure Creatine Monohydrate", desc: "Boosts Strength & Lean Muscle", img: "https://i.ibb.co/LjyCZMk/Artboard-1-copy.png", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 449 }, { size: "250 Gram", price: 749 }] },
+  { category: "creatine", name: "Fast&Up Creatine Monohydrate", desc: "Ultra Micronized for Quick Dissolve", img: "https://ibb.co/G4kH5Dn5", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 449 }, { size: "250 Gram", price: 799 }] },
+  { category: "creatine", name: "Scitron Pure Creatine Monohydrate", desc: "Boosts Strength & Lean Muscle", img: "https://ibb.co/xKDwQYLV", flavours: ["Unflavoured"], options: [{ size: "100 Gram", price: 449 }, { size: "250 Gram", price: 749 }] },
 
   // MULTIVITAMINS
   { category: "multivitamin", name: "GNC Mega Men Sport Multivitamin", desc: "38+ Clinically Studied Nutrients", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 749 }, { size: "60 Tablets", price: 1299 }, { size: "90 Tablets", price: 1799 }] },
-  { category: "multivitamin", name: "Muscletech Platinum Multivitamin", desc: "18 High Potency Vitamins & Minerals", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 699 }, { size: "60 Tablets", price: 1149 }, { size: "90 Tablets", price: 1599 }] },
-  { category: "multivitamin", name: "MuscleBlaze Daily Multivitamin", desc: "Immunity Boosters + Joint Support", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 349 }, { size: "60 Tablets", price: 599 }, { size: "90 Tablets", price: 849 }] },
-  { category: "multivitamin", name: "ON Opti-Men Multivitamin", desc: "75+ Active Ingredients For Men", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 899 }, { size: "60 Tablets", price: 1599 }, { size: "90 Tablets", price: 2199 }] },
-  { category: "multivitamin", name: "Universal Nutrition Daily Formula", desc: "Advanced Micronutrient Support", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 599 }, { size: "60 Tablets", price: 999 }, { size: "100 Tablets", price: 1499 }] },
-  { category: "multivitamin", name: "Himalayan Organics Multivitamin Men", desc: "Plant Based with Probiotics", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 449 }, { size: "60 Tablets", price: 799 }, { size: "90 Tablets", price: 1149 }] },
-  { category: "multivitamin", name: "TrueBasics Multivit Sport", desc: "40 Nutrients with Ashwagandha", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 649 }, { size: "60 Tablets", price: 1099 }, { size: "90 Tablets", price: 1499 }] },
+  { category: "multivitamin", name: "Muscletech Platinum Multivitamin", desc: "18 High Potency Vitamins & Minerals", img: "https://ibb.co/9kQmN7bZ", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 699 }, { size: "60 Tablets", price: 1149 }, { size: "90 Tablets", price: 1599 }] },
+  { category: "multivitamin", name: "MuscleBlaze Daily Multivitamin", desc: "Immunity Boosters + Joint Support", img: "https://ibb.co/KppgDVmH", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 349 }, { size: "60 Tablets", price: 599 }, { size: "90 Tablets", price: 849 }] },
+  { category: "multivitamin", name: "ON Opti-Men Multivitamin", desc: "75+ Active Ingredients For Men", img: "https://ibb.co/kVSwXqZh", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 899 }, { size: "60 Tablets", price: 1599 }, { size: "90 Tablets", price: 2199 }] },
+  { category: "multivitamin", name: "Universal Nutrition Daily Formula", desc: "Advanced Micronutrient Support", img: "https://ibb.co/20CSxC6v", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 599 }, { size: "60 Tablets", price: 999 }, { size: "100 Tablets", price: 1499 }] },
+  { category: "multivitamin", name: "Himalayan Organics Multivitamin Men", desc: "Plant Based with Probiotics", img: "https://ibb.co/vxcqWJss", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 449 }, { size: "60 Tablets", price: 799 }, { size: "90 Tablets", price: 1149 }] },
+  { category: "multivitamin", name: "TrueBasics Multivit Sport", desc: "40 Nutrients with Ashwagandha", img: "https://ibb.co/zTFb1trKp", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 649 }, { size: "60 Tablets", price: 1099 }, { size: "90 Tablets", price: 1499 }] },
   { category: "multivitamin", name: "HealthKart HK Vitals Multivitamin", desc: "Ginseng, Vitamin C, D3 & Zinc", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 299 }, { size: "60 Tablets", price: 499 }, { size: "90 Tablets", price: 699 }] },
-  { category: "multivitamin", name: "Carbamide Forte Multivitamin Men", desc: "43 Ingredients Daily Energy Support", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 349 }, { size: "60 Tablets", price: 549 }, { size: "90 Tablets", price: 749 }] },
-  { category: "multivitamin", name: "Centrum Men Daily Multivitamin", desc: "World's #1 Multivitamin Brand", img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 399 }, { size: "50 Tablets", price: 599 }, { size: "90 Tablets", price: 949 }] }
+  { category: "multivitamin", name: "Carbamide Forte Multivitamin Men", desc: "43 Ingredients Daily Energy Support", img: "https://ibb.co/VcytYbYx", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 349 }, { size: "60 Tablets", price: 549 }, { size: "90 Tablets", price: 749 }] },
+  { category: "multivitamin", name: "Centrum Men Daily Multivitamin", desc: "World's #1 Multivitamin Brand", img: "https://ibb.co/vxMkB833", flavours: ["Standard Tablet"], options: [{ size: "30 Tablets", price: 399 }, { size: "50 Tablets", price: 599 }, { size: "90 Tablets", price: 949 }] }
 ];
+
+let cart = [];
 
 function renderCatalog() {
   const grid = document.getElementById("productGrid");
   grid.innerHTML = "";
 
-  catalog.forEach(item => {
-    let sizeOptionsHtml = item.options.map(opt => `<option value="${opt.price}">${opt.size}</option>`).join("");
-    let flavourOptionsHtml = item.flavours.map(flv => `<option>${flv}</option>`).join("");
+  catalog.forEach((item, index) => {
+    let sizeOptionsHtml = item.options.map(opt => `<option value="${opt.price}" data-size="${opt.size}">${opt.size}</option>`).join("");
+    let flavourOptionsHtml = item.flavours.map(flv => `<option value="${flv}">${flv}</option>`).join("");
     let initialPrice = item.options[0].price;
 
     let card = document.createElement("div");
@@ -440,10 +733,11 @@ function renderCatalog() {
       <h3>${item.name}</h3>
       <p class="desc">${item.desc}</p>
       <div class="dropdown-grp">
-         <select onchange="updatePrice(this)">${sizeOptionsHtml}</select>
-        <select>${flavourOptionsHtml}</select>
+        <select class="size-select" onchange="updatePrice(this)">${sizeOptionsHtml}</select>
+        <select class="flavour-select">${flavourOptionsHtml}</select>
       </div>
       <div class="price">₹${initialPrice.toLocaleString('en-IN')}</div>
+      <button onclick="addToCartByIndex(${index}, this)" class="buy-btn buy-cart">🛒 Add to Cart</button>
       <a href="https://wa.me/919990954574" class="buy-btn buy-wa">WhatsApp Order</a>
       <a href="tel:9990954574" class="buy-btn buy-call">Call Now</a>
     `;
@@ -487,6 +781,149 @@ function searchSupplements() {
   });
 }
 
+// CART MANAGEMENT
+function addToCartByIndex(index, btnElem) {
+  const product = catalog[index];
+  const card = btnElem.closest('.card');
+  const sizeSelect = card.querySelector('.size-select');
+  const flavourSelect = card.querySelector('.flavour-select');
+
+  const selectedSize = sizeSelect.options[sizeSelect.selectedIndex].getAttribute('data-size');
+  const selectedPrice = parseInt(sizeSelect.value);
+  const selectedFlavour = flavourSelect.value;
+
+  const cartItemId = `${index}_${selectedSize}_${selectedFlavour}`;
+  const existing = cart.find(item => item.id === cartItemId);
+
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({
+      id: cartItemId,
+      name: product.name,
+      size: selectedSize,
+      flavour: selectedFlavour,
+      price: selectedPrice,
+      qty: 1
+    });
+  }
+
+  updateCartUI();
+  openCart();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+
+  item.qty += delta;
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
+  }
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartCountBadge');
+  const list = document.getElementById('cartItemsList');
+  const subtotalEl = document.getElementById('billSubtotal');
+  const finalEl = document.getElementById('billFinal');
+
+  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  badge.innerText = totalCount;
+
+  if (cart.length === 0) {
+    list.innerHTML = `<p style="text-align:center; color:#777; padding:20px 0;">Cart khali hai!</p>`;
+    subtotalEl.innerText = "₹0";
+    finalEl.innerText = "₹0";
+    return;
+  }
+
+  list.innerHTML = "";
+  let totalAmount = 0;
+
+  cart.forEach(item => {
+    const itemTotal = item.price * item.qty;
+    totalAmount += itemTotal;
+
+    list.innerHTML += `
+      <div class="cart-item-row">
+        <div>
+          <div style="font-weight:bold; color:#fff;">${item.name}</div>
+          <div style="color:#aaa; font-size:11px;">${item.size} • ${item.flavour}</div>
+          <div style="color:#ffcc00; margin-top:2px;">₹${item.price} × ${item.qty} = ₹${itemTotal}</div>
+        </div>
+        <div class="cart-qty-ctrl">
+          <button onclick="changeQty('${item.id}', -1)">-</button>
+          <span>${item.qty}</span>
+          <button onclick="changeQty('${item.id}', 1)">+</button>
+        </div>
+      </div>
+    `;
+  });
+
+  subtotalEl.innerText = "₹" + totalAmount.toLocaleString('en-IN');
+  finalEl.innerText = "₹" + totalAmount.toLocaleString('en-IN');
+}
+
+function openCart() {
+  document.getElementById('cartModal').style.display = "flex";
+}
+
+function closeCart() {
+  document.getElementById('cartModal').style.display = "none";
+}
+
+function proceedToPay() {
+  if (cart.length === 0) {
+    alert("Cart khali hai! Pehle supplements select karein.");
+    return;
+  }
+
+  const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const selectedPayment = document.querySelector('input[name="payMethod"]:checked').value;
+  const orderId = `ORD${Date.now().toString().slice(-6)}`;
+
+  if (selectedPayment === "Cash on Delivery") {
+    alert(`Order Placed Successfully!\nOrder ID: ${orderId}\nTotal: ₹${totalAmount}\nPayment Mode: Cash on Delivery\nHum aapse jald contact karenge!`);
+    cart = [];
+    updateCartUI();
+    closeCart();
+    return;
+  }
+
+  const baseUpiUrl = `upi://pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${totalAmount}&cu=INR&tn=${encodeURIComponent(orderId)}`;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    let appUrl = baseUpiUrl;
+    if (selectedPayment === "Google Pay") {
+      appUrl = `gpay://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${totalAmount}&cu=INR&tn=${encodeURIComponent(orderId)}`;
+    } else if (selectedPayment === "PhonePe") {
+      appUrl = `phonepe://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${totalAmount}&cu=INR&tn=${encodeURIComponent(orderId)}`;
+    }
+    window.location.href = appUrl;
+  } else {
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(baseUpiUrl)}`;
+    document.getElementById("qrDisplay").src = qrUrl;
+    document.getElementById("qrAmountDisplay").innerText = "₹" + totalAmount.toLocaleString('en-IN');
+    closeCart();
+    document.getElementById("qrModal").style.display = "flex";
+  }
+}
+
+function closeQrModal() {
+  document.getElementById("qrModal").style.display = "none";
+}
+
+function paymentDone() {
+  alert("Payment request send ho gayi hai! Order details confirm kar li gayi hain.");
+  cart = [];
+  updateCartUI();
+  closeQrModal();
+}
+
+// VERIFY SYSTEM
 const products = {
   "LBR-W701A":"LABRADA WHEY PROTEIN", "LBR-W702B":"LABRADA WHEY PROTEIN", "LBR-W703C":"LABRADA WHEY PROTEIN",
   "ULT-W501A":"ULTIMATE WHEY PROTEIN", "ULT-W502B":"ULTIMATE WHEY PROTEIN", "ULT-W503C":"ULTIMATE WHEY PROTEIN",
