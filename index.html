@@ -1048,12 +1048,8 @@ function closeVerifyPopup(){
 
 window.onload = function(){
   renderCatalog();
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
-  if(code){
-    document.getElementById("manualCodeInput").value = code;
-    verifyCode();
-  }
+};
+  
 };
 </script>
 </body>
