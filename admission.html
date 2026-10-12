@@ -66,7 +66,6 @@
     input:focus, select:focus {
       border-color: #ffcc00;
     }
-    /* DOB Pointer cursor */
     input[type="date"] {
       cursor: pointer;
     }
@@ -202,18 +201,18 @@
 
     <form id="admissionForm">
       <div class="form-group">
-        <label for="fullName">Full Name (पूरा नाम) *</label>
-        <input type="text" id="fullName" required placeholder="अपना नाम दर्ज करें">
+        <label for="fullName">Full Name (Poora Naam) *</label>
+        <input type="text" id="fullName" required placeholder="Apna naam darj karein">
       </div>
 
       <div class="form-group">
-        <label for="phone">Phone Number (मोबाइल नंबर) *</label>
-        <input type="tel" id="phone" required placeholder="10 अंकों का मोबाइल नंबर" pattern="[0-9]{10}">
+        <label for="phone">Phone Number (Mobile Number) *</label>
+        <input type="tel" id="phone" required placeholder="10 anko ka mobile number" pattern="[0-9]{10}">
       </div>
 
-      <!-- DOB INPUT: टच करते ही तुरंत पूरा कैलेंडर खुलेगा -->
+      <!-- DOB INPUT: Box par touch karte hi seedhe calendar khulega -->
       <div class="form-group">
-        <label for="dob">Date of Birth (जन्म तिथि) *</label>
+        <label for="dob">Date of Birth (Janam Tithi) *</label>
         <input 
           type="date" 
           id="dob" 
@@ -224,7 +223,7 @@
       </div>
 
       <div class="form-group">
-        <label for="plan">Membership Plan (प्लान चुनें) *</label>
+        <label for="plan">Membership Plan (Plan chunein) *</label>
         <select id="plan" required onchange="updateFee()">
           <option value="Student 1 Month" data-fee="300">Student 1 Month (₹300)</option>
           <option value="Student 3 Months" data-fee="900">Student 3 Months (₹900)</option>
@@ -236,12 +235,12 @@
       </div>
 
       <div class="form-group">
-        <label for="fee">Admission Fee (शुल्क)</label>
+        <label for="fee">Admission Fee (Shulk)</label>
         <input type="text" id="fee" value="₹300" readonly style="background: #1e1e1e; color: #25D366; font-weight: bold;">
       </div>
 
       <div class="form-group">
-        <label for="payMode">Payment Mode (भुगतान का तरीका) *</label>
+        <label for="payMode">Payment Mode (Bhugtan Ka Tareeka) *</label>
         <select id="payMode" required>
           <option value="UPI">UPI / Online</option>
           <option value="Cash at Counter">Cash at Gym Counter</option>
@@ -249,8 +248,8 @@
       </div>
 
       <div class="form-group">
-        <label for="referral">Referral / जिम में किसका रिफरेंस है?</label>
-        <input type="text" id="referral" placeholder="दोस्त का नाम या मोबाइल नंबर (वैकल्पिक)">
+        <label for="referral">Referral / Gym me kiska reference hai?</label>
+        <input type="text" id="referral" placeholder="Dost ka naam ya phone number (Optional)">
       </div>
 
       <button type="submit" class="btn-submit">Submit Admission</button>
@@ -261,7 +260,34 @@
     </div>
   </div>
 
-  <!-- ADMIN DATABASE MODAL -->
+  <!-- SUCCESS WELCOME MODAL POPUP -->
+  <div id="welcomeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; padding:15px; box-sizing:border-box;">
+    <div style="background:#111111; border:3px solid #ffcc00; border-radius:18px; max-width:420px; width:100%; padding:30px 20px; text-align:center; box-shadow:0 10px 40px rgba(255, 204, 0, 0.35); color:#ffffff;">
+      <div style="font-size:50px; margin-bottom:10px;">🏆</div>
+      <span style="background:#ffcc00; color:#000000; font-size:11px; font-weight:800; padding:4px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:1px;">
+        Official Member
+      </span>
+      <h2 style="color:#ffcc00; font-size:22px; margin:14px 0 6px 0; text-transform:uppercase; letter-spacing:0.5px;">
+        Welcome To 5 Brother's Fitness Club!
+      </h2>
+      <p style="color:#25D366; font-size:16px; font-weight:bold; margin:0 0 14px 0;">
+        Badhai ho, <span id="welcomeUserName"></span>! Aapka admission safal raha.
+      </p>
+      <div style="background:#1e1e1e; border:1px dashed #444; border-radius:10px; padding:12px; margin:15px 0;">
+        <div style="font-size:12px; color:#aaaaaa;">Aapki Membership ID:</div>
+        <div id="welcomeMemberId" style="color:#ffcc00; font-size:20px; font-weight:900; letter-spacing:2px; margin-top:4px;"></div>
+      </div>
+      <p style="font-size:13px; color:#cccccc; line-height:1.5; margin:0 0 20px 0;">
+        💪 <b>Get Ready To Transform!</b><br>
+        Diet guide aur workout schedule ke liye counter par sampark karein.
+      </p>
+      <button onclick="closeWelcomeModal()" style="background:#ffcc00; color:#000000; border:none; width:100%; padding:12px; border-radius:8px; font-weight:bold; font-size:15px; cursor:pointer; text-transform:uppercase;">
+        Done / Theek Hai
+      </button>
+    </div>
+  </div>
+
+  <!-- ADMIN DATABASE MODAL (DELETE AUR CLEAR ALL OPTION KE SATH) -->
   <div id="adminModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -290,7 +316,7 @@
             </tr>
           </thead>
           <tbody id="memberTableBody">
-            <!-- Data yahan render hoga -->
+            <!-- Data render hoga -->
           </tbody>
         </table>
       </div>
@@ -298,7 +324,6 @@
   </div>
 
   <script>
-    // Fee auto update based on plan selection
     function updateFee() {
       const planSelect = document.getElementById("plan");
       const selectedOption = planSelect.options[planSelect.selectedIndex];
@@ -306,14 +331,17 @@
       document.getElementById("fee").value = "₹" + fee;
     }
 
-    // Form Submit Handler
+    // Form Submit Handler (Welcome Card Show Karega)
     document.getElementById("admissionForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
+      const userName = document.getElementById("fullName").value.trim();
+      const memberId = "5BFC-" + Math.floor(10000 + Math.random() * 90000);
+
       const newMember = {
-        id: "5BFC-" + Math.floor(10000 + Math.random() * 90000),
+        id: memberId,
         date: new Date().toLocaleDateString('en-GB'),
-        name: document.getElementById("fullName").value.trim(),
+        name: userName,
         phone: document.getElementById("phone").value.trim(),
         dob: document.getElementById("dob").value,
         plan: document.getElementById("plan").value,
@@ -323,22 +351,30 @@
       };
 
       let members = JSON.parse(localStorage.getItem("gymMembers") || "[]");
-      members.unshift(newMember); // Naya form sabse upar add hoga
+      members.unshift(newMember);
       localStorage.setItem("gymMembers", JSON.stringify(members));
 
-      alert("✅ Admission Form Successfully Submitted!\nMember ID: " + newMember.id);
+      // Welcome Modal Display
+      document.getElementById("welcomeUserName").innerText = userName;
+      document.getElementById("welcomeMemberId").innerText = memberId;
+      document.getElementById("welcomeModal").style.display = "flex";
+
       document.getElementById("admissionForm").reset();
       updateFee();
     });
 
-    // Admin Modal Password Check
+    function closeWelcomeModal() {
+      document.getElementById("welcomeModal").style.display = "none";
+    }
+
+    // Admin Modal Password Check (Password: 1234)
     function openAdminModal() {
-      const pwd = prompt("कृपया एडमिन पासवर्ड दर्ज करें:");
+      const pwd = prompt("Kripya Admin Password darj karein:");
       if (pwd === "1234") {
         document.getElementById("adminModal").style.display = "block";
         loadAdminTable();
       } else if (pwd !== null) {
-        alert("गलत पासवर्ड!");
+        alert("Galat Password!");
       }
     }
 
@@ -346,14 +382,14 @@
       document.getElementById("adminModal").style.display = "none";
     }
 
-    // Load Members in Table
+    // Admin Table Loader
     function loadAdminTable() {
       const tbody = document.getElementById("memberTableBody");
       tbody.innerHTML = "";
       let members = JSON.parse(localStorage.getItem("gymMembers") || "[]");
 
       if (members.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 20px; color:#777;">कोई एडमिशन रिकॉर्ड नहीं मिला।</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 20px; color:#777;">Koi record nahi mila.</td></tr>`;
         return;
       }
 
@@ -376,9 +412,9 @@
       });
     }
 
-    // Delete Single Member Record
+    // Single Record Delete
     function deleteMember(index) {
-      if (confirm("क्या आप वाकई इस रिकॉर्ड को डिलीट करना चाहते हैं?")) {
+      if (confirm("Kya aap sach me ye record delete karna chahte hain?")) {
         let members = JSON.parse(localStorage.getItem("gymMembers") || "[]");
         members.splice(index, 1);
         localStorage.setItem("gymMembers", JSON.stringify(members));
@@ -388,17 +424,17 @@
 
     // Clear All Test Records
     function clearAllMembers() {
-      if (confirm("⚠️ क्या आप पूरा डेटाबेस खाली करना चाहते हैं? सारे टेस्ट रिकॉर्ड हमेशा के लिए डिलीट हो जाएंगे!")) {
+      if (confirm("⚠️ Kya aap poora test database khali karna chahte hain?")) {
         localStorage.removeItem("gymMembers");
         loadAdminTable();
       }
     }
 
-    // Download CSV / Excel
+    // Download CSV
     function downloadCSV() {
       let members = JSON.parse(localStorage.getItem("gymMembers") || "[]");
       if (members.length === 0) {
-        alert("डाउनलोड करने के लिए कोई डेटा नहीं है!");
+        alert("Download karne ke liye koi data nahi hai!");
         return;
       }
 
@@ -416,5 +452,5 @@
     }
   </script>
 </body>
-  </html>
-  
+          </html>
+                                                      
