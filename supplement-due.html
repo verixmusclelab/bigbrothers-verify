@@ -7,738 +7,295 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
-body{
-  background:#0a0a0a;color:#fff;padding:12px;
-  display:flex;flex-direction:column;align-items:center;
-  min-height:100vh;position:relative;
-}
-body::before{
-  content:"5 BROTHER'S FITNESS CLUB";position:fixed;top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(-30deg);font-size:36px;font-weight:900;
-  color:rgba(255,204,0,0.03);white-space:nowrap;pointer-events:none;z-index:0;
-}
-.main-card{
-  background:radial-gradient(circle at top, #1a1705 0%, #0d0d0d 80%);
-  border:2.5px solid #ffcc00;border-radius:20px;max-width:540px;width:100%;
-  padding:18px 14px;box-shadow:0 0 35px rgba(255,204,0,0.22);position:relative;z-index:1;margin-bottom:20px;
-}
+body{background:#0a0a0a;color:#fff;padding:12px;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+.main-card{background:radial-gradient(circle at top, #1a1705 0%, #0d0d0d 80%);border:2px solid #ffcc00;border-radius:18px;max-width:520px;width:100%;padding:16px;box-shadow:0 0 25px rgba(255,204,0,0.18);margin-bottom:20px;}
 .header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;}
-.header h1{color:#ffcc00;font-size:20px;text-transform:uppercase;letter-spacing:1px;}
-.tagline{
-  color:#e6c300;font-size:11px;font-weight:700;margin-top:4px;
-  background:rgba(255,204,0,0.1);display:inline-block;padding:3px 8px;border-radius:12px;border:1px solid rgba(255,204,0,0.25);
-}
-.sub-loc{color:#aaa;font-size:10px;margin-top:4px;}
-.step-bar{display:flex;justify-content:space-between;margin-bottom:14px;position:relative;}
-.step-dot{flex:1;text-align:center;font-size:11px;font-weight:bold;color:#666;padding-bottom:6px;border-bottom:3px solid #333;transition:0.3s;}
-.step-dot.active{color:#ffcc00;border-bottom-color:#ffcc00;}
-.mode-container{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;}
-.mode-btn{background:#1a1a1a;color:#bbb;border:1.5px solid #444;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:bold;cursor:pointer;text-align:center;transition:0.2s;}
-.mode-btn.active{background:#ffcc00;color:#000;border-color:#ffcc00;box-shadow:0 0 10px rgba(255,204,0,0.4);}
-.step-page{display:none;}
-.step-page.active{display:block;}
-.field-group{margin-bottom:11px;position:relative;}
-label{display:block;font-size:12px;color:#eee;margin-bottom:4px;font-weight:600;}
+.header h1{color:#ffcc00;font-size:19px;letter-spacing:1px;}
+.tagline{color:#e6c300;font-size:10px;font-weight:700;margin-top:4px;background:rgba(255,204,0,0.1);display:inline-block;padding:2px 8px;border-radius:10px;}
+.tab-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;}
+.tab-btn{background:#1a1a1a;color:#bbb;border:1.5px solid #444;padding:10px 4px;border-radius:10px;font-size:11px;font-weight:bold;cursor:pointer;text-align:center;}
+.tab-btn.active{background:#ffcc00;color:#000;border-color:#ffcc00;box-shadow:0 0 10px rgba(255,204,0,0.4);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.field-group{margin-bottom:10px;position:relative;}
+label{display:block;font-size:11px;color:#ddd;margin-bottom:3px;font-weight:600;}
 label span{color:#ff3333;}
-input, select{width:100%;background:#1b1b1b;border:1.5px solid #444;color:#fff;padding:10px;border-radius:9px;font-size:13px;outline:none;}
+input, select{width:100%;background:#181818;border:1.5px solid #444;color:#fff;padding:9px;border-radius:8px;font-size:12px;outline:none;}
 input:focus, select:focus{border-color:#ffcc00;background:#141414;}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-#searchResults{
-  position:absolute;top:100%;left:0;right:0;background:#181818;border:1.5px solid #ffcc00;
-  border-radius:9px;max-height:190px;overflow-y:auto;z-index:999999;display:none;margin-top:2px;box-shadow:0 6px 20px rgba(0,0,0,0.8);
-}
-.search-item{padding:9px 12px;border-bottom:1px solid #333;cursor:pointer;font-size:12px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+#searchResults{position:absolute;top:100%;left:0;right:0;background:#181818;border:1.5px solid #ffcc00;border-radius:8px;max-height:180px;overflow-y:auto;z-index:9999;display:none;margin-top:2px;}
+.search-item{padding:8px 10px;border-bottom:1px solid #333;cursor:pointer;font-size:11px;}
 .search-item:hover{background:#2a2600;color:#ffcc00;}
-.search-item small{display:block;color:#aaa;font-size:10px;margin-top:2px;}
-.box-panel{background:#141414;border:1.5px solid #333;border-radius:12px;padding:12px;margin-bottom:12px;}
-.box-title{font-size:12px;font-weight:bold;color:#ffcc00;margin-bottom:8px;}
-.cat-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;}
-.cat-pill{background:#222;color:#bbb;border:1px solid #444;padding:6px 12px;border-radius:16px;font-size:11px;font-weight:bold;white-space:nowrap;cursor:pointer;}
-.cat-pill.active{background:#ffcc00;color:#000;border-color:#ffcc00;}
-#prodListContainer{display:grid;gap:6px;max-height:200px;overflow-y:auto;}
-.prod-card{background:#1a1a1a;border:1.5px solid #333;border-radius:9px;padding:9px;cursor:pointer;}
-.prod-card:hover, .prod-card.selected{border-color:#ffcc00;background:#262200;}
-.prod-card-top{display:flex;justify-content:space-between;align-items:flex-start;}
-.prod-card h4{font-size:12px;color:#fff;}
-.prod-badge{font-size:10px;font-weight:bold;padding:2px 5px;border-radius:5px;}
-.badge-gold{background:#ffcc00;color:#000;}
-.badge-hot{background:#e50914;color:#fff;}
-.badge-off{background:#333;color:#00ff99;border:1px solid #00ff99;}
-.prod-reviews{font-size:10px;color:#ffcc00;margin-top:2px;}
-.live-compare-box{background:#111;border:1.5px dashed #ffcc00;border-radius:9px;padding:10px;margin-top:8px;}
-.compare-btns{display:flex;gap:6px;margin-top:6px;}
-.btn-flip, .btn-hk{flex:1;color:#fff;border:none;padding:8px;border-radius:6px;font-size:10px;font-weight:bold;cursor:pointer;text-align:center;text-decoration:none;}
-.btn-flip{background:#2874f0;}
-.btn-hk{background:#ff6f00;}
-.indian-reason-box{background:rgba(0,255,153,0.06);border:1.5px solid #00ff99;border-radius:8px;padding:9px;color:#fff;font-size:11px;line-height:1.45;}
-.nav-btns{display:flex;gap:8px;margin-top:14px;}
-.btn-prev{flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:9px;font-weight:bold;cursor:pointer;}
-.btn-next{flex:2;background:#ffcc00;color:#000;border:none;padding:12px;border-radius:9px;font-weight:bold;cursor:pointer;box-shadow:0 3px 12px rgba(255,204,0,0.3);}
-.btn-submit{width:100%;background:#25D366;color:#fff;border:none;padding:13px;border-radius:9px;font-weight:bold;font-size:14px;cursor:pointer;box-shadow:0 4px 15px rgba(37,211,102,0.4);margin-top:10px;}
-.balance-box{background:#330808;border:1.5px solid #ff3333;border-radius:9px;padding:9px;text-align:center;margin-top:8px;}
-.balance-box b{color:#ff4d4d;font-size:15px;}
-#receiptModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9999999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
-.receipt-wrapper{max-width:430px;width:100%;margin-top:10px;margin-bottom:20px;}
-.receipt-card{background:#ffffff;color:#000;border-radius:12px;padding:15px;margin-bottom:10px;box-shadow:0 8px 30px rgba(0,0,0,0.8);}
-.receipt-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:8px;margin-bottom:8px;}
-.r-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;border-bottom:1px dotted #ccc;padding-bottom:2px;}
-.page2-alert{background:#fff2f2;border:2.5px solid #d9534f;border-radius:10px;padding:12px;color:#000;}
-.penalty-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px;}
-.penalty-table th, .penalty-table td{border:1px solid #d9534f;padding:5px;text-align:center;}
-.penalty-table th{background:#ffdada;color:#a00;font-weight:bold;}
+.search-item small{display:block;color:#888;font-size:9px;}
+.box-panel{background:#141414;border:1.5px solid #333;border-radius:10px;padding:11px;margin-bottom:11px;}
+.box-title{font-size:11px;font-weight:bold;color:#ffcc00;margin-bottom:8px;}
+.btn-submit{width:100%;background:#25D366;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:bold;font-size:13px;cursor:pointer;margin-top:10px;}
+#receiptModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:99999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
+.receipt-wrapper{max-width:420px;width:100%;margin:15px auto;}
+.receipt-card{background:#fff;color:#000;border-radius:12px;padding:14px;margin-bottom:10px;}
+.receipt-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:6px;margin-bottom:6px;}
+.r-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;border-bottom:1px dotted #ccc;padding-bottom:2px;}
+.penalty-table{width:100%;border-collapse:collapse;margin:6px 0;font-size:10px;}
+.penalty-table th, .penalty-table td{border:1px solid #d9534f;padding:4px;text-align:center;}
 .action-btns{display:flex;gap:6px;margin-top:8px;}
-.dl-btn{flex:1;background:#000;color:#ffcc00;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
-.wa-btn{flex:1;background:#25D366;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
-.sms-btn{flex:1;background:#007bff;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
+.dl-btn{flex:1;background:#000;color:#ffcc00;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
+.wa-btn{flex:1;background:#25D366;color:#fff;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
+.sms-btn{flex:1;background:#007bff;color:#fff;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
 </style>
 </head>
 <body>
 
 <div class="main-card">
   <div class="header">
-    <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px; display:inline-block; margin-bottom:4px;">OFFICIAL DESK PORTAL</div>
+    <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">OFFICIAL DESK PORTAL</div>
     <h1>5 Brother's Fitness Club</h1>
-    <div class="tagline">"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।"</div>
-    <div class="sub-loc">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259, 9990954574</div>
+    <div class="tagline">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</div>
   </div>
 
-  <div class="step-bar">
-    <div class="step-dot active" id="dot1">1. मोड व विवरण</div>
-    <div class="step-dot" id="dot2">2. फीस / सप्लीमेंट</div>
-    <div class="step-dot" id="dot3">3. भुगतान व बिल</div>
+  <div class="tab-nav">
+    <button type="button" class="tab-btn active" id="tabBtnFee" onclick="switchMainTab('fee')">🏋️ जिम फीस</button>
+    <button type="button" class="tab-btn" id="tabBtnSupp" onclick="switchMainTab('supp')">💊 सप्लीमेंट</button>
+    <button type="button" class="tab-btn" id="tabBtnReg" onclick="switchMainTab('reg')">📋 रजिस्टर / रिकॉर्ड</button>
   </div>
 
-  <form id="khataForm" onsubmit="generateKhataBill(event)">
-    <div class="step-page active" id="stepPage1">
-      <div class="mode-container">
-        <button type="button" class="mode-btn" id="btnModeFee" onclick="setMode('fee')">🏋️ Gym Fees Only</button>
-        <button type="button" class="mode-btn" id="btnModeSupp" onclick="setMode('supp')">💊 Only Supplement</button>
-        <button type="button" class="mode-btn active" id="btnModeBoth" onclick="setMode('both')">🏋️+💊 Fees + Supp</button>
-      </div>
-
-      <div class="field-group" id="searchBoxGroup">
+  <!-- TAB 1: GYM FEES -->
+  <div class="tab-content active" id="tabFee">
+    <form id="feeOnlyForm" onsubmit="handleFeeSubmit(event)">
+      <div class="field-group">
         <label>🔍 सदस्य खोजें (Live Auto-fill)</label>
-        <input type="text" id="memberSearch" autocomplete="off" placeholder="नाम या मोबाइल लिखें..." oninput="searchMembers(this.value)">
+        <input type="text" id="feeSearch" autocomplete="off" placeholder="नाम या मोबाइल लिखें..." oninput="searchFeeMembers(this.value)">
         <div id="searchResults"></div>
       </div>
+      <div class="row">
+        <div class="field-group">
+          <label>सदस्य का नाम <span>*</span></label>
+          <input type="text" id="feeName" required placeholder="पूरा नाम">
+        </div>
+        <div class="field-group">
+          <label>पिता का नाम</label>
+          <input type="text" id="feeFather" placeholder="पिता का नाम">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field-group">
+          <label>मोबाइल नंबर <span>*</span></label>
+          <input type="tel" id="feePhone" required placeholder="10 अंक मोबाइल">
+        </div>
+        <div class="field-group">
+          <label>जॉइनिंग / रिन्यूअल तिथि</label>
+          <input type="date" id="feeJoinDate" onclick="this.showPicker()">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field-group">
+          <label>सदस्य प्रकार</label>
+          <select id="feeMemberType" onchange="calcFeeDiscount()">
+            <option value="student">विद्यार्थी (₹300)</option>
+            <option value="working" selected>रेगुलर (₹500)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>जमा फीस (₹) <span>*</span></label>
+          <input type="number" id="feeAmt" value="500" min="0">
+        </div>
+      </div>
 
+      <!-- Referral System -->
+      <div class="box-panel" style="border:1.5px dashed #ffcc00;background:rgba(255,204,0,0.04);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <b style="font-size:11px;color:#ffcc00;">🤝 रेफरल छूट (-₹100 प्रति सदस्य):</b>
+          <button type="button" onclick="toggleRefForm()" style="background:#ffcc00;color:#000;border:none;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:bold;cursor:pointer;">+ नया भाई जोड़ें</button>
+        </div>
+
+        <div id="refAddBox" style="display:none;background:#202020;padding:8px;border-radius:6px;margin-bottom:8px;border:1px solid #444;">
+          <div class="row">
+            <input type="text" id="mRefName" placeholder="रेफरल का नाम" style="padding:6px;font-size:11px;">
+            <input type="tel" id="mRefPhone" placeholder="रेफरल मोबाइल" style="padding:6px;font-size:11px;">
+          </div>
+          <div class="row" style="margin-top:6px;">
+            <input type="date" id="mRefDate" style="padding:5px;font-size:11px;" onclick="this.showPicker()">
+            <select id="mRefStatus" style="padding:5px;font-size:11px;">
+              <option value="Paid">Paid (फीस जमा)</option>
+              <option value="Unpaid">Unpaid (बाकी है)</option>
+            </select>
+          </div>
+          <button type="button" onclick="saveManualReferral()" style="background:#00ff99;color:#000;border:none;padding:6px;border-radius:4px;font-weight:bold;width:100%;margin-top:6px;font-size:10px;cursor:pointer;">सेव करें व छूट जोड़ें</button>
+        </div>
+
+        <div id="refTagsArea" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
+        <div id="refDiscountMsg" style="font-size:10px;color:#00ff99;font-weight:bold;margin-top:6px;display:none;"></div>
+      </div>
+
+      <button type="submit" class="btn-submit">✅ फीस रसीद बनाएं व सेव करें</button>
+    </form>
+  </div>
+
+  <!-- TAB 2: SUPPLEMENTS -->
+  <div class="tab-content" id="tabSupp">
+    <form id="suppOnlyForm" onsubmit="handleSuppSubmit(event)">
       <div class="row">
         <div class="field-group">
           <label>ग्राहक का नाम <span>*</span></label>
-          <input type="text" id="mName" placeholder="पूरा नाम">
+          <input type="text" id="sCustName" required placeholder="ग्राहक का नाम">
         </div>
-        <div class="field-group" id="fatherGroup">
-          <label>पिता का नाम</label>
-          <input type="text" id="mFather" placeholder="पिता का नाम">
-        </div>
-      </div>
-
-      <div id="friendGroup" style="display:none; background:rgba(255,204,0,0.06); border:1px dashed #ffcc00; padding:10px; border-radius:10px; margin-bottom:12px;">
-        <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">🤝 Guarantor / दोस्त की जानकारी (उधारी हेतु अनिवार्य)</div>
-        <div class="row">
-          <div class="field-group" style="margin-bottom:0;">
-            <label>दोस्त का नाम <span>*</span></label>
-            <input type="text" id="mFriendName" placeholder="दोस्त का नाम">
-          </div>
-          <div class="field-group" style="margin-bottom:0;">
-            <label>दोस्त का मोबाइल <span>*</span></label>
-            <input type="tel" id="mFriendPhone" placeholder="10 अंक मोबाइल">
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
         <div class="field-group">
           <label>ग्राहक मोबाइल <span>*</span></label>
-          <input type="tel" id="mPhone" placeholder="10 अंक मोबाइल">
-        </div>
-        <div class="field-group" id="joinDateGroup">
-          <label>जॉइनिंग / रिन्यूअल तिथि</label>
-          <input type="date" id="mJoinDate" onclick="this.showPicker()">
+          <input type="tel" id="sCustPhone" required placeholder="10 अंक मोबाइल">
         </div>
       </div>
-
-      <div class="nav-btns">
-        <button type="button" class="btn-next" onclick="goToStep(2)">अगला स्टेप : चयन करें ➡️</button>
-      </div>
-    </div>
-
-    <div class="step-page" id="stepPage2">
-      <div class="box-panel" id="gymFeeSection">
-        <div class="box-title">🏋️ जिम मासिक फीस विवरण</div>
+      <div class="box-panel" style="background:rgba(255,204,0,0.05);border-color:#ffcc00;">
+        <b style="font-size:10px;color:#ffcc00;display:block;margin-bottom:4px;">उधारी गारंटर (दोस्त की जानकारी):</b>
         <div class="row">
-          <div class="field-group" style="margin-bottom:0;">
-            <label>सदस्य प्रकार <span>*</span></label>
-            <select id="memberType" onchange="handleMemberTypeChange()">
-              <option value="student">विद्यार्थी (Student) - ₹300 Fixed</option>
-              <option value="working" selected>वर्किंग / सामान्य (Regular) - ₹500</option>
-            </select>
-          </div>
-          <div class="field-group" style="margin-bottom:0;">
-            <label>जमा फीस (₹) <span>*</span></label>
-            <input type="number" id="gymFee" value="500" min="0">
-          </div>
-        </div>
-
-        <div id="referralBox" style="background:rgba(255,204,0,0.06); border:1.5px dashed #ffcc00; border-radius:10px; padding:11px; margin-top:10px;">
-          <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:4px;">🤝 सदस्य रेफरल छूट (-₹100 प्रति मेंबर):</div>
-          <div style="font-size:10px; color:#aaa; margin-bottom:8px;">पुराने भाइयों को चुनें या नया भाई जोड़ें:</div>
-          
-          <div style="display:flex; gap:6px;">
-            <select id="refMemberSelect" onchange="addExistingReferredMember(this.value)" style="flex:1; padding:8px; border-radius:6px; background:#1b1b1b; color:#fff; border:1px solid #444; font-size:11px;">
-              <option value="">-- पुराने सदस्यों में से चुनें --</option>
-            </select>
-            <button type="button" onclick="openNewRefModal()" style="background:#ffcc00; color:#000; border:none; padding:8px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">+ नया जोड़ें</button>
-          </div>
-
-          <div id="newRefMemberForm" style="display:none; background:#181818; border:1px solid #ffcc00; border-radius:8px; padding:10px; margin-top:10px;">
-            <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:8px;">➕ नए रेफरल भाई का विवरण:</div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-              <div>
-                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">रेफरल का नाम *</label>
-                <input type="text" id="newRefName" placeholder="नाम लिखें" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:6px; border-radius:4px; font-size:11px;">
-              </div>
-              <div>
-                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">रेफरल मोबाइल *</label>
-                <input type="tel" id="newRefPhone" placeholder="10 अंक मोबाइल" maxlength="10" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:6px; border-radius:4px; font-size:11px;">
-              </div>
-              <div>
-                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">जॉइनिंग तारीख *</label>
-                <input type="date" id="newRefJoinDate" onclick="this.showPicker()" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
-              </div>
-              <div>
-                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">फीस स्थिति *</label>
-                <select id="newRefFeeStatus" onchange="toggleRefPromiseDate(this.value)" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
-                  <option value="Paid">Paid (जमा है)</option>
-                  <option value="Unpaid">Unpaid (बाकी है)</option>
-                </select>
-              </div>
-            </div>
-            
-            <div id="refPromiseBox" style="display:none; margin-top:8px;">
-              <label style="font-size:9px; color:#ff9900; display:block; margin-bottom:2px;">फीस कब देगा (वादा तारीख):</label>
-              <input type="date" id="newRefPromiseDate" onclick="this.showPicker()" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #ff9900; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
-            </div>
-
-            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px;">
-              <button type="button" onclick="closeNewRefModal()" style="background:#333; color:#ccc; border:none; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer;">रद्द करें</button>
-              <button type="button" onclick="saveAndAddManualRef()" style="background:#00ff99; color:#000; border:none; padding:5px 12px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer;">सेव और जोड़ें</button>
-            </div>
-          </div>
-
-          <div id="refTagsContainer" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;"></div>
-          <div id="refDiscountAlert" style="font-size:11px; color:#00ff99; font-weight:bold; margin-top:8px; display:none;"></div>
+          <input type="text" id="sFriendName" placeholder="दोस्त का नाम" style="padding:6px;font-size:11px;">
+          <input type="tel" id="sFriendPhone" placeholder="दोस्त का मोबाइल" style="padding:6px;font-size:11px;">
         </div>
       </div>
 
-      <div class="box-panel" id="suppSection">
-        <div class="box-title">💊 सप्लीमेंट चयन (Catalog)</div>
-        <div class="cat-scroll">
-          <button type="button" class="cat-pill active" onclick="switchCategory('gainer', this)">Mass Gainer</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('whey', this)">Whey Protein</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('creatine', this)">Creatine</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('multivitamin', this)">Multivitamin</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('preworkout', this)">Pre-Workout</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('fishoil', this)">Fish Oil</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('peanut', this)">Peanut Butter</button>
-        </div>
-
-        <div id="prodListContainer"></div>
-
-        <div class="live-compare-box" id="compareBox">
-          <div style="font-size:11px; color:#ffcc00; font-weight:bold;" id="compareTitle">🌐 Market Analysis:</div>
-          <div id="compareActionArea" style="margin-top:4px;"></div>
-        </div>
-
-        <div class="field-group" style="margin-top:10px; margin-bottom:0;">
-          <label>वजन / साइज चुनें <span>*</span></label>
-          <select id="sizeSelect" onchange="calcKhata()">
-            <option value="">-- पहले प्रोडक्ट चुनें --</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="nav-btns">
-        <button type="button" class="btn-prev" onclick="goToStep(1)">⬅️ वापस</button>
-        <button type="button" class="btn-next" onclick="goToStep(3)">अगला स्टेप : पेमेंट ➡️</button>
-      </div>
-    </div>
-
-    <div class="step-page" id="stepPage3">
       <div class="box-panel">
-        <div class="box-title">💰 पेमेंट व उधारी हिसाब (Final Clearance)</div>
-
-        <div id="suppPaymentFields">
-          <div class="row">
-            <div class="field-group">
-              <label>सप्लीमेंट तय कीमत (₹) <span>*</span></label>
-              <input type="number" id="prodPrice" placeholder="जैसे 1500" min="0" oninput="calcKhata()">
-            </div>
-            <div class="field-group">
-              <label>नगद जमा राशि (₹) <span>*</span></label>
-              <input type="number" id="cashPaid" value="0" min="0" oninput="calcKhata()">
-            </div>
-          </div>
-
-          <div class="field-group">
-            <label>वादा तारीख (Salary Clearance Date) <span>*</span></label>
-            <input type="date" id="promisedDate" onclick="this.showPicker()">
-          </div>
-
-          <div class="balance-box">
-            सप्लीमेंट बकाया राशि: <b id="dueDisplay">₹0</b>
-          </div>
+        <label>सप्लीमेंट कैटेगरी चुनें</label>
+        <select id="sCatSelect" onchange="populateSuppDropdown(this.value)">
+          <option value="gainer">Mass Gainer (मास गेनर)</option>
+          <option value="whey">Whey Protein (व्हे प्रोटीन)</option>
+          <option value="creatine">Creatine (क्रीएटीन)</option>
+          <option value="multivitamin">Multivitamin / Fish Oil</option>
+          <option value="preworkout">Pre-Workout</option>
+        </select>
+        <div class="field-group" style="margin-top:8px;">
+          <label>ब्रांड / प्रोडक्ट चुनें <span>*</span></label>
+          <select id="sProdSelect" onchange="populateSizes(this.value)"></select>
         </div>
-
-        <div id="feeSummaryOnly" style="display:none; text-align:center; padding:10px; background:#1b1b1b; border-radius:8px;">
-          <div style="font-size:12px; color:#aaa;">जिम सदस्यता शुल्क:</div>
-          <div style="font-size:20px; font-weight:bold; color:#00ff99; margin-top:4px;" id="gymFeeSummaryDisp">₹500</div>
-        </div>
-      </div>
-
-      <div class="nav-btns">
-        <button type="button" class="btn-prev" onclick="goToStep(2)">⬅️ वापस</button>
-      </div>
-      <button type="submit" class="btn-submit">📑 Generate 2-Page Official Bill Slip</button>
-    </div>
-  </form>
-</div>
-
-<!-- KHATA REGISTER / ADMISSION STYLE DASHBOARD -->
-<div class="main-card" style="border-color:#00ff99;">
-  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px dashed #00ff99; padding-bottom:8px; margin-bottom:10px;">
-    <h2 style="font-size:15px; color:#00ff99;">📋 फीस व उधारी रजिस्टर (Admin Records)</h2>
-    <button type="button" onclick="exportToExcelCSV()" style="background:#00ff99; color:#000; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">📥 Excel (CSV) Download</button>
-  </div>
-
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-    <input type="text" id="regSearch" placeholder="🔍 नाम या मोबाइल खोजें..." oninput="renderKhataTable()" style="padding:7px; font-size:11px;">
-    <select id="regFilterStatus" onchange="renderKhataTable()" style="padding:7px; font-size:11px;">
-      <option value="ALL">सभी रिकॉर्ड (All Records)</option>
-      <option value="PAID">✅ केवल फीस जमा (Paid)</option>
-      <option value="DUE">🔴 केवल बकाया / उधारी (Unpaid / Due)</option>
-    </select>
-  </div>
-
-  <div
-  <!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
-body{
-  background:#0a0a0a;color:#fff;padding:12px;
-  display:flex;flex-direction:column;align-items:center;
-  min-height:100vh;position:relative;
-}
-body::before{
-  content:"5 BROTHER'S FITNESS CLUB";position:fixed;top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(-30deg);font-size:36px;font-weight:900;
-  color:rgba(255,204,0,0.03);white-space:nowrap;pointer-events:none;z-index:0;
-}
-.main-card{
-  background:radial-gradient(circle at top, #1a1705 0%, #0d0d0d 80%);
-  border:2.5px solid #ffcc00;border-radius:20px;max-width:540px;width:100%;
-  padding:18px 14px;box-shadow:0 0 35px rgba(255,204,0,0.22);position:relative;z-index:1;margin-bottom:20px;
-}
-.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;}
-.header h1{color:#ffcc00;font-size:20px;text-transform:uppercase;letter-spacing:1px;}
-.tagline{
-  color:#e6c300;font-size:11px;font-weight:700;margin-top:4px;
-  background:rgba(255,204,0,0.1);display:inline-block;padding:3px 8px;border-radius:12px;border:1px solid rgba(255,204,0,0.25);
-}
-.sub-loc{color:#aaa;font-size:10px;margin-top:4px;}
-.step-bar{display:flex;justify-content:space-between;margin-bottom:14px;position:relative;}
-.step-dot{flex:1;text-align:center;font-size:11px;font-weight:bold;color:#666;padding-bottom:6px;border-bottom:3px solid #333;transition:0.3s;}
-.step-dot.active{color:#ffcc00;border-bottom-color:#ffcc00;}
-.mode-container{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;}
-.mode-btn{background:#1a1a1a;color:#bbb;border:1.5px solid #444;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:bold;cursor:pointer;text-align:center;transition:0.2s;}
-.mode-btn.active{background:#ffcc00;color:#000;border-color:#ffcc00;box-shadow:0 0 10px rgba(255,204,0,0.4);}
-.step-page{display:none;}
-.step-page.active{display:block;}
-.field-group{margin-bottom:11px;position:relative;}
-label{display:block;font-size:12px;color:#eee;margin-bottom:4px;font-weight:600;}
-label span{color:#ff3333;}
-input, select{width:100%;background:#1b1b1b;border:1.5px solid #444;color:#fff;padding:10px;border-radius:9px;font-size:13px;outline:none;}
-input:focus, select:focus{border-color:#ffcc00;background:#141414;}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-#searchResults{
-  position:absolute;top:100%;left:0;right:0;background:#181818;border:1.5px solid #ffcc00;
-  border-radius:9px;max-height:190px;overflow-y:auto;z-index:999999;display:none;margin-top:2px;box-shadow:0 6px 20px rgba(0,0,0,0.8);
-}
-.search-item{padding:9px 12px;border-bottom:1px solid #333;cursor:pointer;font-size:12px;}
-.search-item:hover{background:#2a2600;color:#ffcc00;}
-.search-item small{display:block;color:#aaa;font-size:10px;margin-top:2px;}
-.box-panel{background:#141414;border:1.5px solid #333;border-radius:12px;padding:12px;margin-bottom:12px;}
-.box-title{font-size:12px;font-weight:bold;color:#ffcc00;margin-bottom:8px;}
-.cat-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;}
-.cat-pill{background:#222;color:#bbb;border:1px solid #444;padding:6px 12px;border-radius:16px;font-size:11px;font-weight:bold;white-space:nowrap;cursor:pointer;}
-.cat-pill.active{background:#ffcc00;color:#000;border-color:#ffcc00;}
-#prodListContainer{display:grid;gap:6px;max-height:200px;overflow-y:auto;}
-.prod-card{background:#1a1a1a;border:1.5px solid #333;border-radius:9px;padding:9px;cursor:pointer;}
-.prod-card:hover, .prod-card.selected{border-color:#ffcc00;background:#262200;}
-.prod-card-top{display:flex;justify-content:space-between;align-items:flex-start;}
-.prod-card h4{font-size:12px;color:#fff;}
-.prod-badge{font-size:10px;font-weight:bold;padding:2px 5px;border-radius:5px;}
-.badge-gold{background:#ffcc00;color:#000;}
-.badge-hot{background:#e50914;color:#fff;}
-.badge-off{background:#333;color:#00ff99;border:1px solid #00ff99;}
-.prod-reviews{font-size:10px;color:#ffcc00;margin-top:2px;}
-.live-compare-box{background:#111;border:1.5px dashed #ffcc00;border-radius:9px;padding:10px;margin-top:8px;}
-.compare-btns{display:flex;gap:6px;margin-top:6px;}
-.btn-flip, .btn-hk{flex:1;color:#fff;border:none;padding:8px;border-radius:6px;font-size:10px;font-weight:bold;cursor:pointer;text-align:center;text-decoration:none;}
-.btn-flip{background:#2874f0;}
-.btn-hk{background:#ff6f00;}
-.indian-reason-box{background:rgba(0,255,153,0.06);border:1.5px solid #00ff99;border-radius:8px;padding:9px;color:#fff;font-size:11px;line-height:1.45;}
-.nav-btns{display:flex;gap:8px;margin-top:14px;}
-.btn-prev{flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:9px;font-weight:bold;cursor:pointer;}
-.btn-next{flex:2;background:#ffcc00;color:#000;border:none;padding:12px;border-radius:9px;font-weight:bold;cursor:pointer;box-shadow:0 3px 12px rgba(255,204,0,0.3);}
-.btn-submit{width:100%;background:#25D366;color:#fff;border:none;padding:13px;border-radius:9px;font-weight:bold;font-size:14px;cursor:pointer;box-shadow:0 4px 15px rgba(37,211,102,0.4);margin-top:10px;}
-.balance-box{background:#330808;border:1.5px solid #ff3333;border-radius:9px;padding:9px;text-align:center;margin-top:8px;}
-.balance-box b{color:#ff4d4d;font-size:15px;}
-#receiptModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9999999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
-.receipt-wrapper{max-width:430px;width:100%;margin-top:10px;margin-bottom:20px;}
-.receipt-card{background:#ffffff;color:#000;border-radius:12px;padding:15px;margin-bottom:10px;box-shadow:0 8px 30px rgba(0,0,0,0.8);}
-.receipt-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:8px;margin-bottom:8px;}
-.r-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;border-bottom:1px dotted #ccc;padding-bottom:2px;}
-.page2-alert{background:#fff2f2;border:2.5px solid #d9534f;border-radius:10px;padding:12px;color:#000;}
-.penalty-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px;}
-.penalty-table th, .penalty-table td{border:1px solid #d9534f;padding:5px;text-align:center;}
-.penalty-table th{background:#ffdada;color:#a00;font-weight:bold;}
-.action-btns{display:flex;gap:6px;margin-top:8px;}
-.dl-btn{flex:1;background:#000;color:#ffcc00;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
-.wa-btn{flex:1;background:#25D366;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
-.sms-btn{flex:1;background:#007bff;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
-</style>
-</head>
-<body>
-
-<div class="main-card">
-  <div class="header">
-    <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px; display:inline-block; margin-bottom:4px;">OFFICIAL DESK PORTAL</div>
-    <h1>5 Brother's Fitness Club</h1>
-    <div class="tagline">"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।"</div>
-    <div class="sub-loc">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259, 9990954574</div>
-  </div>
-
-  <div class="step-bar">
-    <div class="step-dot active" id="dot1">1. मोड व विवरण</div>
-    <div class="step-dot" id="dot2">2. फीस / सप्लीमेंट</div>
-    <div class="step-dot" id="dot3">3. भुगतान व बिल</div>
-  </div>
-
-  <form id="khataForm" onsubmit="generateKhataBill(event)">
-    <div class="step-page active" id="stepPage1">
-      <div class="mode-container">
-        <button type="button" class="mode-btn" id="btnModeFee" onclick="setMode('fee')">🏋️ Gym Fees Only</button>
-        <button type="button" class="mode-btn" id="btnModeSupp" onclick="setMode('supp')">💊 Only Supplement</button>
-        <button type="button" class="mode-btn active" id="btnModeBoth" onclick="setMode('both')">🏋️+💊 Fees + Supp</button>
-      </div>
-
-      <div class="field-group" id="searchBoxGroup">
-        <label>🔍 सदस्य खोजें (Live Auto-fill)</label>
-        <input type="text" id="memberSearch" autocomplete="off" placeholder="नाम या मोबाइल लिखें..." oninput="searchMembers(this.value)">
-        <div id="searchResults"></div>
-      </div>
-
-      <div class="row">
         <div class="field-group">
-          <label>ग्राहक का नाम <span>*</span></label>
-          <input type="text" id="mName" placeholder="पूरा नाम">
-        </div>
-        <div class="field-group" id="fatherGroup">
-          <label>पिता का नाम</label>
-          <input type="text" id="mFather" placeholder="पिता का नाम">
-        </div>
-      </div>
-
-      <div id="friendGroup" style="display:none; background:rgba(255,204,0,0.06); border:1px dashed #ffcc00; padding:10px; border-radius:10px; margin-bottom:12px;">
-        <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">🤝 Guarantor / दोस्त की जानकारी (उधारी हेतु अनिवार्य)</div>
-        <div class="row">
-          <div class="field-group" style="margin-bottom:0;">
-            <label>दोस्त का नाम <span>*</span></label>
-            <input type="text" id="mFriendName" placeholder="दोस्त का नाम">
-          </div>
-          <div class="field-group" style="margin-bottom:0;">
-            <label>दोस्त का मोबाइल <span>*</span></label>
-            <input type="tel" id="mFriendPhone" placeholder="10 अंक मोबाइल">
-          </div>
+          <label>साइज / वजन</label>
+          <select id="sSizeSelect"></select>
         </div>
       </div>
 
       <div class="row">
         <div class="field-group">
-          <label>ग्राहक मोबाइल <span>*</span></label>
-          <input type="tel" id="mPhone" placeholder="10 अंक मोबाइल">
+          <label>तय कीमत (₹) <span>*</span></label>
+          <input type="number" id="sPrice" required placeholder="जैसे 2000" oninput="calcSuppDue()">
         </div>
-        <div class="field-group" id="joinDateGroup">
-          <label>जॉइनिंग / रिन्यूअल तिथि</label>
-          <input type="date" id="mJoinDate" onclick="this.showPicker()">
+        <div class="field-group">
+          <label>नगद जमा (₹) <span>*</span></label>
+          <input type="number" id="sPaid" value="0" oninput="calcSuppDue()">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field-group">
+          <label>वादा तारीख (Due Date)</label>
+          <input type="date" id="sPromiseDate" onclick="this.showPicker()">
+        </div>
+        <div class="field-group">
+          <label>बकाया राशि (Due)</label>
+          <input type="text" id="sDueDisplay" value="₹0" readonly style="color:#ff4d4d;font-weight:bold;">
         </div>
       </div>
 
-      <div class="nav-btns">
-        <button type="button" class="btn-next" onclick="goToStep(2)">अगला स्टेप : चयन करें ➡️</button>
-      </div>
-    </div>
-
-    <div class="step-page" id="stepPage2">
-      <div class="box-panel" id="gymFeeSection">
-        <div class="box-title">🏋️ जिम मासिक फीस विवरण</div>
-        <div class="row">
-          <div class="field-group" style="margin-bottom:0;">
-            <label>सदस्य प्रकार <span>*</span></label>
-            <select id="memberType" onchange="handleMemberTypeChange()">
-              <option value="student">विद्यार्थी (Student) - ₹300 Fixed</option>
-              <option value="working" selected>वर्किंग / सामान्य (Regular) - ₹500</option>
-            </select>
-          </div>
-          <div class="field-group" style="margin-bottom:0;">
-            <label>जमा फीस (₹) <span>*</span></label>
-            <input type="number" id="gymFee" value="500" min="0">
-          </div>
-        </div>
-
-        <div id="referralBox" style="background:rgba(255,204,0,0.06); border:1.5px dashed #ffcc00; border-radius:10px; padding:11px; margin-top:10px;">
-          <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:4px;">🤝 सदस्य रेफरल छूट (-₹100 प्रति मेंबर):</div>
-          <div style="font-size:10px; color:#aaa; margin-bottom:8px;">पुराने भाइयों को चुनें या नया भाई जोड़ें:</div>
-          
-          <div style="display:flex; gap:6px;">
-            <select id="refMemberSelect" onchange="addExistingReferredMember(this.value)" style="flex:1; padding:8px; border-radius:6px; background:#1b1b1b; color:#fff; border:1px solid #444; font-size:11px;">
-              <option value="">-- पुराने सदस्यों में से चुनें --</option>
-            </select>
-            <button type="button" onclick="openNewRefModal()" style="background:#ffcc00; color:#000; border:none; padding:8px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">+ नया जोड़ें</button>
-          </div>
-
-          <div id="newRefMemberForm" style="display:none; background:#181818; border:1px solid #ffcc00; border-radius:8px; padding:10px; margin-top:10px;">
-            <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:8px;">➕ नए रेफरल भाई का विवरण:</div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-              <div>
-                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">रेफरल का नाम *</label>
-                <input type="text" id="newRefName" placeholder="नाम लिखें" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:6px; border-radius:4px; font-size:11px;">
-              </div>
-              <div>
-                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">रेफरल मोबाइल *</label>
-                <input type="tel" id="newRefPhone" placeholder="10 अंक मोबाइल" maxlength="10" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:6px; border-radius:4px; font-size:11px;">
-              </div>
-              <div>
-                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">जॉइनिंग तारीख *</label>
-                <input type="date" id="newRefJoinDate" onclick="this.showPicker()" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
-              </div>
-              <div>
-                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">फीस स्थिति *</label>
-                <select id="newRefFeeStatus" onchange="toggleRefPromiseDate(this.value)" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
-                  <option value="Paid">Paid (जमा है)</option>
-                  <option value="Unpaid">Unpaid (बाकी है)</option>
-                </select>
-              </div>
-            </div>
-            
-            <div id="refPromiseBox" style="display:none; margin-top:8px;">
-              <label style="font-size:9px; color:#ff9900; display:block; margin-bottom:2px;">फीस कब देगा (वादा तारीख):</label>
-              <input type="date" id="newRefPromiseDate" onclick="this.showPicker()" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #ff9900; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
-            </div>
-
-            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px;">
-              <button type="button" onclick="closeNewRefModal()" style="background:#333; color:#ccc; border:none; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer;">रद्द करें</button>
-              <button type="button" onclick="saveAndAddManualRef()" style="background:#00ff99; color:#000; border:none; padding:5px 12px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer;">सेव और जोड़ें</button>
-            </div>
-          </div>
-
-          <div id="refTagsContainer" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;"></div>
-          <div id="refDiscountAlert" style="font-size:11px; color:#00ff99; font-weight:bold; margin-top:8px; display:none;"></div>
-        </div>
-      </div>
-
-      <div class="box-panel" id="suppSection">
-        <div class="box-title">💊 सप्लीमेंट चयन (Catalog)</div>
-        <div class="cat-scroll">
-          <button type="button" class="cat-pill active" onclick="switchCategory('gainer', this)">Mass Gainer</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('whey', this)">Whey Protein</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('creatine', this)">Creatine</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('multivitamin', this)">Multivitamin</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('preworkout', this)">Pre-Workout</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('fishoil', this)">Fish Oil</button>
-          <button type="button" class="cat-pill" onclick="switchCategory('peanut', this)">Peanut Butter</button>
-        </div>
-
-        <div id="prodListContainer"></div>
-
-        <div class="live-compare-box" id="compareBox">
-          <div style="font-size:11px; color:#ffcc00; font-weight:bold;" id="compareTitle">🌐 Market Analysis:</div>
-          <div id="compareActionArea" style="margin-top:4px;"></div>
-        </div>
-
-        <div class="field-group" style="margin-top:10px; margin-bottom:0;">
-          <label>वजन / साइज चुनें <span>*</span></label>
-          <select id="sizeSelect" onchange="calcKhata()">
-            <option value="">-- पहले प्रोडक्ट चुनें --</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="nav-btns">
-        <button type="button" class="btn-prev" onclick="goToStep(1)">⬅️ वापस</button>
-        <button type="button" class="btn-next" onclick="goToStep(3)">अगला स्टेप : पेमेंट ➡️</button>
-      </div>
-    </div>
-
-    <div class="step-page" id="stepPage3">
-      <div class="box-panel">
-        <div class="box-title">💰 पेमेंट व उधारी हिसाब (Final Clearance)</div>
-
-        <div id="suppPaymentFields">
-          <div class="row">
-            <div class="field-group">
-              <label>सप्लीमेंट तय कीमत (₹) <span>*</span></label>
-              <input type="number" id="prodPrice" placeholder="जैसे 1500" min="0" oninput="calcKhata()">
-            </div>
-            <div class="field-group">
-              <label>नगद जमा राशि (₹) <span>*</span></label>
-              <input type="number" id="cashPaid" value="0" min="0" oninput="calcKhata()">
-            </div>
-          </div>
-
-          <div class="field-group">
-            <label>वादा तारीख (Salary Clearance Date) <span>*</span></label>
-            <input type="date" id="promisedDate" onclick="this.showPicker()">
-          </div>
-
-          <div class="balance-box">
-            सप्लीमेंट बकाया राशि: <b id="dueDisplay">₹0</b>
-          </div>
-        </div>
-
-        <div id="feeSummaryOnly" style="display:none; text-align:center; padding:10px; background:#1b1b1b; border-radius:8px;">
-          <div style="font-size:12px; color:#aaa;">जिम सदस्यता शुल्क:</div>
-          <div style="font-size:20px; font-weight:bold; color:#00ff99; margin-top:4px;" id="gymFeeSummaryDisp">₹500</div>
-        </div>
-      </div>
-
-      <div class="nav-btns">
-        <button type="button" class="btn-prev" onclick="goToStep(2)">⬅️ वापस</button>
-      </div>
-      <button type="submit" class="btn-submit">📑 Generate 2-Page Official Bill Slip</button>
-    </div>
-  </form>
-</div>
-
-<!-- KHATA REGISTER / ADMISSION STYLE DASHBOARD -->
-<div class="main-card" style="border-color:#00ff99;">
-  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px dashed #00ff99; padding-bottom:8px; margin-bottom:10px;">
-    <h2 style="font-size:15px; color:#00ff99;">📋 फीस व उधारी रजिस्टर (Admin Records)</h2>
-    <button type="button" onclick="exportToExcelCSV()" style="background:#00ff99; color:#000; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">📥 Excel (CSV) Download</button>
+      <button type="submit" class="btn-submit">💊 सप्लीमेंट बिल जनरेट करें</button>
+    </form>
   </div>
 
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-    <input type="text" id="regSearch" placeholder="🔍 नाम या मोबाइल खोजें..." oninput="renderKhataTable()" style="padding:7px; font-size:11px;">
-    <select id="regFilterStatus" onchange="renderKhataTable()" style="padding:7px; font-size:11px;">
-      <option value="ALL">सभी रिकॉर्ड (All Records)</option>
-      <option value="PAID">✅ केवल फीस जमा (Paid)</option>
-      <option value="DUE">🔴 केवल बकाया / उधारी (Unpaid / Due)</option>
-    </select>
+  <!-- TAB 3: ADMIN REGISTER -->
+  <div class="tab-content" id="tabReg">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <b style="font-size:12px;color:#00ff99;">📋 रजिस्टर (1 से 30 तारीख रिकॉर्ड्स)</b>
+      <button type="button" onclick="exportToExcelCSV()" style="background:#00ff99;color:#000;border:none;padding:5px 8px;border-radius:5px;font-weight:bold;font-size:10px;cursor:pointer;">📥 Excel (CSV)</button>
+    </div>
+    <div class="row" style="margin-bottom:8px;">
+      <input type="text" id="regLiveSearch" placeholder="🔍 नाम (जैसे Shiva) या मोबाइल..." oninput="renderKhataTable()" style="padding:6px;font-size:11px;">
+      <select id="regStatusFilter" onchange="renderKhataTable()" style="padding:6px;font-size:11px;">
+        <option value="ALL">सभी रिकॉर्ड (All)</option>
+        <option value="PAID">✅ केवल फीस जमा (Paid)</option>
+        <option value="DUE">🔴 केवल बकाया (Unpaid / Due)</option>
+      </select>
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:10px;text-align:left;">
+        <thead>
+          <tr style="background:#1b1b1b;color:#ffcc00;border-bottom:1.5px solid #444;">
+            <th style="padding:5px;">तारीख</th>
+            <th style="padding:5px;">सदस्य</th>
+            <th style="padding:5px;">मोड</th>
+            <th style="padding:5px;">जमा</th>
+            <th style="padding:5px;">बकाया</th>
+            <th style="padding:5px;">वैधता</th>
+            <th style="padding:5px;text-align:center;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="khataTableBody"></tbody>
+      </table>
+    </div>
   </div>
-
-  <div style="overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse; font-size:11px; text-align:left;">
-      <thead>
-        <tr style="background:#1b1b1b; color:#ffcc00; border-bottom:1.5px solid #444;">
-          <th style="padding:6px;">तारीख</th>
-          <th style="padding:6px;">सदस्य / फोन</th>
-          <th style="padding:6px;">मोड / विवरण</th>
-          <th style="padding:6px;">जमा (₹)</th>
-          <th style="padding:6px;">बकाया (₹)</th>
-          <th style="padding:6px;">वैधता (Valid Till)</th>
-          <th style="padding:6px; text-align:center;">Action</th>
-        </tr>
-      </thead>
-      <tbody id="khataTableBody"></tbody>
-    </table>
-  </div>
-</div>
-
+                                            </div>
+  <!-- RECEIPT MODAL -->
 <div id="receiptModal">
   <div class="receipt-wrapper">
     <div id="printablePages">
       <div class="receipt-card">
         <div class="receipt-header">
           <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">PAGE 1 : OFFICIAL INVOICE</div>
-          <h2 style="font-size:16px; margin-top:4px;">5 Brother's Fitness Club Supplements</h2>
-          <div style="font-size:11px; font-weight:bold; color:#555; margin-top:2px;">"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।"</div>
-          <p style="font-size:10px; color:#777; margin-top:3px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
+          <h2 style="font-size:15px; margin-top:4px;">5 Brother's Fitness Club Supplements</h2>
+          <div style="font-size:10px; font-weight:bold; color:#555; margin-top:2px;">"100% असली और असरदार रिजल्ट"</div>
+          <p style="font-size:10px; color:#777; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
         </div>
 
         <div class="r-row"><span>Bill Slip ID:</span><b id="billId" style="color:#b37400;"></b></div>
-        <div class="r-row"><span>बिलिंग मोड:</span><b id="rMode" style="color:#000;"></b></div>
+        <div class="r-row"><span>बिलिंग प्रकार:</span><b id="rMode" style="color:#000;"></b></div>
         <div class="r-row"><span>तारीख:</span><b id="billDate"></b></div>
-        <div class="r-row"><span>ग्राहक / सदस्य:</span><b id="rName"></b></div>
+        <div class="r-row"><span>सदस्य / ग्राहक:</span><b id="rName"></b></div>
         <div class="r-row" id="rFatherRow"><span>पिता का नाम:</span><b id="rFather"></b></div>
         <div class="r-row" id="rFriendRow" style="display:none;"><span>Guarantor (दोस्त):</span><b id="rFriend"></b></div>
         <div class="r-row"><span>मोबाइल नंबर:</span><b id="rPhone"></b></div>
         
-        <div class="r-row" id="rGymFeeRow" style="background:#f9f9f9; padding:4px 0;"><span>जिम फीस (Received):</span><b id="rGymFee" style="color:green;"></b></div>
+        <div class="r-row" id="rGymFeeRow"><span>जमा फीस (Received):</span><b id="rGymFee" style="color:green;"></b></div>
+        <div class="r-row" id="rValidTillRow"><span>वैधता (Valid Till):</span><b id="rValidTill" style="color:#b37400;"></b></div>
         
-        <div id="rSuppDetailsBlock">
-          <div class="r-row"><span>सप्लीमेंट:</span><b id="rProd" style="max-width:220px; text-align:right;"></b></div>
-          <div class="r-row"><span>साइज / वेरिएंट:</span><b id="rSize"></b></div>
+        <div id="rSuppBlock" style="display:none;">
+          <div class="r-row"><span>सप्लीमेंट:</span><b id="rProd"></b></div>
+          <div class="r-row"><span>साइज:</span><b id="rSize"></b></div>
           <div class="r-row"><span>तय कीमत:</span><b id="rProdPrice"></b></div>
           <div class="r-row"><span>नगद जमा:</span><b id="rCashPaid" style="color:green;"></b></div>
-          
-          <div class="r-row" style="background:#ffecec; padding:5px 0; border:1px solid #ffcccc; border-radius:6px; margin-top:5px;">
-            <span style="color:#b20000; font-weight:bold;">सप्लीमेंट बकाया:</span>
-            <b id="rDueAmt" style="color:#d9534f; font-size:14px;"></b>
+          <div class="r-row" style="background:#ffecec; padding:4px 0; border:1px solid #ffcccc; border-radius:4px; margin-top:4px;">
+            <span style="color:#b20000; font-weight:bold;">बकाया राशि:</span>
+            <b id="rDueAmt" style="color:#d9534f;"></b>
           </div>
-          <div class="r-row" style="margin-top:4px;">
+          <div class="r-row" style="margin-top:3px;">
             <span style="color:#b37400; font-weight:bold;">वादा तारीख:</span>
             <b id="rPromisedDate" style="color:#b37400;"></b>
           </div>
         </div>
       </div>
 
-      <div class="receipt-card page2-alert" id="page2NoticeBlock">
-        <div style="background:#d9534f; color:#fff; padding:5px; border-radius:5px; text-align:center; font-weight:bold; font-size:11px; margin-bottom:8px;">⚠️ पृष्ठ 2 : सप्लीमेंट उधारी नियम व व्यक्तिगत उत्तरदायित्व</div>
-        
-        <p style="font-size:11px; line-height:1.45; text-align:justify;">
-          "सप्लीमेंट कोई बिजनेस मार्जिन का खेल नहीं, सिर्फ आपकी डाइट और प्रोग्रेस न रुके इसलिए अपने पैसे फंसाकर आपको दिया जाता है। डिस्ट्रीब्यूटर को हर 15 दिन में पूरा पेमेंट क्लियर करना अनिवार्य होता है। जब आप 1-1 महीना पेमेंट रोकते हैं, तो नया स्टॉक रुक जाता है और दूसरे भाइयों को सप्लीमेंट नहीं मिल पाता। इस नुकसान की भरपाई और डिस्ट्रीब्यूटर पेनल्टी के लिए यह विलंब शुल्क लिया जाना अनिवार्य है:"
+      <div class="receipt-card" id="page2NoticeBlock" style="display:none; background:#fff2f2; border:2px solid #d9534f;">
+        <div style="background:#d9534f; color:#fff; padding:4px; border-radius:4px; text-align:center; font-weight:bold; font-size:11px; margin-bottom:6px;">⚠️ पृष्ठ 2 : सप्लीमेंट उधारी नियम</div>
+        <p style="font-size:10px; line-height:1.4; text-align:justify;">
+          "सप्लीमेंट बिना मार्जिन आपकी डाइट न रुके इसलिए दिया जाता है। 15 दिन में डिस्ट्रीब्यूटर पेमेंट क्लियर न होने पर पेनल्टी देय होगी:"
         </p>
-
         <table class="penalty-table">
           <thead>
-            <tr><th>विलंब अवधि (Late Days)</th><th>अतिरिक्त पेनल्टी (Penalty Fee)</th></tr>
+            <tr><th>विलंब अवधि</th><th>पेनल्टी</th></tr>
           </thead>
           <tbody>
-            <tr><td>वादा तारीख से 7 दिन बाद</td><td><b>+ ₹100 Extra</b></td></tr>
-            <tr><td>वादा तारीख से 15 दिन बाद</td><td><b>+ ₹200 Extra</b></td></tr>
-            <tr><td>वादा तारीख से 30 दिन बाद</td><td><b>+ ₹500 Extra</b></td></tr>
+            <tr><td>7 दिन बाद</td><td><b>+ ₹100 Extra</b></td></tr>
+            <tr><td>15 दिन बाद</td><td><b>+ ₹200 Extra</b></td></tr>
+            <tr><td>30 दिन बाद</td><td><b>+ ₹500 Extra</b></td></tr>
           </tbody>
         </table>
-
-        <div style="font-size:10px; background:#fff; border:1px dashed #d9534f; padding:6px; border-radius:5px; line-height:1.4;">
-          <b>सदस्य सहमति (Declaration):</b> मैंने यह शर्त ध्यानपूर्वक पढ़ ली है और मैं अपनी तय वादा तारीख तक पूरी बकाया राशि चुकाने का वचन देता हूँ।
-        </div>
       </div>
     </div>
 
     <div class="action-btns" data-html2canvas-ignore="true">
       <button type="button" class="dl-btn" id="dlBtn" onclick="saveBillImage()">📥 Image Save</button>
       <button type="button" class="wa-btn" id="waBtn">📲 WhatsApp</button>
-      <button type="button" class="sms-btn" id="smsBtn">💬 SMS Text</button>
+      <button type="button" class="sms-btn" id="smsBtn">💬 SMS</button>
     </div>
-    <button type="button" onclick="document.getElementById('receiptModal').style.display='none'" style="width:100%; background:#333; color:#fff; border:none; padding:10px; border-radius:8px; margin-top:8px; cursor:pointer;">बंद करें (Close)</button>
+    <button type="button" onclick="closeBillModalAndReset()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;">बंद करें व होम पेज पर जाएं (Home)</button>
   </div>
 </div>
 
 <script>
-let currentMode = 'both';
-let currentStep = 1;
-let selectedProductObj = null;
 let referralCount = 0;
-const REFERRAL_DISCOUNT_PER_HEAD = 100;
-let referredMembersList = [];
+let referredList = [];
 
 const MEMBERS = [
   { name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", joinDate: "2026-10-01" },
@@ -786,36 +343,60 @@ const MEMBERS = [
   { name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "", joinDate: "2022-01-11" }
 ];
 
-const CATALOG_DATA = [
-  { category: "gainer", name: "Labrada Muscle Mass Gainer", badge: "🏆 #1 Best Seller", badgeClass: "badge-gold", reviews: "⭐ 5.0 (2,000+ Verified Athletes)", isOnline: true, flipkartQuery: "Labrada Muscle Mass Gainer", hkQuery: "Labrada Muscle Mass Gainer", options: ["1 Kg", "3 Kg", "5 Kg"] },
-  { category: "gainer", name: "MuscleBlaze Super Gainer XXL", badge: "🔥 Hot Bulking", badgeClass: "badge-hot", reviews: "⭐ 4.9 (1,450+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Super Gainer XXL", hkQuery: "MuscleBlaze Super Gainer XXL", options: ["1 Kg", "3 Kg", "5 Kg"] },
-  { category: "gainer", name: "Pro Series Power Muscles Gain", badge: "🇮🇳 Indian Direct Result Formula", badgeClass: "badge-off", reviews: "⭐ 4.7 (520+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Authentic Indian Athlete Formula: बिना किसी ई-कॉमर्स कमीशन के सीधे जिम वेयरहाउस रेट पर ₹600-₹800 तक सस्ता और 100% असरदार मिलता है।" },
-  { category: "gainer", name: "ON Serious Mass Gainer", badge: "⭐ Top Choice", badgeClass: "badge-gold", reviews: "⭐ 4.8 (850+ Reviews)", isOnline: true, flipkartQuery: "Optimum Nutrition Serious Mass Gainer", hkQuery: "Optimum Nutrition Serious Mass", options: ["1 Kg", "2.72 Kg (6 lbs)", "5.44 Kg (12 lbs)"] },
-  { category: "whey", name: "Muscletech NitroTech Whey (1.81 Kg)", badge: "🏆 #1 Best Selling Whey", badgeClass: "badge-gold", reviews: "⭐ 4.9 (1,200+ Verified Buyers)", isOnline: true, flipkartQuery: "Muscletech NitroTech Whey Protein 1.81kg", hkQuery: "Muscletech NitroTech Whey", options: ["1 Kg", "1.81 Kg (4 lbs)", "3.63 Kg (8 lbs)"] },
-  { category: "whey", name: "Muscle Size Intra Bulk 100% Whey", badge: "🇮🇳 Indian Gym Exclusive Stock", badgeClass: "badge-off", reviews: "⭐ 4.7 (540+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Pure Indian Muscle Builder: सीधे जिम वेयरहाउस रेट पर वाजिब दाम।" },
-  { category: "whey", name: "MuscleBlaze Biozyme Performance Whey", badge: "🔥 Clinically Tested", badgeClass: "badge-hot", reviews: "⭐ 4.8 (950+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Biozyme Performance Whey", hkQuery: "MuscleBlaze Biozyme Performance Whey", options: ["500 Gram", "1 Kg", "2 Kg", "4 Kg"] },
-  { category: "creatine", name: "MuscleBlaze Creatine Monohydrate", badge: "🔥 Hot Selling Beast", badgeClass: "badge-hot", reviews: "⭐ 5.0 (1,850+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Creatine Monohydrate", hkQuery: "MuscleBlaze Creatine Monohydrate", options: ["100 Gram", "250 Gram", "400 Gram"] },
-  { category: "creatine", name: "Wellcore Pure Micronised Creatine", badge: "🥈 High Demand", badgeClass: "badge-gold", reviews: "⭐ 4.9 (1,100+ Reviews)", isOnline: true, flipkartQuery: "Wellcore Pure Micronised Creatine", hkQuery: "Wellcore Pure Micronised Creatine", options: ["100 Gram", "250 Gram"] },
-  { category: "multivitamin", name: "MuscleBlaze MB-Vite Daily Multivitamin", badge: "🏆 Top Selling", badgeClass: "badge-gold", reviews: "⭐ 4.9 (1,600+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze MB-Vite Daily Multivitamin", hkQuery: "MuscleBlaze MB-Vite Multivitamin", options: ["30 Tablets", "60 Tablets", "90 Tablets"] },
-  { category: "preworkout", name: "Wild Bull Direct Pump Formula", badge: "🇮🇳 Indian Hardcore Pump", badgeClass: "badge-off", reviews: "⭐ 4.7 (500+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Desi Hardcore Power Formula: सीधा असर और जिम के शेड वाला वाजिब दाम!" },
-  { category: "preworkout", name: "Cellucor C4 Original Pre-Workout", badge: "🔥 Explosive Energy", badgeClass: "badge-hot", reviews: "⭐ 4.9 (1,350+ Reviews)", isOnline: true, flipkartQuery: "Cellucor C4 Original Pre-Workout", hkQuery: "Cellucor C4 Pre Workout", options: ["30 Servings", "60 Servings"] },
-  { category: "fishoil", name: "MuscleBlaze Fish Oil 1000mg", badge: "🏆 Top Selling Omega 3", badgeClass: "badge-gold", reviews: "⭐ 4.9 (1,300+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Fish Oil 1000mg", hkQuery: "MuscleBlaze Fish Oil 1000mg", options: ["30 Capsules", "60 Capsules", "90 Capsules"] },
-  { category: "peanut", name: "MyFitness Peanut Butter (High Protein)", badge: "🔥 #1 Hot Selling", badgeClass: "badge-hot", reviews: "⭐ 5.0 (1,900+ Reviews)", isOnline: true, flipkartQuery: "MyFitness Peanut Butter 1kg", hkQuery: "MyFitness Peanut Butter 1kg", options: ["1 Kg (Crunchy)", "1 Kg (Chocolate)", "2.5 Kg"] }
-];
+const CATALOG = {
+  gainer: [
+    { name: "Labrada Muscle Mass Gainer", sizes: ["1 Kg", "3 Kg", "5 Kg"] },
+    { name: "MuscleBlaze Super Gainer XXL", sizes: ["1 Kg", "3 Kg", "5 Kg"] },
+    { name: "Pro Series Power Muscles Gain", sizes: ["Standard Direct Pack"] },
+    { name: "ON Serious Mass Gainer", sizes: ["1 Kg", "2.72 Kg (6 lbs)", "5.44 Kg (12 lbs)"] }
+  ],
+  whey: [
+    { name: "Muscletech NitroTech Whey (1.81 Kg)", sizes: ["1 Kg", "1.81 Kg (4 lbs)", "3.63 Kg (8 lbs)"] },
+    { name: "Muscle Size Intra Bulk 100% Whey", sizes: ["Standard Pack"] },
+    { name: "MuscleBlaze Biozyme Performance Whey", sizes: ["500g", "1 Kg", "2 Kg", "4 Kg"] }
+  ],
+  creatine: [
+    { name: "MuscleBlaze Creatine Monohydrate", sizes: ["100g", "250g", "400g"] },
+    { name: "Wellcore Pure Micronised Creatine", sizes: ["100g", "250g"] }
+  ],
+  multivitamin: [
+    { name: "MuscleBlaze MB-Vite Daily Multivitamin", sizes: ["30 Tabs", "60 Tabs", "90 Tabs"] },
+    { name: "MuscleBlaze Fish Oil 1000mg", sizes: ["30 Caps", "60 Caps", "90 Caps"] },
+    { name: "MyFitness Peanut Butter", sizes: ["1 Kg (Crunchy)", "1 Kg (Chocolate)", "2.5 Kg"] }
+  ],
+  preworkout: [
+    { name: "Wild Bull Direct Pump Formula", sizes: ["Standard Hardcore Pack"] },
+    { name: "Cellucor C4 Original Pre-Workout", sizes: ["30 Servings", "60 Servings"] }
+  ]
+};
 
 window.addEventListener("DOMContentLoaded", () => {
-  renderCategoryProducts("gainer");
   const today = new Date().toISOString().split('T')[0];
-  document.getElementById("mJoinDate").value = today;
-
-  let nextWeek = new Date();
-  nextWeek.setDate(nextWeek.getDate() + 7);
-  document.getElementById("promisedDate").value = nextWeek.toISOString().split('T')[0];
-  setMode('both');
-  populateReferralDropdown();
+  document.getElementById("feeJoinDate").value = today;
+  let nextW = new Date();
+  nextW.setDate(nextW.getDate() + 7);
+  document.getElementById("sPromiseDate").value = nextW.toISOString().split('T')[0];
+  populateSuppDropdown('gainer');
   renderKhataTable();
 });
 
+function switchMainTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  if (tab === 'fee') {
+    document.getElementById('tabBtnFee').classList.add('active');
+    document.getElementById('tabFee').classList.add('active');
+  } else if (tab === 'supp') {
+    document.getElementById('tabBtnSupp').classList.add('active');
+    document.getElementById('tabSupp').classList.add('active');
+  } else {
+    document.getElementById('tabBtnReg').classList.add('active');
+    document.getElementById('tabReg').classList.add('active');
+    renderKhataTable();
+  }
+}
+
+// Auto-fill logic
 function getAllMembersList() {
   let saved = JSON.parse(localStorage.getItem("gym_members_db") || "[]");
   let combined = [...MEMBERS];
@@ -827,297 +408,13 @@ function getAllMembersList() {
   return combined;
 }
 
-function populateReferralDropdown() {
-  const sel = document.getElementById("refMemberSelect");
-  if (!sel) return;
-  sel.innerHTML = '<option value="">-- पुराने सदस्यों में से चुनें --</option>';
-  const allList = getAllMembersList();
-  allList.forEach(m => {
-    let opt = document.createElement("option");
-    opt.value = m.name;
-    opt.innerText = `${m.name} (${m.phone || 'No Mobile'})`;
-    sel.appendChild(opt);
-  });
-}
-
-function openNewRefModal() {
-  document.getElementById("newRefJoinDate").value = new Date().toISOString().split('T')[0];
-  document.getElementById("newRefMemberForm").style.display = "block";
-}
-
-function closeNewRefModal() {
-  document.getElementById("newRefMemberForm").style.display = "none";
-}
-
-function toggleRefPromiseDate(val) {
-  document.getElementById("refPromiseBox").style.display = (val === "Unpaid") ? "block" : "none";
-}
-
-function saveAndAddManualRef() {
-  const name = document.getElementById("newRefName").value.trim();
-  const phone = document.getElementById("newRefPhone").value.trim();
-  const joinDate = document.getElementById("newRefJoinDate").value;
-  const feeStatus = document.getElementById("newRefFeeStatus").value;
-  const promiseDate = document.getElementById("newRefPromiseDate").value;
-
-  if (!name) { alert("कृपया सदस्य का नाम दर्ज करें!"); return; }
-  if (!phone || phone.length < 10) { alert("कृपया 10 अंकों का मोबाइल नंबर दर्ज करें!"); return; }
-
-  let savedMembers = JSON.parse(localStorage.getItem("gym_members_db") || "[]");
-  let existingIndex = savedMembers.findIndex(m => m.name.toLowerCase() === name.toLowerCase());
-  const newEntry = { name, phone, joinDate, feeStatus, promiseDate, savedAt: new Date().toISOString() };
-
-  if (existingIndex > -1) {
-    savedMembers[existingIndex] = newEntry;
-  } else {
-    savedMembers.push(newEntry);
-  }
-  localStorage.setItem("gym_members_db", JSON.stringify(savedMembers));
-
-  addReferredMemberToList(name, feeStatus);
-  document.getElementById("newRefName").value = "";
-  document.getElementById("newRefPhone").value = "";
-  closeNewRefModal();
-  populateReferralDropdown();
-}
-
-function addExistingReferredMember(name) {
-  if (!name) return;
-  addReferredMemberToList(name, "Verified");
-  document.getElementById("refMemberSelect").value = "";
-}
-
-function addReferredMemberToList(name, status) {
-  if (referredMembersList.some(item => item.name.toLowerCase() === name.toLowerCase())) {
-    alert("यह सदस्य पहले से जोड़ा जा चुका है!");
-    return;
-  }
-  referredMembersList.push({ name, status });
-  referralCount = referredMembersList.length;
-  renderReferralTags();
-}
-
-function removeReferredMember(idx) {
-  referredMembersList.splice(idx, 1);
-  referralCount = referredMembersList.length;
-  renderReferralTags();
-}
-
-function renderReferralTags() {
-  const cont = document.getElementById("refTagsContainer");
-  cont.innerHTML = "";
-  referredMembersList.forEach((m, idx) => {
-    let tag = document.createElement("div");
-    tag.style = "background:#222; border:1px solid #ffcc00; color:#ffcc00; padding:4px 8px; border-radius:12px; font-size:11px; display:flex; align-items:center; gap:6px;";
-    tag.innerHTML = `<span>👤 ${m.name} <small style="color:${m.status === 'Paid' ? '#00ff99' : '#ff9900'}; font-size:9px;">[${m.status}]</small></span><b onclick="removeReferredMember(${idx})" style="color:#ff4d4d; cursor:pointer; font-size:13px; margin-left:4px;">✕</b>`;
-    cont.appendChild(tag);
-  });
-  updateGymFeeWithDiscount();
-}
-
-function updateGymFeeWithDiscount() {
-  const type = document.getElementById("memberType").value;
-  const baseMonthlyFee = (type === "student") ? 300 : 500;
-  const totalDiscount = referralCount * REFERRAL_DISCOUNT_PER_HEAD;
-  const alertBox = document.getElementById("refDiscountAlert");
-
-  if (totalDiscount <= 0) {
-    document.getElementById("gymFee").value = baseMonthlyFee;
-    if (alertBox) alertBox.style.display = "none";
-    return;
-  }
-
-  if (totalDiscount < baseMonthlyFee) {
-    const netFee = baseMonthlyFee - totalDiscount;
-    document.getElementById("gymFee").value = netFee;
-    if (alertBox) {
-      alertBox.style.display = "block";
-      alertBox.innerText = `✅ कुल रेफरल छूट: -₹${totalDiscount} | इस महीने फीस: ₹${netFee}`;
-    }
-  } else {
-    document.getElementById("gymFee").value = 0;
-    const perDayRate = baseMonthlyFee / 30;
-    const totalDaysCovered = Math.round(totalDiscount / perDayRate);
-    const months = Math.floor(totalDaysCovered / 30);
-    const days = totalDaysCovered % 30;
-    if (alertBox) {
-      alertBox.style.display = "block";
-      let timeText = months > 0 ? `${months} महीने ` : "";
-      if (days > 0) timeText += `${days} दिन`;
-      alertBox.innerText = `🎉 100% फ्री! कुल छूट: ₹${totalDiscount} (अगले ${timeText} तक फीस फ्री)`;
-    }
-  }
-}
-
-function handleMemberTypeChange() {
-  updateGymFeeWithDiscount();
-}
-
-function goToStep(step) {
-  if (step === 2) {
-    const name = document.getElementById("mName").value.trim();
-    const phone = document.getElementById("mPhone").value.trim();
-    if (!name || !phone) {
-      alert("कृपया सदस्य का नाम और मोबाइल नंबर दर्ज करें!");
-      return;
-    }
-    if (currentMode === 'supp') {
-      const fName = document.getElementById("mFriendName").value.trim();
-      const fPhone = document.getElementById("mFriendPhone").value.trim();
-      if (!fName || !fPhone) {
-        alert("सप्लीमेंट उधारी के लिए Guarantor (दोस्त) का नाम और मोबाइल नंबर अनिवार्य है!");
-        return;
-      }
-    }
-  }
-
-  currentStep = step;
-  document.querySelectorAll(".step-page").forEach(p => p.classList.remove("active"));
-  document.getElementById("stepPage" + step).classList.add("active");
-
-  for (let i = 1; i <= 3; i++) {
-    document.getElementById("dot" + i).classList.toggle("active", i === step);
-  }
-
-  if (step === 3) {
-    const suppPnl = document.getElementById("suppPaymentFields");
-    const feeSum = document.getElementById("feeSummaryOnly");
-    if (currentMode === 'fee') {
-      suppPnl.style.display = "none";
-      feeSum.style.display = "block";
-      document.getElementById("gymFeeSummaryDisp").innerText = "₹" + (document.getElementById("gymFee").value || "500");
-    } else if (currentMode === 'supp') {
-      suppPnl.style.display = "block";
-      feeSum.style.display = "none";
-    } else {
-      suppPnl.style.display = "block";
-      feeSum.style.display = "block";
-      document.getElementById("gymFeeSummaryDisp").innerText = "₹" + (document.getElementById("gymFee").value || "500");
-    }
-  }
-}
-
-function setMode(mode) {
-  currentMode = mode;
-  document.getElementById("btnModeFee").classList.toggle("active", mode === 'fee');
-  document.getElementById("btnModeSupp").classList.toggle("active", mode === 'supp');
-  document.getElementById("btnModeBoth").classList.toggle("active", mode === 'both');
-
-  const gymSec = document.getElementById("gymFeeSection");
-  const suppSec = document.getElementById("suppSection");
-  const fatherGrp = document.getElementById("fatherGroup");
-  const friendGrp = document.getElementById("friendGroup");
-  const searchGrp = document.getElementById("searchBoxGroup");
-  const joinGrp = document.getElementById("joinDateGroup");
-
-  if (mode === 'fee') {
-    gymSec.style.display = "block";
-    suppSec.style.display = "none";
-    fatherGrp.style.display = "block";
-    friendGrp.style.display = "none";
-    searchGrp.style.display = "block";
-    joinGrp.style.display = "block";
-  } else if (mode === 'supp') {
-    gymSec.style.display = "none";
-    suppSec.style.display = "block";
-    fatherGrp.style.display = "none";
-    friendGrp.style.display = "block";
-    searchGrp.style.display = "none";
-    joinGrp.style.display = "none";
-  } else {
-    gymSec.style.display = "block";
-    suppSec.style.display = "block";
-    fatherGrp.style.display = "block";
-    friendGrp.style.display = "none";
-    searchGrp.style.display = "block";
-    joinGrp.style.display = "block";
-  }
-}
-
-function switchCategory(cat, btn) {
-  document.querySelectorAll(".cat-pill").forEach(p => p.classList.remove("active"));
-  btn.classList.add("active");
-  renderCategoryProducts(cat);
-}
-
-function renderCategoryProducts(category) {
-  const container = document.getElementById("prodListContainer");
-  container.innerHTML = "";
-  const filtered = CATALOG_DATA.filter(item => item.category === category);
-
-  filtered.forEach((p) => {
-    let d = document.createElement("div");
-    d.className = "prod-card";
-    d.innerHTML = `
-      <div class="prod-card-top">
-        <h4>${p.name}</h4>
-        <span class="prod-badge ${p.badgeClass}">${p.badge}</span>
-      </div>
-      <div class="prod-reviews">${p.reviews}</div>
-    `;
-    d.onclick = () => {
-      document.querySelectorAll(".prod-card").forEach(c => c.classList.remove("selected"));
-      d.classList.add("selected");
-      pickProduct(p);
-    };
-    container.appendChild(d);
-  });
-
-  if (filtered.length > 0) {
-    pickProduct(filtered[0]);
-    container.children[0].classList.add("selected");
-  }
-}
-
-function pickProduct(p) {
-  selectedProductObj = p;
-  const sizeSelect = document.getElementById("sizeSelect");
-  sizeSelect.innerHTML = "";
-
-  if (p.isOnline) {
-    p.options.forEach(opt => {
-      let o = document.createElement("option");
-      o.value = opt;
-      o.innerText = opt;
-      sizeSelect.appendChild(o);
-    });
-  } else {
-    let o = document.createElement("option");
-    o.value = "Standard Direct Pack";
-    o.innerText = "Standard Direct Pack (Warehouse Sealed)";
-    sizeSelect.appendChild(o);
-  }
-
-  const compareBox = document.getElementById("compareBox");
-  const compareTitle = document.getElementById("compareTitle");
-  const actionArea = document.getElementById("compareActionArea");
-  compareBox.style.display = "block";
-
-  if (p.isOnline) {
-    compareTitle.innerHTML = `🌐 <b>Live Online Verification (${p.name}):</b>`;
-    const fUrl = `https://www.flipkart.com/search?q=${encodeURIComponent(p.flipkartQuery)}`;
-    const hkUrl = `https://www.healthkart.com/search?q=${encodeURIComponent(p.hkQuery)}`;
-    actionArea.innerHTML = `
-      <div class="compare-btns">
-        <a href="${fUrl}" target="_blank" class="btn-flip">🔍 Flipkart Price</a>
-        <a href="${hkUrl}" target="_blank" class="btn-hk">🔍 HealthKart Price</a>
-      </div>
-    `;
-  } else {
-    compareTitle.innerHTML = `🇮🇳 <b>Indian Direct Warehouse Advantage:</b>`;
-    actionArea.innerHTML = `<div class="indian-reason-box">${p.indianReason}</div>`;
-  }
-  calcKhata();
-}
-
-function searchMembers(q) {
+function searchFeeMembers(q) {
   const res = document.getElementById("searchResults");
   const clean = q.toLowerCase().trim();
-  if(!clean) { res.style.display="none"; return; }
+  if (!clean) { res.style.display = "none"; return; }
 
-  const allList = getAllMembersList();
-  const list = allList.filter(m => m.name.toLowerCase().includes(clean) || (m.phone && m.phone.includes(clean)));
-  if(list.length === 0) { res.style.display="none"; return; }
+  const list = getAllMembersList().filter(m => m.name.toLowerCase().includes(clean) || (m.phone && m.phone.includes(clean)));
+  if (list.length === 0) { res.style.display = "none"; return; }
 
   res.innerHTML = "";
   list.forEach(m => {
@@ -1125,11 +422,11 @@ function searchMembers(q) {
     d.className = "search-item";
     d.innerHTML = `<b>${m.name}</b><small>पिता: ${m.father || '-'} | फोन: ${m.phone || 'N/A'}</small>`;
     d.onclick = () => {
-      document.getElementById("memberSearch").value = m.name;
-      document.getElementById("mName").value = m.name;
-      document.getElementById("mFather").value = (m.father && m.father !== "-") ? m.father : "";
-      document.getElementById("mPhone").value = m.phone || "";
-      document.getElementById("mJoinDate").value = m.joinDate || "";
+      document.getElementById("feeSearch").value = m.name;
+      document.getElementById("feeName").value = m.name;
+      document.getElementById("feeFather").value = (m.father && m.father !== "-") ? m.father : "";
+      document.getElementById("feePhone").value = m.phone || "";
+      document.getElementById("feeJoinDate").value = m.joinDate || new Date().toISOString().split('T')[0];
       res.style.display = "none";
     };
     res.appendChild(d);
@@ -1137,194 +434,639 @@ function searchMembers(q) {
   res.style.display = "block";
 }
 
-function calcKhata() {
-  const price = parseFloat(document.getElementById("prodPrice").value) || 0;
-  const cash = parseFloat(document.getElementById("cashPaid").value) || 0;
-  const due = Math.max(0, price - cash);
-  document.getElementById("dueDisplay").innerText = "₹" + due;
+// Referral Add & Save
+function toggleRefForm() {
+  const b = document.getElementById("refAddBox");
+  b.style.display = b.style.display === "block" ? "none" : "block";
+  document.getElementById("mRefDate").value = new Date().toISOString().split('T')[0];
 }
 
-function generateKhataBill(e) {
+function saveManualReferral() {
+  const name = document.getElementById("mRefName").value.trim();
+  const phone = document.getElementById("mRefPhone").value.trim();
+  const date = document.getElementById("mRefDate").value;
+  const status = document.getElementById("mRefStatus").value;
+
+  if (!name || !phone) { alert("रेफरल का नाम और मोबाइल लिखें!"); return; }
+
+  let saved = JSON.parse(localStorage.getItem("gym_members_db") || "[]");
+  saved.push({ name, phone, joinDate: date, father: "-", status: status });
+  localStorage.setItem("gym_members_db", JSON.stringify(saved));
+
+  referredList.push({ name, status });
+  referralCount = referredList.length;
+
+  document.getElementById("mRefName").value = "";
+  document.getElementById("mRefPhone").value = "";
+  document.getElementById("refAddBox").style.display = "none";
+
+  renderRefTags();
+  calcFeeDiscount();
+}
+
+function renderRefTags() {
+  const cont = document.getElementById("refTagsArea");
+  cont.innerHTML = "";
+  referredList.forEach((r, idx) => {
+    let t = document.createElement("div");
+    t.style = "background:#222; border:1px solid #ffcc00; color:#ffcc00; padding:2px 6px; border-radius:10px; font-size:10px; display:flex; align-items:center; gap:4px;";
+    t.innerHTML = `<span>👤 ${r.name} [${r.status}]</span><b onclick="removeRefTag(${idx})" style="color:red; cursor:pointer;">✕</b>`;
+    cont.appendChild(t);
+  });
+}
+
+function removeRefTag(idx) {
+  referredList.splice(idx, 1);
+  referralCount = referredList.length;
+  renderRefTags();
+  calcFeeDiscount();
+}
+
+function calcFeeDiscount() {
+  const type = document.getElementById("feeMemberType").value;
+  const base = type === "student" ? 300 : 500;
+  const disc = referralCount * 100;
+  const net = Math.max(0, base - disc);
+  document.getElementById("feeAmt").value = net;
+
+  const msg = document.getElementById("refDiscountMsg");
+  if (disc > 0) {
+    msg.style.display = "block";
+    msg.innerText = `✅ कुल रेफरल छूट: -₹${disc} | देय फीस: ₹${net}`;
+  } else {
+    msg.style.display = "none";
+  }
+}
+
+// Supplement Catalog Populate
+function populateSuppDropdown(cat) {
+  const pSel = document.getElementById("sProdSelect");
+  pSel.innerHTML = "";
+  (CATALOG[cat] || []).forEach((item, i) => {
+    let opt = document.createElement("option");
+    opt.value = item.name;
+    opt.innerText = item.name;
+    pSel.appendChild(opt);
+  });
+  populateSizes(pSel.value);
+}
+
+function populateSizes(prodName) {
+  const cat = document.getElementById("sCatSelect").value;
+  const prod = (CATALOG[cat] || []).find(p => p.name === prodName);
+  const sSel = document.getElementById("sSizeSelect");
+  sSel.innerHTML = "";
+  if (prod) {
+    prod.sizes.forEach(sz => {
+      let opt = document.createElement("option");
+      opt.value = sz;
+      opt.innerText = sz;
+      sSel.appendChild(opt);
+    });
+  }
+}
+
+function calcSuppDue() {
+  const price = parseFloat(document.getElementById("sPrice").value) || 0;
+  const paid = parseFloat(document.getElementById("sPaid").value) || 0;
+  const due = Math.max(0, price - paid);
+  document.getElementById("sDueDisplay").value = "₹" + due;
+}
+
+// Bill Submission
+function handleFeeSubmit(e) {
   e.preventDefault();
-  
-  const name = document.getElementById("mName").value.trim();
-  const phone = document.getElementById("mPhone").value.trim();
-  const father = document.getElementById("mFather").value.trim() || "-";
-  const friendName = document.getElementById("mFriendName").value.trim();
-  const friendPhone = document.getElementById("mFriendPhone").value.trim();
-  const joinDateVal = document.getElementById("mJoinDate").value;
-  
-  if (currentMode === 'supp') {
-    if (!friendName || !friendPhone) {
-      alert("सप्लीमेंट उधारी के लिए Guarantor (दोस्त) का नाम और मोबाइल नंबर अनिवार्य है!");
-      return;
-    }
-  }
+  const name = document.getElementById("feeName").value.trim();
+  const phone = document.getElementById("feePhone").value.trim();
+  const father = document.getElementById("feeFather").value.trim() || "-";
+  const joinDate = document.getElementById("feeJoinDate").value;
+  const amt = parseFloat(document.getElementById("feeAmt").value) || 0;
 
-  const billId = "5BFC-" + (currentMode === 'fee' ? "FEE" : (currentMode === 'supp' ? "SUPP" : "COMB")) + Date.now().toString().slice(-4);
   const today = new Date();
-  const paidDateFormatted = today.toLocaleDateString('en-GB');
-  
-  let joinDateFormatted = "-";
-  let nextDueDateFormatted = "-";
-  
-  if (joinDateVal) {
-    const jDate = new Date(joinDateVal);
-    joinDateFormatted = jDate.toLocaleDateString('en-GB');
-    let nextDate = new Date(joinDateVal);
-    nextDate.setMonth(nextDate.getMonth() + 1);
-    nextDueDateFormatted = nextDate.toLocaleDateString('en-GB');
+  const paidDate = today.toLocaleDateString('en-GB');
+
+  let validTill = "-";
+  if (joinDate) {
+    let n = new Date(joinDate);
+    n.setMonth(n.getMonth() + 1);
+    validTill = n.toLocaleDateString('en-GB');
   }
 
-  let modeText = "Gym Fee + Supplement";
-  if (currentMode === 'fee') modeText = "Gym Fee Only";
-  if (currentMode === 'supp') modeText = "Supplement Only (No Fee)";
+  const billId = "5BFC-FEE-" + Date.now().toString().slice(-4);
 
+  // UI Receipt Fill
   document.getElementById("billId").innerText = billId;
-  document.getElementById("rMode").innerText = modeText;
-  document.getElementById("billDate").innerText = paidDateFormatted;
+  document.getElementById("rMode").innerText = "Gym Monthly Fee";
+  document.getElementById("billDate").innerText = paidDate;
   document.getElementById("rName").innerText = name;
+  document.getElementById("rFatherRow").style.display = "flex";
+  document.getElementById("rFather").innerText = father;
+  document.getElementById("rFriendRow").style.display = "none";
   document.getElementById("rPhone").innerText = phone;
+  document.getElementById("rGymFeeRow").style.display = "flex";
+  document.getElementById("rGymFee").innerText = "₹" + amt;
+  document.getElementById("rValidTillRow").style.display = "flex";
+  document.getElementById("rValidTill").innerText = validTill;
+  document.getElementById("rSuppBlock").style.display = "none";
+  document.getElementById("page2NoticeBlock").style.display = "none";
 
-  if (currentMode === 'supp') {
-    document.getElementById("rFatherRow").style.display = "none";
-    document.getElementById("rFriendRow").style.display = "flex";
-    document.getElementById("rFriend").innerText = `${friendName} (${friendPhone})`;
-    document.getElementById("rGymFeeRow").style.display = "none";
-  } else {
-    document.getElementById("rFatherRow").style.display = "flex";
-    document.getElementById("rFather").innerText = father;
-    document.getElementById("rFriendRow").style.display = "none";
-    document.getElementById("rGymFeeRow").style.display = "flex";
-    document.getElementById("rGymFee").innerText = "₹" + (document.getElementById("gymFee").value || "0");
-  }
-
-  let prod = "", size = "", price = 0, paid = 0, due = 0, pDateFormatted = "-";
-  
-  if (currentMode !== 'fee') {
-    if (!selectedProductObj) {
-      alert("कृपया सप्लीमेंट प्रोडक्ट चुनें!");
-      return;
-    }
-    prod = selectedProductObj.name;
-    size = document.getElementById("sizeSelect").value;
-    price = parseFloat(document.getElementById("prodPrice").value) || 0;
-    paid = parseFloat(document.getElementById("cashPaid").value) || 0;
-    due = Math.max(0, price - paid);
-    
-    const pDateVal = document.getElementById("promisedDate").value;
-    if (pDateVal) {
-      pDateFormatted = new Date(pDateVal).toLocaleDateString('en-GB');
-    }
-
-    document.getElementById("rSuppDetailsBlock").style.display = "block";
-    document.getElementById("page2NoticeBlock").style.display = "block";
-    document.getElementById("rProd").innerText = prod;
-    document.getElementById("rSize").innerText = size;
-    document.getElementById("rProdPrice").innerText = "₹" + price;
-    document.getElementById("rCashPaid").innerText = "₹" + paid;
-    document.getElementById("rDueAmt").innerText = "₹" + due + " (बाकी)";
-    document.getElementById("rPromisedDate").innerText = pDateFormatted;
-  } else {
-    document.getElementById("rSuppDetailsBlock").style.display = "none";
-    document.getElementById("page2NoticeBlock").style.display = "none";
-  }
-
-  let fullMessage = "";
-
-  if (currentMode === 'fee') {
-    fullMessage = `✅ *फीस भुगतान रसीद*\n*(${billId})*\n\n` +
-      `• सदस्य का नाम: ${name}\n` +
-      `• मोबाइल नंबर: ${phone}\n` +
-      `• जॉइनिंग तिथि: ${joinDateFormatted}\n` +
-      `• फीस जमा तिथि: ${paidDateFormatted}\n` +
-      `• फीस प्रकार: मासिक फीस (Monthly Renewal)\n` +
-      `• स्थिति: समय पर (On Time)\n`;
-
-    if (referralCount > 0) {
-      fullMessage += `• रेफरल छूट: -₹${referralCount * REFERRAL_DISCOUNT_PER_HEAD} (${referralCount} भाई को जोड़ने पर)\n`;
-    }
-
-    fullMessage += `• जमा राशि: *₹${document.getElementById("gymFee").value || "500"}*\n` +
-      `• अगली फीस देय (Valid Till): *${nextDueDateFormatted}*\n\n` +
-      `🙏 Thank you for choosing 5 Brother's Fitness Club!\nKeep Grinding & Stay Strong! 💪\n` +
-      `*5 Brother's Fitness Club*\nउमराव खेड़ा, अकरमपुर, उन्नाव`;
-
-  } else if (currentMode === 'supp') {
-    fullMessage = `💊 *सप्लीमेंट खाता उधारी रसीद*\n*(${billId})*\n\n` +
-      `• सदस्य का नाम: ${name}\n` +
-      `• मोबाइल: ${phone}\n` +
-      `• Guarantor (दोस्त): ${friendName} (Ph: ${friendPhone})\n` +
-      `• सप्लीमेंट: ${prod} (${size})\n` +
-      `• तय कीमत: ₹${price}\n` +
-      `• नगद जमा: ₹${paid}\n` +
-      `🔴 *सप्लीमेंट बकाया (Balance Due): ₹${due}*\n` +
-      `📅 *वादा तारीख (Clearance Date): ${pDateFormatted}*\n\n` +
-      `⚠️ *उधारी नियम:* वादा तारीख के बाद डिस्ट्रीब्यूटर पेनल्टी लागू होगी (+₹100, +₹200)। कृपया ${pDateFormatted} तक क्लियर करें।\n\n` +
-      `🙏 Thank You!\n*5 Brother's Fitness Club*\nउमराव खेड़ा, अकरमपुर, उन्नाव`;
-
-  } else {
-    fullMessage = `🏋️+💊 *जिम फीस व सप्लीमेंट खाता रसीद*\n*(${billId})*\n\n` +
-      `• सदस्य का नाम: ${name}\n` +
-      `• मोबाइल: ${phone}\n` +
-      `• फीस जमा तिथि: ${paidDateFormatted}\n` +
-      `• जमा जिम फीस: ₹${document.getElementById("gymFee").value || "500"}\n` +
-      `• अगली फीस देय (Valid Till): ${nextDueDateFormatted}\n\n` +
-      `*सप्लीमेंट विवरण:*\n` +
-      `• प्रोडक्ट: ${prod} (${size})\n` +
-      `• तय कीमत: ₹${price} | जमा: ₹${paid}\n` +
-      `🔴 *सप्लीमेंट बकाया: ₹${due}*\n` +
-      `📅 *वादा तारीख: ${pDateFormatted}*\n\n` +
-      `🙏 Thank you for choosing 5 Brother's Fitness Club!\n*5 Brother's Fitness Club*\nउमराव खेड़ा, अकरमपुर, उन्नाव`;
-  }
-
-  // Auto-Save in Register
-  saveToKhataRegister({
+  saveRecordToKhata({
     id: billId,
-    date: paidDateFormatted,
+    date: paidDate,
     name: name,
     phone: phone,
-    extra: (currentMode === 'supp') ? friendName : father,
-    mode: modeText,
-    paid: (currentMode === 'fee' ? (parseFloat(document.getElementById("gymFee").value) || 0) : paid),
-    due: (currentMode === 'fee' ? 0 : due),
-    validTill: nextDueDateFormatted,
-    details: (currentMode === 'fee' ? 'Gym Fee' : `${prod} (${size})`)
+    mode: "Gym Fee",
+    paid: amt,
+    due: 0,
+    validTill: validTill,
+    details: "Monthly Renewal"
   });
 
-  document.getElementById("waBtn").onclick = () => {
-    window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(fullMessage), "_blank");
-  };
-
-  const smsBtn = document.getElementById("smsBtn");
-  if (smsBtn) {
-    smsBtn.onclick = () => {
-      window.open(`sms:${phone}?body=${encodeURIComponent(fullMessage)}`, "_blank");
-    };
-  }
-
+  setupSocialButtons(name, phone, `✅ *फीस भुगतान रसीद*\n*(${billId})*\nसदस्य: ${name}\nजमा फीस: ₹${amt}\nवैधता: ${validTill}\n5 Brother's Fitness Club`);
   document.getElementById("receiptModal").style.display = "flex";
 }
 
-function saveBillImage() {
-  const btn = document.getElementById("dlBtn");
-  btn.innerText = "⏳ Saving...";
-  const element = document.getElementById("printablePages");
+function handleSuppSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById("sCustName").value.trim();
+  const phone = document.getElementById("sCustPhone").value.trim();
+  const fName = document.getElementById("sFriendName").value.trim();
+  const fPhone = document.getElementById("sFriendPhone").value.trim();
+  const prod = document.getElementById("sProdSelect").value;
+  const size = document.getElementById("sSizeSelect").value;
+  const price = parseFloat(document.getElementById("sPrice").value) || 0;
+  const paid = parseFloat(document.getElementById("sPaid").value) || 0;
+  const due = Math.max(0, price - paid);
+  const pDate = document.getElementById("sPromiseDate").value;
 
-  html2canvas(element, { scale: 2, backgroundColor: "#0a0a0a" }).then(canvas => {
-    let a = document.createElement("a");
-    a.download = "5_Brothers_Bill_" + document.getElementById("billId").innerText + ".png";
-    a.href = canvas.toDataURL("image/png");
-    a.click();
-    btn.innerText = "✅ Saved!";
-    setTimeout(() => { btn.innerText = "📥 Image Save"; }, 2500);
+  const today = new Date();
+  const paidDate = today.toLocaleDateString('en-GB');
+  const billId = "5BFC-SUPP-" + Date.now().toString().slice(-4);
+
+  document.getElementById("billId").innerText = billId;
+  document.getElementById("rMode").innerText = "Supplement Purchase";
+  document.getElementById("billDate").innerText = paidDate;
+  document.getElementById("rName").innerText = name;
+  document.getElementById("rFatherRow").style.display = "none";
+  document.getElementById("rFriendRow").style.display = "flex";
+  document.getElementById("rFriend").innerText = fName ? `${fName} (${fPhone})` : "-";
+  document.getElementById("rPhone").innerText = phone;
+  document.getElementById("rGymFeeRow").style.display = "none";
+  document.getElementById("rValidTillRow").style.display = "none";
+
+  document.getElementById("rSuppBlock").style.display = "block";
+  document.getElementById("page2NoticeBlock").style.display = due > 0 ? "block" : "none";
+  document.getElementById("rProd").innerText = prod;
+  document.getElementById("rSize").innerText = size;
+  document.getElementById("rProdPrice").innerText = "₹" + price;
+  document.getElementById("rCashPaid").innerText = "₹" + paid;
+  document.getElementById("rDueAmt").innerText = "₹" + due;
+  document.getElementById("rPromisedDate").innerText = pDate || "-";
+
+  saveRecordToKhata({
+    id: billId,
+    date: paidDate,
+    name: name,
+    phone: phone,
+    mode: "Supplement",
+    paid: paid,
+    due: due,
+    validTill: pDate || "-",
+    details: `${prod} (${size})`
+  });
+
+  setupSocialButtons(name, phone, `💊 *सप्लीमेंट रसीद*\n*(${billId})*\nनाम: ${name}\nप्रोडक्ट: ${prod} (${size})\nजमा: ₹${paid}\nबकाया: ₹${due}\nवादा तारीख: ${pDate}\n5 <!-- RECEIPT MODAL -->
+<div id="receiptModal">
+  <div class="receipt-wrapper">
+    <div id="printablePages">
+      <div class="receipt-card">
+        <div class="receipt-header">
+          <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">PAGE 1 : OFFICIAL INVOICE</div>
+          <h2 style="font-size:15px; margin-top:4px;">5 Brother's Fitness Club Supplements</h2>
+          <div style="font-size:10px; font-weight:bold; color:#555; margin-top:2px;">"100% असली और असरदार रिजल्ट"</div>
+          <p style="font-size:10px; color:#777; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
+        </div>
+
+        <div class="r-row"><span>Bill Slip ID:</span><b id="billId" style="color:#b37400;"></b></div>
+        <div class="r-row"><span>बिलिंग प्रकार:</span><b id="rMode" style="color:#000;"></b></div>
+        <div class="r-row"><span>तारीख:</span><b id="billDate"></b></div>
+        <div class="r-row"><span>सदस्य / ग्राहक:</span><b id="rName"></b></div>
+        <div class="r-row" id="rFatherRow"><span>पिता का नाम:</span><b id="rFather"></b></div>
+        <div class="r-row" id="rFriendRow" style="display:none;"><span>Guarantor (दोस्त):</span><b id="rFriend"></b></div>
+        <div class="r-row"><span>मोबाइल नंबर:</span><b id="rPhone"></b></div>
+        
+        <div class="r-row" id="rGymFeeRow"><span>जमा फीस (Received):</span><b id="rGymFee" style="color:green;"></b></div>
+        <div class="r-row" id="rValidTillRow"><span>वैधता (Valid Till):</span><b id="rValidTill" style="color:#b37400;"></b></div>
+        
+        <div id="rSuppBlock" style="display:none;">
+          <div class="r-row"><span>सप्लीमेंट:</span><b id="rProd"></b></div>
+          <div class="r-row"><span>साइज:</span><b id="rSize"></b></div>
+          <div class="r-row"><span>तय कीमत:</span><b id="rProdPrice"></b></div>
+          <div class="r-row"><span>नगद जमा:</span><b id="rCashPaid" style="color:green;"></b></div>
+          <div class="r-row" style="background:#ffecec; padding:4px 0; border:1px solid #ffcccc; border-radius:4px; margin-top:4px;">
+            <span style="color:#b20000; font-weight:bold;">बकाया राशि:</span>
+            <b id="rDueAmt" style="color:#d9534f;"></b>
+          </div>
+          <div class="r-row" style="margin-top:3px;">
+            <span style="color:#b37400; font-weight:bold;">वादा तारीख:</span>
+            <b id="rPromisedDate" style="color:#b37400;"></b>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt-card" id="page2NoticeBlock" style="display:none; background:#fff2f2; border:2px solid #d9534f;">
+        <div style="background:#d9534f; color:#fff; padding:4px; border-radius:4px; text-align:center; font-weight:bold; font-size:11px; margin-bottom:6px;">⚠️ पृष्ठ 2 : सप्लीमेंट उधारी नियम</div>
+        <p style="font-size:10px; line-height:1.4; text-align:justify;">
+          "सप्लीमेंट बिना मार्जिन आपकी डाइट न रुके इसलिए दिया जाता है। 15 दिन में डिस्ट्रीब्यूटर पेमेंट क्लियर न होने पर पेनल्टी देय होगी:"
+        </p>
+        <table class="penalty-table">
+          <thead>
+            <tr><th>विलंब अवधि</th><th>पेनल्टी</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>7 दिन बाद</td><td><b>+ ₹100 Extra</b></td></tr>
+            <tr><td>15 दिन बाद</td><td><b>+ ₹200 Extra</b></td></tr>
+            <tr><td>30 दिन बाद</td><td><b>+ ₹500 Extra</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="action-btns" data-html2canvas-ignore="true">
+      <button type="button" class="dl-btn" id="dlBtn" onclick="saveBillImage()">📥 Image Save</button>
+      <button type="button" class="wa-btn" id="waBtn">📲 WhatsApp</button>
+      <button type="button" class="sms-btn" id="smsBtn">💬 SMS</button>
+    </div>
+    <button type="button" onclick="closeBillModalAndReset()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;">बंद करें व होम पेज पर जाएं (Home)</button>
+  </div>
+</div>
+
+<script>
+let referralCount = 0;
+let referredList = [];
+
+const MEMBERS = [
+  { name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", joinDate: "2026-10-01" },
+  { name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", joinDate: "2026-10-01" },
+  { name: "विशाल (Vishal)", father: "राम विलास", phone: "8470994110", joinDate: "2026-10-01" },
+  { name: "मोटोले (Motole)", father: "-", phone: "", joinDate: "2026-10-02" },
+  { name: "नैतिक (Naitik Gupta)", father: "अशोक गुप्ता", phone: "9795238010", joinDate: "2026-10-01" },
+  { name: "संदीप (Sandip Kashyap)", father: "बबलू कश्यप", phone: "8440812271", joinDate: "2026-10-01" },
+  { name: "सचिन (Sachin Rajput)", father: "राकेश राजपूत", phone: "9235819564", joinDate: "2026-10-01" },
+  { name: "दीपक चौहान 1 (Deepak Chauhan I)", father: "प्रकाश चौहान", phone: "7037945582", joinDate: "2026-10-03" },
+  { name: "दीपक चौहान 2 (Deepak Chauhan II)", father: "राम किशोर चौहान", phone: "", joinDate: "2026-10-03" },
+  { name: "उदय प्रताप सिंह (Uday Pratap Singh)", father: "संदीप सिंह", phone: "", joinDate: "2026-10-12" },
+  { name: "प्रियांशु (Priyanshu - Old)", father: "-", phone: "", joinDate: "2026-09-03" },
+  { name: "अर्जुन (Arjun)", father: "रामगोपाल", phone: "7388366670", joinDate: "2026-10-07" },
+  { name: "शहनवाज़ (Shahnawaz)", father: "मो० शब्बीर", phone: "9867742095", joinDate: "2026-10-05" },
+  { name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07" },
+  { name: "अतुल (Atul Vimal)", father: "अनूप", phone: "6306377217", joinDate: "2026-10-08" },
+  { name: "अंशू (Anshu Verma)", father: "कमलेश", phone: "9044680605", joinDate: "2026-10-08" },
+  { name: "देवेन्द्र (Devendra)", father: "विनोद", phone: "7905282515", joinDate: "2026-10-08" },
+  { name: "निरंजन (Niranjan Suryavanshi)", father: "श्रीमती", phone: "8400748946", joinDate: "2026-10-08" },
+  { name: "आकाश विश्वकर्मा (Akash Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "8953133193", joinDate: "2026-09-15" },
+  { name: "दिनेश कुमार (Dinesh Kumar)", father: "लल्लन", phone: "7260981026", joinDate: "2026-10-08" },
+  { name: "राकेश कुमार (Rakesh Kumar)", father: "राज कुमार", phone: "6306591914", joinDate: "2026-10-08" },
+  { name: "रितेश (Ritesh Rawat)", father: "सर्व रावत", phone: "8187974525", joinDate: "2026-09-08" },
+  { name: "हर्ष सैनी (Harsh Saini)", father: "-", phone: "", joinDate: "2026-09-10" },
+  { name: "ध्रुव (Dhruv)", father: "-", phone: "", joinDate: "2026-10-10" },
+  { name: "तौसीफ (Tauseef)", father: "मो० शब्बीर", phone: "7317323893", joinDate: "2026-09-11" },
+  { name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15" },
+  { name: "दीपक (Deepak)", father: "पप्पू", phone: "7388264067", joinDate: "2026-09-15" },
+  { name: "अंकित (Ankit)", father: "श्री राम", phone: "8090416252", joinDate: "2026-09-15" },
+  { name: "चंदन (Chandan)", father: "श्री भूरे", phone: "8303504842", joinDate: "2026-09-15" },
+  { name: "राजू (Mr Raju Verma)", father: "-", phone: "9219528229", joinDate: "2026-09-15" },
+  { name: "राम रतन (Ram Ratan)", father: "श्री सोहन", phone: "7570994547", joinDate: "2026-09-16" },
+  { name: "डॉ ए. के. (Dr A. K Prabhakar)", father: "-", phone: "7268902436", joinDate: "2026-09-15" },
+  { name: "आयुष प्रभाकर (Ayush Junior)", father: "डॉ ए. के. प्रभाकर", phone: "7268902436", joinDate: "2026-09-15" },
+  { name: "विशाल रावत (Vishal Rawat)", father: "-", phone: "", joinDate: "2026-09-20" },
+  { name: "इशांत (Ishant Verma)", father: "सुशील कुमार", phone: "8090894105", joinDate: "2026-09-25" },
+  { name: "साहिल वर्मा (Sahil Verma)", father: "शम्मी कपूर", phone: "9336898447", joinDate: "2026-09-15" },
+  { name: "प्रवीन (Pravin Rawat)", father: "इन्द्रपाल रावत", phone: "7275005052", joinDate: "2026-09-29" },
+  { name: "साहिल (New Joining - Sahil)", father: "-", phone: "", joinDate: "2026-10-06" },
+  { name: "कमल (Kamal)", father: "-", phone: "", joinDate: "2026-10-06" },
+  { name: "लाला वर्मा (Lala Verma)", father: "-", phone: "6386232805", joinDate: "2026-09-01" },
+  { name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-09-07" },
+  { name: "अरमान (Armaan)", father: "-", phone: "", joinDate: "2026-10-15" },
+  { name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "", joinDate: "2022-01-11" }
+];
+
+const CATALOG = {
+  gainer: [
+    { name: "Labrada Muscle Mass Gainer", sizes: ["1 Kg", "3 Kg", "5 Kg"] },
+    { name: "MuscleBlaze Super Gainer XXL", sizes: ["1 Kg", "3 Kg", "5 Kg"] },
+    { name: "Pro Series Power Muscles Gain", sizes: ["Standard Direct Pack"] },
+    { name: "ON Serious Mass Gainer", sizes: ["1 Kg", "2.72 Kg (6 lbs)", "5.44 Kg (12 lbs)"] }
+  ],
+  whey: [
+    { name: "Muscletech NitroTech Whey (1.81 Kg)", sizes: ["1 Kg", "1.81 Kg (4 lbs)", "3.63 Kg (8 lbs)"] },
+    { name: "Muscle Size Intra Bulk 100% Whey", sizes: ["Standard Pack"] },
+    { name: "MuscleBlaze Biozyme Performance Whey", sizes: ["500g", "1 Kg", "2 Kg", "4 Kg"] }
+  ],
+  creatine: [
+    { name: "MuscleBlaze Creatine Monohydrate", sizes: ["100g", "250g", "400g"] },
+    { name: "Wellcore Pure Micronised Creatine", sizes: ["100g", "250g"] }
+  ],
+  multivitamin: [
+    { name: "MuscleBlaze MB-Vite Daily Multivitamin", sizes: ["30 Tabs", "60 Tabs", "90 Tabs"] },
+    { name: "MuscleBlaze Fish Oil 1000mg", sizes: ["30 Caps", "60 Caps", "90 Caps"] },
+    { name: "MyFitness Peanut Butter", sizes: ["1 Kg (Crunchy)", "1 Kg (Chocolate)", "2.5 Kg"] }
+  ],
+  preworkout: [
+    { name: "Wild Bull Direct Pump Formula", sizes: ["Standard Hardcore Pack"] },
+    { name: "Cellucor C4 Original Pre-Workout", sizes: ["30 Servings", "60 Servings"] }
+  ]
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("feeJoinDate").value = today;
+  let nextW = new Date();
+  nextW.setDate(nextW.getDate() + 7);
+  document.getElementById("sPromiseDate").value = nextW.toISOString().split('T')[0];
+  populateSuppDropdown('gainer');
+  renderKhataTable();
+});
+
+function switchMainTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  if (tab === 'fee') {
+    document.getElementById('tabBtnFee').classList.add('active');
+    document.getElementById('tabFee').classList.add('active');
+  } else if (tab === 'supp') {
+    document.getElementById('tabBtnSupp').classList.add('active');
+    document.getElementById('tabSupp').classList.add('active');
+  } else {
+    document.getElementById('tabBtnReg').classList.add('active');
+    document.getElementById('tabReg').classList.add('active');
+    renderKhataTable();
+  }
+}
+
+// Auto-fill logic
+function getAllMembersList() {
+  let saved = JSON.parse(localStorage.getItem("gym_members_db") || "[]");
+  let combined = [...MEMBERS];
+  saved.forEach(s => {
+    if (!combined.some(c => c.name.toLowerCase() === s.name.toLowerCase())) {
+      combined.push(s);
+    }
+  });
+  return combined;
+}
+
+function searchFeeMembers(q) {
+  const res = document.getElementById("searchResults");
+  const clean = q.toLowerCase().trim();
+  if (!clean) { res.style.display = "none"; return; }
+
+  const list = getAllMembersList().filter(m => m.name.toLowerCase().includes(clean) || (m.phone && m.phone.includes(clean)));
+  if (list.length === 0) { res.style.display = "none"; return; }
+
+  res.innerHTML = "";
+  list.forEach(m => {
+    let d = document.createElement("div");
+    d.className = "search-item";
+    d.innerHTML = `<b>${m.name}</b><small>पिता: ${m.father || '-'} | फोन: ${m.phone || 'N/A'}</small>`;
+    d.onclick = () => {
+      document.getElementById("feeSearch").value = m.name;
+      document.getElementById("feeName").value = m.name;
+      document.getElementById("feeFather").value = (m.father && m.father !== "-") ? m.father : "";
+      document.getElementById("feePhone").value = m.phone || "";
+      document.getElementById("feeJoinDate").value = m.joinDate || new Date().toISOString().split('T')[0];
+      res.style.display = "none";
+    };
+    res.appendChild(d);
+  });
+  res.style.display = "block";
+}
+
+// Referral Add & Save
+function toggleRefForm() {
+  const b = document.getElementById("refAddBox");
+  b.style.display = b.style.display === "block" ? "none" : "block";
+  document.getElementById("mRefDate").value = new Date().toISOString().split('T')[0];
+}
+
+function saveManualReferral() {
+  const name = document.getElementById("mRefName").value.trim();
+  const phone = document.getElementById("mRefPhone").value.trim();
+  const date = document.getElementById("mRefDate").value;
+  const status = document.getElementById("mRefStatus").value;
+
+  if (!name || !phone) { alert("रेफरल का नाम और मोबाइल लिखें!"); return; }
+
+  let saved = JSON.parse(localStorage.getItem("gym_members_db") || "[]");
+  saved.push({ name, phone, joinDate: date, father: "-", status: status });
+  localStorage.setItem("gym_members_db", JSON.stringify(saved));
+
+  referredList.push({ name, status });
+  referralCount = referredList.length;
+
+  document.getElementById("mRefName").value = "";
+  document.getElementById("mRefPhone").value = "";
+  document.getElementById("refAddBox").style.display = "none";
+
+  renderRefTags();
+  calcFeeDiscount();
+}
+
+function renderRefTags() {
+  const cont = document.getElementById("refTagsArea");
+  cont.innerHTML = "";
+  referredList.forEach((r, idx) => {
+    let t = document.createElement("div");
+    t.style = "background:#222; border:1px solid #ffcc00; color:#ffcc00; padding:2px 6px; border-radius:10px; font-size:10px; display:flex; align-items:center; gap:4px;";
+    t.innerHTML = `<span>👤 ${r.name} [${r.status}]</span><b onclick="removeRefTag(${idx})" style="color:red; cursor:pointer;">✕</b>`;
+    cont.appendChild(t);
   });
 }
 
-// KHATA REGISTER LOGIC
-function saveToKhataRegister(record) {
+function removeRefTag(idx) {
+  referredList.splice(idx, 1);
+  referralCount = referredList.length;
+  renderRefTags();
+  calcFeeDiscount();
+}
+
+function calcFeeDiscount() {
+  const type = document.getElementById("feeMemberType").value;
+  const base = type === "student" ? 300 : 500;
+  const disc = referralCount * 100;
+  const net = Math.max(0, base - disc);
+  document.getElementById("feeAmt").value = net;
+
+  const msg = document.getElementById("refDiscountMsg");
+  if (disc > 0) {
+    msg.style.display = "block";
+    msg.innerText = `✅ कुल रेफरल छूट: -₹${disc} | देय फीस: ₹${net}`;
+  } else {
+    msg.style.display = "none";
+  }
+}
+
+// Supplement Catalog Populate
+function populateSuppDropdown(cat) {
+  const pSel = document.getElementById("sProdSelect");
+  pSel.innerHTML = "";
+  (CATALOG[cat] || []).forEach((item, i) => {
+    let opt = document.createElement("option");
+    opt.value = item.name;
+    opt.innerText = item.name;
+    pSel.appendChild(opt);
+  });
+  populateSizes(pSel.value);
+}
+
+function populateSizes(prodName) {
+  const cat = document.getElementById("sCatSelect").value;
+  const prod = (CATALOG[cat] || []).find(p => p.name === prodName);
+  const sSel = document.getElementById("sSizeSelect");
+  sSel.innerHTML = "";
+  if (prod) {
+    prod.sizes.forEach(sz => {
+      let opt = document.createElement("option");
+      opt.value = sz;
+      opt.innerText = sz;
+      sSel.appendChild(opt);
+    });
+  }
+}
+
+function calcSuppDue() {
+  const price = parseFloat(document.getElementById("sPrice").value) || 0;
+  const paid = parseFloat(document.getElementById("sPaid").value) || 0;
+  const due = Math.max(0, price - paid);
+  document.getElementById("sDueDisplay").value = "₹" + due;
+}
+
+// Bill Submission
+function handleFeeSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById("feeName").value.trim();
+  const phone = document.getElementById("feePhone").value.trim();
+  const father = document.getElementById("feeFather").value.trim() || "-";
+  const joinDate = document.getElementById("feeJoinDate").value;
+  const amt = parseFloat(document.getElementById("feeAmt").value) || 0;
+
+  const today = new Date();
+  const paidDate = today.toLocaleDateString('en-GB');
+
+  let validTill = "-";
+  if (joinDate) {
+    let n = new Date(joinDate);
+    n.setMonth(n.getMonth() + 1);
+    validTill = n.toLocaleDateString('en-GB');
+  }
+
+  const billId = "5BFC-FEE-" + Date.now().toString().slice(-4);
+
+  // UI Receipt Fill
+  document.getElementById("billId").innerText = billId;
+  document.getElementById("rMode").innerText = "Gym Monthly Fee";
+  document.getElementById("billDate").innerText = paidDate;
+  document.getElementById("rName").innerText = name;
+  document.getElementById("rFatherRow").style.display = "flex";
+  document.getElementById("rFather").innerText = father;
+  document.getElementById("rFriendRow").style.display = "none";
+  document.getElementById("rPhone").innerText = phone;
+  document.getElementById("rGymFeeRow").style.display = "flex";
+  document.getElementById("rGymFee").innerText = "₹" + amt;
+  document.getElementById("rValidTillRow").style.display = "flex";
+  document.getElementById("rValidTill").innerText = validTill;
+  document.getElementById("rSuppBlock").style.display = "none";
+  document.getElementById("page2NoticeBlock").style.display = "none";
+
+  saveRecordToKhata({
+    id: billId,
+    date: paidDate,
+    name: name,
+    phone: phone,
+    mode: "Gym Fee",
+    paid: amt,
+    due: 0,
+    validTill: validTill,
+    details: "Monthly Renewal"
+  });
+
+  setupSocialButtons(name, phone, `✅ *फीस भुगतान रसीद*\n*(${billId})*\nसदस्य: ${name}\nजमा फीस: ₹${amt}\nवैधता: ${validTill}\n5 Brother's Fitness Club`);
+  document.getElementById("receiptModal").style.display = "flex";
+}
+
+function handleSuppSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById("sCustName").value.trim();
+  const phone = document.getElementById("sCustPhone").value.trim();
+  const fName = document.getElementById("sFriendName").value.trim();
+  const fPhone = document.getElementById("sFriendPhone").value.trim();
+  const prod = document.getElementById("sProdSelect").value;
+  const size = document.getElementById("sSizeSelect").value;
+  const price = parseFloat(document.getElementById("sPrice").value) || 0;
+  const paid = parseFloat(document.getElementById("sPaid").value) || 0;
+  const due = Math.max(0, price - paid);
+  const pDate = document.getElementById("sPromiseDate").value;
+
+  const today = new Date();
+  const paidDate = today.toLocaleDateString('en-GB');
+  const billId = "5BFC-SUPP-" + Date.now().toString().slice(-4);
+
+  document.getElementById("billId").innerText = billId;
+  document.getElementById("rMode").innerText = "Supplement Purchase";
+  document.getElementById("billDate").innerText = paidDate;
+  document.getElementById("rName").innerText = name;
+  document.getElementById("rFatherRow").style.display = "none";
+  document.getElementById("rFriendRow").style.display = "flex";
+  document.getElementById("rFriend").innerText = fName ? `${fName} (${fPhone})` : "-";
+  document.getElementById("rPhone").innerText = phone;
+  document.getElementById("rGymFeeRow").style.display = "none";
+  document.getElementById("rValidTillRow").style.display = "none";
+
+  document.getElementById("rSuppBlock").style.display = "block";
+  document.getElementById("page2NoticeBlock").style.display = due > 0 ? "block" : "none";
+  document.getElementById("rProd").innerText = prod;
+  document.getElementById("rSize").innerText = size;
+  document.getElementById("rProdPrice").innerText = "₹" + price;
+  document.getElementById("rCashPaid").innerText = "₹" + paid;
+  document.getElementById("rDueAmt").innerText = "₹" + due;
+  document.getElementById("rPromisedDate").innerText = pDate || "-";
+
+  saveRecordToKhata({
+    id: billId,
+    date: paidDate,
+    name: name,
+    phone: phone,
+    mode: "Supplement",
+    paid: paid,
+    due: due,
+    validTill: pDate || "-",
+    details: `${prod} (${size})`
+  });
+
+  setupSocialButtons(name, phone, `💊 *सप्लीमेंट रसीद*\n*(${billId})*\nनाम: ${name}\nप्रोडक्ट: ${prod} (${size})\nजमा: ₹${paid}\nबकाया: ₹${due}\nवादा तारीख: ${pDate}\n5 Brother's Fitness Club`);
+  document.getElementById("receiptModal").style.display = "flex";
+}
+
+function setupSocialButtons(name, phone, msg) {
+  document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(msg), "_blank");
+  document.getElementById("smsBtn").onclick = () => window.open(`sms:${phone}?body=${encodeURIComponent(msg)}`, "_blank");
+}
+
+function closeBillModalAndReset() {
+  document.getElementById("receiptModal").style.display = "none";
+  document.getElementById("feeOnlyForm").reset();
+  document.getElementById("suppOnlyForm").reset();
+  referredList = [];
+  referralCount = 0;
+  renderRefTags();
+  document.getElementById("feeJoinDate").value = new Date().toISOString().split('T')[0];
+  switchMainTab('fee');
+}
+
+// Khata Register Logic
+function saveRecordToKhata(rec) {
   let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
-  records.unshift(record);
+  records.unshift(rec);
   localStorage.setItem("gym_khata_records", JSON.stringify(records));
   renderKhataTable();
 }
@@ -1332,23 +1074,23 @@ function saveToKhataRegister(record) {
 function renderKhataTable() {
   const tbody = document.getElementById("khataTableBody");
   if (!tbody) return;
-  
+
   let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
-  const searchQ = (document.getElementById("regSearch")?.value || "").toLowerCase().trim();
-  const filterVal = document.getElementById("regFilterStatus")?.value || "ALL";
+  const q = (document.getElementById("regLiveSearch")?.value || "").toLowerCase().trim();
+  const filter = document.getElementById("regStatusFilter")?.value || "ALL";
 
   tbody.innerHTML = "";
 
   const filtered = records.filter(r => {
-    const matchQ = r.name.toLowerCase().includes(searchQ) || (r.phone && r.phone.includes(searchQ));
-    if (!matchQ) return false;
-    if (filterVal === "PAID") return r.due === 0;
-    if (filterVal === "DUE") return r.due > 0;
+    const m = r.name.toLowerCase().includes(q) || (r.phone && r.phone.includes(q));
+    if (!m) return false;
+    if (filter === "PAID") return r.due === 0;
+    if (filter === "DUE") return r.due > 0;
     return true;
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:12px; color:#777;">कोई रिकॉर्ड नहीं मिला</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:10px; color:#777;">कोई रिकॉर्ड नहीं मिला</td></tr>`;
     return;
   }
 
@@ -1356,22 +1098,22 @@ function renderKhataTable() {
     let tr = document.createElement("tr");
     tr.style.borderBottom = "1px solid #222";
     tr.innerHTML = `
-      <td style="padding:6px; color:#bbb;">${r.date}</td>
-      <td style="padding:6px; font-weight:bold;">${r.name}<br><small style="color:#777;">${r.phone}</small></td>
-      <td style="padding:6px; color:#aaa;">${r.mode}<br><small style="color:#666;">${r.details}</small></td>
-      <td style="padding:6px; color:#00ff99; font-weight:bold;">₹${r.paid}</td>
-      <td style="padding:6px; color:${r.due > 0 ? '#ff4d4d' : '#888'}; font-weight:bold;">${r.due > 0 ? '₹' + r.due : 'Cleared'}</td>
-      <td style="padding:6px; color:#ffcc00;">${r.validTill || '-'}</td>
-      <td style="padding:6px; text-align:center;">
-        <button type="button" onclick="deleteKhataRecord(${idx})" style="background:#ff3333; color:#fff; border:none; padding:4px 7px; border-radius:4px; font-size:10px; cursor:pointer;">🗑️ Del</button>
+      <td style="padding:5px; color:#aaa;">${r.date}</td>
+      <td style="padding:5px; font-weight:bold;">${r.name}<br><small style="color:#777;">${r.phone}</small></td>
+      <td style="padding:5px; color:#bbb;">${r.mode}<br><small style="color:#666;">${r.details}</small></td>
+      <td style="padding:5px; color:#00ff99;">₹${r.paid}</td>
+      <td style="padding:5px; color:${r.due > 0 ? '#ff4d4d' : '#888'}; font-weight:bold;">${r.due > 0 ? '₹' + r.due : 'Paid'}</td>
+      <td style="padding:5px; color:#ffcc00;">${r.validTill || '-'}</td>
+      <td style="padding:5px; text-align:center;">
+        <button type="button" onclick="deleteKhataItem(${idx})" style="background:#ff3333; color:#fff; border:none; padding:3px 6px; border-radius:3px; font-size:9px; cursor:pointer;">🗑️ Del</button>
       </td>
     `;
     tbody.appendChild(tr);
   });
 }
 
-function deleteKhataRecord(idx) {
-  if (confirm("क्या आप वाकई इस रिकॉर्ड को डिलीट करना चाहते हैं?")) {
+function deleteKhataItem(idx) {
+  if (confirm("क्या आप वाकई इस रिकॉर्ड को हटाना चाहते हैं?")) {
     let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
     records.splice(idx, 1);
     localStorage.setItem("gym_khata_records", JSON.stringify(records));
@@ -1381,20 +1123,31 @@ function deleteKhataRecord(idx) {
 
 function exportToExcelCSV() {
   let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
-  if (records.length === 0) {
-    alert("डाउनलोड करने के लिए कोई डाटा मौजूद नहीं है!");
-    return;
-  }
-  let csv = "Bill ID,Date,Name,Father/Guarantor,Phone,Mode,Paid (Rs),Due (Rs),Valid Till,Details\n";
+  if (records.length === 0) { alert("कोई डाटा उपलब्ध नहीं है!"); return; }
+  let csv = "ID,Date,Name,Phone,Mode,Paid,Due,Valid Till,Details\n";
   records.forEach(r => {
-    csv += `"${r.id}","${r.date}","${r.name}","${r.extra}","${r.phone}","${r.mode}","${r.paid}","${r.due}","${r.validTill || '-'}","${r.details}"\n`;
+    csv += `"${r.id}","${r.date}","${r.name}","${r.phone}","${r.mode}","${r.paid}","${r.due}","${r.validTill}","${r.details}"\n`;
   });
   let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   let link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `5BFC_Register_${new Date().toISOString().split('T')[0]}.csv`;
+  link.download = `5BFC_Report_${new Date().toISOString().split('T')[0]}.csv`;
   link.click();
+}
+
+function saveBillImage() {
+  const btn = document.getElementById("dlBtn");
+  btn.innerText = "⏳ Saving...";
+  html2canvas(document.getElementById("printablePages"), { scale: 2, backgroundColor: "#0a0a0a" }).then(canvas => {
+    let a = document.createElement("a");
+    a.download = "Bill_" + document.getElementById("billId").innerText + ".png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+    btn.innerText = "✅ Saved!";
+    setTimeout(() => { btn.innerText = "📥 Image Save"; }, 2000);
+  });
 }
 </script>
 </body>
 </html>
+
