@@ -182,19 +182,23 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
             <input type="number" id="gymFee" value="500" min="0">
           </div>
         </div>
+  </div>
+        
+              <!-- SMART REFERRAL SECTION WITH MEMBER SELECT -->
+        <div id="referralBox" style="background:rgba(255,204,0,0.06); border:1.5px dashed #ffcc00; border-radius:10px; padding:11px; margin-top:10px;">
+          <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:5px;">🤝 सदस्य रेफरल छूट (-₹100 प्रति मेंबर):</div>
+          <div style="font-size:10px; color:#aaa; margin-bottom:6px;">इस सदस्य ने जिम में जिन भाइयों को जोड़ा है, उन्हें नीचे से चुनें:</div>
+          
+          <select id="refMemberSelect" onchange="addReferredMember(this.value)">
+            <option value="">-- रेफर किए गए सदस्य का नाम चुनें --</option>
+          </select>
 
-        <!-- REFERRAL DISCOUNT (+1) COUNTER -->
-        <div id="referralBox" style="background:rgba(255,204,0,0.06); border:1px dashed #ffcc00; border-radius:10px; padding:10px; margin-top:10px;">
-          <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">🤝 सदस्य रेफरल छूट (नया भाई जोड़ने पर):</div>
-          <div style="display:flex; align-items:center; justify-content:space-between;">
-            <span style="font-size:12px; color:#ccc;">जोड़े गए भाई: <b id="refCountDisp" style="color:#00ff99;">0</b> (-₹100/member)</span>
-            <div style="display:flex; gap:6px;">
-              <button type="button" onclick="modifyReferral(-1)" style="background:#333; color:#fff; border:1px solid #555; width:32px; height:32px; border-radius:6px; font-weight:bold; cursor:pointer;">-</button>
-              <button type="button" onclick="modifyReferral(1)" style="background:#ffcc00; color:#000; border:none; width:32px; height:32px; border-radius:6px; font-weight:bold; cursor:pointer;">+1</button>
-            </div>
-          </div>
-          <div id="refDiscountAlert" style="font-size:11px; color:#00ff99; margin-top:5px; display:none;"></div>
+          <!-- Selected Referrals Badges -->
+          <div id="refTagsContainer" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;"></div>
+          
+          <div id="refDiscountAlert" style="font-size:11px; color:#00ff99; font-weight:bold; margin-top:8px; display:none;"></div>
         </div>
+      
       </div>
 
       <div class="box-panel" id="suppSection">
@@ -207,9 +211,7 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
           <button type="button" class="cat-pill" onclick="switchCategory('preworkout', this)">Pre-Workout</button>
           <button type="button" class="cat-pill" onclick="switchCategory('fishoil', this)">Fish Oil</button>
           <button type="button" class="cat-pill" onclick="switchCategory('peanut', this)">Peanut Butter</button>
-        </div>
-
-        <div id="prodListContainer"></div>
+      <div id="prodListContainer"></div>
 
         <div class="live-compare-box" id="compareBox">
           <div style="font-size:11px; color:#ffcc00; font-weight:bold;" id="compareTitle">🌐 Market Analysis:</div>
