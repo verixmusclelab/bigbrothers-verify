@@ -902,3 +902,127 @@ function saveBillImage() {
 </script>
 </body>
 </html>
+function generateKhataBill(e) {
+  e.preventDefault();
+  
+  const name = document.getElementById("mName").value.trim();
+  const phone = document.getElementById("mPhone").value.trim();
+  const father = document.getElementById("mFather").value.trim() || "-";
+  const friendName = document.getElementById("mFriendName").value.trim();
+  const friendPhone = document.getElementById("mFriendPhone").value.trim();
+  
+  if (currentMode === 'supp') {
+    if (!friendName || !friendPhone) {
+      alert("सप्लीमेंट उधारी के लिए Guarantor (दोस्त) का नाम और मोबाइल नंबर अनिवार्य है!");
+      return;
+    }
+  }
+
+  const billId = "5BFC-" + (currentMode === 'fee' ? "FEE" : (currentMode === 'supp' ? "SUPP" : "COMB")) + Date.now().toString().slice(-4);
+  const todayStr = new Date().toLocaleDateString('en-GB');
+
+  let modeText = "Gym Fee + Supplement";
+  if (currentMode === 'fee') modeText = "Gym Fee Only";
+  if (currentMode === 'supp') modeText = "Supplement Only (No Fee)";
+
+  document.getElementById("billId").innerText = billId;
+  document.getElementById("rMode").innerText = modeText;
+  document.getElementById("billDate").innerText = todayStr;
+  document.getElementById("rName").innerText = name;
+  document.getElementById("rPhone").innerText = phone;
+
+  if (currentMode === 'supp') {
+    document.getElementById("rFatherRow").style.display = "none";
+    document.getElementById("rFriendRow").style.display = "flex";
+    document.getElementById("rFriend").innerText = `${friendName} (${friendPhone})`;
+    document.getElementById("rGymFeeRow").style.display = "none";
+  } else {
+    document.getElementById("rFatherRow").style.display = "flex";
+    document.getElementById("rFather").innerText = father;
+    document.getElementById("rFriendRow").style.display = "none";
+    document.getElementById("rGymFeeRow").style.display = "flex";
+    document.getElementById("rGymFee").innerText = "₹" + (document.getElementById("gymFee").value || "0");
+  }
+
+  let prod = "", size = "", price = 0, paid = 0, due = 0, pDateFormatted = "-";
+  
+  if (currentMode !== 'fee') {
+    if (!selectedProductObj) {
+      alert("कृपया सप्लीमेंट प्रोडक्ट चुनें!");
+      return;
+    }
+    prod = selectedProductObj.name;
+    size = document.getElementById("sizeSelect").value;
+    price = parseFloat(document.getElementById("prodPrice").value) || 0;
+    paid = parseFloat(document.getElementById("cashPaid").value) || 0;
+    due = Math.max(0, price - paid);
+    
+    const pDateVal = document.getElementById("promisedDate").value;
+    if (pDateVal) {
+      pDateFormatted = new Date(pDateVal).toLocaleDateString('en-GB');
+    }
+
+    document.getElementById("rSuppDetailsBlock").style.display = "block";
+    document.getElementById("page2NoticeBlock").style.display = "block";
+    document.getElementById("rProd").innerText = prod;
+    document.getElementById("rSize").innerText = size;
+    document.getElementById("rProdPrice").innerText = "₹" + price;
+    document.getElementById("rCashPaid").innerText = "₹" + paid;
+    document.getElementById("rDueAmt").innerText = "₹" + due + " (बाकी)";
+    document.getElementById("rPromisedDate").innerText = pDateFormatted;
+  } else {
+    document.getElementById("rSuppDetailsBlock").style.display = "none";
+    document.getElementById("page2NoticeBlock").style.display = "none";
+  }
+
+  // WhatsApp Message
+  let waText = "📋 *5 BROTHER'S FITNESS CLUB (" + billId + ")*\n" +
+    "\"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।\"\n\n" +
+    "• रसीद प्रकार: " + modeText + "\n" +
+    "• सदस्य का नाम: " + name + "\n" +
+    "• मोबाइल: " + phone + "\n";
+
+  if (currentMode !== 'supp') {
+    waText += "• जिम फीस: ₹" + (document.getElementById("gymFee").value || "0") + " (जमा)\n";
+  } else {
+    waText += "• Guarantor (दोस्त): " + friendName + " (Ph: " + friendPhone + ")\n";
+  }
+
+  if (currentMode !== 'fee') {
+    waText += "• सप्लीमेंट: " + prod + " (" + size + ")\n" +
+      "• तय कीमत: ₹" + price + "\n" +
+      "• नगद जमा: ₹" + paid + "\n" +
+      "🔴 *सप्लीमेंट बकाया (Balance Due): ₹" + due + "*\n" +
+      "📅 *वादा तारीख (Salary Clearance): " + pDateFormatted + "*\n\n" +
+      "⚠️ *सप्लीमेंट उधारी नियम व व्यक्तिगत उत्तरदायित्व:*\n" +
+      "सप्लीमेंट डाइट न रुके इसलिए 0% पर दिया जाता है। डिस्ट्रीब्यूटर पेमेंट साइकिल हेतु तय तारीख के बाद विलंब शुल्क लागू होगा:\n" +
+      "• 7 दिन बाद: +₹100\n" +
+      "• 15 दिन बाद: +₹200\n" +
+      "• 30 दिन बाद: +₹500\n\n" +
+      "कृपया वादा तारीख (" + pDateFormatted + ") तक क्लियर करें।";
+  }
+
+  document.getElementById("waBtn").onclick = () => {
+    window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(waText), "_blank");
+  };
+
+  document.getElementById("receiptModal").style.display = "flex";
+}
+
+function saveBillImage() {
+  const btn = document.getElementById("dlBtn");
+  btn.innerText = "⏳ Saving...";
+  const element = document.getElementById("printablePages");
+
+  html2canvas(element, { scale: 2, backgroundColor: "#0a0a0a" }).then(canvas => {
+    let a = document.createElement("a");
+    a.download = "5_Brothers_Bill_" + document.getElementById("billId").innerText + ".png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+    btn.innerText = "✅ Saved!";
+    setTimeout(() => { btn.innerText = "📥 Save Both Pages"; }, 2500);
+  });
+}
+</script>
+</body>
+</html>
