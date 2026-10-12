@@ -25,7 +25,7 @@ input[type="date"]{cursor:pointer;}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
 /* SMART SEARCH DROPDOWN */
-#searchResults{position:absolute;top:100%;left:0;right:0;background:#1c1c1c;border:1.5px solid #ffcc00;border-radius:10px;max-height:220px;overflow-y:auto;z-index:9999;display:none;margin-top:4px;box-shadow:0 8px 25px rgba(0,0,0,0.8);}
+#searchResults{position:absolute;top:100%;left:0;right:0;background:#1c1c1c;border:1.5px solid #ffcc00;border-radius:10px;max-height:220px;overflow-y:auto;z-index:99999;display:none;margin-top:4px;box-shadow:0 8px 25px rgba(0,0,0,0.9);}
 .search-item{padding:10px 12px;border-bottom:1px solid #333;cursor:pointer;font-size:13px;color:#eee;}
 .search-item:hover, .search-item:active{background:#2a2600;color:#ffcc00;}
 .search-item small{display:block;color:#aaa;font-size:11px;margin-top:2px;}
@@ -75,7 +75,7 @@ input[type="date"]{cursor:pointer;}
 
   <form id="quickPayForm" onsubmit="handleQuickPay(event)">
     
-    <!-- SMART HINDI SEARCH -->
+    <!-- SMART SEARCH -->
     <div class="field-group">
       <label>🔍 सदस्य का नाम या पिता का नाम खोजें <span>*</span></label>
       <input type="text" id="memberSearchInput" autocomplete="off" placeholder="यहाँ नाम, पिता का नाम या फोन नंबर लिखें..." oninput="handleSearch(this.value)">
@@ -122,7 +122,7 @@ input[type="date"]{cursor:pointer;}
 
     <!-- LATE PAYMENT WARNING ALERT -->
     <div class="late-alert" id="lateWarningBox">
-      ⚠️ <b>विलंब सूचना (Late Fee Alert):</b> आपकी मासिक फीस की देय तिथि निकल चुकी है। आप <b id="lateDaysCount">0</b> दिन विलंब से भुगतान कर रहे हैं। कृपया जिम नियमानुसार समय पर फीस जमा करें।
+      ⚠️ <b>विलंब सूचना (Late Fee Alert):</b> आपकी मासिक फीस की देय तिथि निकल चुकी है। आप <b id="lateDaysCount">0</b> दिन विलंब से भुगतान कर रहे हैं।
     </div>
 
     <div class="field-group">
@@ -231,11 +231,10 @@ const CONFIG = {
   merchantName: "5 Brother's Fitness Club",
   whatsappNumber: "919990954574",
   adminPassword: "Sau@833699",
-  // YOUR CONNECTED GOOGLE FORM LINK
   formActionUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfC9RbnrpSnK0Lk9rX5lQ8D7jCNJReeGkAiZIojX-1_ee9LjQ/formResponse"
 };
 
-// ---------------- 100% MATCHED GYM DIRECTORY (1 TO 39) ----------------
+// ---------------- UPDATED GYM DIRECTORY (41 MEMBERS) ----------------
 const MEMBERS_DIRECTORY = [
   { name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", joinDate: "2026-10-01", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 400, keywords: ["ayush", "yadav"] },
   { name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", joinDate: "2026-10-01", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 400, keywords: ["aryan", "tiwari"] },
@@ -258,9 +257,10 @@ const MEMBERS_DIRECTORY = [
   { name: "राकेश कुमार (Rakesh Kumar)", father: "राज कुमार", phone: "6306591914", joinDate: "2026-10-08", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["rakesh"] },
   { name: "रितेश (Ritesh Rawat)", father: "सर्व रावत", phone: "8187974525", joinDate: "2026-10-08", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["ritesh", "rawat"] },
   { name: "हर्ष सैनी (Harsh Saini)", father: "-", phone: "", joinDate: "2026-10-10", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["harsh", "saini"] },
+  { name: "ध्रुव (Dhruv)", father: "-", phone: "", joinDate: "2026-10-10", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["dhruv", "dhruva"] },
   { name: "तौसीफ (Tauseef)", father: "मो० शब्बीर", phone: "7317323893", joinDate: "2026-10-11", batch: "जनरल बैच (General: दोनों समय)", fee: 1200, keywords: ["tauseef"] },
   { name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["rishabh", "sharma"] },
-  { name: "दीपक (Deepak )", father: "पप्पू", phone: "7388264067", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["deepak", "awasthi"] },
+  { name: "दीपक (Deepak)", father: "पप्पू", phone: "7388264067", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["deepak", "pappu"] },
   { name: "अंकित (Ankit)", father: "श्री राम", phone: "8090416252", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["ankit"] },
   { name: "चंदन (Chandan)", father: "श्री भूरे", phone: "8303504842", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["chandan"] },
   { name: "राजू (Mr Raju Verma)", father: "-", phone: "9219528229", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["raju", "verma"] },
@@ -275,9 +275,10 @@ const MEMBERS_DIRECTORY = [
   { name: "कमल (Kamal)", father: "-", phone: "", joinDate: "2026-10-06", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["kamal"] },
   { name: "लाला वर्मा (Lala Verma)", father: "-", phone: "6386232805", joinDate: "2026-11-01", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["lala", "verma"] },
   { name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-10-07", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["sonu"] },
-  { name: "(Armaan )", father: "-", phone: "", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["armaan"] }
+  { name: "अरमान (Armaan)", father: "-", phone: "", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["armaan", "arman", "aman"] },
+  { name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "", joinDate: "2022-01-11", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["ashish", "diwedi", "dwivedi"] }
 ];
-
+  
 let lateStatusStr = "समय पर (On Time)";
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -305,7 +306,7 @@ function handleSearch(query) {
   });
 
   if(matches.length === 0) {
-    resDiv.innerHTML = `<div class="search-item" style="color:#aaa;">कोई सदस्य नहीं मिला! आप हाथ से नाम भर सकते हैं।</div>`;
+    resDiv.innerHTML = `<div class="search-item" style="color:#aaa;">कोई सदस्य नहीं मिला! हाथ से नाम लिखें।</div>`;
     resDiv.style.display = "block";
     return;
   }
@@ -346,10 +347,11 @@ function setAmt(val) {
   checkLateAndValidity();
 }
 
+// STRICT JOINING DAY VALIDITY & LATE CHECK
 function checkLateAndValidity() {
   const pDateVal = document.getElementById("payDate").value;
   const jDateVal = document.getElementById("joinDate").value;
-  if(!pDateVal || !jDateVal) return;
+  if(!pDateVal || !jDateVal) return "";
 
   const payDate = new Date(pDateVal);
   const joinDate = new Date(jDateVal);
@@ -358,12 +360,11 @@ function checkLateAndValidity() {
   const lateBox = document.getElementById("lateWarningBox");
   const lateCount = document.getElementById("lateDaysCount");
 
-  // Joining date ke adhar par agle mahine ki date (Valid Till)
+  // Joining date par fixed agle mahine ki date (Valid Till)
   let nextDue = new Date(joinDate);
   const monthsToAdd = payType.includes("3 महीने") ? 3 : 1;
   nextDue.setMonth(nextDue.getMonth() + monthsToAdd);
 
-  // Late days check (Joining date cycle ke hisab se)
   if(payDate > joinDate) {
     const diffTime = payDate - joinDate;
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -381,7 +382,6 @@ function checkLateAndValidity() {
     lateStatusStr = "समय पर (On Time)";
   }
 
-  // Next Due Date (Valid Till) joining date ke day par fix rahegi
   const d = nextDue.getDate().toString().padStart(2, '0');
   const m = (nextDue.getMonth() + 1).toString().padStart(2, '0');
   const y = nextDue.getFullYear();
@@ -389,15 +389,9 @@ function checkLateAndValidity() {
 
   document.getElementById("validUntilText").innerText = validStr + " (अगली फीस देय)";
   return validStr;
-    }
-  
-
-  const validStr = d.toLocaleDateString('en-GB');
-  document.getElementById("validUntilText").innerText = validStr + " (अगली फीस देय)";
-  return validStr;
 }
 
-// AUTO-SYNC TO YOUR GOOGLE FORM / SHEET
+// GOOGLE SHEET DIRECT SYNC
 function syncToGoogleSheet(name, phone, amount, payDate, receiptId) {
   const formData = new FormData();
   formData.append("entry.1983058914", name);
@@ -410,7 +404,7 @@ function syncToGoogleSheet(name, phone, amount, payDate, receiptId) {
     method: "POST",
     mode: "no-cors",
     body: formData
-  }).catch(err => console.log("Sheet Sync Status:", err));
+  }).catch(err => console.log("Sync:", err));
 }
 
 function handleQuickPay(e) {
@@ -430,10 +424,8 @@ function handleQuickPay(e) {
   const dPay = new Date(payDate).toLocaleDateString('en-GB');
   const dJoin = new Date(joinDate).toLocaleDateString('en-GB');
 
-  // 1. Central Sheet Auto-Sync
   syncToGoogleSheet(name, phone, amount, dPay, rcptId);
 
-  // 2. Local Save
   try {
     let payments = JSON.parse(localStorage.getItem("5bfc_payments") || "[]");
     payments.unshift({
@@ -452,7 +444,6 @@ function handleQuickPay(e) {
     localStorage.setItem("5bfc_payments", JSON.stringify(payments));
   } catch(err) {}
 
-  // 3. Render Receipt
   document.getElementById("rId").innerText = rcptId;
   document.getElementById("rName").innerText = name;
   document.getElementById("rFather").innerText = father;
