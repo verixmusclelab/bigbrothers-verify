@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Big Brothers - सप्लीमेंट उधारी व फीस बिलिंग</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+body{background:#0a0a0a;color:#fff;padding:12px;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+
+.main-card{background:#141414;border:2.5px solid #ffcc00;border-radius:20px;max-width:520px;width:100%;padding:20px;box-shadow:0 0 30px rgba(255,204,0,0.25);}
+.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:12px;margin-bottom:16px;}
+.header h1{color:#ffcc00;font-size:20px;text-transform:uppercase;letter-spacing:0.5px;}
+.header p{color:#bbb;font-size:12px;margin-top:4px;}
+
+.field-group{margin-bottom:12px;position:relative;}
+label{display:block;font-size:12px;color:#eee;margin-bottom:4px;font-weight:600;}
+label span{color:#ff3333;}
+input, select{width:100%;background:#202020;border:1.5px solid #444;color:#fff;padding:11px;border-radius:10px;font-size:13px;outline:none;}
+input:focus, select:focus{border-color:#ffcc00;background:#181818;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* SEARCH DROPDOWN */
+#searchResults{position:absolute;top:100%;left:0;right:0;background:#1c1c1c;border:1.5px solid #ffcc00;border-radius:10px;max-height:200px;overflow-y:auto;z-index:99999;display:none;margin-top:3px;}
+.search-item{padding:9px 12px;border-bottom:1px solid #333;cursor:pointer;font-size:13px;}
+.search-item:hover{background:#2a2600;color:#ffcc00;}
+.search-item small{display:block;color:#aaa;font-size:11px;}
+
+.box-panel{background:#181818;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:12px;}
+.box-title{font-size:13px;font-weight:bold;color:#ffcc00;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+
+.balance-box{background:#2d0808;border:1.5px solid #ff3333;border-radius:10px;padding:10px;text-align:center;margin-top:8px;}
+.balance-box b{color:#ff4d4d;font-size:16px;}
+
+.submit-btn{width:100%;background:#25D366;color:#fff;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(37,211,102,0.4);margin-top:6px;}
+.submit-btn:active{transform:scale(0.98);}
+
+/* MODAL SYSTEM */
+#receiptModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:999999;justify-content:center;align-items:center;padding:12px;overflow-y:auto;}
+.receipt-wrapper{max-width:440px;width:100%;}
+.receipt-card{background:#fff;color:#000;border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 8px 30px rgba(0,0,0,0.8);position:relative;}
+.receipt-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:8px;margin-bottom:10px;}
+.r-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;border-bottom:1px dotted #ccc;padding-bottom:3px;}
+
+/* PAGE 2 DEDICATED HIGH-ALERT NOTICE */
+.page2-alert{background:#fff0f0;border:2.5px solid #e50914;border-radius:12px;padding:14px;color:#000;}
+.page2-header{background:#e50914;color:#fff;padding:6px;border-radius:6px;text-align:center;font-weight:bold;font-size:13px;margin-bottom:10px;}
+.penalty-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px;}
+.penalty-table th, .penalty-table td{border:1px solid #d9534f;padding:6px;text-align:center;}
+.penalty-table th{background:#ffd2d2;color:#b20000;font-weight:bold;}
+
+.action-btns{display:flex;gap:8px;margin-top:10px;}
+.dl-btn{flex:1;background:#111;color:#ffcc00;border:none;padding:12px;border-radius:8px;font-weight:bold;cursor:pointer;}
+.wa-btn{flex:1;background:#25D366;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="main-card">
+  <div class="header">
+    <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px; display:inline-block; margin-bottom:5px;">OFFICIAL STORE & FEE REGISTER</div>
+    <h1>5 Brother's Fitness & Supplements</h1>
+    <p>उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259, 9990954574</p>
+  </div>
+
+  <form id="khataForm" onsubmit="generateKhataBill(event)">
+    <!-- 1. MEMBER AUTO SEARCH -->
+    <div class="field-group">
+      <label>🔍 सदस्य का नाम या पिता का नाम खोजें <span>*</span></label>
+      <input type="text" id="memberSearch" autocomplete="off" placeholder="नाम या मोबाइल लिखें..." oninput="searchMembers(this.value)">
+      <div id="searchResults"></div>
+    </div>
+
+    <div class="row">
+      <div class="field-group">
+        <label>सदस्य का नाम</label>
+        <input type="text" id="mName" required placeholder="पूरा नाम">
+      </div>
+      <div class="field-group">
+        <label>पिता का नाम</label>
+        <input type="text" id="mFather" placeholder="पिता का नाम">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field-group">
+        <label>मोबाइल नंबर</label>
+        <input type="tel" id="mPhone" required placeholder="10 अंक">
+      </div>
+      <div class="field-group">
+        <label>जॉइनिंग तिथि</label>
+        <input type="date" id="mJoinDate" required onclick="this.showPicker()">
+      </div>
+    </div>
+
+    <!-- 2. GYM FEE SECTION -->
+    <div class="box-panel">
+      <div class="box-title">🏋️ जिम मासिक फीस (Gym Fee)</div>
+      <div class="row">
+        <div class="field-group" style="margin-bottom:0;">
+          <label>जमा फीस (₹ Cash/UPI)</label>
+          <input type="number" id="gymFee" value="500" min="0" placeholder="0">
+        </div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label>फीस स्थिति</label>
+          <select id="feeStatus">
+            <option value="जमा (Received)">जमा (Received)</option>
+            <option value="कोई फीस नहीं ली">कोई फीस नहीं ली (Only Store)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. SUPPLEMENT STORE SECTION -->
+    <div class="box-panel">
+      <div class="box-title">💊 सप्लीमेंट चयन (Original Store Catalog)</div>
+      
+      <div class="field-group">
+        <label>प्रोडक्ट व वेरिएंट चुनें <span>*</span></label>
+        <select id="prodSelect" required onchange="calcKhata()">
+          <option value="">-- सप्लीमेंट चुनें --</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="field-group">
+          <label>तय कुल कीमत (₹ Manual Rate) <span>*</span></label>
+          <input type="number" id="prodPrice" required placeholder="जैसे 1500" min="0" oninput="calcKhata()">
+        </div>
+        <div class="field-group">
+          <label>नगद जमा (₹ Cash Paid) <span>*</span></label>
+          <input type="number" id="cashPaid" required value="0" min="0" oninput="calcKhata()">
+        </div>
+      </div>
+
+      <div class="field-group" style="margin-bottom:0;">
+        <label>वादा तारीख (Promised Salary Clearance Date) <span>*</span></label>
+        <input type="date" id="promisedDate" required onclick="this.showPicker()">
+      </div>
+
+      <div class="balance-box">
+        सप्लीमेंट बकाया राशि (Due Balance): <b id="dueDisplay">₹0</b>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn">📑 Generate 2-Page Official Bill Slip</button>
+  </form>
+</div>
+
+<!-- 2-PAGE DEDICATED RECEIPT POPUP -->
+<div id="receiptModal">
+  <div class="receipt-wrapper">
+    
+    <div id="printablePages">
+      <!-- PAGE 1: OFFICIAL INVOICE -->
+      <div class="receipt-card">
+        <div class="receipt-header">
+          <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">PAGE 1 : OFFICIAL INVOICE</div>
+          <h2 style="font-size:17px; margin-top:4px;">5 Brother's Fitness Club & Supplements</h2>
+          <p style="font-size:11px; color:#555;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
+        </div>
+
+        <div class="r-row"><span>Bill Slip ID:</span><b id="billId" style="color:#b37400;"></b></div>
+        <div class="r-row"><span>तारीख:</span><b id="billDate"></b></div>
+        <div class="r-row"><span>सदस्य का नाम:</span><b id="rName"></b></div>
+        <div class="r-row"><span>पिता का नाम:</span><b id="rFather"></b></div>
+        <div class="r-row"><span>मोबाइल नंबर:</span><b id="rPhone"></b></div>
+        
+        <div class="r-row" style="background:#f9f9f9; padding:4px 0;"><span>जिम फीस (Cash Received):</span><b id="rGymFee" style="color:green;"></b></div>
+        <div class="r-row"><span>सप्लीमेंट:</span><b id="rProd" style="max-width:240px; text-align:right;"></b></div>
+        <div class="r-row"><span>सप्लीमेंट कुल कीमत:</span><b id="rProdPrice"></b></div>
+        <div class="r-row"><span>नगद जमा राशि (Paid):</span><b id="rCashPaid" style="color:green;"></b></div>
+        
+        <div class="r-row" style="background:#ffecec; padding:6px 0; border:1px solid #ffcccc; border-radius:6px; margin-top:6px;">
+          <span style="color:#b20000; font-weight:bold;">सप्लीमेंट बकाया (Balance Due):</span>
+          <b id="rDueAmt" style="color:#d9534f; font-size:15px;"></b>
+        </div>
+        <div class="r-row" style="margin-top:4px;">
+          <span style="color:#b37400; font-weight:bold;">वादा तारीख (Salary Date):</span>
+          <b id="rPromisedDate" style="color:#b37400;"></b>
+        </div>
+      </div>
+
+      <!-- PAGE 2: STRICT NOTICE & PRATIGYA-PATRA -->
+      <div class="receipt-card page2-alert">
+        <div class="page2-header">⚠️ पृष्ठ 2 : सप्लीमेंट उधारी नियम व व्यक्तिगत उत्तरदायित्व</div>
+        
+        <p style="font-size:12px; line-height:1.5; text-align:justify;">
+          "सप्लीमेंट कोई बिजनेस मार्जिन का खेल नहीं, सिर्फ आपकी डाइट और प्रोग्रेस न रुके इसलिए अपने पैसे फंसाकर आपको दिया जाता है। डिस्ट्रीब्यूटर को हर 15 दिन में पूरा पेमेंट क्लियर करना अनिवार्य होता है। जब आप 1-1 महीना पेमेंट रोकते हैं, तो नया स्टॉक रुक जाता है और दूसरे भाइयों को सप्लीमेंट नहीं मिल पाता। इस नुकसान की भरपाई और डिस्ट्रीब्यूटर पेनल्टी के लिए यह विलंब शुल्क लिया जाना अनिवार्य है:"
+        </p>
+
+        <table class="penalty-table">
+          <thead>
+            <tr>
+              <th>विलंब अवधि (Late Days)</th>
+              <th>अतिरिक्त पेनल्टी (Penalty Fee)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>वादा तारीख से 7 दिन बाद</td><td><b>+ ₹100 Extra</b></td></tr>
+            <tr><td>वादा तारीख से 15 दिन बाद</td><td><b>+ ₹200 Extra</b></td></tr>
+            <tr><td>वादा तारीख से 30 दिन बाद</td><td><b>+ ₹500 Extra</b></td></tr>
+          </tbody>
+        </table>
+
+        <div style="font-size:11px; background:#fff; border:1px dashed #d9534f; padding:8px; border-radius:6px; line-height:1.4;">
+          <b>सदस्य सहमति (Accepted):</b> मैंने यह शर्त ध्यानपूर्वक पढ़ ली है और मैं अपनी तय वादा तारीख तक पूरी बकाया राशि चुकाने का वचन देता हूँ।
+        </div>
+      </div>
+    </div>
+
+    <div class="action-btns" data-html2canvas-ignore="true">
+      <button type="button" class="dl-btn" id="dlBtn" onclick="saveBillImage()">📥 Save Both Pages (Gallery)</button>
+      <button type="button" class="wa-btn" id="waBtn">📲 Send To Member WA</button>
+    </div>
+    <button type="button" onclick="document.getElementById('receiptModal').style.display='none'" style="width:100%; background:#333; color:#fff; border:none; padding:10px; border-radius:8px; margin-top:8px; cursor:pointer;">बंद करें (Close)</button>
+  </div>
+</div>
+
+<script>
+// 41 VERIFIED MEMBERS
+const MEMBERS = [
+  { name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", joinDate: "2026-10-01" },
+  { name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", joinDate: "2026-10-01" },
+  { name: "विशाल (Vishal)", father: "राम विलास", phone: "8470994110", joinDate: "2026-10-01" },
+  { name: "मोटोले (Motole)", father: "-", phone: "", joinDate: "2026-10-02" },
+  { name: "नैतिक (Naitik Gupta)", father: "अशोक गुप्ता", phone: "9795238010", joinDate: "2026-10-01" },
+  { name: "संदीप (Sandip Kashyap)", father: "बबलू कश्यप", phone: "8440812271", joinDate: "2026-10-01" },
+  { name: "सचिन (Sachin Rajput)", father: "राकेश राजपूत", phone: "9235819564", joinDate: "2026-10-01" },
+  { name: "दीपक चौहान 1 (Deepak Chauhan I)", father: "प्रकाश चौहान", phone: "7037945582", joinDate: "2026-10-03" },
+  { name: "दीपक चौहान 2 (Deepak Chauhan II)", father: "प्रकाश चौहान", phone: "", joinDate: "2026-10-03" },
+  { name: "प्रियांशु (Priyanshu - Old)", father: "-", phone: "", joinDate: "2026-09-03" },
+  { name: "अर्जुन (Arjun)", father: "रामगोपाल", phone: "7388366670", joinDate: "2026-10-07" },
+  { name: "शहनवाज़ (Shahnawaz)", father: "मो० शब्बीर", phone: "9867742095", joinDate: "2026-10-05" },
+  { name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07" },
+  { name: "अतुल (Atul Vimal)", father: "अनूप", phone: "6306377217", joinDate: "2026-10-08" },
+  { name: "अंशू (Anshu Verma)", father: "कमलेश", phone: "9044680605", joinDate: "2026-10-08" },
+  { name: "देवेन्द्र (Devendra)", father: "विनोद", phone: "7905282515", joinDate: "2026-10-08" },
+  { name: "निरंजन (Niranjan Suryavanshi)", father: "श्रीमती", phone: "8400748946", joinDate: "2026-10-08" },
+  { name: "आकाश विश्वकर्मा (Akash Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "8953133193", joinDate: "2026-09-15" },
+  { name: "दिनेश कुमार (Dinesh Kumar)", father: "लल्लन", phone: "7260981026", joinDate: "2026-10-08" },
+  { name: "राकेश कुमार (Rakesh Kumar)", father: "राज कुमार", phone: "6306591914", joinDate: "2026-10-08" },
+  { name: "रितेश (Ritesh Rawat)", father: "सर्व रावत", phone: "8187974525", joinDate: "2026-09-08" },
+  { name: "हर्ष सैनी (Harsh Saini)", father: "-", phone: "", joinDate: "2026-09-10" },
+  { name: "ध्रुव (Dhruv)", father: "-", phone: "", joinDate: "2026-10-10" },
+  { name: "तौसीफ (Tauseef)", father: "मो० शब्बीर", phone: "7317323893", joinDate: "2026-09-11" },
+  { name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15" },
+  { name: "दीपक (Deepak)", father: "पप्पू", phone: "7388264067", joinDate: "2026-09-15" },
+  { name: "अंकित (Ankit)", father: "श्री राम", phone: "8090416252", joinDate: "2026-09-15" },
+  { name: "चंदन (Chandan)", father: "श्री भूरे", phone: "8303504842", joinDate: "2026-09-15" },
+  { name: "राजू (Mr Raju Verma)", father: "-", phone: "9219528229", joinDate: "2026-09-15" },
+  { name: "राम रतन (Ram Ratan)", father: "श्री सोहन", phone: "7570994547", joinDate: "2026-09-16" },
+  { name: "डॉ ए. के. (Dr A. K Prabhakar)", father: "-", phone: "7268902436", joinDate: "2026-09-15" },
+  { name: "आयुष प्रभाकर (Ayush Junior)", father: "डॉ ए. के. प्रभाकर", phone: "7268902436", joinDate: "2026-09-15" },
+  { name: "विशाल रावत (Vishal Rawat)", father: "-", phone: "", joinDate: "2026-09-20" },
+  { name: "इशांत (Ishant Verma)", father: "सुशील कुमार", phone: "8090894105", joinDate: "2026-09-25" },
+  { name: "साहिल वर्मा (Sahil Verma)", father: "शम्मी कपूर", phone: "9336898447", joinDate: "2026-09-15" },
+  { name: "प्रवीन (Pravin Rawat)", father: "इन्द्रपाल रावत", phone: "7275005052", joinDate: "2026-09-29" },
+  { name: "साहिल (New Joining - Sahil)", father: "-", phone: "", joinDate: "2026-10-06" },
+  { name: "कमल (Kamal)", father: "-", phone: "", joinDate: "2026-10-06" },
+  { name: "लाला वर्मा (Lala Verma)", father: "-", phone: "6386232805", joinDate: "2026-09-01" },
+  { name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-09-07" },
+  { name: "अरमान (Armaan)", father: "-", phone: "", joinDate: "2026-10-15" },
+  { name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "", joinDate: "2022-01-11" }
+];
+
+// ORIGINAL STORE PRODUCTS CATALOG (FROM YOUR LIVE SITE)
+const STORE_PRODUCTS = [
+  // Mass Gainers
+  "Labrada Muscle Mass Gainer (1 Kg)", "Labrada Muscle Mass Gainer (3 Kg)", "Labrada Muscle Mass Gainer (5 Kg)",
+  "MuscleBlaze Super Gainer XXL (1 Kg)", "MuscleBlaze Super Gainer XXL (3 Kg)", "MuscleBlaze Super Gainer XXL (5 Kg)",
+  "ON Serious Mass Gainer (1 Kg)", "ON Serious Mass Gainer (2.72 Kg)", "ON Serious Mass Gainer (5.44 Kg)",
+  "Pro Series Power Muscles Gain Mass Gainer (1 Kg / 3 Kg / 5 Kg)",
+  "Muscletech Mass Tech Extreme 2000 (3 Kg / 5 Kg)",
+  "Bigmuscles Nutrition Real Mass Gainer (1 Kg / 3 Kg / 5 Kg)",
+  "Endura Mass Weight Gainer (500g / 1 Kg / 3 Kg)",
+  "Scitron Mega Mass Gainer (1 Kg / 3 Kg)",
+
+  // Whey Proteins
+  "MuscleBlaze Biozyme Performance Whey (500g / 1 Kg / 2 Kg / 4 Kg)",
+  "Labrada 100% Whey Protein (500g / 1 Kg / 2 Kg / 4 Kg)",
+  "ON Gold Standard 100% Whey (450g / 907g / 2.27 Kg / 4.54 Kg)",
+  "Muscletech NitroTech Whey (1 Kg / 1.81 Kg / 3.63 Kg)",
+  "Muscle Size Intra Bulk 100% Whey Protein (908g)",
+  "Ultimate Nutrition Prostar Whey (907g / 2.39 Kg)",
+  "Dymatize ISO 100 Whey Protein (725g / 2.3 Kg)",
+  "Avvatar 100% Whey Protein (1 Kg / 2 Kg / 4 Kg)",
+  "AS-IT-IS Nutrition Whey Protein (1 Kg / 2.5 Kg / 5 Kg)",
+
+  // Creatines
+  "Wellcore Pure Micronised Creatine (100g / 250g)",
+  "MuscleBlaze Creatine Monohydrate (100g / 250g / 400g)",
+  "Muscletech Platinum 100% Creatine (100g / 250g)",
+  "ON Micronized Creatine Powder (100g / 250g)",
+  "Labrada Creatine Monohydrate (100g / 300g)",
+  "AS-IT-IS Nutrition Pure Creatine (100g / 250g / 500g)",
+
+  // Multivitamins
+  "MuscleBlaze Daily Multivitamin (30 / 60 / 90 Tablets)",
+  "GNC Mega Men Sport Multivitamin (30 / 60 / 90 Tablets)",
+  "Muscletech Platinum Multivitamin (60 Tablets)",
+  "HealthKart HK Vitals Multivitamin (60 Tablets)",
+  "Centrum Men Daily Multivitamin (50 Tablets)",
+  "Universal Nutrition Daily Formula (100 Tablets)"
+];
+
+window.addEventListener("DOMContentLoaded", () => {
+  const pSelect = document.getElementById("prodSelect");
+  STORE_PRODUCTS.forEach(p => {
+    let opt = document.createElement("option");
+    opt.value = p;
+    opt.innerText = p;
+    pSelect.appendChild(opt);
+  });
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("mJoinDate").value = today;
+  
+  let nextWeek = new Date();
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  document.getElementById("promisedDate").value = nextWeek.toISOString().split('T')[0];
+});
+
+function searchMembers(q) {
+  const res = document.getElementById("searchResults");
+  const clean = q.toLowerCase().trim();
+  if(!clean) { res.style.display="none"; return; }
+
+  const list = MEMBERS.filter(m => m.name.toLowerCase().includes(clean) || (m.phone && m.phone.includes(clean)));
+  if(list.length === 0) { res.style.display="none"; return; }
+
+  res.innerHTML = "";
+  list.forEach(m => {
+    let d = document.createElement("div");
+    d.className = "search-item";
+    d.innerHTML = `<b>${m.name}</b><small>पिता: ${m.father} | फोन: ${m.phone || 'N/A'}</small>`;
+    d.onclick = () => {
+      document.getElementById("memberSearch").value = m.name;
+      document.getElementById("mName").value = m.name;
+      document.getElementById("mFather").value = m.father !== "-" ? m.father : "";
+      document.getElementById("mPhone").value = m.phone;
+      document.getElementById("mJoinDate").value = m.joinDate;
+      res.style.display = "none";
+    };
+    res.appendChild(d);
+  });
+  res.style.display = "block";
+}
+
+function calcKhata() {
+  const price = parseFloat(document.getElementById("prodPrice").value) || 0;
+  const cash = parseFloat(document.getElementById("cashPaid").value) || 0;
+  const due = Math.max(0, price - cash);
+  document.getElementById("dueDisplay").innerText = "₹" + due;
+}
+
+function generateKhataBill(e) {
+  e.preventDefault();
+  const name = document.getElementById("mName").value.trim();
+  const father = document.getElementById("mFather").value.trim() || "-";
+  const phone = document.getElementById("mPhone").value.trim();
+  const gymFee = document.getElementById("feeStatus").value.includes("नहीं") ? "₹0 (Not Added)" : "₹" + (document.getElementById("gymFee").value || "0");
+  const prod = document.getElementById("prodSelect").value;
+  const price = parseFloat(document.getElementById("prodPrice").value) || 0;
+  const paid = parseFloat(document.getElementById("cashPaid").value) || 0;
+  const due = Math.max(0, price - paid);
+  const pDateVal = document.getElementById("promisedDate").value;
+  const pDateFormatted = new Date(pDateVal).toLocaleDateString('en-GB');
+  const billId = "BBF-DUE" + Date.now().toString().slice(-4);
+  const todayStr = new Date().toLocaleDateString('en-GB');
+
+  document.getElementById("billId").innerText = billId;
+  document.getElementById("billDate").innerText = todayStr;
+  document.getElementById("rName").innerText = name;
+  document.getElementById("rFather").innerText = father;
+  document.getElementById("rPhone").innerText = phone;
+  document.getElementById("rGymFee").innerText = gymFee;
+  document.getElementById("rProd").innerText = prod;
+  document.getElementById("rProdPrice").innerText = "₹" + price;
+  document.getElementById("rCashPaid").innerText = "₹" + paid;
+  document.getElementById("rDueAmt").innerText = "₹" + due + " (बाकी)";
+  document.getElementById("rPromisedDate").innerText = pDateFormatted;
+
+  const waText = "📋 *5 BROTHER'S FITNESS & SUPPLEMENT BILL (" + billId + ")*\n\n" +
+    "• सदस्य का नाम: " + name + "\n" +
+    "• मोबाइल: " + phone + "\n" +
+    "• जिम फीस: " + gymFee + "\n" +
+    "• सप्लीमेंट: " + prod + "\n" +
+    "• कुल कीमत: ₹" + price + "\n" +
+    "• नगद जमा: ₹" + paid + "\n" +
+    "🔴 *सप्लीमेंट बकाया (Balance Due): ₹" + due + "*\n" +
+    "📅 *वादा तारीख (Promised Clearance): " + pDateFormatted + "*\n\n" +
+    "⚠️ *सप्लीमेंट उधारी नियम व व्यक्तिगत उत्तरदायित्व:*\n" +
+    "सप्लीमेंट सिर्फ आपकी डाइट न रुके इसलिए अपने पैसे फंसाकर 0% पर दिया जाता है। डिस्ट्रीब्यूटर को हर 15 दिन में पेमेंट क्लियर करना होता है। देरी से नया स्टॉक रुकता है। अतः वादा तारीख के बाद विलंब शुल्क लागू होगा:\n" +
+    "• 7 दिन बाद: +₹100\n" +
+    "• 15 दिन बाद: +₹200\n" +
+    "• 30 दिन बाद: +₹500\n\n" +
+    "कृपया वादा तारीख (" + pDateFormatted + ") तक बकाया क्लियर करें।";
+
+  document.getElementById("waBtn").onclick = () => {
+    window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(waText), "_blank");
+  };
+
+  document.getElementById("receiptModal").style.display = "flex";
+}
+
+function saveBillImage() {
+  const btn = document.getElementById("dlBtn");
+  btn.innerText = "⏳ Saving...";
+  const element = document.getElementById("printablePages");
+
+  html2canvas(element, { scale: 2, backgroundColor: "#0a0a0a" }).then(canvas => {
+    let a = document.createElement("a");
+    a.download = "5_Brothers_Due_Bill_" + document.getElementById("billId").innerText + ".png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+    btn.innerText = "✅ Saved Both Pages!";
+    setTimeout(() => { btn.innerText = "📥 Save Both Pages (Gallery)"; }, 2500);
+  });
+}
+</script>
+</body>
+</html>
