@@ -115,6 +115,7 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
 </style>
 </head>
 <body>
+
 <div class="main-card">
   <div class="header">
     <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px; display:inline-block; margin-bottom:4px;">OFFICIAL DESK PORTAL</div>
@@ -132,36 +133,32 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
 
   <form id="khataForm" onsubmit="generateKhataBill(event)">
 
-    <!-- ================= STEP 1: MODE & MEMBER DETAILS ================= -->
+    <!-- STEP 1: MODE & DETAILS -->
     <div class="step-page active" id="stepPage1">
-      <!-- 3 MODE SWITCH BUTTONS -->
       <div class="mode-container">
         <button type="button" class="mode-btn" id="btnModeFee" onclick="setMode('fee')">🏋️ Gym Fees Only</button>
         <button type="button" class="mode-btn" id="btnModeSupp" onclick="setMode('supp')">💊 Only Supplement</button>
         <button type="button" class="mode-btn active" id="btnModeBoth" onclick="setMode('both')">🏋️+💊 Fees + Supp</button>
       </div>
 
-      <!-- MEMBER AUTO SEARCH (FEES MODES MEIN) -->
       <div class="field-group" id="searchBoxGroup">
         <label>🔍 सदस्य का नाम या पिता का नाम खोजें</label>
         <input type="text" id="memberSearch" autocomplete="off" placeholder="नाम या मोबाइल लिखें..." oninput="searchMembers(this.value)">
         <div id="searchResults"></div>
       </div>
 
-      <!-- MEMBER DETAILS -->
       <div class="row">
         <div class="field-group">
           <label>ग्राहक / सदस्य का नाम <span>*</span></label>
           <input type="text" id="mName" placeholder="पूरा नाम">
         </div>
-        <!-- FATHER NAME (GYM FEES MEIN) -->
         <div class="field-group" id="fatherGroup">
           <label>पिता का नाम</label>
           <input type="text" id="mFather" placeholder="पिता का नाम">
         </div>
       </div>
 
-      <!-- GUARANTOR DETAILS (ONLY SUPPLEMENT MEIN: NAME + PHONE) -->
+      <!-- GUARANTOR NAME + PHONE -->
       <div id="friendGroup" style="display:none; background:rgba(255,204,0,0.06); border:1px dashed #ffcc00; padding:10px; border-radius:10px; margin-bottom:12px;">
         <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">🤝 Guarantor / दोस्त की जानकारी (अनिवार्य)</div>
         <div class="row">
@@ -192,9 +189,8 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
       </div>
     </div>
 
-    <!-- ================= STEP 2: FEES & PRODUCT SELECTION ================= -->
+    <!-- STEP 2: FEES & PRODUCT SELECTION -->
     <div class="step-page" id="stepPage2">
-      <!-- 1. GYM FEE SECTION -->
       <div class="box-panel" id="gymFeeSection">
         <div class="box-title">🏋️ जिम मासिक फीस विवरण</div>
         <div class="row">
@@ -212,10 +208,8 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
         </div>
       </div>
 
-      <!-- 2. SUPPLEMENT SECTION -->
       <div class="box-panel" id="suppSection">
         <div class="box-title">💊 सप्लीमेंट चयन (Catalog)</div>
-        
         <div class="cat-scroll">
           <button type="button" class="cat-pill active" onclick="switchCategory('gainer', this)">Mass Gainer</button>
           <button type="button" class="cat-pill" onclick="switchCategory('whey', this)">Whey Protein</button>
@@ -228,7 +222,6 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
 
         <div id="prodListContainer"></div>
 
-        <!-- Smart Dynamic Reason/Verification Area -->
         <div class="live-compare-box" id="compareBox">
           <div style="font-size:11px; color:#ffcc00; font-weight:bold;" id="compareTitle">🌐 Market Analysis:</div>
           <div id="compareActionArea" style="margin-top:4px;"></div>
@@ -248,7 +241,7 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
       </div>
     </div>
 
-    <!-- ================= STEP 3: PAYMENT & CONFIRMATION ================= -->
+    <!-- STEP 3: PAYMENT & CONFIRMATION -->
     <div class="step-page" id="stepPage3">
       <div class="box-panel">
         <div class="box-title">💰 पेमेंट व उधारी हिसाब (Final Clearance)</div>
@@ -289,6 +282,85 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
 
   </form>
 </div>
+
+<!-- RECEIPT MODAL -->
+<div id="receiptModal">
+  <div class="receipt-wrapper">
+    <div id="printablePages">
+      <!-- PAGE 1: INVOICE -->
+      <div class="receipt-card">
+        <div class="receipt-header">
+          <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">PAGE 1 : OFFICIAL INVOICE</div>
+          <h2 style="font-size:16px; margin-top:4px;">5 Brother's Fitness Club Supplements</h2>
+          <div style="font-size:11px; font-weight:bold; color:#555; margin-top:2px;">"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।"</div>
+          <p style="font-size:10px; color:#777; margin-top:3px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
+        </div>
+
+        <div class="r-row"><span>Bill Slip ID:</span><b id="billId" style="color:#b37400;"></b></div>
+        <div class="r-row"><span>बिलिंग मोड:</span><b id="rMode" style="color:#000;"></b></div>
+        <div class="r-row"><span>तारीख:</span><b id="billDate"></b></div>
+        <div class="r-row"><span>ग्राहक / सदस्य:</span><b id="rName"></b></div>
+        <div class="r-row" id="rFatherRow"><span>पिता का नाम:</span><b id="rFather"></b></div>
+        <div class="r-row" id="rFriendRow" style="display:none;"><span>Guarantor (दोस्त):</span><b id="rFriend"></b></div>
+        <div class="r-row"><span>मोबाइल नंबर:</span><b id="rPhone"></b></div>
+        
+        <div class="r-row" id="rGymFeeRow" style="background:#f9f9f9; padding:4px 0;"><span>जिम फीस (Received):</span><b id="rGymFee" style="color:green;"></b></div>
+        
+        <div id="rSuppDetailsBlock">
+          <div class="r-row"><span>सप्लीमेंट:</span><b id="rProd" style="max-width:220px; text-align:right;"></b></div>
+          <div class="r-row"><span>साइज / वेरिएंट:</span><b id="rSize"></b></div>
+          <div class="r-row"><span>तय कीमत (Total MRP):</span><b id="rProdPrice"></b></div>
+          <div class="r-row"><span>नगद जमा (Paid):</span><b id="rCashPaid" style="color:green;"></b></div>
+          
+          <div class="r-row" style="background:#ffecec; padding:5px 0; border:1px solid #ffcccc; border-radius:6px; margin-top:5px;">
+            <span style="color:#b20000; font-weight:bold;">सप्लीमेंट बकाया (Due Balance):</span>
+            <b id="rDueAmt" style="color:#d9534f; font-size:14px;"></b>
+          </div>
+          <div class="r-row" style="margin-top:4px;">
+            <span style="color:#b37400; font-weight:bold;">वादा तारीख (Salary Date):</span>
+            <b id="rPromisedDate" style="color:#b37400;"></b>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 2: STRICT NOTICE -->
+      <div class="receipt-card page2-alert" id="page2NoticeBlock">
+        <div style="background:#d9534f; color:#fff; padding:5px; border-radius:5px; text-align:center; font-weight:bold; font-size:11px; margin-bottom:8px;">⚠️ पृष्ठ 2 : सप्लीमेंट उधारी नियम व व्यक्तिगत उत्तरदायित्व</div>
+        
+        <p style="font-size:11px; line-height:1.45; text-align:justify;">
+          "सप्लीमेंट कोई बिजनेस मार्जिन का खेल नहीं, सिर्फ आपकी डाइट और प्रोग्रेस न रुके इसलिए अपने पैसे फंसाकर आपको दिया जाता है। डिस्ट्रीब्यूटर को हर 15 दिन में पूरा पेमेंट क्लियर करना अनिवार्य होता है। जब आप 1-1 महीना पेमेंट रोकते हैं, तो नया स्टॉक रुक जाता है और दूसरे भाइयों को सप्लीमेंट नहीं मिल पाता। इस नुकसान की भरपाई और डिस्ट्रीब्यूटर पेनल्टी के लिए यह विलंब शुल्क लिया जाना अनिवार्य है:"
+        </p>
+
+        <table class="penalty-table">
+          <thead>
+            <tr><th>विलंब अवधि (Late Days)</th><th>अतिरिक्त पेनल्टी (Penalty Fee)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>वादा तारीख से 7 दिन बाद</td><td><b>+ ₹100 Extra</b></td></tr>
+            <tr><td>वादा तारीख से 15 दिन बाद</td><td><b>+ ₹200 Extra</b></td></tr>
+            <tr><td>वादा तारीख से 30 दिन बाद</td><td><b>+ ₹500 Extra</b></td></tr>
+          </tbody>
+        </table>
+
+        <div style="font-size:10px; background:#fff; border:1px dashed #d9534f; padding:6px; border-radius:5px; line-height:1.4;">
+          <b>सदस्य सहमति (Declaration):</b> मैंने यह शर्त ध्यानपूर्वक पढ़ ली है और मैं अपनी तय वादा तारीख तक पूरी बकाया राशि चुकाने का वचन देता हूँ।
+        </div>
+      </div>
+    </div>
+
+    <div class="action-btns" data-html2canvas-ignore="true">
+      <button type="button" class="dl-btn" id="dlBtn" onclick="saveBillImage()">📥 Save Both Pages</button>
+      <button type="button" class="wa-btn" id="waBtn">📲 Send To Member WA</button>
+    </div>
+    <button type="button" onclick="document.getElementById('receiptModal').style.display='none'" style="width:100%; background:#333; color:#fff; border:none; padding:10px; border-radius:8px; margin-top:8px; cursor:pointer;">बंद करें (Close)</button>
+  </div>
+</div>
+
+<script>
+let currentMode = 'both';
+let currentStep = 1;
+let selectedProductObj = null;
+
 const MEMBERS = [
   { name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", joinDate: "2026-10-01" },
   { name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", joinDate: "2026-10-01" },
@@ -335,7 +407,378 @@ const MEMBERS = [
   { name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "", joinDate: "2022-01-11" }
 ];
 
-function generateKhataBill(e) {
+  const CATALOG_DATA = [
+  // MASS GAINERS
+  {
+    category: "gainer",
+    name: "Labrada Muscle Mass Gainer",
+    badge: "🏆 #1 Best Seller",
+    badgeClass: "badge-gold",
+    reviews: "⭐ 5.0 (2,000+ Verified Athletes)",
+    isOnline: true,
+    flipkartQuery: "Labrada Muscle Mass Gainer",
+    hkQuery: "Labrada Muscle Mass Gainer",
+    options: ["1 Kg", "3 Kg", "5 Kg"]
+  },
+  {
+    category: "gainer",
+    name: "MuscleBlaze Super Gainer XXL",
+    badge: "🔥 Hot Bulking",
+    badgeClass: "badge-hot",
+    reviews: "⭐ 4.9 (1,450+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "MuscleBlaze Super Gainer XXL",
+    hkQuery: "MuscleBlaze Super Gainer XXL",
+    options: ["1 Kg", "3 Kg", "5 Kg"]
+  },
+  {
+    category: "gainer",
+    name: "Pro Series Power Muscles Gain",
+    badge: "🇮🇳 Indian Direct Result Formula",
+    badgeClass: "badge-off",
+    reviews: "⭐ 4.7 (520+ Athletes Used)",
+    isOnline: false,
+    indianReason: "🇮🇳 100% Authentic Indian Athlete Formula (Zero Online Marketing Cost): यह ब्रांड ऑनलाइन विज्ञापनों और यूट्यूबर्स के महंगे प्रमोशन पर पैसे खर्च करने के बजाय सीधे रॉ-मटेरियल की प्योरिटी और रिजल्ट पर फोकस करता है। इसी वजह से यह आपको बिना किसी ई-कॉमर्स प्लेटफॉर्म कमीशन के सीधे जिम वेयरहाउस रेट पर ₹600-₹800 तक सस्ता और 100% असरदार मिलता है।"
+  },
+  {
+    category: "gainer",
+    name: "ON Serious Mass Gainer",
+    badge: "⭐ Top Choice",
+    badgeClass: "badge-gold",
+    reviews: "⭐ 4.8 (850+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "Optimum Nutrition Serious Mass Gainer",
+    hkQuery: "Optimum Nutrition Serious Mass",
+    options: ["1 Kg", "2.72 Kg (6 lbs)", "5.44 Kg (12 lbs)"]
+  },
+
+  // WHEY PROTEIN
+  {
+    category: "whey",
+    name: "Muscletech NitroTech Whey (1.81 Kg)",
+    badge: "🏆 #1 Best Selling Whey",
+    badgeClass: "badge-gold",
+    reviews: "⭐ 4.9 (1,200+ Verified Buyers)",
+    isOnline: true,
+    flipkartQuery: "Muscletech NitroTech Whey Protein 1.81kg",
+    hkQuery: "Muscletech NitroTech Whey",
+    options: ["1 Kg", "1.81 Kg (4 lbs)", "3.63 Kg (8 lbs)"]
+  },
+  {
+    category: "whey",
+    name: "Muscle Size Intra Bulk 100% Whey",
+    badge: "🇮🇳 Indian Gym Exclusive Stock",
+    badgeClass: "badge-off",
+    reviews: "⭐ 4.7 (540+ Athletes Used)",
+    isOnline: false,
+    indianReason: "🇮🇳 100% Pure Indian Muscle Builder (Result Focused): ऑनलाइन बिकने वाले ब्रांड्स सिर्फ नाम और विज्ञापनों के पैसे लेते हैं। यह विशुद्ध भारतीय डायरेक्ट स्टॉक है जो जिम के शेड में उतरा है, ताकि हमारे हर भाई को बजट रेट में बेहतरीन रिजल्ट और ताकत मिले।"
+  },
+  {
+    category: "whey",
+    name: "MuscleBlaze Biozyme Performance Whey",
+    badge: "🔥 Clinically Tested",
+    badgeClass: "badge-hot",
+    reviews: "⭐ 4.8 (950+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "MuscleBlaze Biozyme Performance Whey",
+    hkQuery: "MuscleBlaze Biozyme Performance Whey",
+    options: ["500 Gram", "1 Kg", "2 Kg", "4 Kg"]
+  },
+
+  // CREATINE
+  {
+    category: "creatine",
+    name: "MuscleBlaze Creatine Monohydrate (CreAbsorb)",
+    badge: "🔥 Hot Selling Beast",
+    badgeClass: "badge-hot",
+    reviews: "⭐ 5.0 (1,850+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "MuscleBlaze Creatine Monohydrate",
+    hkQuery: "MuscleBlaze Creatine Monohydrate",
+    options: ["100 Gram", "250 Gram", "400 Gram"]
+  },
+  {
+    category: "creatine",
+    name: "Wellcore Pure Micronised Creatine",
+    badge: "🥈 High Demand",
+    badgeClass: "badge-gold",
+    reviews: "⭐ 4.9 (1,100+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "Wellcore Pure Micronised Creatine",
+    hkQuery: "Wellcore Pure Micronised Creatine",
+    options: ["100 Gram", "250 Gram"]
+  },
+
+  // MULTIVITAMIN
+  {
+    category: "multivitamin",
+    name: "MuscleBlaze MB-Vite Daily Multivitamin",
+    badge: "🏆 Top Selling",
+    badgeClass: "badge-gold",
+    reviews: "⭐ 4.9 (1,600+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "MuscleBlaze MB-Vite Daily Multivitamin",
+    hkQuery: "MuscleBlaze MB-Vite Multivitamin",
+    options: ["30 Tablets", "60 Tablets", "90 Tablets"]
+  },
+
+  // PRE-WORKOUT
+  {
+    category: "preworkout",
+    name: "Wild Bull Direct Pump Formula",
+    badge: "🇮🇳 Indian Hardcore Pump",
+    badgeClass: "badge-off",
+    reviews: "⭐ 4.7 (500+ Athletes Used)",
+    isOnline: false,
+    indianReason: "🇮🇳 100% Desi Hardcore Power Formula: यह सप्लीमेंट सिर्फ भारी वर्कआउट और मसल पंप के लिए तैयार किया गया है। इसमें किसी महंगे ब्रांड की मार्केटिंग कॉस्ट नहीं जुड़ी है, सीधा असर और जिम के शेड वाला वाजिब दाम!"
+  },
+  {
+    category: "preworkout",
+    name: "Cellucor C4 Original Pre-Workout",
+    badge: "🔥 Explosive Energy",
+    badgeClass: "badge-hot",
+    reviews: "⭐ 4.9 (1,350+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "Cellucor C4 Original Pre-Workout",
+    hkQuery: "Cellucor C4 Pre Workout",
+    options: ["30 Servings", "60 Servings"]
+  },
+
+  // FISH OIL
+  {
+    category: "fishoil",
+    name: "MuscleBlaze Fish Oil 1000mg",
+    badge: "🏆 Top Selling Omega 3",
+    badgeClass: "badge-gold",
+    reviews: "⭐ 4.9 (1,300+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "MuscleBlaze Fish Oil 1000mg",
+    hkQuery: "MuscleBlaze Fish Oil 1000mg",
+    options: ["30 Capsules", "60 Capsules", "90 Capsules"]
+  },
+
+  // PEANUT BUTTER
+  {
+    category: "peanut",
+    name: "MyFitness Peanut Butter (High Protein)",
+    badge: "🔥 #1 Hot Selling",
+    badgeClass: "badge-hot",
+    reviews: "⭐ 5.0 (1,900+ Reviews)",
+    isOnline: true,
+    flipkartQuery: "MyFitness Peanut Butter 1kg",
+    hkQuery: "MyFitness Peanut Butter 1kg",
+    options: ["1 Kg (Crunchy)", "1 Kg (Chocolate)", "2.5 Kg"]
+  }
+];
+window.addEventListener("DOMContentLoaded", () => {
+  renderCategoryProducts("gainer");
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("mJoinDate").value = today;
+
+  let nextWeek = new Date();
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  document.getElementById("promisedDate").value = nextWeek.toISOString().split('T')[0];
+  setMode('both');
+});
+
+function goToStep(step) {
+  if (step === 2) {
+    const name = document.getElementById("mName").value.trim();
+    const phone = document.getElementById("mPhone").value.trim();
+    if (!name || !phone) {
+      alert("कृपया सदस्य का नाम और मोबाइल नंबर दर्ज करें!");
+      return;
+    }
+    if (currentMode === 'supp') {
+      const fName = document.getElementById("mFriendName").value.trim();
+      const fPhone = document.getElementById("mFriendPhone").value.trim();
+      if (!fName || !fPhone) {
+        alert("सप्लीमेंट उधारी के लिए Guarantor (दोस्त) का नाम और मोबाइल नंबर अनिवार्य है!");
+        return;
+      }
+    }
+  }
+
+  currentStep = step;
+  document.querySelectorAll(".step-page").forEach(p => p.classList.remove("active"));
+  document.getElementById("stepPage" + step).classList.add("active");
+
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById("dot" + i).classList.toggle("active", i === step);
+  }
+
+  if (step === 3) {
+    const suppPnl = document.getElementById("suppPaymentFields");
+    const feeSum = document.getElementById("feeSummaryOnly");
+    if (currentMode === 'fee') {
+      suppPnl.style.display = "none";
+      feeSum.style.display = "block";
+      document.getElementById("gymFeeSummaryDisp").innerText = "₹" + (document.getElementById("gymFee").value || "500");
+    } else if (currentMode === 'supp') {
+      suppPnl.style.display = "block";
+      feeSum.style.display = "none";
+    } else {
+      suppPnl.style.display = "block";
+      feeSum.style.display = "block";
+      document.getElementById("gymFeeSummaryDisp").innerText = "₹" + (document.getElementById("gymFee").value || "500");
+    }
+  }
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById("btnModeFee").classList.toggle("active", mode === 'fee');
+  document.getElementById("btnModeSupp").classList.toggle("active", mode === 'supp');
+  document.getElementById("btnModeBoth").classList.toggle("active", mode === 'both');
+
+  const gymSec = document.getElementById("gymFeeSection");
+  const suppSec = document.getElementById("suppSection");
+  const fatherGrp = document.getElementById("fatherGroup");
+  const friendGrp = document.getElementById("friendGroup");
+  const searchGrp = document.getElementById("searchBoxGroup");
+  const joinGrp = document.getElementById("joinDateGroup");
+
+  if (mode === 'fee') {
+    gymSec.style.display = "block";
+    suppSec.style.display = "none";
+    fatherGrp.style.display = "block";
+    friendGrp.style.display = "none";
+    searchGrp.style.display = "block";
+    joinGrp.style.display = "block";
+  } else if (mode === 'supp') {
+    gymSec.style.display = "none";
+    suppSec.style.display = "block";
+    fatherGrp.style.display = "none";
+    friendGrp.style.display = "block";
+    searchGrp.style.display = "none";
+    joinGrp.style.display = "none";
+  } else {
+    gymSec.style.display = "block";
+    suppSec.style.display = "block";
+    fatherGrp.style.display = "block";
+    friendGrp.style.display = "none";
+    searchGrp.style.display = "block";
+    joinGrp.style.display = "block";
+  }
+}
+
+function handleMemberTypeChange() {
+  const type = document.getElementById("memberType").value;
+  const feeInput = document.getElementById("gymFee");
+  feeInput.value = (type === "student") ? 300 : 500;
+  }
+  function switchCategory(cat, btn) {
+  document.querySelectorAll(".cat-pill").forEach(p => p.classList.remove("active"));
+  btn.classList.add("active");
+  renderCategoryProducts(cat);
+}
+
+function renderCategoryProducts(category) {
+  const container = document.getElementById("prodListContainer");
+  container.innerHTML = "";
+  const filtered = CATALOG_DATA.filter(item => item.category === category);
+
+  filtered.forEach((p) => {
+    let d = document.createElement("div");
+    d.className = "prod-card";
+    d.innerHTML = `
+      <div class="prod-card-top">
+        <h4>${p.name}</h4>
+        <span class="prod-badge ${p.badgeClass}">${p.badge}</span>
+      </div>
+      <div class="prod-reviews">${p.reviews}</div>
+    `;
+    d.onclick = () => {
+      document.querySelectorAll(".prod-card").forEach(c => c.classList.remove("selected"));
+      d.classList.add("selected");
+      pickProduct(p);
+    };
+    container.appendChild(d);
+  });
+
+  if (filtered.length > 0) {
+    pickProduct(filtered[0]);
+    container.children[0].classList.add("selected");
+  }
+}
+
+function pickProduct(p) {
+  selectedProductObj = p;
+  const sizeSelect = document.getElementById("sizeSelect");
+  sizeSelect.innerHTML = "";
+
+  if (p.isOnline) {
+    p.options.forEach(opt => {
+      let o = document.createElement("option");
+      o.value = opt;
+      o.innerText = opt;
+      sizeSelect.appendChild(o);
+    });
+    sizeSelect.parentElement.style.display = "block";
+  } else {
+    let o = document.createElement("option");
+    o.value = "Standard Direct Pack";
+    o.innerText = "Standard Direct Pack (Warehouse Sealed)";
+    sizeSelect.appendChild(o);
+    sizeSelect.parentElement.style.display = "block";
+  }
+
+  const compareBox = document.getElementById("compareBox");
+  const compareTitle = document.getElementById("compareTitle");
+  const actionArea = document.getElementById("compareActionArea");
+  compareBox.style.display = "block";
+
+  if (p.isOnline) {
+    compareTitle.innerHTML = `🌐 <b>Live Online Verification (${p.name}):</b>`;
+    const fUrl = `https://www.flipkart.com/search?q=${encodeURIComponent(p.flipkartQuery)}`;
+    const hkUrl = `https://www.healthkart.com/search?q=${encodeURIComponent(p.hkQuery)}`;
+
+    actionArea.innerHTML = `
+      <div class="compare-btns">
+        <a href="${fUrl}" target="_blank" class="btn-flip">🔍 Flipkart Price</a>
+        <a href="${hkUrl}" target="_blank" class="btn-hk">🔍 HealthKart Price</a>
+      </div>
+    `;
+  } else {
+    compareTitle.innerHTML = `🇮🇳 <b>Indian Direct Warehouse Advantage:</b>`;
+    actionArea.innerHTML = `<div class="indian-reason-box">${p.indianReason}</div>`;
+  }
+  calcKhata();
+}
+
+function searchMembers(q) {
+  const res = document.getElementById("searchResults");
+  const clean = q.toLowerCase().trim();
+  if(!clean) { res.style.display="none"; return; }
+
+  const list = MEMBERS.filter(m => m.name.toLowerCase().includes(clean) || (m.phone && m.phone.includes(clean)));
+  if(list.length === 0) { res.style.display="none"; return; }
+
+  res.innerHTML = "";
+  list.forEach(m => {
+    let d = document.createElement("div");
+    d.className = "search-item";
+    d.innerHTML = `<b>${m.name}</b><small>पिता: ${m.father} | फोन: ${m.phone || 'N/A'}</small>`;
+    d.onclick = () => {
+      document.getElementById("memberSearch").value = m.name;
+      document.getElementById("mName").value = m.name;
+      document.getElementById("mFather").value = m.father !== "-" ? m.father : "";
+      document.getElementById("mPhone").value = m.phone;
+      document.getElementById("mJoinDate").value = m.joinDate;
+      res.style.display = "none";
+    };
+    res.appendChild(d);
+  });
+  res.style.display = "block";
+}
+
+function calcKhata() {
+  const price = parseFloat(document.getElementById("prodPrice").value) || 0;
+  const cash = parseFloat(document.getElementById("cashPaid").value) || 0;
+  const due = Math.max(0, price - cash);
+  document.getElementById("dueDisplay").innerText = "₹" + due;
+  }
+  function generateKhataBill(e) {
   e.preventDefault();
   
   const name = document.getElementById("mName").value.trim();
@@ -364,7 +807,6 @@ function generateKhataBill(e) {
   document.getElementById("rName").innerText = name;
   document.getElementById("rPhone").innerText = phone;
 
-  // Visibility setup on receipt
   if (currentMode === 'supp') {
     document.getElementById("rFatherRow").style.display = "none";
     document.getElementById("rFriendRow").style.display = "flex";
@@ -409,7 +851,7 @@ function generateKhataBill(e) {
     document.getElementById("page2NoticeBlock").style.display = "none";
   }
 
-  // WhatsApp Message Formatting
+  // WhatsApp Message
   let waText = "📋 *5 BROTHER'S FITNESS CLUB (" + billId + ")*\n" +
     "\"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।\"\n\n" +
     "• रसीद प्रकार: " + modeText + "\n" +
