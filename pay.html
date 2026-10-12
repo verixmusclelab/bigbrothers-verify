@@ -260,7 +260,7 @@ const MEMBERS_DIRECTORY = [
   { name: "हर्ष सैनी (Harsh Saini)", father: "-", phone: "", joinDate: "2026-10-10", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["harsh", "saini"] },
   { name: "तौसीफ (Tauseef)", father: "मो० शब्बीर", phone: "7317323893", joinDate: "2026-10-11", batch: "जनरल बैच (General: दोनों समय)", fee: 1200, keywords: ["tauseef"] },
   { name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["rishabh", "sharma"] },
-  { name: "दीपक (Deepak Awasthi)", father: "पप्पू अवस्थी", phone: "7388264067", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["deepak", "awasthi"] },
+  { name: "दीपक (Deepak )", father: "पप्पू", phone: "7388264067", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["deepak", "awasthi"] },
   { name: "अंकित (Ankit)", father: "श्री राम", phone: "8090416252", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["ankit"] },
   { name: "चंदन (Chandan)", father: "श्री भूरे", phone: "8303504842", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["chandan"] },
   { name: "राजू (Mr Raju Verma)", father: "-", phone: "9219528229", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["raju", "verma"] },
@@ -275,7 +275,7 @@ const MEMBERS_DIRECTORY = [
   { name: "कमल (Kamal)", father: "-", phone: "", joinDate: "2026-10-06", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["kamal"] },
   { name: "लाला वर्मा (Lala Verma)", father: "-", phone: "6386232805", joinDate: "2026-11-01", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["lala", "verma"] },
   { name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-10-07", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["sonu"] },
-  { name: "अमन (Aman)", father: "-", phone: "", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["aman"] }
+  { name: "(Armaan )", father: "-", phone: "", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["armaan"] }
 ];
 
 let lateStatusStr = "समय पर (On Time)";
@@ -349,20 +349,25 @@ function setAmt(val) {
 function checkLateAndValidity() {
   const pDateVal = document.getElementById("payDate").value;
   const jDateVal = document.getElementById("joinDate").value;
-  if(!pDateVal) return;
+  if(!pDateVal || !jDateVal) return;
 
-  const pDate = new Date(pDateVal);
-  let jDate = new Date(jDateVal);
+  const payDate = new Date(pDateVal);
+  const joinDate = new Date(jDateVal);
 
-  let expectedDue = new Date(jDate);
-  expectedDue.setMonth(expectedDue.getMonth() + 1);
-
+  const payType = document.getElementById("payType").value;
   const lateBox = document.getElementById("lateWarningBox");
   const lateCount = document.getElementById("lateDaysCount");
 
-  if(pDate > expectedDue) {
-    const diffTime = Math.abs(pDate - expectedDue);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // Joining date ke adhar par agle mahine ki date (Valid Till)
+  let nextDue = new Date(joinDate);
+  const monthsToAdd = payType.includes("3 महीने") ? 3 : 1;
+  nextDue.setMonth(nextDue.getMonth() + monthsToAdd);
+
+  // Late days check (Joining date cycle ke hisab se)
+  if(payDate > joinDate) {
+    const diffTime = payDate - joinDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
     if(diffDays > 3) {
       lateBox.style.display = "block";
       lateCount.innerText = diffDays;
@@ -376,13 +381,16 @@ function checkLateAndValidity() {
     lateStatusStr = "समय पर (On Time)";
   }
 
-  const type = document.getElementById("payType").value;
-  let d = new Date(pDateVal);
-  if(type.includes("3 महीने")) {
-    d.setMonth(d.getMonth() + 3);
-  } else {
-    d.setMonth(d.getMonth() + 1);
-  }
+  // Next Due Date (Valid Till) joining date ke day par fix rahegi
+  const d = nextDue.getDate().toString().padStart(2, '0');
+  const m = (nextDue.getMonth() + 1).toString().padStart(2, '0');
+  const y = nextDue.getFullYear();
+  const validStr = `${d}/${m}/${y}`;
+
+  document.getElementById("validUntilText").innerText = validStr + " (अगली फीस देय)";
+  return validStr;
+    }
+  
 
   const validStr = d.toLocaleDateString('en-GB');
   document.getElementById("validUntilText").innerText = validStr + " (अगली फीस देय)";
