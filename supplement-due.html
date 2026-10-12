@@ -361,13 +361,14 @@ function generateKhataBill(e) {
   const father = document.getElementById("mFather").value.trim() || "-";
   const phone = document.getElementById("mPhone").value.trim();
   const gymFee = document.getElementById("feeStatus").value.includes("नहीं") ? "₹0 (Not Added)" : "₹" + (document.getElementById("gymFee").value || "0");
-  const prod = document.getElementById("prodSelect").value;
+  const prod = document.selectedProductObj.name;
+  const size = document.getElementById("sizeSelect").value;
   const price = parseFloat(document.getElementById("prodPrice").value) || 0;
   const paid = parseFloat(document.getElementById("cashPaid").value) || 0;
   const due = Math.max(0, price - paid);
   const pDateVal = document.getElementById("promisedDate").value;
   const pDateFormatted = new Date(pDateVal).toLocaleDateString('en-GB');
-  const billId = "BBF-DUE" + Date.now().toString().slice(-4);
+  const billId = "5BFC-SUPP" + Date.now().toString().slice(-4);
   const todayStr = new Date().toLocaleDateString('en-GB');
 
   document.getElementById("billId").innerText = billId;
@@ -377,17 +378,19 @@ function generateKhataBill(e) {
   document.getElementById("rPhone").innerText = phone;
   document.getElementById("rGymFee").innerText = gymFee;
   document.getElementById("rProd").innerText = prod;
+  document.getElementById("rSize").innerText = size;
   document.getElementById("rProdPrice").innerText = "₹" + price;
   document.getElementById("rCashPaid").innerText = "₹" + paid;
   document.getElementById("rDueAmt").innerText = "₹" + due + " (बाकी)";
   document.getElementById("rPromisedDate").innerText = pDateFormatted;
 
-  const waText = "📋 *5 BROTHER'S FITNESS & SUPPLEMENT BILL (" + billId + ")*\n\n" +
+  const waText = "📋 *5 BROTHER'S FITNESS & SUPPLEMENT BILL (" + billId + ")*\n" +
+    "\"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।\"\n\n" +
     "• सदस्य का नाम: " + name + "\n" +
     "• मोबाइल: " + phone + "\n" +
     "• जिम फीस: " + gymFee + "\n" +
-    "• सप्लीमेंट: " + prod + "\n" +
-    "• कुल कीमत: ₹" + price + "\n" +
+    "• सप्लीमेंट: " + prod + " (" + size + ")\n" +
+    "• तय कीमत: ₹" + price + "\n" +
     "• नगद जमा: ₹" + paid + "\n" +
     "🔴 *सप्लीमेंट बकाया (Balance Due): ₹" + due + "*\n" +
     "📅 *वादा तारीख (Promised Clearance): " + pDateFormatted + "*\n\n" +
@@ -396,7 +399,7 @@ function generateKhataBill(e) {
     "• 7 दिन बाद: +₹100\n" +
     "• 15 दिन बाद: +₹200\n" +
     "• 30 दिन बाद: +₹500\n\n" +
-    "कृपया वादा तारीख (" + pDateFormatted + ") तक बकाया क्लियर करें।";
+    "कृपया अपनी तय वादा तारीख (" + pDateFormatted + ") तक खाता क्लियर करें।";
 
   document.getElementById("waBtn").onclick = () => {
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(waText), "_blank");
@@ -415,10 +418,11 @@ function saveBillImage() {
     a.download = "5_Brothers_Due_Bill_" + document.getElementById("billId").innerText + ".png";
     a.href = canvas.toDataURL("image/png");
     a.click();
-    btn.innerText = "✅ Saved Both Pages!";
-    setTimeout(() => { btn.innerText = "📥 Save Both Pages (Gallery)"; }, 2500);
+    btn.innerText = "✅ Saved!";
+    setTimeout(() => { btn.innerText = "📥 Save Both Pages"; }, 2500);
   });
 }
 </script>
 </body>
 </html>
+
