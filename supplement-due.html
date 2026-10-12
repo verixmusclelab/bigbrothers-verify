@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 body{
   background:#0a0a0a;color:#fff;padding:12px;
-  display:flex;justify-content:center;align-items:flex-start;
+  display:flex;flex-direction:column;align-items:center;
   min-height:100vh;position:relative;
 }
 body::before{
@@ -19,53 +19,8 @@ body::before{
 }
 .main-card{
   background:radial-gradient(circle at top, #1a1705 0%, #0d0d0d 80%);
-  border:2.5px solid #ffcc00;border-radius:20px;max-width:520px;width:100%;
-  padding:18px 14px;box-shadow:0 0 35px rgba(255,204,0,0.22);position:relative;z-index:1;margin-bottom:30px;
-}
-.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;}
-.header h1{color:#ffcc00;font-size:20px;text-transform:uppercase;letter-spacing:1px;}
-.tagline{
-  color:#e6c300;font-size:11px;font-weight:700;margin-top:4px;
-  background:rgba(255,204,0,0.1);display:inline-block;padding:3px 8px;border-radius:12px;border:1px solid rgba(255,204,0,0.25);
-}
-.sub-loc{color:#aaa;font-size:10px;margin-top:4px;}
-.step-bar{display:flex;justify-content:space-between;margin-bottom:14px;position:relative;}
-.step-dot{flex:1;text-align:center;font-size:11px;font-weight:bold;color:#666;padding-bottom:6px;border-bottom:3px solid #333;transition:0.3s;}
-.step-dot.active{color:#ffcc00;border-bottom-color:#ffcc00;}
-.mode-container{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;}
-.mode-btn{background:#1a1a1a;color:#bbb;border:1.5px solid #444;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:bold;cursor:pointer;text-align:center;transition:0.2s;}
-.mode-btn.active{background:#ffcc00;color:#000;border-color:#ffcc00;box-shadow:0 0 10px rgba(255,204,0,0.4);}
-.step-page{display:none;}
-.step-page.active{display:block;}
-.field-group{margin-bottom:11px;position:relative;}
-label{display:block;font-size:12px;color:#eee;margin-bottom:4px;font-weight:600;}
-label span{color:#ff3333;}
-input, select{width:100%;background:#1b1b1b;border:1.5px solid #444;color:#fff;padding:10px;border-radius:9px;font-size:13px;outline:none;}
-input:focus, select:focus{border-color:#ffcc00;background:#141414;}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  <!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
-body{
-  background:#0a0a0a;color:#fff;padding:12px;
-  display:flex;justify-content:center;align-items:flex-start;
-  min-height:100vh;position:relative;
-}
-body::before{
-  content:"5 BROTHER'S FITNESS CLUB";position:fixed;top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(-30deg);font-size:36px;font-weight:900;
-  color:rgba(255,204,0,0.03);white-space:nowrap;pointer-events:none;z-index:0;
-}
-.main-card{
-  background:radial-gradient(circle at top, #1a1705 0%, #0d0d0d 80%);
-  border:2.5px solid #ffcc00;border-radius:20px;max-width:520px;width:100%;
-  padding:18px 14px;box-shadow:0 0 35px rgba(255,204,0,0.22);position:relative;z-index:1;margin-bottom:30px;
+  border:2.5px solid #ffcc00;border-radius:20px;max-width:540px;width:100%;
+  padding:18px 14px;box-shadow:0 0 35px rgba(255,204,0,0.22);position:relative;z-index:1;margin-bottom:20px;
 }
 .header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;}
 .header h1{color:#ffcc00;font-size:20px;text-transform:uppercase;letter-spacing:1px;}
@@ -154,7 +109,6 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
   </div>
 
   <form id="khataForm" onsubmit="generateKhataBill(event)">
-
     <div class="step-page active" id="stepPage1">
       <div class="mode-container">
         <button type="button" class="mode-btn" id="btnModeFee" onclick="setMode('fee')">🏋️ Gym Fees Only</button>
@@ -162,41 +116,7 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
         <button type="button" class="mode-btn active" id="btnModeBoth" onclick="setMode('both')">🏋️+💊 Fees + Supp</button>
       </div>
 
-      <!-- KHATA REGISTER / ADMISSION STYLE DASHBOARD -->
-<div class="main-card" style="margin-top:20px; border-color:#00ff99;">
-  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px dashed #00ff99; padding-bottom:8px; margin-bottom:10px;">
-    <h2 style="font-size:15px; color:#00ff99;">📋 फीस व उधारी रजिस्टर (Records)</h2>
-    <button type="button" onclick="exportToExcelCSV()" style="background:#00ff99; color:#000; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">📥 Excel (CSV) Download</button>
-  </div>
-
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-    <input type="text" id="regSearch" placeholder="🔍 नाम या मोबाइल खोजें..." oninput="renderKhataTable()" style="padding:7px; font-size:11px;">
-    <select id="regFilterStatus" onchange="renderKhataTable()" style="padding:7px; font-size:11px;">
-      <option value="ALL">सभी रिकॉर्ड (All)</option>
-      <option value="PAID">केवल फीस जमा (Genuine Paid)</option>
-      <option value="DUE">केवल उधारी / बकाया (Due)</option>
-    </select>
-  </div>
-
-  <div style="overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse; font-size:11px; text-align:left;">
-      <thead>
-        <tr style="background:#1b1b1b; color:#ffcc00; border-bottom:1.5px solid #444;">
-          <th style="padding:6px;">तारीख</th>
-          <th style="padding:6px;">नाम</th>
-          <th style="padding:6px;">मोड</th>
-          <th style="padding:6px;">जमा (₹)</th>
-          <th style="padding:6px;">बकाया (₹)</th>
-          <th style="padding:6px; text-align:center;">Action</th>
-        </tr>
-      </thead>
-      <tbody id="khataTableBody">
-      </tbody>
-    </table>
-  </div>
-</div>
-      
-     <div class="field-group" id="searchBoxGroup">
+      <div class="field-group" id="searchBoxGroup">
         <label>🔍 सदस्य खोजें (Live Auto-fill)</label>
         <input type="text" id="memberSearch" autocomplete="off" placeholder="नाम या मोबाइल लिखें..." oninput="searchMembers(this.value)">
         <div id="searchResults"></div>
@@ -242,7 +162,8 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
         <button type="button" class="btn-next" onclick="goToStep(2)">अगला स्टेप : चयन करें ➡️</button>
       </div>
     </div>
-        <div class="step-page" id="stepPage2">
+
+    <div class="step-page" id="stepPage2">
       <div class="box-panel" id="gymFeeSection">
         <div class="box-title">🏋️ जिम मासिक फीस विवरण</div>
         <div class="row">
@@ -261,7 +182,7 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
 
         <div id="referralBox" style="background:rgba(255,204,0,0.06); border:1.5px dashed #ffcc00; border-radius:10px; padding:11px; margin-top:10px;">
           <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:4px;">🤝 सदस्य रेफरल छूट (-₹100 प्रति मेंबर):</div>
-          <div style="font-size:10px; color:#aaa; margin-bottom:8px;">पुराने भाइयों को चुनें या नया भाई (+ नया जोड़ें) से ऐड करें:</div>
+          <div style="font-size:10px; color:#aaa; margin-bottom:8px;">पुराने भाइयों को चुनें या नया भाई जोड़ें:</div>
           
           <div style="display:flex; gap:6px;">
             <select id="refMemberSelect" onchange="addExistingReferredMember(this.value)" style="flex:1; padding:8px; border-radius:6px; background:#1b1b1b; color:#fff; border:1px solid #444; font-size:11px;">
@@ -341,8 +262,9 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
         <button type="button" class="btn-prev" onclick="goToStep(1)">⬅️ वापस</button>
         <button type="button" class="btn-next" onclick="goToStep(3)">अगला स्टेप : पेमेंट ➡️</button>
       </div>
-        </div>
-            <div class="step-page" id="stepPage3">
+    </div>
+
+    <div class="step-page" id="stepPage3">
       <div class="box-panel">
         <div class="box-title">💰 पेमेंट व उधारी हिसाब (Final Clearance)</div>
 
@@ -379,8 +301,364 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
       </div>
       <button type="submit" class="btn-submit">📑 Generate 2-Page Official Bill Slip</button>
     </div>
-
   </form>
+</div>
+
+<!-- KHATA REGISTER / ADMISSION STYLE DASHBOARD -->
+<div class="main-card" style="border-color:#00ff99;">
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px dashed #00ff99; padding-bottom:8px; margin-bottom:10px;">
+    <h2 style="font-size:15px; color:#00ff99;">📋 फीस व उधारी रजिस्टर (Admin Records)</h2>
+    <button type="button" onclick="exportToExcelCSV()" style="background:#00ff99; color:#000; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">📥 Excel (CSV) Download</button>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+    <input type="text" id="regSearch" placeholder="🔍 नाम या मोबाइल खोजें..." oninput="renderKhataTable()" style="padding:7px; font-size:11px;">
+    <select id="regFilterStatus" onchange="renderKhataTable()" style="padding:7px; font-size:11px;">
+      <option value="ALL">सभी रिकॉर्ड (All Records)</option>
+      <option value="PAID">✅ केवल फीस जमा (Paid)</option>
+      <option value="DUE">🔴 केवल बकाया / उधारी (Unpaid / Due)</option>
+    </select>
+  </div>
+
+  <div
+  <!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>5 Brother's Fitness Club</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+body{
+  background:#0a0a0a;color:#fff;padding:12px;
+  display:flex;flex-direction:column;align-items:center;
+  min-height:100vh;position:relative;
+}
+body::before{
+  content:"5 BROTHER'S FITNESS CLUB";position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%) rotate(-30deg);font-size:36px;font-weight:900;
+  color:rgba(255,204,0,0.03);white-space:nowrap;pointer-events:none;z-index:0;
+}
+.main-card{
+  background:radial-gradient(circle at top, #1a1705 0%, #0d0d0d 80%);
+  border:2.5px solid #ffcc00;border-radius:20px;max-width:540px;width:100%;
+  padding:18px 14px;box-shadow:0 0 35px rgba(255,204,0,0.22);position:relative;z-index:1;margin-bottom:20px;
+}
+.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;}
+.header h1{color:#ffcc00;font-size:20px;text-transform:uppercase;letter-spacing:1px;}
+.tagline{
+  color:#e6c300;font-size:11px;font-weight:700;margin-top:4px;
+  background:rgba(255,204,0,0.1);display:inline-block;padding:3px 8px;border-radius:12px;border:1px solid rgba(255,204,0,0.25);
+}
+.sub-loc{color:#aaa;font-size:10px;margin-top:4px;}
+.step-bar{display:flex;justify-content:space-between;margin-bottom:14px;position:relative;}
+.step-dot{flex:1;text-align:center;font-size:11px;font-weight:bold;color:#666;padding-bottom:6px;border-bottom:3px solid #333;transition:0.3s;}
+.step-dot.active{color:#ffcc00;border-bottom-color:#ffcc00;}
+.mode-container{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;}
+.mode-btn{background:#1a1a1a;color:#bbb;border:1.5px solid #444;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:bold;cursor:pointer;text-align:center;transition:0.2s;}
+.mode-btn.active{background:#ffcc00;color:#000;border-color:#ffcc00;box-shadow:0 0 10px rgba(255,204,0,0.4);}
+.step-page{display:none;}
+.step-page.active{display:block;}
+.field-group{margin-bottom:11px;position:relative;}
+label{display:block;font-size:12px;color:#eee;margin-bottom:4px;font-weight:600;}
+label span{color:#ff3333;}
+input, select{width:100%;background:#1b1b1b;border:1.5px solid #444;color:#fff;padding:10px;border-radius:9px;font-size:13px;outline:none;}
+input:focus, select:focus{border-color:#ffcc00;background:#141414;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+#searchResults{
+  position:absolute;top:100%;left:0;right:0;background:#181818;border:1.5px solid #ffcc00;
+  border-radius:9px;max-height:190px;overflow-y:auto;z-index:999999;display:none;margin-top:2px;box-shadow:0 6px 20px rgba(0,0,0,0.8);
+}
+.search-item{padding:9px 12px;border-bottom:1px solid #333;cursor:pointer;font-size:12px;}
+.search-item:hover{background:#2a2600;color:#ffcc00;}
+.search-item small{display:block;color:#aaa;font-size:10px;margin-top:2px;}
+.box-panel{background:#141414;border:1.5px solid #333;border-radius:12px;padding:12px;margin-bottom:12px;}
+.box-title{font-size:12px;font-weight:bold;color:#ffcc00;margin-bottom:8px;}
+.cat-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;}
+.cat-pill{background:#222;color:#bbb;border:1px solid #444;padding:6px 12px;border-radius:16px;font-size:11px;font-weight:bold;white-space:nowrap;cursor:pointer;}
+.cat-pill.active{background:#ffcc00;color:#000;border-color:#ffcc00;}
+#prodListContainer{display:grid;gap:6px;max-height:200px;overflow-y:auto;}
+.prod-card{background:#1a1a1a;border:1.5px solid #333;border-radius:9px;padding:9px;cursor:pointer;}
+.prod-card:hover, .prod-card.selected{border-color:#ffcc00;background:#262200;}
+.prod-card-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.prod-card h4{font-size:12px;color:#fff;}
+.prod-badge{font-size:10px;font-weight:bold;padding:2px 5px;border-radius:5px;}
+.badge-gold{background:#ffcc00;color:#000;}
+.badge-hot{background:#e50914;color:#fff;}
+.badge-off{background:#333;color:#00ff99;border:1px solid #00ff99;}
+.prod-reviews{font-size:10px;color:#ffcc00;margin-top:2px;}
+.live-compare-box{background:#111;border:1.5px dashed #ffcc00;border-radius:9px;padding:10px;margin-top:8px;}
+.compare-btns{display:flex;gap:6px;margin-top:6px;}
+.btn-flip, .btn-hk{flex:1;color:#fff;border:none;padding:8px;border-radius:6px;font-size:10px;font-weight:bold;cursor:pointer;text-align:center;text-decoration:none;}
+.btn-flip{background:#2874f0;}
+.btn-hk{background:#ff6f00;}
+.indian-reason-box{background:rgba(0,255,153,0.06);border:1.5px solid #00ff99;border-radius:8px;padding:9px;color:#fff;font-size:11px;line-height:1.45;}
+.nav-btns{display:flex;gap:8px;margin-top:14px;}
+.btn-prev{flex:1;background:#333;color:#fff;border:none;padding:12px;border-radius:9px;font-weight:bold;cursor:pointer;}
+.btn-next{flex:2;background:#ffcc00;color:#000;border:none;padding:12px;border-radius:9px;font-weight:bold;cursor:pointer;box-shadow:0 3px 12px rgba(255,204,0,0.3);}
+.btn-submit{width:100%;background:#25D366;color:#fff;border:none;padding:13px;border-radius:9px;font-weight:bold;font-size:14px;cursor:pointer;box-shadow:0 4px 15px rgba(37,211,102,0.4);margin-top:10px;}
+.balance-box{background:#330808;border:1.5px solid #ff3333;border-radius:9px;padding:9px;text-align:center;margin-top:8px;}
+.balance-box b{color:#ff4d4d;font-size:15px;}
+#receiptModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9999999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
+.receipt-wrapper{max-width:430px;width:100%;margin-top:10px;margin-bottom:20px;}
+.receipt-card{background:#ffffff;color:#000;border-radius:12px;padding:15px;margin-bottom:10px;box-shadow:0 8px 30px rgba(0,0,0,0.8);}
+.receipt-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:8px;margin-bottom:8px;}
+.r-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;border-bottom:1px dotted #ccc;padding-bottom:2px;}
+.page2-alert{background:#fff2f2;border:2.5px solid #d9534f;border-radius:10px;padding:12px;color:#000;}
+.penalty-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px;}
+.penalty-table th, .penalty-table td{border:1px solid #d9534f;padding:5px;text-align:center;}
+.penalty-table th{background:#ffdada;color:#a00;font-weight:bold;}
+.action-btns{display:flex;gap:6px;margin-top:8px;}
+.dl-btn{flex:1;background:#000;color:#ffcc00;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
+.wa-btn{flex:1;background:#25D366;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
+.sms-btn{flex:1;background:#007bff;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="main-card">
+  <div class="header">
+    <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:12px; display:inline-block; margin-bottom:4px;">OFFICIAL DESK PORTAL</div>
+    <h1>5 Brother's Fitness Club</h1>
+    <div class="tagline">"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।"</div>
+    <div class="sub-loc">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259, 9990954574</div>
+  </div>
+
+  <div class="step-bar">
+    <div class="step-dot active" id="dot1">1. मोड व विवरण</div>
+    <div class="step-dot" id="dot2">2. फीस / सप्लीमेंट</div>
+    <div class="step-dot" id="dot3">3. भुगतान व बिल</div>
+  </div>
+
+  <form id="khataForm" onsubmit="generateKhataBill(event)">
+    <div class="step-page active" id="stepPage1">
+      <div class="mode-container">
+        <button type="button" class="mode-btn" id="btnModeFee" onclick="setMode('fee')">🏋️ Gym Fees Only</button>
+        <button type="button" class="mode-btn" id="btnModeSupp" onclick="setMode('supp')">💊 Only Supplement</button>
+        <button type="button" class="mode-btn active" id="btnModeBoth" onclick="setMode('both')">🏋️+💊 Fees + Supp</button>
+      </div>
+
+      <div class="field-group" id="searchBoxGroup">
+        <label>🔍 सदस्य खोजें (Live Auto-fill)</label>
+        <input type="text" id="memberSearch" autocomplete="off" placeholder="नाम या मोबाइल लिखें..." oninput="searchMembers(this.value)">
+        <div id="searchResults"></div>
+      </div>
+
+      <div class="row">
+        <div class="field-group">
+          <label>ग्राहक का नाम <span>*</span></label>
+          <input type="text" id="mName" placeholder="पूरा नाम">
+        </div>
+        <div class="field-group" id="fatherGroup">
+          <label>पिता का नाम</label>
+          <input type="text" id="mFather" placeholder="पिता का नाम">
+        </div>
+      </div>
+
+      <div id="friendGroup" style="display:none; background:rgba(255,204,0,0.06); border:1px dashed #ffcc00; padding:10px; border-radius:10px; margin-bottom:12px;">
+        <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">🤝 Guarantor / दोस्त की जानकारी (उधारी हेतु अनिवार्य)</div>
+        <div class="row">
+          <div class="field-group" style="margin-bottom:0;">
+            <label>दोस्त का नाम <span>*</span></label>
+            <input type="text" id="mFriendName" placeholder="दोस्त का नाम">
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <label>दोस्त का मोबाइल <span>*</span></label>
+            <input type="tel" id="mFriendPhone" placeholder="10 अंक मोबाइल">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field-group">
+          <label>ग्राहक मोबाइल <span>*</span></label>
+          <input type="tel" id="mPhone" placeholder="10 अंक मोबाइल">
+        </div>
+        <div class="field-group" id="joinDateGroup">
+          <label>जॉइनिंग / रिन्यूअल तिथि</label>
+          <input type="date" id="mJoinDate" onclick="this.showPicker()">
+        </div>
+      </div>
+
+      <div class="nav-btns">
+        <button type="button" class="btn-next" onclick="goToStep(2)">अगला स्टेप : चयन करें ➡️</button>
+      </div>
+    </div>
+
+    <div class="step-page" id="stepPage2">
+      <div class="box-panel" id="gymFeeSection">
+        <div class="box-title">🏋️ जिम मासिक फीस विवरण</div>
+        <div class="row">
+          <div class="field-group" style="margin-bottom:0;">
+            <label>सदस्य प्रकार <span>*</span></label>
+            <select id="memberType" onchange="handleMemberTypeChange()">
+              <option value="student">विद्यार्थी (Student) - ₹300 Fixed</option>
+              <option value="working" selected>वर्किंग / सामान्य (Regular) - ₹500</option>
+            </select>
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <label>जमा फीस (₹) <span>*</span></label>
+            <input type="number" id="gymFee" value="500" min="0">
+          </div>
+        </div>
+
+        <div id="referralBox" style="background:rgba(255,204,0,0.06); border:1.5px dashed #ffcc00; border-radius:10px; padding:11px; margin-top:10px;">
+          <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:4px;">🤝 सदस्य रेफरल छूट (-₹100 प्रति मेंबर):</div>
+          <div style="font-size:10px; color:#aaa; margin-bottom:8px;">पुराने भाइयों को चुनें या नया भाई जोड़ें:</div>
+          
+          <div style="display:flex; gap:6px;">
+            <select id="refMemberSelect" onchange="addExistingReferredMember(this.value)" style="flex:1; padding:8px; border-radius:6px; background:#1b1b1b; color:#fff; border:1px solid #444; font-size:11px;">
+              <option value="">-- पुराने सदस्यों में से चुनें --</option>
+            </select>
+            <button type="button" onclick="openNewRefModal()" style="background:#ffcc00; color:#000; border:none; padding:8px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">+ नया जोड़ें</button>
+          </div>
+
+          <div id="newRefMemberForm" style="display:none; background:#181818; border:1px solid #ffcc00; border-radius:8px; padding:10px; margin-top:10px;">
+            <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:8px;">➕ नए रेफरल भाई का विवरण:</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <div>
+                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">रेफरल का नाम *</label>
+                <input type="text" id="newRefName" placeholder="नाम लिखें" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:6px; border-radius:4px; font-size:11px;">
+              </div>
+              <div>
+                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">रेफरल मोबाइल *</label>
+                <input type="tel" id="newRefPhone" placeholder="10 अंक मोबाइल" maxlength="10" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:6px; border-radius:4px; font-size:11px;">
+              </div>
+              <div>
+                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">जॉइनिंग तारीख *</label>
+                <input type="date" id="newRefJoinDate" onclick="this.showPicker()" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
+              </div>
+              <div>
+                <label style="font-size:9px; color:#aaa; display:block; margin-bottom:2px;">फीस स्थिति *</label>
+                <select id="newRefFeeStatus" onchange="toggleRefPromiseDate(this.value)" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #444; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
+                  <option value="Paid">Paid (जमा है)</option>
+                  <option value="Unpaid">Unpaid (बाकी है)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div id="refPromiseBox" style="display:none; margin-top:8px;">
+              <label style="font-size:9px; color:#ff9900; display:block; margin-bottom:2px;">फीस कब देगा (वादा तारीख):</label>
+              <input type="date" id="newRefPromiseDate" onclick="this.showPicker()" style="width:100%; box-sizing:border-box; background:#222; border:1px solid #ff9900; color:#fff; padding:5px; border-radius:4px; font-size:11px;">
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px;">
+              <button type="button" onclick="closeNewRefModal()" style="background:#333; color:#ccc; border:none; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer;">रद्द करें</button>
+              <button type="button" onclick="saveAndAddManualRef()" style="background:#00ff99; color:#000; border:none; padding:5px 12px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer;">सेव और जोड़ें</button>
+            </div>
+          </div>
+
+          <div id="refTagsContainer" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;"></div>
+          <div id="refDiscountAlert" style="font-size:11px; color:#00ff99; font-weight:bold; margin-top:8px; display:none;"></div>
+        </div>
+      </div>
+
+      <div class="box-panel" id="suppSection">
+        <div class="box-title">💊 सप्लीमेंट चयन (Catalog)</div>
+        <div class="cat-scroll">
+          <button type="button" class="cat-pill active" onclick="switchCategory('gainer', this)">Mass Gainer</button>
+          <button type="button" class="cat-pill" onclick="switchCategory('whey', this)">Whey Protein</button>
+          <button type="button" class="cat-pill" onclick="switchCategory('creatine', this)">Creatine</button>
+          <button type="button" class="cat-pill" onclick="switchCategory('multivitamin', this)">Multivitamin</button>
+          <button type="button" class="cat-pill" onclick="switchCategory('preworkout', this)">Pre-Workout</button>
+          <button type="button" class="cat-pill" onclick="switchCategory('fishoil', this)">Fish Oil</button>
+          <button type="button" class="cat-pill" onclick="switchCategory('peanut', this)">Peanut Butter</button>
+        </div>
+
+        <div id="prodListContainer"></div>
+
+        <div class="live-compare-box" id="compareBox">
+          <div style="font-size:11px; color:#ffcc00; font-weight:bold;" id="compareTitle">🌐 Market Analysis:</div>
+          <div id="compareActionArea" style="margin-top:4px;"></div>
+        </div>
+
+        <div class="field-group" style="margin-top:10px; margin-bottom:0;">
+          <label>वजन / साइज चुनें <span>*</span></label>
+          <select id="sizeSelect" onchange="calcKhata()">
+            <option value="">-- पहले प्रोडक्ट चुनें --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="nav-btns">
+        <button type="button" class="btn-prev" onclick="goToStep(1)">⬅️ वापस</button>
+        <button type="button" class="btn-next" onclick="goToStep(3)">अगला स्टेप : पेमेंट ➡️</button>
+      </div>
+    </div>
+
+    <div class="step-page" id="stepPage3">
+      <div class="box-panel">
+        <div class="box-title">💰 पेमेंट व उधारी हिसाब (Final Clearance)</div>
+
+        <div id="suppPaymentFields">
+          <div class="row">
+            <div class="field-group">
+              <label>सप्लीमेंट तय कीमत (₹) <span>*</span></label>
+              <input type="number" id="prodPrice" placeholder="जैसे 1500" min="0" oninput="calcKhata()">
+            </div>
+            <div class="field-group">
+              <label>नगद जमा राशि (₹) <span>*</span></label>
+              <input type="number" id="cashPaid" value="0" min="0" oninput="calcKhata()">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>वादा तारीख (Salary Clearance Date) <span>*</span></label>
+            <input type="date" id="promisedDate" onclick="this.showPicker()">
+          </div>
+
+          <div class="balance-box">
+            सप्लीमेंट बकाया राशि: <b id="dueDisplay">₹0</b>
+          </div>
+        </div>
+
+        <div id="feeSummaryOnly" style="display:none; text-align:center; padding:10px; background:#1b1b1b; border-radius:8px;">
+          <div style="font-size:12px; color:#aaa;">जिम सदस्यता शुल्क:</div>
+          <div style="font-size:20px; font-weight:bold; color:#00ff99; margin-top:4px;" id="gymFeeSummaryDisp">₹500</div>
+        </div>
+      </div>
+
+      <div class="nav-btns">
+        <button type="button" class="btn-prev" onclick="goToStep(2)">⬅️ वापस</button>
+      </div>
+      <button type="submit" class="btn-submit">📑 Generate 2-Page Official Bill Slip</button>
+    </div>
+  </form>
+</div>
+
+<!-- KHATA REGISTER / ADMISSION STYLE DASHBOARD -->
+<div class="main-card" style="border-color:#00ff99;">
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px dashed #00ff99; padding-bottom:8px; margin-bottom:10px;">
+    <h2 style="font-size:15px; color:#00ff99;">📋 फीस व उधारी रजिस्टर (Admin Records)</h2>
+    <button type="button" onclick="exportToExcelCSV()" style="background:#00ff99; color:#000; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">📥 Excel (CSV) Download</button>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+    <input type="text" id="regSearch" placeholder="🔍 नाम या मोबाइल खोजें..." oninput="renderKhataTable()" style="padding:7px; font-size:11px;">
+    <select id="regFilterStatus" onchange="renderKhataTable()" style="padding:7px; font-size:11px;">
+      <option value="ALL">सभी रिकॉर्ड (All Records)</option>
+      <option value="PAID">✅ केवल फीस जमा (Paid)</option>
+      <option value="DUE">🔴 केवल बकाया / उधारी (Unpaid / Due)</option>
+    </select>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; font-size:11px; text-align:left;">
+      <thead>
+        <tr style="background:#1b1b1b; color:#ffcc00; border-bottom:1.5px solid #444;">
+          <th style="padding:6px;">तारीख</th>
+          <th style="padding:6px;">सदस्य / फोन</th>
+          <th style="padding:6px;">मोड / विवरण</th>
+          <th style="padding:6px;">जमा (₹)</th>
+          <th style="padding:6px;">बकाया (₹)</th>
+          <th style="padding:6px;">वैधता (Valid Till)</th>
+          <th style="padding:6px; text-align:center;">Action</th>
+        </tr>
+      </thead>
+      <tbody id="khataTableBody"></tbody>
+    </table>
+  </div>
 </div>
 
 <div id="receiptModal">
@@ -452,8 +730,9 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
     </div>
     <button type="button" onclick="document.getElementById('receiptModal').style.display='none'" style="width:100%; background:#333; color:#fff; border:none; padding:10px; border-radius:8px; margin-top:8px; cursor:pointer;">बंद करें (Close)</button>
   </div>
-  </div>
-      <script>
+</div>
+
+<script>
 let currentMode = 'both';
 let currentStep = 1;
 let selectedProductObj = null;
@@ -506,23 +785,25 @@ const MEMBERS = [
   { name: "अरमान (Armaan)", father: "-", phone: "", joinDate: "2026-10-15" },
   { name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "", joinDate: "2022-01-11" }
 ];
-        const CATALOG_DATA = [
+
+const CATALOG_DATA = [
   { category: "gainer", name: "Labrada Muscle Mass Gainer", badge: "🏆 #1 Best Seller", badgeClass: "badge-gold", reviews: "⭐ 5.0 (2,000+ Verified Athletes)", isOnline: true, flipkartQuery: "Labrada Muscle Mass Gainer", hkQuery: "Labrada Muscle Mass Gainer", options: ["1 Kg", "3 Kg", "5 Kg"] },
   { category: "gainer", name: "MuscleBlaze Super Gainer XXL", badge: "🔥 Hot Bulking", badgeClass: "badge-hot", reviews: "⭐ 4.9 (1,450+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Super Gainer XXL", hkQuery: "MuscleBlaze Super Gainer XXL", options: ["1 Kg", "3 Kg", "5 Kg"] },
-  { category: "gainer", name: "Pro Series Power Muscles Gain", badge: "🇮🇳 Indian Direct Result Formula", badgeClass: "badge-off", reviews: "⭐ 4.7 (520+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Authentic Indian Athlete Formula (Zero Online Marketing Cost): यह ब्रांड ऑनलाइन विज्ञापनों और यूट्यूबर्स के महंगे प्रमोशन पर पैसे खर्च करने के बजाय सीधे रॉ-मटेरियल की प्योरिटी और रिजल्ट पर फोकस करता है। इसी वजह से यह आपको बिना किसी ई-कॉमर्स प्लेटफॉर्म कमीशन के सीधे जिम वेयरहाउस रेट पर ₹600-₹800 तक सस्ता और 100% असरदार मिलता है।" },
+  { category: "gainer", name: "Pro Series Power Muscles Gain", badge: "🇮🇳 Indian Direct Result Formula", badgeClass: "badge-off", reviews: "⭐ 4.7 (520+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Authentic Indian Athlete Formula: बिना किसी ई-कॉमर्स कमीशन के सीधे जिम वेयरहाउस रेट पर ₹600-₹800 तक सस्ता और 100% असरदार मिलता है।" },
   { category: "gainer", name: "ON Serious Mass Gainer", badge: "⭐ Top Choice", badgeClass: "badge-gold", reviews: "⭐ 4.8 (850+ Reviews)", isOnline: true, flipkartQuery: "Optimum Nutrition Serious Mass Gainer", hkQuery: "Optimum Nutrition Serious Mass", options: ["1 Kg", "2.72 Kg (6 lbs)", "5.44 Kg (12 lbs)"] },
   { category: "whey", name: "Muscletech NitroTech Whey (1.81 Kg)", badge: "🏆 #1 Best Selling Whey", badgeClass: "badge-gold", reviews: "⭐ 4.9 (1,200+ Verified Buyers)", isOnline: true, flipkartQuery: "Muscletech NitroTech Whey Protein 1.81kg", hkQuery: "Muscletech NitroTech Whey", options: ["1 Kg", "1.81 Kg (4 lbs)", "3.63 Kg (8 lbs)"] },
-  { category: "whey", name: "Muscle Size Intra Bulk 100% Whey", badge: "🇮🇳 Indian Gym Exclusive Stock", badgeClass: "badge-off", reviews: "⭐ 4.7 (540+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Pure Indian Muscle Builder (Result Focused): ऑनलाइन बिकने वाले ब्रांड्स सिर्फ नाम और विज्ञापनों के पैसे लेते हैं। यह विशुद्ध भारतीय डायरेक्ट स्टॉक है जो जिम के शेड में उतरा है, ताकि हमारे हर भाई को बजट रेट में बेहतरीन रिजल्ट और ताकत मिले।" },
+  { category: "whey", name: "Muscle Size Intra Bulk 100% Whey", badge: "🇮🇳 Indian Gym Exclusive Stock", badgeClass: "badge-off", reviews: "⭐ 4.7 (540+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Pure Indian Muscle Builder: सीधे जिम वेयरहाउस रेट पर वाजिब दाम।" },
   { category: "whey", name: "MuscleBlaze Biozyme Performance Whey", badge: "🔥 Clinically Tested", badgeClass: "badge-hot", reviews: "⭐ 4.8 (950+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Biozyme Performance Whey", hkQuery: "MuscleBlaze Biozyme Performance Whey", options: ["500 Gram", "1 Kg", "2 Kg", "4 Kg"] },
-  { category: "creatine", name: "MuscleBlaze Creatine Monohydrate (CreAbsorb)", badge: "🔥 Hot Selling Beast", badgeClass: "badge-hot", reviews: "⭐ 5.0 (1,850+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Creatine Monohydrate", hkQuery: "MuscleBlaze Creatine Monohydrate", options: ["100 Gram", "250 Gram", "400 Gram"] },
+  { category: "creatine", name: "MuscleBlaze Creatine Monohydrate", badge: "🔥 Hot Selling Beast", badgeClass: "badge-hot", reviews: "⭐ 5.0 (1,850+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Creatine Monohydrate", hkQuery: "MuscleBlaze Creatine Monohydrate", options: ["100 Gram", "250 Gram", "400 Gram"] },
   { category: "creatine", name: "Wellcore Pure Micronised Creatine", badge: "🥈 High Demand", badgeClass: "badge-gold", reviews: "⭐ 4.9 (1,100+ Reviews)", isOnline: true, flipkartQuery: "Wellcore Pure Micronised Creatine", hkQuery: "Wellcore Pure Micronised Creatine", options: ["100 Gram", "250 Gram"] },
   { category: "multivitamin", name: "MuscleBlaze MB-Vite Daily Multivitamin", badge: "🏆 Top Selling", badgeClass: "badge-gold", reviews: "⭐ 4.9 (1,600+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze MB-Vite Daily Multivitamin", hkQuery: "MuscleBlaze MB-Vite Multivitamin", options: ["30 Tablets", "60 Tablets", "90 Tablets"] },
-  { category: "preworkout", name: "Wild Bull Direct Pump Formula", badge: "🇮🇳 Indian Hardcore Pump", badgeClass: "badge-off", reviews: "⭐ 4.7 (500+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Desi Hardcore Power Formula: यह सप्लीमेंट सिर्फ भारी वर्कआउट और मसल पंप के लिए तैयार किया गया है। इसमें किसी महंगे ब्रांड की मार्केटिंग कॉस्ट नहीं जुड़ी है, सीधा असर और जिम के शेड वाला वाजिब दाम!" },
+  { category: "preworkout", name: "Wild Bull Direct Pump Formula", badge: "🇮🇳 Indian Hardcore Pump", badgeClass: "badge-off", reviews: "⭐ 4.7 (500+ Athletes Used)", isOnline: false, indianReason: "🇮🇳 100% Desi Hardcore Power Formula: सीधा असर और जिम के शेड वाला वाजिब दाम!" },
   { category: "preworkout", name: "Cellucor C4 Original Pre-Workout", badge: "🔥 Explosive Energy", badgeClass: "badge-hot", reviews: "⭐ 4.9 (1,350+ Reviews)", isOnline: true, flipkartQuery: "Cellucor C4 Original Pre-Workout", hkQuery: "Cellucor C4 Pre Workout", options: ["30 Servings", "60 Servings"] },
   { category: "fishoil", name: "MuscleBlaze Fish Oil 1000mg", badge: "🏆 Top Selling Omega 3", badgeClass: "badge-gold", reviews: "⭐ 4.9 (1,300+ Reviews)", isOnline: true, flipkartQuery: "MuscleBlaze Fish Oil 1000mg", hkQuery: "MuscleBlaze Fish Oil 1000mg", options: ["30 Capsules", "60 Capsules", "90 Capsules"] },
   { category: "peanut", name: "MyFitness Peanut Butter (High Protein)", badge: "🔥 #1 Hot Selling", badgeClass: "badge-hot", reviews: "⭐ 5.0 (1,900+ Reviews)", isOnline: true, flipkartQuery: "MyFitness Peanut Butter 1kg", hkQuery: "MyFitness Peanut Butter 1kg", options: ["1 Kg (Crunchy)", "1 Kg (Chocolate)", "2.5 Kg"] }
 ];
-  window.addEventListener("DOMContentLoaded", () => {
+
+window.addEventListener("DOMContentLoaded", () => {
   renderCategoryProducts("gainer");
   const today = new Date().toISOString().split('T')[0];
   document.getElementById("mJoinDate").value = today;
@@ -533,7 +814,6 @@ const MEMBERS = [
   setMode('both');
   populateReferralDropdown();
   renderKhataTable();
-    
 });
 
 function getAllMembersList() {
@@ -605,8 +885,9 @@ function addExistingReferredMember(name) {
   if (!name) return;
   addReferredMemberToList(name, "Verified");
   document.getElementById("refMemberSelect").value = "";
-        }
-        function addReferredMemberToList(name, status) {
+}
+
+function addReferredMemberToList(name, status) {
   if (referredMembersList.some(item => item.name.toLowerCase() === name.toLowerCase())) {
     alert("यह सदस्य पहले से जोड़ा जा चुका है!");
     return;
@@ -670,8 +951,9 @@ function updateGymFeeWithDiscount() {
 
 function handleMemberTypeChange() {
   updateGymFeeWithDiscount();
-        }
-        function goToStep(step) {
+}
+
+function goToStep(step) {
   if (step === 2) {
     const name = document.getElementById("mName").value.trim();
     const phone = document.getElementById("mPhone").value.trim();
@@ -860,8 +1142,9 @@ function calcKhata() {
   const cash = parseFloat(document.getElementById("cashPaid").value) || 0;
   const due = Math.max(0, price - cash);
   document.getElementById("dueDisplay").innerText = "₹" + due;
-        }
-        function generateKhataBill(e) {
+}
+
+function generateKhataBill(e) {
   e.preventDefault();
   
   const name = document.getElementById("mName").value.trim();
@@ -888,7 +1171,7 @@ function calcKhata() {
   if (joinDateVal) {
     const jDate = new Date(joinDateVal);
     joinDateFormatted = jDate.toLocaleDateString('en-GB');
-    let nextDate = new Date(today);
+    let nextDate = new Date(joinDateVal);
     nextDate.setMonth(nextDate.getMonth() + 1);
     nextDueDateFormatted = nextDate.toLocaleDateString('en-GB');
   }
@@ -995,6 +1278,20 @@ function calcKhata() {
       `🙏 Thank you for choosing 5 Brother's Fitness Club!\n*5 Brother's Fitness Club*\nउमराव खेड़ा, अकरमपुर, उन्नाव`;
   }
 
+  // Auto-Save in Register
+  saveToKhataRegister({
+    id: billId,
+    date: paidDateFormatted,
+    name: name,
+    phone: phone,
+    extra: (currentMode === 'supp') ? friendName : father,
+    mode: modeText,
+    paid: (currentMode === 'fee' ? (parseFloat(document.getElementById("gymFee").value) || 0) : paid),
+    due: (currentMode === 'fee' ? 0 : due),
+    validTill: nextDueDateFormatted,
+    details: (currentMode === 'fee' ? 'Gym Fee' : `${prod} (${size})`)
+  });
+
   document.getElementById("waBtn").onclick = () => {
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(fullMessage), "_blank");
   };
@@ -1006,31 +1303,32 @@ function calcKhata() {
     };
   }
 
-      saveToKhataRegister({
-    id: billId,
-    date: paidDateFormatted,
-    name: name,
-    phone: phone,
-    extra: (currentMode === 'supp') ? friendName : father,
-    mode: modeText,
-    paid: (currentMode === 'fee' ? (document.getElementById("gymFee").value || 0) : paid),
-    due: (currentMode === 'fee' ? 0 : due),
-    details: (currentMode === 'fee' ? 'Gym Fee' : `${prod} (${size})`)
-  });
-          
   document.getElementById("receiptModal").style.display = "flex";
 }
 
 function saveBillImage() {
-  // 1. Bill banne par auto-save karna
+  const btn = document.getElementById("dlBtn");
+  btn.innerText = "⏳ Saving...";
+  const element = document.getElementById("printablePages");
+
+  html2canvas(element, { scale: 2, backgroundColor: "#0a0a0a" }).then(canvas => {
+    let a = document.createElement("a");
+    a.download = "5_Brothers_Bill_" + document.getElementById("billId").innerText + ".png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+    btn.innerText = "✅ Saved!";
+    setTimeout(() => { btn.innerText = "📥 Image Save"; }, 2500);
+  });
+}
+
+// KHATA REGISTER LOGIC
 function saveToKhataRegister(record) {
   let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
-  records.unshift(record); // Naya entry sabse upar
+  records.unshift(record);
   localStorage.setItem("gym_khata_records", JSON.stringify(records));
   renderKhataTable();
 }
 
-// 2. Table me list dikhana
 function renderKhataTable() {
   const tbody = document.getElementById("khataTableBody");
   if (!tbody) return;
@@ -1050,7 +1348,7 @@ function renderKhataTable() {
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:12px; color:#777;">कोई रिकॉर्ड नहीं मिला</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:12px; color:#777;">कोई रिकॉर्ड नहीं मिला</td></tr>`;
     return;
   }
 
@@ -1060,9 +1358,10 @@ function renderKhataTable() {
     tr.innerHTML = `
       <td style="padding:6px; color:#bbb;">${r.date}</td>
       <td style="padding:6px; font-weight:bold;">${r.name}<br><small style="color:#777;">${r.phone}</small></td>
-      <td style="padding:6px; color:#aaa;">${r.mode}</td>
-      <td style="padding:6px; color:#00ff99;">₹${r.paid}</td>
-      <td style="padding:6px; color:${r.due > 0 ? '#ff4d4d' : '#888'};">₹${r.due}</td>
+      <td style="padding:6px; color:#aaa;">${r.mode}<br><small style="color:#666;">${r.details}</small></td>
+      <td style="padding:6px; color:#00ff99; font-weight:bold;">₹${r.paid}</td>
+      <td style="padding:6px; color:${r.due > 0 ? '#ff4d4d' : '#888'}; font-weight:bold;">${r.due > 0 ? '₹' + r.due : 'Cleared'}</td>
+      <td style="padding:6px; color:#ffcc00;">${r.validTill || '-'}</td>
       <td style="padding:6px; text-align:center;">
         <button type="button" onclick="deleteKhataRecord(${idx})" style="background:#ff3333; color:#fff; border:none; padding:4px 7px; border-radius:4px; font-size:10px; cursor:pointer;">🗑️ Del</button>
       </td>
@@ -1071,7 +1370,6 @@ function renderKhataTable() {
   });
 }
 
-// 3. Delete Record (Dummy entry hatane ke liye)
 function deleteKhataRecord(idx) {
   if (confirm("क्या आप वाकई इस रिकॉर्ड को डिलीट करना चाहते हैं?")) {
     let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
@@ -1081,36 +1379,21 @@ function deleteKhataRecord(idx) {
   }
 }
 
-// 4. Excel (CSV) Download
 function exportToExcelCSV() {
   let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
   if (records.length === 0) {
     alert("डाउनलोड करने के लिए कोई डाटा मौजूद नहीं है!");
     return;
   }
-  let csv = "Bill ID,Date,Name,Father/Guarantor,Phone,Mode,Paid (Rs),Due (Rs),Details\n";
+  let csv = "Bill ID,Date,Name,Father/Guarantor,Phone,Mode,Paid (Rs),Due (Rs),Valid Till,Details\n";
   records.forEach(r => {
-    csv += `"${r.id}","${r.date}","${r.name}","${r.extra}","${r.phone}","${r.mode}","${r.paid}","${r.due}","${r.details}"\n`;
+    csv += `"${r.id}","${r.date}","${r.name}","${r.extra}","${r.phone}","${r.mode}","${r.paid}","${r.due}","${r.validTill || '-'}","${r.details}"\n`;
   });
   let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   let link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = `5BFC_Register_${new Date().toISOString().split('T')[0]}.csv`;
   link.click();
-}
-
-  const btn = document.getElementById("dlBtn");
-  btn.innerText = "⏳ Saving...";
-  const element = document.getElementById("printablePages");
-
-  html2canvas(element, { scale: 2, backgroundColor: "#0a0a0a" }).then(canvas => {
-    let a = document.createElement("a");
-    a.download = "5_Brothers_Bill_" + document.getElementById("billId").innerText + ".png";
-    a.href = canvas.toDataURL("image/png");
-    a.click();
-    btn.innerText = "✅ Saved!";
-    setTimeout(() => { btn.innerText = "📥 Image Save"; }, 2500);
-  });
 }
 </script>
 </body>
