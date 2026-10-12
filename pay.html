@@ -1,0 +1,561 @@
+pay.html<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>5 Brother's Fitness Club - फीस भुगतान एवं रसीद</title>
+<!-- html2canvas for instant receipt image download -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+body{background:#0a0a0a;color:#fff;padding:12px;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+
+.pay-card{background:#141414;border:2.5px solid #ffcc00;border-radius:20px;max-width:500px;width:100%;padding:22px 18px;box-shadow:0 0 30px rgba(255,204,0,0.3);}
+.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:12px;margin-bottom:18px;}
+.header h1{color:#ffcc00;font-size:22px;text-transform:uppercase;letter-spacing:0.5px;}
+.header p{color:#bbb;font-size:12px;margin-top:4px;}
+
+.field-group{margin-bottom:13px;position:relative;}
+label{display:block;font-size:13px;color:#eee;margin-bottom:5px;font-weight:600;}
+label span{color:#ff3333;}
+input, select{width:100%;background:#222;border:1.5px solid #444;color:#fff;padding:12px;border-radius:10px;font-size:14px;outline:none;}
+input:focus, select:focus{border-color:#ffcc00;background:#1a1a1a;}
+input[type="date"]{cursor:pointer;}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* SMART SEARCH DROPDOWN SUGGESTIONS */
+#searchResults{position:absolute;top:100%;left:0;right:0;background:#1c1c1c;border:1.5px solid #ffcc00;border-radius:10px;max-height:220px;overflow-y:auto;z-index:9999;display:none;margin-top:4px;box-shadow:0 8px 25px rgba(0,0,0,0.8);}
+.search-item{padding:10px 12px;border-bottom:1px solid #333;cursor:pointer;font-size:13px;color:#eee;}
+.search-item:hover, .search-item:active{background:#2a2600;color:#ffcc00;}
+.search-item small{display:block;color:#aaa;font-size:11px;margin-top:2px;}
+
+.quick-amount{display:flex;gap:8px;margin-top:6px;}
+.amt-btn{flex:1;background:#242424;border:1px solid #555;color:#ffcc00;padding:8px 0;border-radius:8px;font-weight:bold;font-size:12px;cursor:pointer;}
+.amt-btn:hover{background:#333;border-color:#ffcc00;}
+
+/* LATE WARNING ALERT */
+.late-alert{background:#3d0808;border:1.5px solid #ff3333;border-radius:10px;padding:12px;margin:12px 0;font-size:13px;color:#ff9999;display:none;line-height:1.5;}
+.late-alert b{color:#ff4d4d;}
+
+.due-notice{background:#1c1900;border:1px dashed #ffcc00;border-radius:10px;padding:10px;margin-top:10px;font-size:12px;color:#ffcc00;text-align:center;}
+
+.pay-btn{width:100%;background:#25D366;color:#fff;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:14px;box-shadow:0 4px 15px rgba(37,211,102,0.4);display:flex;align-items:center;justify-content:center;gap:8px;}
+.pay-btn:active{transform:scale(0.98);}
+
+.admin-link{text-align:center;margin-top:16px;font-size:12px;}
+.admin-link a{color:#ffcc00;text-decoration:none;}
+
+/* RECEIPT MODAL */
+#receiptModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:999999;justify-content:center;align-items:center;padding:15px;}
+.receipt-box{background:#ffffff;color:#000;border-radius:16px;max-width:430px;width:100%;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,0.8);position:relative;}
+.receipt-header{text-align:center;border-bottom:2px dashed #222;padding-bottom:10px;margin-bottom:12px;}
+.r-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px;border-bottom:1px dotted #ccc;padding-bottom:4px;}
+.receipt-btns{display:flex;gap:8px;margin-top:16px;}
+.btn-dl{flex:1;background:#000;color:#ffcc00;border:none;padding:12px;border-radius:8px;font-weight:bold;cursor:pointer;}
+.btn-wa{flex:1;background:#25D366;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:bold;cursor:pointer;}
+
+/* ADMIN MODAL */
+#adminModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999999;justify-content:center;align-items:center;padding:15px;}
+.admin-box{background:#181818;border:2px solid #ffcc00;border-radius:16px;max-width:950px;width:100%;padding:20px;max-height:90vh;overflow-y:auto;}
+.admin-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;}
+.admin-tbl th, .admin-tbl td{border:1px solid #333;padding:8px;text-align:left;}
+.admin-tbl th{background:#222;color:#ffcc00;}
+.del-btn{background:#e50914;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-weight:bold;}
+</style>
+</head>
+<body>
+
+<div class="pay-card">
+  <div class="header">
+    <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:6px;">OFFICIAL FEE COUNTER</div>
+    <h1>5 Brother's Fitness Club</h1>
+    <p>उमराव खेड़ा, अकरमपुर, उन्नाव | 9140417259@okbizaxis</p>
+  </div>
+
+  <form id="quickPayForm" onsubmit="handleQuickPay(event)">
+    
+    <!-- SMART HINDI/ENGLISH SEARCH BOX -->
+    <div class="field-group">
+      <label>🔍 सदस्य का नाम या पिता का नाम खोजें <span>*</span></label>
+      <input type="text" id="memberSearchInput" autocomplete="off" placeholder="यहाँ नाम, पिता का नाम या फोन नंबर लिखें..." oninput="handleSearch(this.value)">
+      <div id="searchResults"></div>
+      <small style="color:#888; font-size:11px; margin-top:3px; display:block;">(उदा: साहिल, रवि, विशाल, या पिता का नाम टाइप करें)</small>
+    </div>
+
+    <div class="row">
+      <div class="field-group">
+        <label>सदस्य का नाम (हिंदी में) <span>*</span></label>
+        <input type="text" id="payName" required placeholder="पूरा नाम">
+      </div>
+      <div class="field-group">
+        <label>पिता का नाम (Father's Name)</label>
+        <input type="text" id="payFather" placeholder="पिता का नाम">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field-group">
+        <label>मोबाइल नंबर (Mobile No.) <span>*</span></label>
+        <input type="tel" id="payPhone" required maxlength="10" placeholder="10 अंकों का नंबर">
+      </div>
+      <div class="field-group">
+        <label>बैच (Batch) <span>*</span></label>
+        <select id="payBatch" required>
+          <option value="सुबह का बैच (Morning: 5:00 AM - 10:00 AM)">सुबह (5:00 - 10:00 AM)</option>
+          <option value="शाम का बैच (Evening: 4:00 PM - 9:30 PM)">शाम (4:00 - 9:30 PM)</option>
+          <option value="जनरल बैच (General: दोनों समय)">जनरल (दोनों समय)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field-group">
+        <label>जिम जॉइनिंग तिथि <span>*</span></label>
+        <input type="date" id="joinDate" required onclick="this.showPicker()" onfocus="this.showPicker()">
+      </div>
+      <div class="field-group">
+        <label>फीस भुगतान तिथि <span>*</span></label>
+        <input type="date" id="payDate" required onclick="this.showPicker()" onfocus="this.showPicker()" onchange="checkLateAndValidity()">
+      </div>
+    </div>
+
+    <!-- LATE PAYMENT WARNING ALERT -->
+    <div class="late-alert" id="lateWarningBox">
+      ⚠️ <b>विलंब सूचना (Late Fee Alert):</b> आपकी मासिक फीस की देय तिथि निकल चुकी है। आप <b id="lateDaysCount">0</b> दिन विलंब से भुगतान कर रहे हैं। कृपया जिम नियमानुसार समय पर फीस जमा करें।
+    </div>
+
+    <div class="field-group">
+      <label>भुगतान का प्रकार (Payment Type) <span>*</span></label>
+      <select id="payType" required onchange="checkLateAndValidity()">
+        <option value="मासिक फीस (Monthly Renewal)">मासिक फीस (Monthly Renewal)</option>
+        <option value="नया एडमिशन (New Joining)">नया एडमिशन (New Joining)</option>
+        <option value="3 महीने एडवांस (3 Months Advance)">3 महीने एडवांस (3 Months Advance)</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>जमा की जाने वाली राशि (Amount in ₹) <span>*</span></label>
+      <input type="number" id="payAmount" required placeholder="रुपये दर्ज करें" min="10">
+      <div class="quick-amount">
+        <button type="button" class="amt-btn" onclick="setAmt(300)">₹300 (छात्र)</button>
+        <button type="button" class="amt-btn" onclick="setAmt(400)">₹400</button>
+        <button type="button" class="amt-btn" onclick="setAmt(500)">₹500 (जनरल)</button>
+        <button type="button" class="amt-btn" onclick="setAmt(900)">₹900 (3 माह)</button>
+        <button type="button" class="amt-btn" onclick="setAmt(1200)">₹1200 (ऑफर)</button>
+      </div>
+    </div>
+
+    <div class="due-notice" id="validityBox">
+      📅 <b>वैधता (Valid Till):</b> <span id="validUntilText">--</span>
+    </div>
+
+    <button type="submit" class="pay-btn">
+      🔒 Pay & Get Official Receipt Slip
+    </button>
+  </form>
+
+  <div class="admin-link">
+    <a href="javascript:void(0)" onclick="openAdmin()">🔒 Admin Payment History (डेटा)</a>
+  </div>
+</div>
+
+<!-- RECEIPT POPUP -->
+<div id="receiptModal">
+  <div class="receipt-box" id="receiptPrintArea">
+    <div class="receipt-header">
+      <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:3px 10px; border-radius:12px; display:inline-block; margin-bottom:5px;">OFFICIAL RECEIPT</div>
+      <h2 style="font-size:18px; text-transform:uppercase;">5 Brother's Fitness Club</h2>
+      <p style="font-size:11px; color:#555;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259, 9990954574</p>
+    </div>
+
+    <div class="r-row"><span>Receipt / Trx ID:</span><b id="rId" style="color:#b37400;"></b></div>
+    <div class="r-row"><span>सदस्य का नाम:</span><b id="rName"></b></div>
+    <div class="r-row"><span>पिता का नाम:</span><b id="rFather"></b></div>
+    <div class="r-row"><span>मोबाइल नंबर:</span><b id="rPhone"></b></div>
+    <div class="r-row"><span>जॉइनिंग तिथि:</span><b id="rJoinDate"></b></div>
+    <div class="r-row"><span>फीस जमा तिथि:</span><b id="rPayDate"></b></div>
+    <div class="r-row"><span>बैच:</span><b id="rBatch"></b></div>
+    <div class="r-row"><span>अगली देय तिथि (Valid Till):</span><b id="rValidTill" style="color:#b37400;"></b></div>
+    <div class="r-row"><span>स्थिति (Status):</span><b id="rLateStatus" style="color:#666;">समय पर (On Time)</b></div>
+    <div class="r-row"><span>जमा राशि:</span><b id="rAmount" style="color:green; font-size:16px;"></b></div>
+    <div class="r-row"><span>सत्यापन:</span><b style="color:green;">सफल (UPI Verified)</b></div>
+
+    <div style="margin-top:12px; font-size:11px; color:#555; text-align:center; border-top:1px dashed #ccc; padding-top:6px;">
+      ✅ फीस भुगतान सफल! जिम में अनुशासन व साफ जूतों का ध्यान रखें।
+    </div>
+
+    <div class="receipt-btns" data-html2canvas-ignore="true">
+      <button type="button" class="btn-dl" id="dlBtn" onclick="saveReceiptImage()">📥 Save To Gallery</button>
+      <button type="button" class="btn-wa" id="waBtn">📲 Send to Gym WA</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div id="adminModal">
+  <div class="admin-box">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="color:#ffcc00;">📋 Fee Payment Database</h3>
+      <button onclick="closeAdmin()" style="background:none; border:none; color:#fff; font-size:22px; cursor:pointer;">✕</button>
+    </div>
+    <div style="display:flex; gap:10px; margin-bottom:10px;">
+      <button onclick="exportCSV()" style="background:#25D366; color:#000; font-weight:bold; padding:7px 12px; border:none; border-radius:6px; cursor:pointer;">📥 Export CSV</button>
+      <button onclick="clearAllPayData()" style="background:#e50914; color:#fff; font-weight:bold; padding:7px 12px; border:none; border-radius:6px; cursor:pointer;">🗑️ Clear All</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="admin-tbl">
+        <thead>
+          <tr>
+            <th>Pay Date</th>
+            <th>Receipt ID</th>
+            <th>Name (Hindi)</th>
+            <th>Father</th>
+            <th>Phone</th>
+            <th>Batch</th>
+            <th>Amount</th>
+            <th>Valid Till</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  vpa: "9140417259@okbizaxis",
+  merchantName: "5 Brother's Fitness Club",
+  whatsappNumber: "919990954574",
+  adminPassword: "Sau@833699"
+};
+
+// ---------------- HINDI + MULTI-SPELLING SMART DIRECTORY ----------------
+const MEMBERS_DIRECTORY = [
+  { name: "साहil वर्मा (Sahil Verma)", father: "शम्मी कपूर (Shammi Kapoor)", phone: "9336898447", joinDate: "2026-09-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["sahil", "saheel", "verma", "shammi", "kapoor"] },
+  { name: "रवि (Ravi)", father: "राम सनेही (Ram Snehi)", phone: "9936391963", joinDate: "2026-09-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["ravi", "ravee", "ram", "snehi"] },
+  { name: "विशाल (Vishal)", father: "राम विलास (Ram Vilash)", phone: "8470994110", joinDate: "2026-09-20", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["vishal", "visal", "ram vilash"] },
+  { name: "प्रवीन रावत (Pravin Rawat)", father: "इन्द्रपाल रावत (Indrapal Rawat)", phone: "7275005052", joinDate: "2026-09-29", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["pravin", "praveen", "rawat", "indrapal"] },
+  { name: "इशांत वर्मा (Ishant Verma)", father: "सुशील कुमार (Sushil Kumar)", phone: "8090894105", joinDate: "2026-10-28", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["ishant", "eeshant", "verma", "sushil"] },
+  { name: "दीपक अवस्थी (Deepak Awasthi)", father: "पप्पू अवस्थी (Pappu Awasthi)", phone: "7388264067", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["deepak", "dipak", "awasthi", "pappu"] },
+  { name: "राम रतन (Ram Ratan)", father: "श्री सोहन (Shree Sohan)", phone: "7570994547", joinDate: "2026-10-18", batch: "शाम का बैच (Evening: 4:00 PM - 9:30 PM)", fee: 500, keywords: ["ram", "ratan", "sohan", "shree"] },
+  { name: "चंदन (Chandan)", father: "श्री भूरे (Shree Bhure)", phone: "8303504842", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["chandan", "bhure"] },
+  { name: "अंकित (Ankit)", father: "श्री राम (Shree Ram)", phone: "8090416252", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["ankit", "shree ram"] },
+  { name: "दीपक (Deepak)", father: "पप्पू (Pappu)", phone: "7388264067", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["deepak", "dipak", "pappu"] },
+  { name: "ऋषभ शर्मा (Rishabh Sharma)", father: "सुनील शर्मा (Sunil Sharma)", phone: "9236515951", joinDate: "2026-10-15", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["rishabh", "risabh", "sharma", "sunil"] },
+  { name: "तौसीफ (Tauseef)", father: "मो० शब्बीर (Md. Shabir)", phone: "7317323893", joinDate: "2026-06-11", batch: "जनरल बैच (General: दोनों समय)", fee: 1200, keywords: ["tauseef", "touseef", "shabir"] },
+  { name: "रितेश रावत (Ritesh Rawat)", father: "सर्व रावत (Sarva Rawat)", phone: "8187974525", joinDate: "2026-06-09", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["ritesh", "rawat", "sarva"] },
+  { name: "राकेश कुमार (Rakesh Kumar)", father: "राज कुमार (Raj Kumar)", phone: "6306591914", joinDate: "2026-10-08", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["rakesh", "raj kumar"] },
+  { name: "आकाश विश्वकर्मा (Aakash Vishwakarma)", father: "रमेश विश्वकर्मा (Ramesh)", phone: "8953133193", joinDate: "2026-10-08", batch: "शाम का बैच (Evening: 4:00 PM - 9:30 PM)", fee: 500, keywords: ["aakash", "akash", "vishwakarma", "ramesh"] },
+  { name: "दिनेश कुमार (Dinesh Kumar)", father: "लल्लन (Lallan)", phone: "7260981026", joinDate: "2026-10-08", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["dinesh", "lallan"] },
+  { name: "निरंजन सूर्यवंशी (Niranjan Suryavanshi)", father: "श्रीमती (Shrimati)", phone: "8400748946", joinDate: "2026-10-08", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["niranjan", "suryavanshi"] },
+  { name: "देवेन्द्र (Devendra)", father: "विनोद (Vinod)", phone: "7905282515", joinDate: "2026-10-08", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["devendra", "vinod"] },
+  { name: "अंशू वर्मा (Anshu Verma)", father: "कमलेश (Kamlesh)", phone: "9044680605", joinDate: "2026-10-08", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["anshu", "verma", "kamlesh"] },
+  { name: "अतुल विमल (Atul Vimal)", father: "अनूप (Anoop)", phone: "6306377217", joinDate: "2026-10-08", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["atul", "vimal", "anoop"] },
+  { name: "शिवा विश्वकर्मा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा (Ramesh)", phone: "7007950135", joinDate: "2026-10-07", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["shiva", "siva", "vishwakarma", "ramesh"] },
+  { name: "अर्जुन (Arjun)", father: "रामगोपाल (Ramgopal)", phone: "7388366670", joinDate: "2026-10-07", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["arjun", "ramgopal"] },
+  { name: "दीपक चौहान (Deepak Chauhan)", father: "प्रकाश चौहान (Prakash Chauhan)", phone: "7037945582", joinDate: "2026-10-05", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["deepak", "chauhan", "prakash"] },
+  { name: "दीपक चौहान 1 (Deepak Chauhan I)", father: "श्रीराम चौहान (Shriram Chauhan)", phone: "6351295707", joinDate: "2026-10-03", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["deepak", "shriram", "chauhan"] },
+  { name: "शहनवाज़ (Shahnawaz)", father: "मो० शब्बीर (Mohd. Shabir)", phone: "9867742095", joinDate: "2026-10-03", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["shahnawaz", "sahnavaz", "shabir"] },
+  { name: "अभिषेक शर्मा (Abhishek Sharma)", father: "देवेन्द्र कुमार शर्मा (Devendra)", phone: "7068541091", joinDate: "2026-10-02", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 500, keywords: ["abhishek", "abhisek", "sharma", "devendra"] },
+  { name: "आर्यन तिवारी (Aryan Tiwari)", father: "भूपेश कुमार तिवारी (Bhupesh)", phone: "9451432141", joinDate: "2026-10-01", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 400, keywords: ["aryan", "tiwari", "bhupesh"] },
+  { name: "संदीप कश्यप (Sandip Kashyap)", father: "बबलू कश्यप (Bablu Kashyap)", phone: "8440812271", joinDate: "2026-10-01", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["sandip", "sandeep", "kashyap", "bablu"] },
+  { name: "सचिन राजपूत (Sachin Rajput)", father: "राकेश राजपूत (Rakesh Rajput)", phone: "9235819564", joinDate: "2026-10-01", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["sachin", "rajput", "rakesh"] },
+  { name: "नैतिक गुप्ता (Naitik Gupta)", father: "अशोक गुप्ता (Ashok Gupta)", phone: "9795238010", joinDate: "2026-10-01", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 300, keywords: ["naitik", "gupta", "ashok"] },
+  { name: "विदित शर्मा (Vidit Sharma)", father: "जितेंद्र शर्मा (Jitendra Sharma)", phone: "7652069961", joinDate: "2026-10-02", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 400, keywords: ["vidit", "sharma", "jitendra"] },
+  { name: "आयुष यादव (Ayush Yadav)", father: "अच्छे लाल यादव (Achhe Lal)", phone: "9554576369", joinDate: "2026-08-01", batch: "सुबह का बैच (Morning: 5:00 AM - 10:00 AM)", fee: 400, keywords: ["ayush", "yadav", "achhe lal"] },
+  { name: "डॉ ए. के. प्रभाकर (Dr A. K Prabhakar)", father: "-", phone: "7268902436", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["dr", "ak", "prabhakar", "doctor"] },
+    { name: "आयुष प्रभाकर (Ayush Prabhakar)", father: "डॉ ए. के. प्रभाकर (Dr A. K. Prabhakar)", phone: "7268902436", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["ayush", "prabhakar"] },
+  { name: "श्री राजू वर्मा (Mr Raju Verma)", father: "-", phone: "9219528229", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["raju", "verma", "raaju"] },
+  { name: "लाला वर्मा (Lala Verma)", father: "-", phone: "6386232805", joinDate: "2026-11-01", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["lala", "verma"] },
+  { name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-10-15", batch: "जनरल बैच (General: दोनों समय)", fee: 500, keywords: ["sonu", "sonoo"] }
+];
+
+let lateStatusStr = "समय पर (On Time)";
+
+window.addEventListener("DOMContentLoaded", () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("payDate").value = today;
+  document.getElementById("joinDate").value = today;
+});
+
+// SMART SEARCH ENGINE (HINDI / ENGLISH / FATHER NAME / PHONE)
+function handleSearch(query) {
+  const resDiv = document.getElementById("searchResults");
+  const cleanQ = query.toLowerCase().trim();
+
+  if(!cleanQ) {
+    resDiv.style.display = "none";
+    return;
+  }
+
+  const matches = MEMBERS_DIRECTORY.filter(m => {
+    const inName = m.name.toLowerCase().includes(cleanQ);
+    const inFather = m.father.toLowerCase().includes(cleanQ);
+    const inPhone = m.phone.includes(cleanQ);
+    const inKeywords = m.keywords && m.keywords.some(k => k.includes(cleanQ) || cleanQ.includes(k));
+    return inName || inFather || inPhone || inKeywords;
+  });
+
+  if(matches.length === 0) {
+    resDiv.innerHTML = `<div class="search-item" style="color:#aaa;">कोई सदस्य नहीं मिला! आप हाथ से नाम भर सकते हैं।</div>`;
+    resDiv.style.display = "block";
+    return;
+  }
+
+  resDiv.innerHTML = "";
+  matches.forEach(m => {
+    const item = document.createElement("div");
+    item.className = "search-item";
+    item.innerHTML = `<b>${m.name}</b><small>पिता: ${m.father} | फोन: ${m.phone}</small>`;
+    item.onclick = function() {
+      selectMember(m);
+    };
+    resDiv.appendChild(item);
+  });
+  resDiv.style.display = "block";
+}
+
+function selectMember(m) {
+  document.getElementById("memberSearchInput").value = m.name;
+  document.getElementById("payName").value = m.name;
+  document.getElementById("payFather").value = m.father !== "-" ? m.father : "";
+  document.getElementById("payPhone").value = m.phone;
+  document.getElementById("joinDate").value = m.joinDate;
+  document.getElementById("payBatch").value = m.batch;
+  document.getElementById("payAmount").value = m.fee;
+
+  document.getElementById("searchResults").style.display = "none";
+  checkLateAndValidity();
+}
+
+function setAmt(val) {
+  document.getElementById("payAmount").value = val;
+  if(val >= 900) {
+    document.getElementById("payType").value = "3 महीने एडवांस (3 Months Advance)";
+  } else {
+    document.getElementById("payType").value = "मासिक फीस (Monthly Renewal)";
+  }
+  checkLateAndValidity();
+}
+
+// LATE CHECK & VALIDITY
+function checkLateAndValidity() {
+  const pDateVal = document.getElementById("payDate").value;
+  const jDateVal = document.getElementById("joinDate").value;
+  if(!pDateVal) return;
+
+  const pDate = new Date(pDateVal);
+  let jDate = new Date(jDateVal);
+
+  let expectedDue = new Date(jDate);
+  expectedDue.setMonth(expectedDue.getMonth() + 1);
+
+  const lateBox = document.getElementById("lateWarningBox");
+  const lateCount = document.getElementById("lateDaysCount");
+
+  if(pDate > expectedDue) {
+    const diffTime = Math.abs(pDate - expectedDue);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if(diffDays > 3) {
+      lateBox.style.display = "block";
+      lateCount.innerText = diffDays;
+      lateStatusStr = "विलंब से जमा (" + diffDays + " दिन लेट)";
+    } else {
+      lateBox.style.display = "none";
+      lateStatusStr = "समय पर (Grace Period)";
+    }
+  } else {
+    lateBox.style.display = "none";
+    lateStatusStr = "समय पर (On Time)";
+  }
+
+  const type = document.getElementById("payType").value;
+  let d = new Date(pDateVal);
+  if(type.includes("3 महीने")) {
+    d.setMonth(d.getMonth() + 3);
+  } else {
+    d.setMonth(d.getMonth() + 1);
+  }
+
+  const validStr = d.toLocaleDateString('en-GB');
+  document.getElementById("validUntilText").innerText = validStr + " (अगली फीस देय)";
+  return validStr;
+}
+
+function handleQuickPay(e) {
+  e.preventDefault();
+
+  const name = document.getElementById("payName").value.trim();
+  const father = document.getElementById("payFather").value.trim() || "-";
+  const phone = document.getElementById("payPhone").value.trim();
+  const joinDate = document.getElementById("joinDate").value;
+  const payDate = document.getElementById("payDate").value;
+  const batch = document.getElementById("payBatch").value;
+  const payType = document.getElementById("payType").value;
+  const amount = document.getElementById("payAmount").value.trim();
+  const validTill = checkLateAndValidity();
+  const rcptId = "5BFC-PAY" + Date.now().toString().slice(-4);
+
+  const dPay = new Date(payDate).toLocaleDateString('en-GB');
+  const dJoin = new Date(joinDate).toLocaleDateString('en-GB');
+
+  try {
+    let payments = JSON.parse(localStorage.getItem("5bfc_payments") || "[]");
+    payments.unshift({
+      id: rcptId,
+      payDate: dPay,
+      name: name,
+      father: father,
+      phone: phone,
+      joinDate: dJoin,
+      batch: batch,
+      type: payType,
+      amount: amount,
+      validTill: validTill,
+      lateStatus: lateStatusStr
+    });
+    localStorage.setItem("5bfc_payments", JSON.stringify(payments));
+  } catch(err) {}
+
+  document.getElementById("rId").innerText = rcptId;
+  document.getElementById("rName").innerText = name;
+  document.getElementById("rFather").innerText = father;
+  document.getElementById("rPhone").innerText = phone;
+  document.getElementById("rJoinDate").innerText = dJoin;
+  document.getElementById("rPayDate").innerText = dPay;
+  document.getElementById("rBatch").innerText = batch;
+  document.getElementById("rValidTill").innerText = validTill;
+  document.getElementById("rLateStatus").innerText = lateStatusStr;
+  document.getElementById("rAmount").innerText = "₹" + amount;
+
+  if(lateStatusStr.includes("लेट")) {
+    document.getElementById("rLateStatus").style.color = "#ff4d4d";
+  } else {
+    document.getElementById("rLateStatus").style.color = "green";
+  }
+
+  const waMsg = "✅ *फीस भुगतान रसीद (" + rcptId + ")*\n\n" +
+    "• सदस्य का नाम: " + name + "\n" +
+    "• पिता का नाम: " + father + "\n" +
+    "• मोबाइल नंबर: " + phone + "\n" +
+    "• जॉइनिंग तिथि: " + dJoin + "\n" +
+    "• फीस जमा तिथि: " + dPay + "\n" +
+    "• बैच: " + batch + "\n" +
+    "• फीस प्रकार: " + payType + "\n" +
+    "• स्थिति: " + lateStatusStr + "\n" +
+    "• जमा राशि: ₹" + amount + "\n" +
+    "• अगली फीस देय (Valid Till): " + validTill + "\n\n" +
+    "5 Brother's Fitness Club (Official Receipt)";
+
+  const waUrl = "https://api.whatsapp.com/send?phone=" + CONFIG.whatsappNumber + "&text=" + encodeURIComponent(waMsg);
+  const upiUrl = "upi://pay?pa=" + CONFIG.vpa + "&pn=" + encodeURIComponent(CONFIG.merchantName) + "&am=" + amount + "&cu=INR&tn=" + encodeURIComponent("Gym Fee " + rcptId + " " + name);
+
+  document.getElementById("waBtn").onclick = function() {
+    window.location.assign(waUrl);
+  };
+
+  document.getElementById("receiptModal").style.display = "flex";
+  setTimeout(() => {
+    window.location.href = upiUrl;
+  }, 1000);
+}
+
+function saveReceiptImage() {
+  const btn = document.getElementById("dlBtn");
+  btn.innerText = "⏳ Saving...";
+  const area = document.getElementById("receiptPrintArea");
+
+  html2canvas(area, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff"
+  }).then(canvas => {
+    const link = document.createElement("a");
+    const rId = document.getElementById("rId").innerText;
+    link.download = "5_Brothers_Receipt_" + rId + ".png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    btn.innerText = "✅ Saved!";
+    setTimeout(() => { btn.innerText = "📥 Save To Gallery"; }, 2500);
+  }).catch(() => {
+    alert("Screenshot le kar rakh lein!");
+    btn.innerText = "📥 Save To Gallery";
+  });
+}
+
+function openAdmin() {
+  const p = prompt("Admin Password daalein:");
+  if(p === CONFIG.adminPassword) {
+    loadAdmin();
+    document.getElementById("adminModal").style.display = "flex";
+  } else if(p !== null) {
+    alert("गलत पासवर्ड!");
+  }
+}
+
+function closeAdmin() {
+  document.getElementById("adminModal").style.display = "none";
+}
+
+function loadAdmin() {
+  const tbody = document.getElementById("adminTbody");
+  tbody.innerHTML = "";
+  let list = JSON.parse(localStorage.getItem("5bfc_payments") || "[]");
+
+  if(list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:15px; color:#888;">कोई पेमेंट एंट्री नहीं मिली।</td></tr>`;
+    return;
+  }
+
+  list.forEach((m, idx) => {
+    tbody.innerHTML += `<tr>
+      <td>${m.payDate}</td>
+      <td style="color:#ffcc00;"><b>${m.id}</b></td>
+      <td><b>${m.name}</b></td>
+      <td>${m.father || '-'}</td>
+      <td>${m.phone}</td>
+      <td>${m.batch}</td>
+      <td style="color:#25D366; font-weight:bold;">₹${m.amount}</td>
+      <td style="color:#ff9900;">${m.validTill || '-'}</td>
+      <td><span style="color:${(m.lateStatus && m.lateStatus.includes('लेट')) ? '#ff4d4d' : '#25D366'};">${m.lateStatus || 'समय पर'}</span></td>
+      <td><button class="del-btn" onclick="delPay(${idx})">🗑️</button></td>
+    </tr>`;
+  });
+}
+
+function delPay(idx) {
+  if(confirm("क्या आप वाकई इस रिकॉर्ड को हटाना चाहते हैं?")) {
+    let list = JSON.parse(localStorage.getItem("5bfc_payments") || "[]");
+    list.splice(idx, 1);
+    localStorage.setItem("5bfc_payments", JSON.stringify(list));
+    loadAdmin();
+  }
+}
+
+function clearAllPayData() {
+  if(confirm("चेतावनी: क्या आप पूरा पेमेंट डेटा डिलीट करना चाहते हैं?")) {
+    localStorage.removeItem("5bfc_payments");
+    loadAdmin();
+  }
+}
+
+function exportCSV() {
+  let list = JSON.parse(localStorage.getItem("5bfc_payments") || "[]");
+  if(list.length === 0) { alert("कोई डेटा उपलब्ध नहीं है!"); return; }
+  let csv = "Payment Date,Receipt ID,Name,Father,Phone,Joining Date,Batch,Plan Type,Amount,Valid Till,Late Status\n";
+  list.forEach(m => {
+    csv += `"${m.payDate}","${m.id}","${m.name}","${m.father || '-'}","${m.phone}","${m.joinDate}","${m.batch}","${m.type}","${m.amount}","${m.validTill}","${m.lateStatus || 'On Time'}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "5_Brothers_Fee_Collection.csv";
+  a.click();
+}
+</script>
+</body>
+</html>
