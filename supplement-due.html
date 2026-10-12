@@ -162,7 +162,41 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
         <button type="button" class="mode-btn active" id="btnModeBoth" onclick="setMode('both')">🏋️+💊 Fees + Supp</button>
       </div>
 
-      <div class="field-group" id="searchBoxGroup">
+      <!-- KHATA REGISTER / ADMISSION STYLE DASHBOARD -->
+<div class="main-card" style="margin-top:20px; border-color:#00ff99;">
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px dashed #00ff99; padding-bottom:8px; margin-bottom:10px;">
+    <h2 style="font-size:15px; color:#00ff99;">📋 फीस व उधारी रजिस्टर (Records)</h2>
+    <button type="button" onclick="exportToExcelCSV()" style="background:#00ff99; color:#000; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">📥 Excel (CSV) Download</button>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+    <input type="text" id="regSearch" placeholder="🔍 नाम या मोबाइल खोजें..." oninput="renderKhataTable()" style="padding:7px; font-size:11px;">
+    <select id="regFilterStatus" onchange="renderKhataTable()" style="padding:7px; font-size:11px;">
+      <option value="ALL">सभी रिकॉर्ड (All)</option>
+      <option value="PAID">केवल फीस जमा (Genuine Paid)</option>
+      <option value="DUE">केवल उधारी / बकाया (Due)</option>
+    </select>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; font-size:11px; text-align:left;">
+      <thead>
+        <tr style="background:#1b1b1b; color:#ffcc00; border-bottom:1.5px solid #444;">
+          <th style="padding:6px;">तारीख</th>
+          <th style="padding:6px;">नाम</th>
+          <th style="padding:6px;">मोड</th>
+          <th style="padding:6px;">जमा (₹)</th>
+          <th style="padding:6px;">बकाया (₹)</th>
+          <th style="padding:6px; text-align:center;">Action</th>
+        </tr>
+      </thead>
+      <tbody id="khataTableBody">
+      </tbody>
+    </table>
+  </div>
+</div>
+      
+     <div class="field-group" id="searchBoxGroup">
         <label>🔍 सदस्य खोजें (Live Auto-fill)</label>
         <input type="text" id="memberSearch" autocomplete="off" placeholder="नाम या मोबाइल लिखें..." oninput="searchMembers(this.value)">
         <div id="searchResults"></div>
@@ -498,6 +532,8 @@ const MEMBERS = [
   document.getElementById("promisedDate").value = nextWeek.toISOString().split('T')[0];
   setMode('both');
   populateReferralDropdown();
+  renderKhataTable();
+    
 });
 
 function getAllMembersList() {
@@ -970,10 +1006,99 @@ function calcKhata() {
     };
   }
 
+      saveToKhataRegister({
+    id: billId,
+    date: paidDateFormatted,
+    name: name,
+    phone: phone,
+    extra: (currentMode === 'supp') ? friendName : father,
+    mode: modeText,
+    paid: (currentMode === 'fee' ? (document.getElementById("gymFee").value || 0) : paid),
+    due: (currentMode === 'fee' ? 0 : due),
+    details: (currentMode === 'fee' ? 'Gym Fee' : `${prod} (${size})`)
+  });
+          
   document.getElementById("receiptModal").style.display = "flex";
 }
 
 function saveBillImage() {
+  // 1. Bill banne par auto-save karna
+function saveToKhataRegister(record) {
+  let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
+  records.unshift(record); // Naya entry sabse upar
+  localStorage.setItem("gym_khata_records", JSON.stringify(records));
+  renderKhataTable();
+}
+
+// 2. Table me list dikhana
+function renderKhataTable() {
+  const tbody = document.getElementById("khataTableBody");
+  if (!tbody) return;
+  
+  let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
+  const searchQ = (document.getElementById("regSearch")?.value || "").toLowerCase().trim();
+  const filterVal = document.getElementById("regFilterStatus")?.value || "ALL";
+
+  tbody.innerHTML = "";
+
+  const filtered = records.filter(r => {
+    const matchQ = r.name.toLowerCase().includes(searchQ) || (r.phone && r.phone.includes(searchQ));
+    if (!matchQ) return false;
+    if (filterVal === "PAID") return r.due === 0;
+    if (filterVal === "DUE") return r.due > 0;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:12px; color:#777;">कोई रिकॉर्ड नहीं मिला</td></tr>`;
+    return;
+  }
+
+  filtered.forEach((r, idx) => {
+    let tr = document.createElement("tr");
+    tr.style.borderBottom = "1px solid #222";
+    tr.innerHTML = `
+      <td style="padding:6px; color:#bbb;">${r.date}</td>
+      <td style="padding:6px; font-weight:bold;">${r.name}<br><small style="color:#777;">${r.phone}</small></td>
+      <td style="padding:6px; color:#aaa;">${r.mode}</td>
+      <td style="padding:6px; color:#00ff99;">₹${r.paid}</td>
+      <td style="padding:6px; color:${r.due > 0 ? '#ff4d4d' : '#888'};">₹${r.due}</td>
+      <td style="padding:6px; text-align:center;">
+        <button type="button" onclick="deleteKhataRecord(${idx})" style="background:#ff3333; color:#fff; border:none; padding:4px 7px; border-radius:4px; font-size:10px; cursor:pointer;">🗑️ Del</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// 3. Delete Record (Dummy entry hatane ke liye)
+function deleteKhataRecord(idx) {
+  if (confirm("क्या आप वाकई इस रिकॉर्ड को डिलीट करना चाहते हैं?")) {
+    let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
+    records.splice(idx, 1);
+    localStorage.setItem("gym_khata_records", JSON.stringify(records));
+    renderKhataTable();
+  }
+}
+
+// 4. Excel (CSV) Download
+function exportToExcelCSV() {
+  let records = JSON.parse(localStorage.getItem("gym_khata_records") || "[]");
+  if (records.length === 0) {
+    alert("डाउनलोड करने के लिए कोई डाटा मौजूद नहीं है!");
+    return;
+  }
+  let csv = "Bill ID,Date,Name,Father/Guarantor,Phone,Mode,Paid (Rs),Due (Rs),Details\n";
+  records.forEach(r => {
+    csv += `"${r.id}","${r.date}","${r.name}","${r.extra}","${r.phone}","${r.mode}","${r.paid}","${r.due}","${r.details}"\n`;
+  });
+  let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `5BFC_Register_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+}
+
   const btn = document.getElementById("dlBtn");
   btn.innerText = "⏳ Saving...";
   const element = document.getElementById("printablePages");
