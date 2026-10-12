@@ -871,44 +871,63 @@ function calcKhata() {
     document.getElementById("page2NoticeBlock").style.display = "none";
   }
 
-  let fullMessage = `✅ 5 BROTHER'S FITNESS CLUB (${billId})\n` +
-    `"हम सस्ता या महंगा नहीं, 100% असली और असरदार देने पर विश्वास करते हैं।"\n\n` +
-    `• सदस्य का नाम: ${name}\n` +
-    `• पिता का नाम: ${father}\n` +
-    `• मोबाइल: ${phone}\n`;
+   let fullMessage = "";
 
-  if (currentMode !== 'supp') {
-    const finalFee = document.getElementById("gymFee").value || "0";
-    fullMessage += `• जॉइनिंग तिथि: ${joinDateFormatted}\n` +
+  if (currentMode === 'fee') {
+    // 1. GYM FEES (No Father Name, No Tagline, Clean Dates & Thank You)
+    fullMessage = `✅ *फीस भुगतान रसीद*\n*(${billId})*\n\n` +
+      `• सदस्य का नाम: ${name}\n` +
+      `• मोबाइल नंबर: ${phone}\n` +
+      `• जॉइनिंग तिथि: ${joinDateFormatted}\n` +
       `• फीस जमा तिथि: ${paidDateFormatted}\n` +
-      `• फीस स्थिति: समय पर जमा (On Time)\n`;
+      `• फीस प्रकार: मासिक फीस (Monthly Renewal)\n` +
+      `• स्थिति: समय पर (On Time)\n`;
 
     if (referralCount > 0) {
-      fullMessage += `• रेफरल बेनिफिट: आपने ${referralCount} भाई को जोड़ा (-₹${referralCount * REFERRAL_DISCOUNT_PER_HEAD} Discount)\n`;
+      fullMessage += `• रेफरल छूट: -₹${referralCount * REFERRAL_DISCOUNT_PER_HEAD} (${referralCount} भाई को जोड़ने पर)\n`;
     }
 
-    fullMessage += `• जमा फीस: ₹${finalFee} (Received)\n` +
-      `• अगली फीस देय (Valid Till): ${nextDueDateFormatted}\n\n`;
-  } else {
-    fullMessage += `• Guarantor (दोस्त): ${friendName} (Ph: ${friendPhone})\n\n`;
-  }
+    fullMessage += `• जमा राशि: *₹${document.getElementById("gymFee").value || "500"}*\n` +
+      `• अगली फीस देय (Valid Till): *${nextDueDateFormatted}*\n\n` +
+      `🙏 Thank you for choosing 5 Brother's Fitness Club!\nKeep Grinding & Stay Strong! 💪\n` +
+      `*5 Brother's Fitness Club*\nउमराव खेड़ा, अकरमपुर, उन्नाव`;
 
-  if (currentMode !== 'fee') {
-    fullMessage += `💊 सप्लीमेंट खाता हिसाब:\n` +
+  } else if (currentMode === 'supp') {
+    // 2. SUPPLEMENT ONLY
+    fullMessage = `💊 *सप्लीमेंट खाता उधारी रसीद*\n*(${billId})*\n\n` +
+      `• सदस्य का नाम: ${name}\n` +
+      `• मोबाइल: ${phone}\n` +
+      `• Guarantor (दोस्त): ${friendName} (Ph: ${friendPhone})\n` +
       `• सप्लीमेंट: ${prod} (${size})\n` +
-      `• कुल तय रेट: ₹${price}\n` +
+      `• तय कीमत: ₹${price}\n` +
       `• नगद जमा: ₹${paid}\n` +
-      `🔴 सप्लीमेंट बकाया (Balance Due): ₹${due}\n` +
-      `📅 वादा तारीख (Salary Clearance): ${pDateFormatted}\n\n` +
-      `⚠️ उधारी नियम: वादा तारीख के बाद डिस्ट्रीब्यूटर पेनल्टी (+₹100, +₹200) देय होगी। कृपया ${pDateFormatted} तक क्लियर करें।\n\n`;
+      `🔴 *सप्लीमेंट बकाया (Balance Due): ₹${due}*\n` +
+      `📅 *वादा तारीख (Clearance Date): ${pDateFormatted}*\n\n` +
+      `⚠️ *उधारी नियम:* वादा तारीख के बाद डिस्ट्रीब्यूटर पेनल्टी लागू होगी (+₹100, +₹200)। कृपया ${pDateFormatted} तक क्लियर करें।\n\n` +
+      `🙏 Thank You!\n*5 Brother's Fitness Club*\nउमराव खेड़ा, अकरमपुर, उन्नाव`;
+
+  } else {
+    // 3. COMBINED (FEES + SUPPLEMENT)
+    fullMessage = `🏋️+💊 *जिम फीस व सप्लीमेंट खाता रसीद*\n*(${billId})*\n\n` +
+      `• सदस्य का नाम: ${name}\n` +
+      `• मोबाइल: ${phone}\n` +
+      `• फीस जमा तिथि: ${paidDateFormatted}\n` +
+      `• जमा जिम फीस: ₹${document.getElementById("gymFee").value || "500"}\n` +
+      `• अगली फीस देय (Valid Till): ${nextDueDateFormatted}\n\n` +
+      `*सप्लीमेंट विवरण:*\n` +
+      `• प्रोडक्ट: ${prod} (${size})\n` +
+      `• तय कीमत: ₹${price} | जमा: ₹${paid}\n` +
+      `🔴 *सप्लीमेंट बकाया: ₹${due}*\n` +
+      `📅 *वादा तारीख: ${pDateFormatted}*\n\n` +
+      `🙏 Thank you for choosing 5 Brother's Fitness Club!\n*5 Brother's Fitness Club*\nउमराव खेड़ा, अकरमपुर, उन्नाव`;
   }
 
-  fullMessage += `5 Brother's Fitness Club (Official Receipt)\nउमराव खेड़ा, अकरमपुर, उन्नाव`;
-
+  // WhatsApp Trigger
   document.getElementById("waBtn").onclick = () => {
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(fullMessage), "_blank");
   };
 
+  // SMS Trigger
   const smsBtn = document.getElementById("smsBtn");
   if (smsBtn) {
     smsBtn.onclick = () => {
@@ -918,6 +937,7 @@ function calcKhata() {
 
   document.getElementById("receiptModal").style.display = "flex";
 }
+
 
 function saveBillImage() {
   const btn = document.getElementById("dlBtn");
