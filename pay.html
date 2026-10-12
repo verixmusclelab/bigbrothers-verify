@@ -367,7 +367,7 @@ function setAmt(val) {
   checkLateAndValidity();
 }
 
-// STRICT JOINING DAY VALIDITY & LATE CHECK
+// STRICT CURRENT MONTH CYCLE & LATE CHECK
 function checkLateAndValidity() {
   const pDateVal = document.getElementById("payDate").value;
   const jDateVal = document.getElementById("joinDate").value;
@@ -380,13 +380,15 @@ function checkLateAndValidity() {
   const lateBox = document.getElementById("lateWarningBox");
   const lateCount = document.getElementById("lateDaysCount");
 
-  // Joining cycle date ke hisaab se agle mahine ki date (Valid Till)
-  let nextDue = new Date(joinDate);
-  const monthsToAdd = payType.includes("3 महीने") ? 3 : 1;
-  nextDue.setMonth(nextDue.getMonth() + monthsToAdd);
+  // Joining date se keval din (Day) uthana hai
+  const dueDay = joinDate.getDate();
 
-  if(payDate > joinDate) {
-    const diffTime = payDate - joinDate;
+  // Is mahine ki due date banayein
+  let currentDue = new Date(payDate.getFullYear(), payDate.getMonth(), dueDay);
+
+  // Late days calculation (isi mahine ke cycle ke hisab se)
+  if(payDate > currentDue) {
+    const diffTime = payDate - currentDue;
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
     if(diffDays > 3) {
@@ -402,6 +404,11 @@ function checkLateAndValidity() {
     lateStatusStr = "समय पर (On Time)";
   }
 
+  // Agle mahine ki date (Valid Till)
+  const monthsToAdd = payType.includes("3 महीने") ? 3 : 1;
+  let nextDue = new Date(currentDue);
+  nextDue.setMonth(nextDue.getMonth() + monthsToAdd);
+
   const d = nextDue.getDate().toString().padStart(2, '0');
   const m = (nextDue.getMonth() + 1).toString().padStart(2, '0');
   const y = nextDue.getFullYear();
@@ -409,7 +416,8 @@ function checkLateAndValidity() {
 
   document.getElementById("validUntilText").innerText = validStr + " (अगली फीस देय)";
   return validStr;
-}
+  }
+  
 
 // GOOGLE SHEET DIRECT SYNC
 function syncToGoogleSheet(name, phone, amount, payDate, receiptId) {
