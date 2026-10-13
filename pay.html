@@ -32,7 +32,7 @@ body{
   backdrop-filter: blur(8px);
 }
 
-.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;}
+.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;position:relative;}
 .header h1{color:#ffcc00;font-size:20px;letter-spacing:1px;font-weight:900;}
 .tagline{color:#e6c300;font-size:10px;font-weight:700;margin-top:4px;background:rgba(255,204,0,0.12);display:inline-block;padding:2px 8px;border-radius:10px;}
 
@@ -55,7 +55,11 @@ table{width:100%;border-collapse:collapse;font-size:11px;text-align:left;}
 th, td{padding:8px 5px;border-bottom:1px solid #333;vertical-align:middle;}
 th{color:#ffcc00;}
 
-#receiptModal, #upiPayModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:99999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
+.pagination-bar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:8px;border-top:1px dashed #444;}
+.page-btn{background:#222;border:1px solid #ffcc00;color:#ffcc00;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:bold;cursor:pointer;}
+.page-btn:disabled{border-color:#555;color:#666;cursor:not-allowed;}
+
+#receiptModal, #upiPayModal, #hurrayModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:99999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
 .receipt-wrapper{max-width:420px;width:100%;margin:15px auto;position:relative;}
 .receipt-card{
   background:#fff;
@@ -105,11 +109,8 @@ th{color:#ffcc00;}
 
   <div id="sectionFees">
     <div class="field-group">
-      <label>🔍 सदस्य खोजें (Mobile / नाम / पिता का नाम)</label>
-      <div style="display:flex; gap:6px;">
-        <input type="text" id="feeSearchInput" placeholder="नाम, मोबाइल या पिता का नाम...">
-        <button type="button" onclick="searchMember()" style="background:#ffcc00; color:#000; border:none; padding:0 16px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer; white-space:nowrap;">Search</button>
-      </div>
+      <label>🔍 सदस्य खोजें (Live Auto Search - नाम / मोबाइल)</label>
+      <input type="text" id="feeSearchInput" oninput="handleAutoSearch()" placeholder="टाइप करें (उदा. lala, 9000, ravi)...">
     </div>
 
     <div id="searchResultCard" style="display:none; background:#181818; border:1.5px solid #ffcc00; border-radius:10px; padding:12px; margin-bottom:12px;"></div>
@@ -198,12 +199,15 @@ th{color:#ffcc00;}
       <button type="submit" class="btn-submit">💳 भुगतान आगे बढ़ाएं (Proceed to Pay)</button>
     </form>
   </div>
-    <!-- ADMIN RECORDS TAB -->
+    <!-- ADMIN RECORDS TAB WITH PAGINATION & BACK BUTTON -->
   <div id="sectionAdmin" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:8px;">
-      <div>
-        <h3 style="color:#ffcc00; font-size:13px;">🔒 मास्टर रजिस्टर</h3>
-        <span id="adminMonthTitle" style="font-size:10px; color:#aaa; font-weight:bold;"></span>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button type="button" onclick="showFeeTab()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">⬅️ Back</button>
+        <div>
+          <h3 style="color:#ffcc00; font-size:13px; margin:0;">🔒 मास्टर रजिस्टर</h3>
+          <span id="adminMonthTitle" style="font-size:10px; color:#aaa; font-weight:bold;"></span>
+        </div>
       </div>
       <button type="button" class="btn-admin" onclick="downloadCSV()">📥 Excel (CSV)</button>
     </div>
@@ -223,12 +227,22 @@ th{color:#ffcc00;}
         <tbody id="adminTableBody"></tbody>
       </table>
     </div>
+
+    <!-- PAGINATION CONTROLS -->
+    <div class="pagination-bar">
+      <button type="button" class="page-btn" id="prevPageBtn" onclick="changeAdminPage(-1)">⬅️ Previous</button>
+      <span id="pageInfoText" style="font-size:11px; color:#ffcc00; font-weight:bold;">Page 1 of 1</span>
+      <button type="button" class="page-btn" id="nextPageBtn" onclick="changeAdminPage(1)">Next ➡️</button>
+    </div>
   </div>
 </div>
 
 <!-- UPI CONFIRMATION MODAL -->
 <div id="upiPayModal">
   <div class="receipt-wrapper" style="background:#181818; padding:16px; border-radius:12px; border:2px solid #ffcc00; text-align:center;">
+    <div style="display:flex; justify-content:flex-start; margin-bottom:8px;">
+      <button type="button" onclick="closeUpiModal()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">⬅️ Back</button>
+    </div>
     <h3 style="color:#ffcc00; margin-bottom:8px;">📱 ऑनलाइन भुगतान करें</h3>
     <p style="font-size:12px; color:#ccc; margin-bottom:10px;">कृपया नीचे बटन दबाकर UPI से फीस जमा करें।</p>
     <div style="background:#222; padding:10px; border-radius:8px; margin-bottom:12px;">
@@ -245,9 +259,27 @@ th{color:#ffcc00;}
   </div>
 </div>
 
+<!-- CELEBRATORY HURRAY SUCCESS POPUP -->
+<div id="hurrayModal">
+  <div class="receipt-wrapper" style="background:#141414; border:2px solid #25D366; border-radius:16px; padding:20px; text-align:center; box-shadow:0 0 35px rgba(37,211,102,0.35); margin-top:50px;">
+    <div style="font-size:45px; margin-bottom:6px;">🎉💪🔥</div>
+    <h2 style="color:#25D366; font-size:20px; font-weight:900; margin-bottom:6px;">HURRAY! PAYMENT SUCCESSFUL!</h2>
+    <h3 style="color:#ffcc00; font-size:15px; font-weight:800; margin-bottom:10px;">Thanks So Much For Payment</h3>
+    <div style="background:#1e1e1e; border:1px dashed #ffcc00; border-radius:8px; padding:10px; margin-bottom:14px;">
+      <p style="font-size:13px; color:#fff; font-weight:bold; margin-bottom:4px;">5 Brother's Fitness Club</p>
+      <p style="font-size:11px; color:#aaa;">आपकी सदस्यता सक्रिय कर दी गई है। हार्ड वर्क और रिजल्ट्स जारी रखें!</p>
+    </div>
+    <button type="button" onclick="proceedToReceiptFromHurray()" style="width:100%; background:#25D366; color:#000; border:none; padding:11px; border-radius:8px; font-weight:900; font-size:13px; cursor:pointer;">📄 रसीद देखें व डाउनलोड करें ➡️</button>
+  </div>
+</div>
+
 <!-- OFFICIAL RECEIPT MODAL -->
 <div id="receiptModal">
   <div class="receipt-wrapper">
+    <div style="display:flex; justify-content:flex-start; margin-bottom:8px;" data-html2canvas-ignore="true">
+      <button type="button" onclick="closeBillModalAndReset()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">⬅️ Back to Portal</button>
+    </div>
+
     <div id="printablePages">
       <div class="receipt-card">
         <div class="receipt-watermark">5 Brother's Fitness Club</div>
@@ -275,7 +307,7 @@ th{color:#ffcc00;}
       <button type="button" class="dl-btn" id="dlBtn" onclick="downloadImageAndPDF()">📥 Image & PDF Re-download</button>
       <button type="button" class="wa-btn" id="waBtn">📲 WhatsApp</button>
     </div>
-    <button type="button" onclick="closeBillModalAndReset()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;">बंद करें (Reset)</button>
+    <button type="button" onclick="closeBillModalAndReset()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;" data-html2canvas-ignore="true">बंद करें (Reset)</button>
   </div>
 </div>
 
@@ -285,6 +317,9 @@ let isAdminAuthenticated = false;
 let referralCount = 0;
 let referredList = [];
 let pendingPaymentData = null;
+
+let currentAdminPage = 1;
+const itemsPerPage = 12;
 
 const INITIAL_MEMBERS = [
   { name: "अभिषेक शर्मा - मोटोले (Abhishekh Sharma)", father: "Devendra Kumar Sharma", phone: "7068541091", joinDate: "2026-10-02", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-02", idSubmitted: true },
@@ -386,41 +421,42 @@ function calculateFinalAmount() {
   }
 }
 
-function searchMember() {
+// 1. LIVE AUTO SEARCH ON INPUT
+function handleAutoSearch() {
   const q = document.getElementById("feeSearchInput").value.trim().toLowerCase();
   const card = document.getElementById("searchResultCard");
-  if (!q) { alert("कृपया नाम, मोबाइल या पिता का नाम लिखें!"); return; }
+  
+  if (!q || q.length < 2) {
+    card.style.display = "none";
+    return;
+  }
 
   const list = getMasterList();
-  const m = list.find(mem => 
+  const matches = list.filter(mem => 
     (mem.name && mem.name.toLowerCase().includes(q)) ||
     (mem.phone && mem.phone.includes(q)) ||
     (mem.father && mem.father.toLowerCase().includes(q))
   );
 
   card.style.display = "block";
-  if (m) {
-    const maskedPhone = m.phone ? (m.phone.slice(0, 4) + "****" + m.phone.slice(-2)) : "N/A";
-    const fatherDisplay = (m.father && m.father !== "-") ? (m.father.slice(0, 3) + "***") : "Verified";
-
-    card.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h4 style="color:#ffcc00; margin:0;">👤 ${m.name}</h4>
-        <span style="font-size:10px; background:#222; padding:2px 6px; border-radius:4px; color:#aaa;">S/O: ${fatherDisplay}</span>
-      </div>
-      <p style="font-size:12px; color:#ccc; margin:5px 0;">मोबाइल: <b>${maskedPhone}</b></p>
-      <div style="margin:8px 0; padding:8px; border-radius:6px; background:${m.status === 'Paid' ? 'rgba(0,255,102,0.1)' : 'rgba(255,51,51,0.1)'}; border:1px dashed ${m.status === 'Paid' ? '#00ff66' : '#ff4444'};">
-        स्थिति: <b style="color:${m.status === 'Paid' ? '#00ff66' : '#ff4444'}; font-size:13px;">${m.status === 'Paid' ? '✅ Paid (फीस जमा है)' : '🔴 Unpaid (फीस बाकी है)'}</b>
-      </div>
-      <button type="button" onclick="autoFillDetails('${m.name}')" style="width:100%; padding:8px; background:#ffcc00; color:#000; font-weight:bold; border:none; border-radius:6px; cursor:pointer; font-size:11px;">फॉर्म में लोड करें</button>
-    `;
+  if (matches.length > 0) {
+    let html = `<div style="font-size:10px; color:#ffcc00; margin-bottom:6px; font-weight:bold;">मिलते-जुलते सदस्य (${matches.length}):</div>`;
+    matches.slice(0, 4).forEach(m => {
+      const maskedPhone = m.phone ? (m.phone.slice(0, 4) + "****" + m.phone.slice(-2)) : "N/A";
+      const isPaid = m.status === 'Paid';
+      html += `
+        <div style="background:#222; border:1px solid #444; border-radius:6px; padding:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <b style="color:#fff; font-size:12px;">${m.name}</b><br>
+            <small style="color:#aaa;">Ph: ${maskedPhone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${m.status}</span></small>
+          </div>
+                    <button type="button" onclick="autoFillDetails('${m.name}')" style="background:#ffcc00; color:#000; border:none; padding:5px 9px; border-radius:4px; font-weight:bold; font-size:11px; cursor:pointer;">लोड करें</button>
+        </div>
+      `;
+    });
+    card.innerHTML = html;
   } else {
-    card.innerHTML = `
-      <div style="color:#ff4444; font-size:12px; text-align:center;">
-        🔒 <b>रिकॉर्ड नहीं मिला</b><br>
-        <span style="color:#888;">कृपया सही नाम या 10-अंकों का मोबाइल लिखें।</span>
-      </div>
-    `;
+    card.innerHTML = `<div style="color:#ff6666; font-size:11px; text-align:center;">कोई सदस्य नहीं मिला।</div>`;
   }
 }
 
@@ -436,6 +472,7 @@ function autoFillDetails(name) {
   document.getElementById("mFeePrevPaidDate").value = m.lastPaid || new Date().toISOString().split('T')[0];
   checkLateStatus();
   document.getElementById("searchResultCard").style.display = "none";
+  document.getElementById("feeSearchInput").value = m.name;
 }
 
 function checkLateStatus() {
@@ -467,14 +504,14 @@ function handleInitialSubmit(e) {
   const months = parseInt(durSelect.options[durSelect.selectedIndex].getAttribute("data-months")) || 1;
   const amt = parseFloat(document.getElementById("mFeeAmount").value) || 0;
   const mode = document.getElementById("paymentMethod").value;
-    const paidDateVal = document.getElementById("mFeePaidDate").value;
+  const paidDateVal = document.getElementById("mFeePaidDate").value;
 
   pendingPaymentData = { name, phone, father, cat, planText, months, amt, mode, paidDateVal };
 
   if (mode === "cash") {
     let pin = prompt("🔒 Cash Verification: Admin Security PIN दर्ज करें:");
     if (pin === ADMIN_PIN) {
-      finalizeReceiptAndUnlock("Cash (Admin Verified)", "Cash");
+      finalizeReceiptAndUnlock("Cash (Admin Verified)", "Cash", false);
     } else {
       alert("❌ गलत Admin PIN! पेमेंट अप्रूव नहीं हुआ और न ही रसीद बनेगी।");
       pendingPaymentData = null;
@@ -504,10 +541,10 @@ function confirmOnlinePayment() {
     return;
   }
   document.getElementById("upiPayModal").style.display = "none";
-  finalizeReceiptAndUnlock("Online UPI (Ref: " + ref + ")", "Online");
+  finalizeReceiptAndUnlock("Online UPI (Ref: " + ref + ")", "Online", true);
 }
 
-function finalizeReceiptAndUnlock(modeText, shortMode) {
+function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
   const data = pendingPaymentData;
   if (!data) return;
 
@@ -553,11 +590,19 @@ function finalizeReceiptAndUnlock(modeText, shortMode) {
   const msg = `✅ *5 BROTHER'S FITNESS CLUB - रसीद*\n*Bill ID:* ${billId}\n*सदस्य:* ${data.name}\n*प्लान:* ${data.cat} (${data.planText})\n*भुगतान तारीख:* ${paidDate}\n*जमा राशि:* ₹${data.amt}\n*वैधता:* ${validTill}\n*माध्यम:* ${modeText}\n\nधन्यवाद! फिटनेस बनाए रखें।`;
   document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + data.phone + "?text=" + encodeURIComponent(msg), "_blank");
 
-  document.getElementById("receiptModal").style.display = "flex";
+  if (showHurray) {
+    document.getElementById("hurrayModal").style.display = "flex";
+  } else {
+    proceedToReceiptFromHurray();
+  }
+}
 
+function proceedToReceiptFromHurray() {
+  document.getElementById("hurrayModal").style.display = "none";
+  document.getElementById("receiptModal").style.display = "flex";
   setTimeout(() => {
     downloadImageAndPDF();
-  }, 600);
+  }, 500);
 }
 
 function downloadImageAndPDF() {
@@ -605,6 +650,16 @@ function openAdminRecords() {
   document.getElementById("sectionAdmin").style.display = "block";
   document.getElementById("tabBtnAdmin").classList.add("active");
   document.getElementById("tabBtnFee").classList.remove("active");
+  currentAdminPage = 1;
+  renderAdminTable();
+}
+
+function changeAdminPage(direction) {
+  let list = getMasterList();
+  const totalPages = Math.ceil(list.length / itemsPerPage);
+  currentAdminPage += direction;
+  if (currentAdminPage < 1) currentAdminPage = 1;
+  if (currentAdminPage > totalPages) currentAdminPage = totalPages;
   renderAdminTable();
 }
 
@@ -623,14 +678,23 @@ function renderAdminTable() {
     return dayA - dayB;
   });
 
-  list.forEach((m, idx) => {
+  const totalPages = Math.ceil(list.length / itemsPerPage) || 1;
+  document.getElementById("pageInfoText").innerText = `Page ${currentAdminPage} of ${totalPages} (${list.length} सदस्य)`;
+  document.getElementById("prevPageBtn").disabled = (currentAdminPage === 1);
+  document.getElementById("nextPageBtn").disabled = (currentAdminPage === totalPages);
+
+  const startIndex = (currentAdminPage - 1) * itemsPerPage;
+  const paginatedItems = list.slice(startIndex, startIndex + itemsPerPage);
+
+  paginatedItems.forEach((m, localIdx) => {
+    const globalIdx = startIndex + localIdx;
     const dueDay = m.joinDate ? parseInt(m.joinDate.split('-')[2]) : "-";
     let tr = document.createElement("tr");
 
     let idStatusHtml = "-";
     if (m.type === "student") {
       idStatusHtml = `
-        <button type="button" onclick="toggleStudentId(${idx})" style="padding:2px 5px; font-size:9px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; background:${m.idSubmitted ? '#00ff66' : '#ff4444'}; color:${m.idSubmitted ? '#000' : '#fff'};">
+        <button type="button" onclick="toggleStudentId(${globalIdx})" style="padding:3px 6px; font-size:10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; background:${m.idSubmitted ? '#00ff66' : '#ff4444'}; color:${m.idSubmitted ? '#000' : '#fff'};">
           ${m.idSubmitted ? 'Yes (जमा)' : 'No (बाकी)'}
         </button>
       `;
@@ -650,11 +714,11 @@ function renderAdminTable() {
       </td>
       <td>${idStatusHtml}</td>
       <td>
-        <div style="display:flex; gap:3px;">
-          <button type="button" onclick="toggleMemberPaid(${idx})" style="padding:4px 6px; background:${m.status === 'Paid' ? '#444' : '#00ff66'}; color:${m.status === 'Paid' ? '#fff' : '#000'}; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">
+        <div style="display:flex; gap:4px;">
+          <button type="button" onclick="toggleMemberPaid(${globalIdx})" style="padding:4px 7px; background:${m.status === 'Paid' ? '#444' : '#00ff66'}; color:${m.status === 'Paid' ? '#fff' : '#000'}; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">
             ${m.status === 'Paid' ? 'Pending' : '✓ Paid'}
           </button>
-          <button type="button" onclick="showMemberDetailModal(${idx})" style="padding:4px 6px; background:#ffcc00; color:#000; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">👁</button>
+          <button type="button" onclick="showMemberDetailModal(${globalIdx})" style="padding:4px 7px; background:#ffcc00; color:#000; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">👁</button>
         </div>
       </td>
     `;
@@ -753,4 +817,11 @@ function closeBillModalAndReset() {
 </script>
 </body>
 </html>
+  
+
+
+  
+
+
+  
 
