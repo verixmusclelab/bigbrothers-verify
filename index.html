@@ -1178,11 +1178,71 @@ const products = {
   "LBR7F29K":"LABRADA NUTRITION", "ON84P2X":"OPTIMUM NUTRITION", "GNC3M78B":"GNC"
 };
 
-function verifyCode(){
+const productBrandData = {
+  "LBR": {
+    brand: "LABRADA NUTRITION (USA)",
+    img: "https://i.ibb.co/6yV3zZg/labrada-whey.jpg",
+    seal: "OFFICIAL IMPORTED SEAL • 100% GENUINE",
+    bg: "#1a0000",
+    border: "#ff3333"
+  },
+  "ON": {
+    brand: "OPTIMUM NUTRITION (GLANBIA)",
+    img: "https://i.ibb.co/3WqP7nC/on-whey.jpg",
+    seal: "TRUE STRENGTH CERTIFIED • AUTHENTIC BATCH",
+    bg: "#1a1300",
+    border: "#ffcc00"
+  },
+  "GNC": {
+    brand: "GNC LIVE WELL (USA)",
+    img: "https://i.ibb.co/qDC4y7L/gnc-creatine.jpg",
+    seal: "100% PURE PHARMA GRADE • VERIFIED",
+    bg: "#001a14",
+    border: "#00ffcc"
+  },
+  "FIS": {
+    brand: "MUSCLEBLAZE NUTRITION",
+    img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg",
+    seal: "LABDOOR CERTIFIED PURITY",
+    bg: "#0d0d1a",
+    border: "#3399ff"
+  },
+  "ULT": {
+    brand: "ULTIMATE NUTRITION",
+    img: "https://i.ibb.co/3WqP7nC/on-whey.jpg",
+    seal: "ISO CERTIFIED 100% ORIGINAL",
+    bg: "#1a001a",
+    border: "#cc33ff"
+  },
+  "MSW": {
+    brand: "MUSCLE SIZE NUTRITION",
+    img: "https://i.ibb.co/6yV3zZg/labrada-whey.jpg",
+    seal: "100% RAW ISOLATE VERIFIED",
+    bg: "#141414",
+    border: "#00ff66"
+  },
+  "MGG": {
+    brand: "MUSCUL GOLD NUTRITION",
+    img: "https://i.ibb.co/6yV3zZg/labrada-whey.jpg",
+    seal: "HEAVY BULKING FORMULA SEAL",
+    bg: "#1a1200",
+    border: "#ffaa00"
+  },
+  "ACT": {
+    brand: "ACTIVE SHAKE NUTRITION",
+    img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg",
+    seal: "PROTEIN MEAL REPLACEMENT SEAL",
+    bg: "#001a24",
+    border: "#00d4ff"
+  }
+};
+
+function verifyCode() {
   let input = document.getElementById("manualCodeInput");
+  if (!input) return;
   let code = input.value.trim().toUpperCase();
 
-  if(code === ""){
+  if (code === "") {
     alert("Kripya code enter karein!");
     return;
   }
@@ -1191,60 +1251,104 @@ function verifyCode(){
   let lockKey = "lock_" + code;
   let lockTime = localStorage.getItem(lockKey);
 
-  if(lockTime && currentTime < parseInt(lockTime)){
+  if (lockTime && currentTime < parseInt(lockTime)) {
     let secondsLeft = Math.ceil((parseInt(lockTime) - currentTime) / 1000);
     alert("Code temporarily locked hai! " + secondsLeft + " second intezar karein.");
     return;
   }
 
-  document.getElementById("verification-overlay").style.display = "flex";
-
-  // Product identification (Purane + Naye 3 Dabbey)
+  // Product Detection (Purane list + Naye 3 Dabbey)
   let detectedBrand = products[code] || null;
+  let prefix = code.split("-")[0] || code.substring(0, 3);
+
   if (!detectedBrand) {
     if (code.startsWith("MSW")) {
       detectedBrand = "MUSCLE SIZE 100% WHEY";
+      prefix = "MSW";
     } else if (code.startsWith("MGG")) {
       detectedBrand = "MUSCUL GOLD MASS GAINER";
+      prefix = "MGG";
     } else if (code.startsWith("ACT")) {
       detectedBrand = "ACTIVE SHAKE PROTEIN";
+      prefix = "ACT";
     }
   }
 
-  if(detectedBrand){
+  const overlay = document.getElementById("verification-overlay");
+
+  if (detectedBrand) {
     let countKey = "count_" + code;
     let count = parseInt(localStorage.getItem(countKey)) || 0;
 
-    if(count >= 2){
+    const brandData = productBrandData[prefix] || {
+      brand: "BIG BROTHERS FITNESS AUTHENTIC",
+      img: "https://i.ibb.co/fv0J0Lx/multivitamin.jpg",
+      seal: "100% ORIGINAL GUARANTEED",
+      bg: "#0a0a0a",
+      border: "#00ff66"
+    };
+
+    if (count >= 2) {
       localStorage.setItem(lockKey, currentTime + 60000);
-      document.getElementById("brand-name").innerText = detectedBrand;
-      document.getElementById("verify-status").innerHTML = "ALREADY USED";
-      document.getElementById("verify-msg").innerText = "Ye code pehle scan ho chuka hai (Limit 2 Exceeded)! 1 minute locked.";
-      document.getElementById("verify-icon").innerHTML = "⚠️";
-      document.getElementById("verify-status").style.color = "#ffcc00";
-      document.getElementById("verify-box").style.border = "3px solid #ffcc00";
+      overlay.innerHTML = `
+        <div style="background:#1a1100; border:2px solid #ffcc00; border-radius:18px; padding:22px; max-width:390px; width:92%; text-align:center; color:#fff; box-shadow:0 0 30px rgba(255,204,0,0.3); animation: popWow 0.3s ease;">
+          <div style="font-size:46px; margin-bottom:6px;">⚠️</div>
+          <h2 style="color:#ffcc00; font-size:20px; font-weight:900; margin:0 0 8px;">ALREADY USED / SCAN LIMIT EXCEEDED</h2>
+          <p style="color:#ddd; font-size:13px; line-height:1.5; margin:0 0 12px;">Yeh code pehle hi 2 baar scan ho chuka hai.<br>Security lock lag gaya hai (1 minute baad retry karein).</p>
+          <div style="background:rgba(255,204,0,0.1); border:1px dashed #ffcc00; border-radius:10px; padding:10px; text-align:left; font-size:12px;">
+            <div><strong style="color:#aaa;">Product:</strong> ${detectedBrand}</div>
+            <div><strong style="color:#aaa;">Code:</strong> ${code}</div>
+            <div><strong style="color:#aaa;">Status:</strong> Used / Secondary Device</div>
+          </div>
+          <button onclick="document.getElementById('verification-overlay').style.display='none'" style="margin-top:14px; width:100%; padding:12px; background:#ffcc00; color:#000; border:none; border-radius:8px; font-weight:900; cursor:pointer;">CLOSE</button>
+        </div>
+      `;
+      overlay.style.display = "flex";
     } else {
       count++;
       localStorage.setItem(countKey, count);
-      document.getElementById("brand-name").innerText = detectedBrand;
-      document.getElementById("verify-status").innerHTML = "PRODUCT VERIFIED";
-      document.getElementById("verify-msg").innerText = "100% Genuine Certified (Scan " + count + "/2)";
-      document.getElementById("verify-icon").innerHTML = "✅";
-      document.getElementById("verify-status").style.color = "#00ff00";
-      document.getElementById("verify-box").style.border = "3px solid #00ff00";
+      overlay.innerHTML = `
+        <div style="background:${brandData.bg}; border:2px solid ${brandData.border}; border-radius:20px; padding:22px; max-width:400px; width:92%; text-align:center; color:#fff; box-shadow:0 0 35px ${brandData.border}66; animation: popWow 0.3s ease;">
+          <div style="display:inline-block; background:${brandData.border}; color:#000; font-size:11px; font-weight:900; padding:4px 10px; border-radius:30px; margin-bottom:12px; letter-spacing:1px;">
+            ✓ OFFICIAL AUTHENTICITY CERTIFICATE
+          </div>
+          
+          <div style="width:110px; height:110px; margin:0 auto 12px; background:#fff; border-radius:14px; padding:6px; display:flex; align-items:center; justify-content:center;">
+            <img src="${brandData.img}" alt="${detectedBrand}" style="max-height:100%; max-width:100%; object-fit:contain;">
+          </div>
+
+          <h3 style="color:${brandData.border}; font-size:13px; margin:0; text-transform:uppercase; letter-spacing:1px;">${brandData.brand}</h3>
+          <h2 style="font-size:18px; margin:6px 0 12px; font-weight:900; color:#fff;">${detectedBrand}</h2>
+
+          <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:12px; text-align:left; font-size:12px; line-height:1.7;">
+            <div><strong style="color:#aaa;">Product Code:</strong> <span style="color:#00ff66; font-weight:bold; font-family:monospace; font-size:14px;">${code}</span></div>
+            <div><strong style="color:#aaa;">Status:</strong> <span style="color:#00ff66; font-weight:bold;">100% Genuine Certified (Scan ${count}/2)</span></div>
+            <div><strong style="color:#aaa;">Batch Seal:</strong> ${brandData.seal}</div>
+            <div><strong style="color:#aaa;">Verified Store:</strong> Big Brothers Fitness Club</div>
+          </div>
+
+          <button onclick="document.getElementById('verification-overlay').style.display='none'" style="margin-top:16px; width:100%; padding:13px; background:${brandData.border}; color:#000; border:none; border-radius:10px; font-weight:900; font-size:15px; cursor:pointer;">
+            AGREE & CLOSE
+          </button>
+        </div>
+      `;
+      overlay.style.display = "flex";
     }
   } else {
-    document.getElementById("brand-name").innerText = "UNKNOWN CODE";
-    document.getElementById("verify-status").innerHTML = "VERIFICATION FAILED";
-    document.getElementById("verify-msg").innerText = "Invalid or Duplicate Product Code";
-    document.getElementById("verify-icon").innerHTML = "❌";
-    document.getElementById("verify-status").style.color = "red";
-    document.getElementById("verify-box").style.border = "3px solid red";
+    overlay.innerHTML = `
+      <div style="background:#1a0000; border:2px solid red; border-radius:18px; padding:22px; max-width:380px; width:92%; text-align:center; color:#fff; box-shadow:0 0 30px rgba(255,0,0,0.3); animation: popWow 0.3s ease;">
+        <div style="font-size:46px; margin-bottom:6px;">❌</div>
+        <h2 style="color:red; font-size:20px; font-weight:900; margin:0 0 8px;">VERIFICATION FAILED</h2>
+        <p style="color:#ddd; font-size:13px; margin:0 0 14px;">Invalid or Duplicate Product Code.<br>Yeh code authenticated database me nahi mila.</p>
+        <button onclick="document.getElementById('verification-overlay').style.display='none'" style="width:100%; padding:12px; background:red; color:#fff; border:none; border-radius:8px; font-weight:900; cursor:pointer;">TRY AGAIN</button>
+      </div>
+    `;
+    overlay.style.display = "flex";
   }
 
   input.value = "";
   }
-  
+    
 
 function closeVerifyPopup(){
   document.getElementById("verification-overlay").style.display = "none";
