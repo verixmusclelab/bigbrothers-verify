@@ -9,7 +9,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 
-/* PAGE BACKGROUND WITH OWNER PHOTO OVERLAY */
 body{
   background: linear-gradient(rgba(10, 10, 10, 0.88), rgba(10, 10, 10, 0.94)), url('owner.jpg') no-repeat center center fixed;
   background-size: cover;
@@ -37,7 +36,6 @@ body{
 .header h1{color:#ffcc00;font-size:20px;letter-spacing:1px;font-weight:900;}
 .tagline{color:#e6c300;font-size:10px;font-weight:700;margin-top:4px;background:rgba(255,204,0,0.12);display:inline-block;padding:2px 8px;border-radius:10px;}
 
-/* 2 TABS ONLY */
 .nav-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .tab-btn{background:#181818;border:1.5px solid #444;color:#bbb;padding:9px 4px;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;}
 .tab-btn.active{background:#ffcc00;color:#000;border-color:#ffcc00;}
@@ -57,7 +55,6 @@ table{width:100%;border-collapse:collapse;font-size:11px;text-align:left;}
 th, td{padding:8px 5px;border-bottom:1px solid #333;vertical-align:middle;}
 th{color:#ffcc00;}
 
-/* RECEIPT MODAL WITH WATERMARK */
 #receiptModal, #upiPayModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:99999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
 .receipt-wrapper{max-width:420px;width:100%;margin:15px auto;position:relative;}
 .receipt-card{
@@ -70,7 +67,6 @@ th{color:#ffcc00;}
   overflow:hidden;
 }
 
-/* BOLD WATERMARK ON RECEIPT */
 .receipt-watermark{
   position: absolute;
   top: 50%;
@@ -95,7 +91,6 @@ th{color:#ffcc00;}
 </head>
 <body>
 
-<!-- SINGLE MAIN PORTAL -->
 <div class="main-card">
   <div class="header">
     <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">OFFICIAL PORTAL</div>
@@ -103,13 +98,11 @@ th{color:#ffcc00;}
     <div class="tagline">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</div>
   </div>
 
-  <!-- ONLY 2 TABS -->
   <div class="nav-tabs">
     <div class="tab-btn active" id="tabBtnFee" onclick="showFeeTab()">🏋️ केवल जिम फीस</div>
     <div class="tab-btn" id="tabBtnAdmin" onclick="openAdminRecords()">📋 रजिस्टर व रिकॉर्ड्स</div>
   </div>
 
-  <!-- FEES PORTAL TAB -->
   <div id="sectionFees">
     <div class="field-group">
       <label>🔍 सदस्य खोजें (Mobile / नाम / पिता का नाम)</label>
@@ -205,8 +198,7 @@ th{color:#ffcc00;}
       <button type="submit" class="btn-submit">💳 भुगतान आगे बढ़ाएं (Proceed to Pay)</button>
     </form>
   </div>
-
-  <!-- ADMIN RECORDS TAB (MONTH & DATE-WISE SORTED) -->
+    <!-- ADMIN RECORDS TAB -->
   <div id="sectionAdmin" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:8px;">
       <div>
@@ -258,7 +250,6 @@ th{color:#ffcc00;}
   <div class="receipt-wrapper">
     <div id="printablePages">
       <div class="receipt-card">
-        <!-- WATERMARK -->
         <div class="receipt-watermark">5 Brother's Fitness Club</div>
 
         <div class="receipt-header">
@@ -295,7 +286,6 @@ let referralCount = 0;
 let referredList = [];
 let pendingPaymentData = null;
 
-// COMPLETE 45+ DATABASE
 const INITIAL_MEMBERS = [
   { name: "अभिषेक शर्मा - मोटोले (Abhishekh Sharma)", father: "Devendra Kumar Sharma", phone: "7068541091", joinDate: "2026-10-02", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-02", idSubmitted: true },
   { name: "प्रियांशु (Priyanshu)", father: "सुरेश", phone: "8467813176", joinDate: "2026-09-03", type: "job", status: "Pending", payMode: "Cash", amount: 500, lastPaid: "2026-09-03", idSubmitted: true },
@@ -466,7 +456,6 @@ function checkLateStatus() {
   }
 }
 
-// PAYMENT FLOW
 function handleInitialSubmit(e) {
   e.preventDefault();
   const name = document.getElementById("mFeeName").value.trim();
@@ -478,7 +467,7 @@ function handleInitialSubmit(e) {
   const months = parseInt(durSelect.options[durSelect.selectedIndex].getAttribute("data-months")) || 1;
   const amt = parseFloat(document.getElementById("mFeeAmount").value) || 0;
   const mode = document.getElementById("paymentMethod").value;
-  const paidDateVal = document.getElementById("mFeePaidDate").value;
+    const paidDateVal = document.getElementById("mFeePaidDate").value;
 
   pendingPaymentData = { name, phone, father, cat, planText, months, amt, mode, paidDateVal };
 
@@ -595,7 +584,6 @@ function downloadImageAndPDF() {
   });
 }
 
-// TABS & ADMIN RECORDS (MONTH & DATE WISE 1 TO 31)
 function showFeeTab() {
   document.getElementById("sectionFees").style.display = "block";
   document.getElementById("sectionAdmin").style.display = "none";
@@ -625,12 +613,10 @@ function renderAdminTable() {
   tbody.innerHTML = "";
   let list = getMasterList();
 
-  // Current Month Header
   const dateObj = new Date();
   const monthNames = ["जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
   document.getElementById("adminMonthTitle").innerText = `माह: ${monthNames[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
 
-  // DATE-WISE SORTING (1 to 31) BASED ON JOINING / DUE DATE
   list.sort((a, b) => {
     let dayA = a.joinDate ? parseInt(a.joinDate.split('-')[2]) : 32;
     let dayB = b.joinDate ? parseInt(b.joinDate.split('-')[2]) : 32;
@@ -641,7 +627,6 @@ function renderAdminTable() {
     const dueDay = m.joinDate ? parseInt(m.joinDate.split('-')[2]) : "-";
     let tr = document.createElement("tr");
 
-    // Student ID Tag
     let idStatusHtml = "-";
     if (m.type === "student") {
       idStatusHtml = `
@@ -677,7 +662,6 @@ function renderAdminTable() {
   });
 }
 
-// TOGGLE STUDENT ID & 72 HR WARNING WHATSAPP
 function toggleStudentId(idx) {
   let list = getMasterList();
   list[idx].idSubmitted = !list[idx].idSubmitted;
@@ -711,4 +695,62 @@ function downloadCSV() {
   const list = getMasterList();
   let csv = "क्र.,तारीख,सदस्य का नाम,पिता का नाम,मोबाइल नंबर,श्रेणी,स्थिति,माध्यम,आईडी जमा,अंतिम पेमेंट\n";
   list.forEach((m, i) => {
-    let day = m.joinDate ? m.join
+    let day = m.joinDate ? m.joinDate.split('-')[2] : '-';
+    csv += `"${i+1}","${day} तारीख","${m.name}","${m.father || '-'}","${m.phone}","${m.type || '-'}","${m.status}","${m.payMode || 'Cash'}","${m.idSubmitted ? 'Yes' : 'No'}","${m.lastPaid || '-'}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Gym_Master_Register_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function toggleRefInputBox() {
+  const b = document.getElementById("refInputForm");
+  b.style.display = b.style.display === "block" ? "none" : "block";
+}
+
+function submitManualReferral() {
+  const name = document.getElementById("refInName").value.trim();
+  const phone = document.getElementById("refInPhone").value.trim();
+  if (!name || !phone) { alert("रेफरल का नाम और मोबाइल लिखें!"); return; }
+  referredList.push({ name, phone });
+  referralCount = referredList.length;
+  document.getElementById("refInName").value = "";
+  document.getElementById("refInPhone").value = "";
+  document.getElementById("refInputForm").style.display = "none";
+  renderRefTags();
+  calculateFinalAmount();
+}
+
+function renderRefTags() {
+  const cont = document.getElementById("refTagsContainer");
+  cont.innerHTML = "";
+  referredList.forEach((r, idx) => {
+    let t = document.createElement("div");
+    t.style = "background:#222; border:1px solid #ffcc00; color:#ffcc00; padding:2px 6px; border-radius:10px; font-size:10px; display:flex; align-items:center; gap:4px;";
+    t.innerHTML = `<span>👤 ${r.name}</span><b onclick="removeRefTag(${idx})" style="color:red; cursor:pointer;">✕</b>`;
+    cont.appendChild(t);
+  });
+}
+
+function removeRefTag(idx) {
+  referredList.splice(idx, 1);
+  referralCount = referredList.length;
+  renderRefTags();
+  calculateFinalAmount();
+}
+
+function closeBillModalAndReset() {
+  document.getElementById("receiptModal").style.display = "none";
+  document.getElementById("formGymFee").reset();
+  referredList = [];
+  referralCount = 0;
+  pendingPaymentData = null;
+  renderRefTags();
+  updatePlanPrices();
+}
+</script>
+</body>
+</html>
+
