@@ -1015,22 +1015,34 @@ function verifyCode(){
 
   document.getElementById("verification-overlay").style.display = "flex";
 
-  if(products[code]){
+  // Product identification (Purane + Naye 3 Dabbey)
+  let detectedBrand = products[code] || null;
+  if (!detectedBrand) {
+    if (code.startsWith("MSW")) {
+      detectedBrand = "MUSCLE SIZE 100% WHEY";
+    } else if (code.startsWith("MGG")) {
+      detectedBrand = "MUSCUL GOLD MASS GAINER";
+    } else if (code.startsWith("ACT")) {
+      detectedBrand = "ACTIVE SHAKE PROTEIN";
+    }
+  }
+
+  if(detectedBrand){
     let countKey = "count_" + code;
-    let count = parseInt(localStorage.getItem(countKey) || "0");
+    let count = parseInt(localStorage.getItem(countKey)) || 0;
 
     if(count >= 2){
       localStorage.setItem(lockKey, currentTime + 60000);
-      document.getElementById("brand-name").innerText = products[code];
+      document.getElementById("brand-name").innerText = detectedBrand;
       document.getElementById("verify-status").innerHTML = "ALREADY USED";
-      document.getElementById("verify-msg").innerText = "Ye code pehle scan ho chuka hai (Limit 2 Exceeded)! 1 minute lock hai.";
+      document.getElementById("verify-msg").innerText = "Ye code pehle scan ho chuka hai (Limit 2 Exceeded)! 1 minute locked.";
       document.getElementById("verify-icon").innerHTML = "⚠️";
       document.getElementById("verify-status").style.color = "#ffcc00";
       document.getElementById("verify-box").style.border = "3px solid #ffcc00";
     } else {
       count++;
       localStorage.setItem(countKey, count);
-      document.getElementById("brand-name").innerText = products[code];
+      document.getElementById("brand-name").innerText = detectedBrand;
       document.getElementById("verify-status").innerHTML = "PRODUCT VERIFIED";
       document.getElementById("verify-msg").innerText = "100% Genuine Certified (Scan " + count + "/2)";
       document.getElementById("verify-icon").innerHTML = "✅";
@@ -1047,7 +1059,8 @@ function verifyCode(){
   }
 
   input.value = "";
-}
+  }
+  
 
 function closeVerifyPopup(){
   document.getElementById("verification-overlay").style.display = "none";
