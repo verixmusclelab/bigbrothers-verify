@@ -110,7 +110,6 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
       <input type="date" id="mFeePromiseDate" onclick="this.showPicker()">
     </div>
 
-    <!-- Referral Area -->
     <div class="box-panel" style="border:1.5px dashed #ffcc00;background:rgba(255,204,0,0.03);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
         <b style="font-size:11px;color:#ffcc00;">🤝 रेफरल छूट (-₹100 प्रति भाई):</b>
@@ -140,7 +139,6 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
   </form>
 </div>
 
-<!-- RECEIPT MODAL -->
 <div id="receiptModal">
   <div class="receipt-wrapper">
     <div id="printablePages">
@@ -222,8 +220,7 @@ const MEMBERS = [
   { name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-09-07", type: "regular" },
   { name: "अरमान (Armaan)", father: "-", phone: "", joinDate: "2026-10-15", type: "regular" }
 ];
-
-window.addEventListener("DOMContentLoaded", () => {
+  window.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById("mFeeJoinDate").value = today;
   document.getElementById("mFeePaidDate").value = today;
