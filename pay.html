@@ -12,6 +12,9 @@ body{background:#0a0a0a;color:#fff;padding:12px;display:flex;flex-direction:colu
 .header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;}
 .header h1{color:#ffcc00;font-size:19px;letter-spacing:1px;}
 .tagline{color:#e6c300;font-size:10px;font-weight:700;margin-top:4px;background:rgba(255,204,0,0.1);display:inline-block;padding:2px 8px;border-radius:10px;}
+.nav-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px;}
+.tab-btn{background:#181818;border:1px solid #444;color:#bbb;padding:7px 2px;border-radius:6px;font-size:10px;font-weight:bold;cursor:pointer;text-align:center;}
+.tab-btn.active{background:#ffcc00;color:#000;border-color:#ffcc00;}
 .field-group{margin-bottom:10px;position:relative;}
 label{display:block;font-size:11px;color:#ddd;margin-bottom:3px;font-weight:600;}
 label span{color:#ff3333;}
@@ -39,9 +42,15 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
 
 <div class="main-card">
   <div class="header">
-    <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">GYM FEES DESK</div>
+    <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">OFFICIAL PORTAL</div>
     <h1>5 Brother's Fitness Club</h1>
     <div class="tagline">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</div>
+  </div>
+
+  <div class="nav-tabs">
+    <div class="tab-btn active">🏋️ केवल जिम फीस</div>
+    <div class="tab-btn">💊 केवल सप्लीमेंट</div>
+    <div class="tab-btn">📋 रजिस्टर व रिकॉर्ड्स</div>
   </div>
 
   <form id="formGymFee" onsubmit="processGymFee(event)">
@@ -72,7 +81,7 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
         <input type="tel" id="mFeePhone" required placeholder="10 अंक मोबाइल">
       </div>
       <div class="field-group">
-        <label>जॉइनिंग तिथि</label>
+        <label>जॉइनिंग / रिन्यूअल तिथि</label>
         <input type="date" id="mFeeJoinDate" onclick="this.showPicker()">
       </div>
     </div>
@@ -170,7 +179,7 @@ input:focus, select:focus{border-color:#ffcc00;background:#141414;}
 </div>
 
 <script>
-let referralCount = 0;
+  let referralCount = 0;
 let referredList = [];
 
 const MEMBERS = [
@@ -220,7 +229,8 @@ const MEMBERS = [
   { name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-09-07", type: "regular" },
   { name: "अरमान (Armaan)", father: "-", phone: "", joinDate: "2026-10-15", type: "regular" }
 ];
-  window.addEventListener("DOMContentLoaded", () => {
+
+window.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById("mFeeJoinDate").value = today;
   document.getElementById("mFeePaidDate").value = today;
@@ -419,3 +429,4 @@ function saveBillImage() {
 </script>
 </body>
 </html>
+
