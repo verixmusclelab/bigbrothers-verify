@@ -3,193 +3,222 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Nutrition - Official Verification</title>
+<title>Official Product Verification - Big Brothers Fitness</title>
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',Arial,sans-serif;
--webkit-tap-highlight-color:transparent;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
-body{
-background:#0b0b0b;
-color:#fff;
-min-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-padding:15px;
+body {
+  background: radial-gradient(circle at center, #1b1b1b 0%, #080808 100%);
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 15px;
 }
 
-.card{
-background:radial-gradient(circle at top, #1a1705 0%, #0d0d0d 85%);
-padding:26px 20px;
-border-radius:20px;
-border:2px solid #ffcc00;
-width:100%;
-max-width:390px;
-text-align:center;
-box-shadow:0 0 25px rgba(255,204,0,0.2);
+.main-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.brand{
-font-size:21px;
-font-weight:900;
-color:#ffcc00;
-letter-spacing:1px;
-margin-bottom:4px;
+/* Header & Welcome */
+.brand-icon {
+  font-size: 32px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.4));
 }
 
-.sub-tag{
-font-size:11px;
-color:#aaa;
-margin-bottom:15px;
-font-weight:bold;
+.welcome-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffcc00;
+  text-align: center;
+  line-height: 1.25;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
 }
 
-.badge{
-display:inline-block;
-padding:4px 12px;
-border-radius:20px;
-font-size:12px;
-font-weight:bold;
-margin-bottom:15px;
+.welcome-sub {
+  font-size: 14px;
+  color: #cccccc;
+  text-align: center;
+  margin-bottom: 22px;
 }
 
-.badge-success{
-background:rgba(0,255,100,0.15);
-border:1px solid #00ff66;
-color:#00ff66;
+/* Verification Card */
+.verify-card {
+  width: 100%;
+  background: rgba(22, 22, 22, 0.95);
+  border: 2px solid #ffcc00;
+  border-radius: 18px;
+  padding: 22px 18px;
+  box-shadow: 0 0 25px rgba(255, 204, 0, 0.15);
+  margin-bottom: 18px;
+  text-align: center;
 }
 
-.btn{
-width:100%;
-padding:13px;
-background:#ffcc00;
-color:#000;
-border:none;
-font-weight:bold;
-cursor:pointer;
-border-radius:10px;
-margin-top:12px;
-font-size:15px;
+.card-heading {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
 }
 
-.code-box{
-margin:15px 0;
-padding:12px;
-border:1.5px dashed #ffcc00;
-border-radius:12px;
-color:#ffcc00;
-font-size:16px;
-font-weight:bold;
-background:rgba(255,204,0,0.05);
-word-break:break-all;
+.code-input {
+  width: 100%;
+  padding: 14px;
+  background: #0d0d0d;
+  border: 1.5px solid #333333;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.3s;
 }
 
-input{
-width:100%;
-padding:12px;
-text-align:center;
-border-radius:10px;
-border:1.5px solid #444;
-background:#161616;
-color:#fff;
-font-size:16px;
-outline:none;
-text-transform:uppercase;
-font-weight:bold;
-letter-spacing:1px;
+.code-input:focus {
+  border-color: #ffcc00;
 }
 
-input:focus{
-border-color:#ffcc00;
+.verify-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  background: #ffcc00;
+  border: none;
+  border-radius: 10px;
+  color: #000000;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+  transition: transform 0.1s, background 0.2s;
 }
 
-#resultBox{
-margin-top:16px;
-font-weight:bold;
-font-size:15px;
-min-height:40px;
-line-height:1.5;
+.verify-btn:active {
+  transform: scale(0.98);
 }
 
-.admin-export{
-margin-top:20px;
-text-align:center;
-border-top:1px dashed #333;
-padding-top:15px;
-width:100%;
-max-width:390px;
+/* Result Box */
+#resultBox {
+  width: 100%;
+  display: none;
+  margin-bottom: 18px;
 }
 
-.export-btn{
-background:#222;
-color:#ffcc00;
-border:1px solid #ffcc00;
-padding:8px 10px;
-border-radius:6px;
-font-size:11px;
-cursor:pointer;
-margin:4px;
-font-weight:bold;
+.badge-box {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.badge-verified {
+  background: rgba(0, 255, 100, 0.08);
+  border: 2px solid #00ff66;
+  box-shadow: 0 0 20px rgba(0, 255, 100, 0.2);
+}
+
+.badge-failed {
+  background: rgba(255, 50, 50, 0.08);
+  border: 2px solid #ff3333;
+  box-shadow: 0 0 20px rgba(255, 50, 50, 0.2);
+}
+
+.badge-warning {
+  background: rgba(255, 204, 0, 0.08);
+  border: 2px solid #ffcc00;
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+}
+
+/* Admin / Download Area */
+.download-section {
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.download-title {
+  font-size: 12px;
+  color: #ffcc00;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.pill-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pill-btn {
+  background: #1f1f1f;
+  color: #ffcc00;
+  border: 1px solid #333333;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
 }
 </style>
 </head>
-
 <body>
 
-<!-- SCREEN 1: QR AUTO VERIFIED SCREEN -->
-<div id="verifiedScreen" style="display:none; width:100%; justify-content:center;">
-  <div class="card">
-    <div class="brand" id="scanBrandName">5 BROTHER'S NUTRITION</div>
-    <div class="sub-tag">100% AUTHENTIC VERIFICATION DESK</div>
-    
-    <div style="font-size:55px; margin:10px 0;">✅</div>
-    
-    <div class="badge badge-success">PRODUCT VERIFIED & GENUINE</div>
-    
-    <div style="font-size:15px; color:#ddd; margin-bottom:8px;">
-      उत्पाद: <b id="scanProduct" style="color:#ffcc00;">---</b>
-    </div>
-    <div style="font-size:13px; color:#888; margin-bottom:15px;">
-      बैच कोड: <span id="scanCodeText" style="color:#00ff66; font-weight:bold;">---</span>
-    </div>
+<div class="main-container">
+  
+  <!-- BRAND LOGO / ICON -->
+  <div class="brand-icon">👑</div>
 
-    <button class="btn" onclick="openPortal()">OPEN VERIFY PORTAL</button>
+  <!-- DYNAMIC BRAND WELCOME TEXT -->
+  <h1 class="welcome-title" id="welcomeBrand">Welcome to<br>Big Brothers Fitness</h1>
+  <p class="welcome-sub">Enter Your Verification Code here</p>
+
+  <!-- VERIFICATION INPUT CARD -->
+  <div class="verify-card">
+    <div class="card-heading">Verification Card</div>
+    <input type="text" id="scratchInput" class="code-input" placeholder="ENTER CODE" maxlength="15" autocomplete="off" autocorrect="off" autocapitalize="characters">
+    <button type="button" class="verify-btn" onclick="runVerification()">VERIFY CODE</button>
   </div>
-</div>
 
-<!-- SCREEN 2: MANUAL VERIFICATION PORTAL -->
-<div id="portalScreen" style="display:flex; width:100%; justify-content:center;">
-  <div class="card">
-    <div class="brand">PRODUCT VERIFICATION</div>
-    <div class="sub-tag">5 BROTHER'S FITNESS CLUB</div>
-
-    <div class="code-box">
-      DETECTED CODE:<br>
-      <span id="displayCode" style="font-size:18px;">---</span>
-    </div>
-
-    <input type="text" id="verifyInput" placeholder="ENTER 8-DIGIT CODE" maxlength="12">
-
-    <button class="btn" onclick="verifyProduct()">VERIFY CODE</button>
-
-    <div id="resultBox"></div>
+  <!-- RESULT NOTIFICATION CARD (PEHLE SE HIDE RAHEGA) -->
+  <div id="resultBox">
+    <!-- Jaisa result hoga, javascript se yahan badge aayega -->
   </div>
-</div>
 
-<!-- ADMIN EXPORT TOOLS -->
-<div class="admin-export">
-  <div style="font-size:11px; color:#888; margin-bottom:6px;">🖨️ स्टिकर प्रिंटिंग हेतु 2000 कोड्स डाउनलोड करें:</div>
-  <button class="export-btn" onclick="downloadCategoryCodes('whey')">📥 2000 Muscle Size Whey (.txt)</button>
-  <button class="export-btn" onclick="downloadCategoryCodes('gainer')">📥 2000 MG Pro Gainer (.txt)</button>
-  <button class="export-btn" onclick="downloadCategoryCodes('active')">📥 2000 Active Shake (.txt)</button>
-</div>
+  <!-- ADMIN / STICKER CODES DOWNLOAD AREA -->
+  <div class="download-section">
+    <div class="download-title">📥 Download - Sticker Printing (.txt)</div>
+    <div class="pill-container">
+      <button type="button" class="pill-btn" onclick="downloadCodes('WP', 'Whey_Protein')">Whey Protein</button>
+      <button type="button" class="pill-btn" onclick="downloadCodes('MG', 'Mass_Gainer')">Mass Gainer</button>
+      <button type="button" class="pill-btn" onclick="downloadCodes('CR', 'Creatine')">Creatine</button>
+      <button type="button" class="pill-btn" onclick="downloadCodes('MV', 'Multivitamin')">Multivitamin</button>
+    </div>
+  </div>
 
+</div>
 <script>
 const CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 
@@ -197,122 +226,126 @@ function getCodeForIndex(prefix, index) {
   let num = (index * 9301 + 49297) % 233280;
   let part = "";
   let n = (num * 1000 + index * 37) >>> 0;
-  for(let i = 0; i < 5; i++){
+  for (let i = 0; i < 5; i++) {
     part += CHARS[n % CHARS.length];
     n = Math.floor(n / CHARS.length) + (i * 7);
   }
   return prefix + part;
 }
 
-const CODE_DATABASE = {};
+const BRAND_DIRECTORY = {
+  "MSW": "Muscle Size Nutrition",
+  "MGG": "Muscul Gold Nutrition",
+  "ACT": "Active Shake Nutrition",
+  "KNG": "KN Nutrition",
+  "ANX": "Americian Nutrition",
+  "LBR": "Labrada Nutrition",
+  "ULT": "Ultimate Nutrition",
+  "ON": "Optimum Nutrition",
+  "GNC": "GNC Live Well",
+  "MB": "MuscleBlaze",
+  "MT": "MuscleTech",
+  "WP": "Big Brothers Whey",
+  "MG": "Big Brothers Gainer",
+  "CR": "Big Brothers Creatine",
+  "MV": "Big Brothers Multivitamin"
+};
 
-// 1. Muscle Size Intra Bulk 100% Whey Protein (2000 Codes: MSW.....)
-for(let i = 1; i <= 2000; i++){
-  let c = getCodeForIndex("MSW", i);
-  CODE_DATABASE[c] = { brand: "MUSCLE SIZE INTRA BULK", product: "100% WHEY PROTEIN (908g)", cat: "Whey" };
+function identifyProduct(c) {
+  if (c.startsWith("MSW")) return { brand: "Muscle Size Nutrition", name: "100% Whey Protein" };
+  if (c.startsWith("MGG")) return { brand: "Muscul Gold Nutrition", name: "Pro Series Mass Gainer" };
+  if (c.startsWith("ACT")) return { brand: "Active Shake Nutrition", name: "Active Shake Protein" };
+  if (c.startsWith("KNG")) return { brand: "KN Nutrition", name: "Real Mass Gainer" };
+  if (c.startsWith("ANX")) return { brand: "Americian Nutrition", name: "Xtreme Mass" };
+  if (c.startsWith("WP") || c.startsWith("LBR") || c.startsWith("ULT")) return { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
+  if (c.startsWith("MG") || c.startsWith("LMG")) return { brand: "Big Brothers Fitness", name: "100% Genuine Mass Gainer" };
+  if (c.startsWith("CR") || c.startsWith("CRE") || c.startsWith("GNC-C")) return { brand: "Big Brothers Fitness", name: "100% Genuine Creatine" };
+  if (c.startsWith("MV") || c.startsWith("VIT") || c.startsWith("MUL")) return { brand: "Big Brothers Fitness", name: "100% Genuine Multivitamin" };
+  return null;
 }
 
-// 2. MG Pro Series Power Musculs Gain Mass Gainer (2000 Codes: MGG.....)
-for(let i = 1; i <= 2000; i++){
-  let c = getCodeForIndex("MGG", i);
-  CODE_DATABASE[c] = { brand: "MUSCUL GOLD NUTRITION", product: "PRO SERIES POWER MUSCULS GAIN & MASS GAINER", cat: "Gainer" };
-}
-
-// 3. Active Shake Protein (2000 Codes: ACT.....)
-for(let i = 1; i <= 2000; i++){
-  let c = getCodeForIndex("ACT", i);
-  CODE_DATABASE[c] = { brand: "ACTIVE SHAKE NUTRITION", product: "ACTIVE SHAKE PROTEIN (900g)", cat: "Active" };
-}
-
-let currentCode = "";
-
-window.onload = function(){
+window.onload = function() {
   const params = new URLSearchParams(window.location.search);
-  const code = (params.get("code") || "").trim().toUpperCase();
+  const brandParam = (params.get("brand") || "").trim().toUpperCase();
+  const codeParam = (params.get("code") || "").trim().toUpperCase();
 
-  if(code && CODE_DATABASE[code]){
-    currentCode = code;
-    let p = CODE_DATABASE[currentCode];
-    
-    document.getElementById("scanBrandName").innerText = p.brand;
-    document.getElementById("scanProduct").innerText = p.product;
-    document.getElementById("scanCodeText").innerText = currentCode;
-    document.getElementById("displayCode").innerText = currentCode;
-    document.getElementById("verifyInput").value = currentCode;
+  if (brandParam && BRAND_DIRECTORY[brandParam]) {
+    document.getElementById("welcomeBrand").innerHTML = "Welcome to<br>" + BRAND_DIRECTORY[brandParam];
+  }
 
-    document.getElementById("portalScreen").style.display = "none";
-    document.getElementById("verifiedScreen").style.display = "flex";
-  } else {
-    document.getElementById("portalScreen").style.display = "flex";
-    document.getElementById("verifiedScreen").style.display = "none";
-    if(code){
-      document.getElementById("displayCode").innerText = code + " (NOT FOUND)";
-      document.getElementById("verifyInput").value = code;
-    }
+  if (codeParam) {
+    document.getElementById("scratchInput").value = codeParam;
+    runVerification();
   }
 };
 
-function openPortal(){
-  document.getElementById("verifiedScreen").style.display = "none";
-  document.getElementById("portalScreen").style.display = "flex";
-}
+function runVerification() {
+  const inputElem = document.getElementById("scratchInput");
+  const resultBox = document.getElementById("resultBox");
+  const code = inputElem.value.trim().toUpperCase();
 
-function verifyProduct(){
-  let enteredCode = document.getElementById("verifyInput").value.trim().toUpperCase();
-  let box = document.getElementById("resultBox");
-
-  if(!enteredCode){
-    box.innerHTML = "<span style='color:#ff3333;'>कृपया कोड दर्ज करें!</span>";
+  if (!code) {
+    resultBox.style.display = "block";
+    resultBox.innerHTML = `
+      <div class="badge-box badge-failed">
+        <div style="font-size:18px; font-weight:800; color:#ff3333; margin-bottom:4px;">❌ CODE REQUIRED</div>
+        <div style="font-size:13px; color:#bbb;">Kripya box me scratch code enter karein.</div>
+      </div>
+    `;
     return;
   }
 
-  if(CODE_DATABASE[enteredCode]){
-    let p = CODE_DATABASE[enteredCode];
-    let used = parseInt(sessionStorage.getItem("used_" + enteredCode)) || 0;
+  const productData = identifyProduct(code);
 
-    if(used >= 2){
-      box.innerHTML = `
-        <div style="color:#ffcc00; background:rgba(255,204,0,0.1); padding:10px; border-radius:8px; border:1px solid #ffcc00;">
-          ⚠️ कोड की अधिकतम सीमा समाप्त (Code Expired)<br>
-          <small style="color:#aaa;">यह कोड पहले ही 2 बार वेरिफाई हो चुका है।</small>
+  if (productData) {
+    document.getElementById("welcomeBrand").innerHTML = "Welcome to<br>" + productData.brand;
+
+    let scanCount = parseInt(localStorage.getItem("scan_" + code)) || 0;
+
+    if (scanCount >= 2) {
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <div class="badge-box badge-warning">
+          <div style="font-size:18px; font-weight:800; color:#ffcc00; margin-bottom:4px;">⚠️ ALREADY VERIFIED</div>
+          <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:4px;">BRAND: ${productData.brand}</div>
+          <div style="font-size:13px; color:#ddd; margin-bottom:4px;">PRODUCT: ${productData.name}</div>
+          <div style="font-size:12px; color:#aaa;">Ye code pehle hi 2 baar scan kiya ja chuka hai (Limit 2/2).</div>
         </div>
       `;
     } else {
-      used++;
-      sessionStorage.setItem("used_" + enteredCode, used);
-      box.innerHTML = `
-        <div style="color:#00ff66; background:rgba(0,255,100,0.1); padding:10px; border-radius:8px; border:1px solid #00ff66;">
-          ✅ 100% ORIGINAL & VERIFIED<br>
-          <span style="color:#fff; font-size:14px;">ब्रांड: ${p.brand}</span><br>
-          <span style="color:#ffcc00; font-size:14px;">उत्पाद: ${p.product}</span><br>
-          <small style="color:#aaa;">वेरिफिकेशन उपयोग: ${used} / 2</small>
+      scanCount++;
+      localStorage.setItem("scan_" + code, scanCount);
+
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <div class="badge-box badge-verified">
+          <div style="font-size:18px; font-weight:800; color:#00ff66; margin-bottom:4px;">✔ 100% ORIGINAL & VERIFIED</div>
+          <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:4px;">BRAND: ${productData.brand}</div>
+          <div style="font-size:13px; color:#ddd; margin-bottom:6px;">PRODUCT: ${productData.name}</div>
+          <div style="font-size:12px; color:#00ff66; font-weight:600;">Verification Scan: ${scanCount} / 2</div>
         </div>
       `;
     }
   } else {
-    box.innerHTML = `
-      <div style="color:#ff3333; background:rgba(255,50,50,0.1); padding:10px; border-radius:8px; border:1px solid #ff3333;">
-        ❌ अमान्य कोड (INVALID CODE)<br>
-        <small style="color:#bbb;">यह कोड 5 Brother's Nutrition रिकॉर्ड में उपलब्ध नहीं है।</small>
+    resultBox.style.display = "block";
+    resultBox.innerHTML = `
+      <div class="badge-box badge-failed">
+        <div style="font-size:18px; font-weight:800; color:#ff3333; margin-bottom:4px;">❌ INVALID PRODUCT CODE</div>
+        <div style="font-size:13px; color:#bbb;">Ye code verify record me uplabdh nahi hai.</div>
       </div>
     `;
   }
 }
 
-function downloadCategoryCodes(type){
-  let prefix = type === "whey" ? "MSW" : (type === "gainer" ? "MGG" : "ACT");
-  let catName = type.toUpperCase();
+function downloadCodes(prefix, fileName) {
   let list = [];
-  
-  for(let i = 1; i <= 2000; i++){
-    let c = getCodeForIndex(prefix, i);
-    list.push(c);
+  for (let i = 1; i <= 2000; i++) {
+    list.push(getCodeForIndex(prefix, i));
   }
-
   let blob = new Blob([list.join("\n")], { type: "text/plain;charset=utf-8" });
   let a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `2000_${catName}_CODES.txt`;
+  a.download = `2000_${fileName}_Codes.txt`;
   a.click();
 }
 </script>
