@@ -825,16 +825,20 @@ function deleteMemberById(memberId) {
   const m = list.find(x => x.id === memberId);
   if (!m) return;
 
-  let pin = prompt(`⚠️ क्या आप वाकई "${m.name}" को रजिस्टर से स्थायी रूप से हटाना चाहते हैं?\nAdmin PIN दर्ज करें:`);
+  let pin = prompt(`⚠️ क्या आप "${m.name}" का भुगतान स्टेटस रद्द (Reset to Pending) करना चाहते हैं?\nAdmin PIN दर्ज करें:`);
   if (pin === ADMIN_PIN) {
-    list = list.filter(x => x.id !== memberId);
+    m.status = "Pending";
+    m.payMode = "-";
+    m.amount = 0;
+    m.lastPaid = "";
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-    alert(`✅ "${m.name}" का रिकॉर्ड हटा दिया गया है।`);
+    alert(`✅ "${m.name}" की फीस स्थिति रद्द कर दी गई है (अब Pending है)। सदस्य रजिस्टर में सुरक्षित है।`);
     renderAdminTable();
   } else {
-    alert("❌ गलत Admin PIN! सदस्य नहीं हटाया गया।");
+    alert("❌ गलत Admin PIN! कोई बदलाव नहीं किया गया।");
   }
 }
+  
 
 function openAddMemberModal() {
   document.getElementById("addJoinDate").value = new Date().toISOString().split('T')[0];
