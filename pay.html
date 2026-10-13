@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
@@ -41,7 +41,6 @@ th{color:#ffcc00;}
 </head>
 <body>
 
-<!-- SINGLE MAIN CARD ONLY -->
 <div class="main-card">
   <div class="header">
     <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">OFFICIAL PORTAL</div>
@@ -60,7 +59,7 @@ th{color:#ffcc00;}
     <div class="field-group">
       <label>🔍 सदस्य खोजें (Mobile / नाम / पिता का नाम)</label>
       <div style="display:flex; gap:6px;">
-        <input type="text" id="feeSearchInput" placeholder="मोबाइल, नाम या पिता का नाम...">
+        <input type="text" id="feeSearchInput" placeholder="मोबाइल, नाम या पिता का नाम लिखें...">
         <button type="button" onclick="searchMemberByAnyField()" style="background:#ffcc00; color:#000; border:none; padding:0 16px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer; white-space:nowrap;">Search</button>
       </div>
     </div>
@@ -147,7 +146,7 @@ th{color:#ffcc00;}
     </form>
   </div>
 
-  <!-- ADMIN RECORDS TAB (LOCKED BY PIN) -->
+  <!-- ADMIN RECORDS TAB (PIN LOCKED) -->
   <div id="sectionAdmin" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:8px;">
       <h3 style="color:#ffcc00; font-size:14px;">🔒 एडमिन रिकॉर्ड्स (1 से 31 तारीख)</h3>
@@ -399,9 +398,114 @@ function renderRefTags() {
   cont.innerHTML = "";
   referredList.forEach((r, idx) => {
     let t = document.createElement("div");
-    t.style = "background:#222; border:1px solid #ffcc00; color:#ffcc00; padding:2px 
-    <!DOCTYPE html>
-      
+    t.style = "background:#222; border:1px solid #ffcc00; color:#ffcc00; padding:2px 6px; border-radius:10px; font-size:10px; display:flex; align-items:center; gap:4px;";
+    t.innerHTML = `<span>👤 ${r.name}</span><b onclick="removeRefTag(${idx})" style="color:red; cursor:pointer;">✕</b>`;
+    cont.appendChild(t);
+  });
+}
+
+function removeRefTag(idx) {
+  referredList.splice(idx, 1);
+  referralCount = referredList.length;
+  renderRefTags();
+  calculateNetGymFee();
+}
+
+function calculateNetGymFee() {
+  const type = document.getElementById("feeMemberType").value;
+  const base = type === "student" ? 300 : 500;
+  const disc = referralCount * 100;
+  const net = Math.max(0, base - disc);
+  document.getElementById("mFeeAmount").value = net;
+
+  const msg = document.getElementById("refDiscountText");
+  if (disc > 0) {
+    msg.style.display = "block";
+    msg.innerText = `✅ कुल रेफरल छूट: -₹${disc} | देय फीस: ₹${net}`;
+  } else {
+    msg.style.display = "none";
+  }
+}
+
+function processGymFee(e) {
+  e.preventDefault();
+  const name = document.getElementById("mFeeName").value.trim();
+  const phone = document.getElementById("mFeePhone").value.trim();
+  const father = document.getElementById("mFeeFather").value.trim() || "-";
+  const paidDateVal = document.getElementById("mFeePaidDate").value;
+  const status = document.getElementById("feeStatusSelect").value;
+  const amt = parseFloat(document.getElementById("mFeeAmount").value) || 0;
+  const promiseDate = document.getElementById("mFeePromiseDate").value;
+
+  const paidDate = paidDateVal ? new Date(paidDateVal).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
+
+  let validTill = "-";
+  if (paidDateVal) {
+    let n = new Date(paidDateVal);
+    n.setMonth(n.getMonth() + 1);
+    validTill = n.toLocaleDateString('en-GB');
+  }
+
+  let list = getMasterList();
+  let existingIndex = list.findIndex(x => x.name.toLowerCase() === name.toLowerCase() || x.phone === phone);
+  if (existingIndex >= 0) {
+    list[existingIndex].status = status;
+    list[existingIndex].amount = amt;
+    list[existingIndex].lastPaid = paidDate;
+  } else {
+    list.push({ name, father, phone, status, amount: amt, lastPaid: paidDate });
+  }
+  localStorage.setItem("bbf_members_list", JSON.stringify(list));
+
+  const billId = "5BFC-FEE-" + Date.now().toString().slice(-4);
+  document.getElementById("billId").innerText = billId;
+  document.getElementById("rMode").innerText = "Gym Monthly Fee (" + status + ")";
+  document.getElementById("billDate").innerText = paidDate;
+  document.getElementById("rName").innerText = name;
+  document.getElementById("rFatherRow").style.display = "flex";
+  document.getElementById("rFather").innerText = father;
+  document.getElementById("rPhone").innerText = phone;
+  document.getElementById("rGymFeeRow").style.display = "flex";
+  document.getElementById("rGymFee").innerText = "₹" + (status === "Paid" ? amt : 0);
+  document.getElementById("rValidTillRow").style.display = "flex";
+  document.getElementById("rValidTill").innerText = status === "Paid" ? validTill : "वादा तारीख: " + (promiseDate || "-");
+
+  const msg = `✅ *जिम फीस रसीद*\n*(${billId})*\nसदस्य: ${name}\nभुगतान तारीख: ${paidDate}\nस्थिति: ${status}\nजमा राशि: ₹${amt}\nवैधता: ${status === "Paid" ? validTill : promiseDate}\n5 Brother's Fitness Club`;
+  document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(msg), "_blank");
+
+  document.getElementById("receiptModal").style.display = "flex";
+}
+
+function closeBillModalAndReset() {
+  document.getElementById("receiptModal").style.display = "none";
+  document.getElementById("formGymFee").reset();
+  referredList = [];
+  referralCount = 0;
+  renderRefTags();
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("mFeeJoinDate").value = today;
+  document.getElementById("mFeePaidDate").value = today;
+  document.getElementById("feeMemberType").value = "regular";
+  document.getElementById("mFeeAmount").value = 500;
+}
+
+function saveBillImage() {
+  const btn = document.getElementById("dlBtn");
+  btn.innerText = "⏳ Saving...";
+  const element = document.getElementById("printablePages");
+  html2canvas(element, { scale: 2, backgroundColor: "#0a0a0a" }).then(canvas => {
+    let a = document.createElement("a");
+    a.download = "Bill_" + document.getElementById("billId").innerText + ".png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+    btn.innerText = "✅ Saved!";
+    setTimeout(() => { btn.innerText = "📥 Image Save"; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
@@ -444,7 +548,6 @@ th{color:#ffcc00;}
 </head>
 <body>
 
-<!-- SINGLE MAIN CARD ONLY -->
 <div class="main-card">
   <div class="header">
     <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">OFFICIAL PORTAL</div>
@@ -463,7 +566,7 @@ th{color:#ffcc00;}
     <div class="field-group">
       <label>🔍 सदस्य खोजें (Mobile / नाम / पिता का नाम)</label>
       <div style="display:flex; gap:6px;">
-        <input type="text" id="feeSearchInput" placeholder="मोबाइल, नाम या पिता का नाम...">
+        <input type="text" id="feeSearchInput" placeholder="मोबाइल, नाम या पिता का नाम लिखें...">
         <button type="button" onclick="searchMemberByAnyField()" style="background:#ffcc00; color:#000; border:none; padding:0 16px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer; white-space:nowrap;">Search</button>
       </div>
     </div>
@@ -550,7 +653,7 @@ th{color:#ffcc00;}
     </form>
   </div>
 
-  <!-- ADMIN RECORDS TAB (LOCKED BY PIN) -->
+  <!-- ADMIN RECORDS TAB (PIN LOCKED) -->
   <div id="sectionAdmin" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:8px;">
       <h3 style="color:#ffcc00; font-size:14px;">🔒 एडमिन रिकॉर्ड्स (1 से 31 तारीख)</h3>
