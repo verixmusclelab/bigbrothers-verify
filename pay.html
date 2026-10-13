@@ -254,7 +254,6 @@ function searchMemberByAnyField() {
 
   card.style.display = "block";
   if (m) {
-    // Mask Mobile Number for Privacy
     const maskedPhone = m.phone ? (m.phone.slice(0, 4) + "******") : "N/A";
     const fatherDisplay = (m.father && m.father !== "-") ? (m.father.slice(0, 3) + "***") : "Verified";
 
@@ -454,7 +453,6 @@ function processGymFee(e) {
     validTill = n.toLocaleDateString('en-GB');
   }
 
-  // Update in Master Database
   let list = getMasterList();
   let existingIndex = list.findIndex(x => x.name.toLowerCase() === name.toLowerCase() || x.phone === phone);
   if (existingIndex >= 0) {
@@ -514,5 +512,3 @@ function saveBillImage() {
 </script>
 </body>
 </html>
-
-          
