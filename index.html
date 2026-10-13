@@ -6,6 +6,91 @@
 <title>Big Brothers Fitness & Supplements</title>
 
 <style>
+/* --- DISCOUNT & WOW CELEBRATION POPUP STYLES --- */
+.mrp-cut {
+  font-size: 13px;
+  color: #888;
+  text-decoration: line-through;
+  margin-right: 6px;
+}
+
+.save-badge {
+  display: inline-block;
+  background: rgba(0, 255, 102, 0.15);
+  color: #00ff66;
+  border: 1px solid #00ff66;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#wowModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(5px);
+  z-index: 999999;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.wow-card {
+  width: 100%;
+  max-width: 400px;
+  background: radial-gradient(circle at top, #1c1800 0%, #0d0d0d 85%);
+  border: 2px solid #ffcc00;
+  border-radius: 20px;
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: 0 0 35px rgba(255, 204, 0, 0.3);
+  animation: popWow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popWow {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.wow-badge {
+  background: rgba(0, 255, 102, 0.1);
+  border: 1.5px solid #00ff66;
+  border-radius: 12px;
+  padding: 14px 10px;
+  margin: 14px 0 18px;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+}
+
+.wow-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  margin-bottom: 10px;
+}
+
+.wow-btn-pay {
+  background: #00ff66;
+  color: #000;
+}
+
+.wow-btn-cod {
+  background: #ffcc00;
+  color: #000;
+}
+  
 *{
 margin:0;
 padding:0;
@@ -651,7 +736,24 @@ border-top:3px solid #ffcc00;
 </div>
 
 <div id="toast"></div>
+<!-- WOW DISCOUNT CELEBRATION MODAL -->
+<div id="wowModal">
+  <div class="wow-card">
+    <div style="font-size:38px; margin-bottom:4px;">🎉</div>
+    <h2 style="color:#ffcc00; font-size:22px; font-weight:800; margin-bottom:4px;">ORDER DETAILS READY!</h2>
+    <p style="color:#aaa; font-size:12px;">Flipkart Se Sasta Guaranteed • 100% Original</p>
 
+    <div class="wow-badge">
+      <div id="wowSaveTitle" style="color:#00ff66; font-size:18px; font-weight:900;">WOW! YOU SAVED ₹0</div>
+      <div id="wowSummaryText" style="color:#fff; font-size:13px; margin-top:4px;">Total Payable: ₹0</div>
+    </div>
+
+    <button id="wowPayBtn" class="wow-btn wow-btn-pay" onclick="executeOrder('ONLINE')">🟢 PROCEED TO PAY (UPI / GPAY / PHONEPE)</button>
+    <button id="wowCodBtn" class="wow-btn wow-btn-cod" onclick="executeOrder('COD')">🟡 CASH ON DELIVERY (COD)</button>
+    <button onclick="closeWowModal()" style="background:none; border:none; color:#777; font-size:13px; cursor:pointer; margin-top:6px; text-decoration:underline;">Back to Cart</button>
+  </div>
+</div>
+  
 <section class="verify-section">
   <h2 style="color:#ffcc00; font-size:24px;">Verify Product</h2>
   <p style="color:#aaa; font-size:13px; margin-top:4px;">Original Scan Authenticity Check</p>
@@ -743,7 +845,38 @@ const catalog = [
 
 let cart = [];
 
-function renderCatalog() {
+function getDiscountAmount(item, size) {
+  const cat = item.category;
+  const name = item.name.toLowerCase();
+  const sizeLower = (size || "").toLowerCase();
+
+  // 1. Labrada Mass Gainer Rule (3kg+ par ₹300, 1kg par ₹200)
+  if (name.includes("labrada") && cat === "gainer") {
+    if (sizeLower.includes("3 kg") || sizeLower.includes("5 kg")) return 300;
+    return 200;
+  }
+
+  // 2. Whey Protein Rule (Tiered Discounts)
+  if (cat === "whey") {
+    if (sizeLower.includes("500") || sizeLower.includes("450") || sizeLower.includes("725")) return 300;
+    if (name.includes("on gold") || name.includes("dymatize") || sizeLower.includes("4 kg") || sizeLower.includes("5 kg") || sizeLower.includes("4.54")) return 800;
+    return 500;
+  }
+
+  // 3. Baaki Gainers (1kg/niche max 200)
+  if (cat === "gainer") {
+    return 200;
+  }
+
+  // 4. Multivitamins & Fish Oil (50 - 100)
+  if (cat === "multivitamin" || name.includes("fish oil")) {
+    return 100;
+  }
+
+  return 100;
+}
+
+function randerCatalog() {
   const grid = document.getElementById("productGrid");
   if (!grid) return;
   grid.innerHTML = "";
@@ -752,6 +885,9 @@ function renderCatalog() {
     let sizeOptionsHtml = item.options.map(opt => `<option value="${opt.price}" data-size="${opt.size}">${opt.size}</option>`).join("");
     let flavourOptionsHtml = item.flavours.map(flv => `<option value="${flv}">${flv}</option>`).join("");
     let initialPrice = item.options[0].price;
+    let initialSize = item.options[0].size;
+    let saveAmt = getDiscountAmount(item, initialSize);
+    let mrpPrice = initialPrice + saveAmt;
 
     let card = document.createElement("div");
     card.className = "card";
@@ -765,10 +901,14 @@ function renderCatalog() {
       <h3>${item.name}</h3>
       <p class="desc">${item.desc}</p>
       <div class="dropdown-grp">
-        <select class="size-select" onchange="updatePrice(this)">${sizeOptionsHtml}</select>
+        <select class="size-select" onchange="updatePrice(this, ${index})">${sizeOptionsHtml}</select>
         <select class="flavour-select">${flavourOptionsHtml}</select>
       </div>
-      <div class="price">₹${initialPrice.toLocaleString('en-IN')}</div>
+      <div class="price-container">
+        <span class="mrp-cut">Flipkart: ₹${mrpPrice.toLocaleString('en-IN')}</span>
+        <div class="price">₹${initialPrice.toLocaleString('en-IN')}</div>
+        <div class="save-badge">🔥 ₹${saveAmt} Sasta Guaranteed</div>
+      </div>
       <button onclick="addToCartByIndex(${index}, this)" class="buy-btn buy-cart">🛒 Add to Cart</button>
       <a href="https://wa.me/919990954574" class="buy-btn buy-wa">WhatsApp Order</a>
       <a href="tel:9990954574" class="buy-btn buy-call">Call Now</a>
@@ -777,12 +917,23 @@ function renderCatalog() {
   });
 }
 
-function updatePrice(selectElem) {
+function updatePrice(selectElem, itemIndex) {
   let card = selectElem.closest('.card');
   let priceDisplay = card.querySelector('.price');
+  let mrpDisplay = card.querySelector('.mrp-cut');
+  let saveBadge = card.querySelector('.save-badge');
   let selectedVal = parseInt(selectElem.value);
+  let selectedSize = selectElem.options[selectElem.selectedIndex].getAttribute('data-size');
+
+  let item = catalog[itemIndex];
+  let saveAmt = getDiscountAmount(item, selectedSize);
+  let mrpPrice = selectedVal + saveAmt;
+
   priceDisplay.innerText = "₹" + selectedVal.toLocaleString('en-IN');
-}
+  if (mrpDisplay) mrpDisplay.innerText = "Flipkart: ₹" + mrpPrice.toLocaleString('en-IN');
+  if (saveBadge) saveBadge.innerText = "🔥 ₹" + saveAmt + " Sasta Guaranteed";
+  }
+      
 
 function filterCategory(category, btn) {
   let buttons = document.querySelectorAll('.menu button');
@@ -917,6 +1068,8 @@ function closeCart() {
   document.getElementById('cartModal').style.display = "none";
 }
 
+let pendingOrderData = null;
+
 function proceedToPay() {
   if (cart.length === 0) {
     alert("Cart khali hai! Pehle supplements add karein.");
@@ -934,53 +1087,84 @@ function proceedToPay() {
     return;
   }
 
-  const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  let totalAmount = 0;
+  let totalSaved = 0;
+
+  cart.forEach(item => {
+    totalAmount += (item.price * item.qty);
+    let matchedCatItem = catalog.find(c => c.name === item.name) || { category: "whey", name: item.name };
+    totalSaved += (getDiscountAmount(matchedCatItem, item.size) * item.qty);
+  });
+
   const selectedPayment = document.querySelector('input[name="payMethod"]:checked').value;
   const orderId = "BBF" + Date.now().toString().slice(-6);
 
-  let waMsg = "*🔥 NAYA ORDER RECEIVED (" + orderId + ")* %0A%0A";
+  pendingOrderData = {
+    name, phone, address, city, pin,
+    totalAmount, totalSaved, selectedPayment, orderId
+  };
+
+  // Open WOW Celebration Modal
+  document.getElementById('wowSaveTitle').innerText = "WOW! YOU SAVED ₹" + totalSaved.toLocaleString('en-IN') + "!";
+  document.getElementById('wowSummaryText').innerText = "Total Payable: ₹" + totalAmount.toLocaleString('en-IN') + " (Flipkart Se Sasta)";
+  document.getElementById('cartModal').style.display = "none";
+  document.getElementById('wowModal').style.display = "flex";
+}
+
+function closeWowModal() {
+  document.getElementById('wowModal').style.display = "none";
+  document.getElementById('cartModal').style.display = "flex";
+}
+
+function executeOrder(chosenMode) {
+  if (!pendingOrderData) return;
+  const d = pendingOrderData;
+  const finalMode = (chosenMode === 'COD') ? "Cash on Delivery" : d.selectedPayment;
+
+  let waMsg = "*🔥 NAYA ORDER RECEIVED (" + d.orderId + ")* %0A%0A";
   waMsg += "*Customer Details:*%0A";
-  waMsg += "👤 Naam: " + encodeURIComponent(name) + "%0A";
-  waMsg += "📞 Phone: " + encodeURIComponent(phone) + "%0A";
-  waMsg += "🏠 Address: " + encodeURIComponent(address) + ", " + encodeURIComponent(city) + " - " + encodeURIComponent(pin) + "%0A%0A";
+  waMsg += "👤 Naam: " + encodeURIComponent(d.name) + "%0A";
+  waMsg += "📞 Phone: " + encodeURIComponent(d.phone) + "%0A";
+  waMsg += "🏠 Address: " + encodeURIComponent(d.address) + ", " + encodeURIComponent(d.city) + " - " + encodeURIComponent(d.pin) + "%0A%0A";
   waMsg += "*Ordered Products:*%0A";
 
   cart.forEach((item, i) => {
     waMsg += (i + 1) + ". " + encodeURIComponent(item.name) + " (" + item.size + ", " + item.flavour + ") x " + item.qty + " = ₹" + (item.price * item.qty) + "%0A";
   });
 
-  waMsg += "%0A*Total Bill:* ₹" + totalAmount + "%0A";
-  waMsg += "*Payment Mode:* " + encodeURIComponent(selectedPayment) + "%0A";
+  waMsg += "%0A*Total Bill:* ₹" + d.totalAmount + "%0A";
+  waMsg += "*Bachat (Discount):* ₹" + d.totalSaved + "%0A";
+  waMsg += "*Payment Mode:* " + encodeURIComponent(finalMode) + "%0A";
   waMsg += "*Status:* Order Initiated";
 
   const waOrderUrl = "https://wa.me/" + UPI_CONFIG.whatsappNumber + "?text=" + waMsg;
 
-  if (selectedPayment === "Cash on Delivery") {
-    alert("Order Confirmed!\nOrder ID: " + orderId + "\nTotal: ₹" + totalAmount + "\nHum aapse call par delivery verify karenge.");
-    cart = [];
-    updateCartUI();
-    closeCart();
+  document.getElementById('wowModal').style.display = "none";
+  cart = [];
+  updateCartUI();
+
+  if (chosenMode === 'COD' || finalMode === "Cash on Delivery") {
+    alert("🎉 Order Confirmed!\nOrder ID: " + d.orderId + "\nTotal: ₹" + d.totalAmount + "\nHum aapse call par delivery verify karenge.");
     window.location.href = waOrderUrl;
     return;
   }
 
-  const baseUpiUrl = "upi://pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
-  
+  const baseUpiUrl = "upi://pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + d.totalAmount + "&cu=INR&tn=" + encodeURIComponent(d.orderId);
   let targetUpiUrl = baseUpiUrl;
-  if (selectedPayment === "Google Pay") {
-    targetUpiUrl = "gpay://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
-  } else if (selectedPayment === "PhonePe") {
-    targetUpiUrl = "phonepe://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + totalAmount + "&cu=INR&tn=" + encodeURIComponent(orderId);
+
+  if (finalMode === "Google Pay") {
+    targetUpiUrl = "gpay://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + d.totalAmount + "&cu=INR&tn=" + encodeURIComponent(d.orderId);
+  } else if (finalMode === "PhonePe") {
+    targetUpiUrl = "phonepe://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + d.totalAmount + "&cu=INR&tn=" + encodeURIComponent(d.orderId);
   }
 
-  closeCart();
-  
   setTimeout(() => {
     window.open(waOrderUrl, '_blank');
   }, 2000);
 
   window.location.href = targetUpiUrl;
-}
+    }
+    
 
 // AUTHENTICITY CODE VERIFICATION
 const products = {
