@@ -61,31 +61,8 @@ th{color:#ffcc00;}
 
 #receiptModal, #upiPayModal, #hurrayModal, #addMemberModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:99999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
 .receipt-wrapper{max-width:420px;width:100%;margin:15px auto;position:relative;}
-.receipt-card{
-  background:#fff;
-  color:#000;
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:10px;
-  position:relative;
-  overflow:hidden;
-}
-
-.receipt-watermark{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-30deg);
-  font-size: 26px;
-  font-weight: 900;
-  color: rgba(0, 0, 0, 0.06);
-  white-space: nowrap;
-  pointer-events: none;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  z-index: 1;
-}
-
+.receipt-card{background:#fff;color:#000;border-radius:12px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden;}
+.receipt-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) rotate(-30deg);font-size:26px;font-weight:900;color:rgba(0, 0, 0, 0.06);white-space:nowrap;pointer-events:none;text-transform:uppercase;letter-spacing:2px;z-index:1;}
 .receipt-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:6px;margin-bottom:6px;position:relative;z-index:2;}
 .r-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;border-bottom:1px dotted #ccc;padding-bottom:2px;position:relative;z-index:2;}
 .action-btns{display:flex;gap:6px;margin-top:8px;}
@@ -106,8 +83,7 @@ th{color:#ffcc00;}
     <div class="tab-btn active" id="tabBtnFee" onclick="showFeeTab()">🏋️ केवल जिम फीस</div>
     <div class="tab-btn" id="tabBtnAdmin" onclick="openAdminRecords()">📋 रजिस्टर व रिकॉर्ड्स</div>
   </div>
-
-  <div id="sectionFees">
+    <div id="sectionFees">
     <div class="field-group">
       <label>🔍 सदस्य खोजें (Live Auto Search - नाम / मोबाइल)</label>
       <input type="text" id="feeSearchInput" oninput="handleAutoSearch()" placeholder="टाइप करें (उदा. lala, 9000, ravi)...">
@@ -198,9 +174,8 @@ th{color:#ffcc00;}
 
       <button type="submit" class="btn-submit">💳 भुगतान आगे बढ़ाएं (Proceed to Pay)</button>
     </form>
-  </div>
-    <!-- ADMIN RECORDS TAB WITH ADD MEMBER & PAGINATION -->
-  <div id="sectionAdmin" style="display:none;">
+    </div>
+    <div id="sectionAdmin" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:8px;">
       <div style="display:flex; align-items:center; gap:6px;">
         <button type="button" onclick="showFeeTab()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">⬅️ Back</button>
@@ -231,7 +206,6 @@ th{color:#ffcc00;}
       </table>
     </div>
 
-    <!-- PAGINATION CONTROLS -->
     <div class="pagination-bar">
       <button type="button" class="page-btn" id="prevPageBtn" onclick="changeAdminPage(-1)">⬅️ Previous</button>
       <span id="pageInfoText" style="font-size:11px; color:#ffcc00; font-weight:bold;">Page 1 of 1</span>
@@ -331,7 +305,6 @@ th{color:#ffcc00;}
     </div>
   </div>
 </div>
-
 <!-- CELEBRATORY HURRAY SUCCESS POPUP -->
 <div id="hurrayModal">
   <div class="receipt-wrapper" style="background:#141414; border:2px solid #25D366; border-radius:16px; padding:20px; text-align:center; box-shadow:0 0 35px rgba(37,211,102,0.35); margin-top:50px;">
@@ -383,7 +356,6 @@ th{color:#ffcc00;}
     <button type="button" onclick="closeBillModalAndReset()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;" data-html2canvas-ignore="true">बंद करें (Reset)</button>
   </div>
 </div>
-
 <script>
 const ADMIN_PIN = "5555";
 let referralCount = 0;
@@ -414,7 +386,7 @@ const INITIAL_MEMBERS = [
   { id: 18, name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
   { id: 19, name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
   { id: 20, name: "नैतिक (Naitik Gupta)", father: "अशोक गुप्ता", phone: "9795238010", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
-  { id: 21, name: "संदीप (Sandip Kashyap)", father: "बबलू कश्यप", phone: "8440812271", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
+    { id: 21, name: "संदीप (Sandip Kashyap)", father: "बबलू कश्यप", phone: "8440812271", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
   { id: 22, name: "सचिन (Sachin Rajput)", father: "राकेश राजपूत", phone: "9235819564", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
   { id: 23, name: "अर्जुन (Arjun)", father: "रामगोपाल", phone: "7388366670", emergency: "", address: "", joinDate: "2026-10-07", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-07", idSubmitted: true },
   { id: 24, name: "शहनवाज़ (Shahnawaz)", father: "मो० शब्बीर", phone: "9867742095", emergency: "", address: "", joinDate: "2026-10-05", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-05", idSubmitted: true },
@@ -448,9 +420,8 @@ function getMasterList() {
     return INITIAL_MEMBERS;
   }
   return JSON.parse(saved);
-}
-
-window.addEventListener("DOMContentLoaded", () => {
+  }
+  window.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById("mFeeJoinDate").value = today;
   document.getElementById("mFeePaidDate").value = today;
@@ -582,9 +553,8 @@ function checkLateStatus() {
   } else {
     warn.style.display = "none";
   }
-}
-
-function handleInitialSubmit(e) {
+  }
+ function handleInitialSubmit(e) {
   e.preventDefault();
   const name = document.getElementById("mFeeName").value.trim();
   const phone = document.getElementById("mFeePhone").value.trim();
@@ -721,9 +691,8 @@ function downloadImageAndPDF() {
     pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
     pdf.save("Bill_" + billId + ".pdf");
   });
-}
-
-function showFeeTab() {
+  }
+  function showFeeTab() {
   document.getElementById("sectionFees").style.display = "block";
   document.getElementById("sectionAdmin").style.display = "none";
   document.getElementById("tabBtnFee").classList.add("active");
@@ -833,9 +802,8 @@ function toggleStudentIdById(memberId) {
     }
   }
   renderAdminTable();
-}
-
-function toggleMemberPaidById(memberId) {
+  }
+  function toggleMemberPaidById(memberId) {
   let list = getMasterList();
   const idx = list.findIndex(x => x.id === memberId);
   if (idx < 0) return;
@@ -861,4 +829,121 @@ function deleteMemberById(memberId) {
   if (pin === ADMIN_PIN) {
     list = list.filter(x => x.id !== memberId);
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-    alert(`✅ "${m.name}" का रिकॉर्ड हटा दिया गय
+    alert(`✅ "${m.name}" का रिकॉर्ड हटा दिया गया है।`);
+    renderAdminTable();
+  } else {
+    alert("❌ गलत Admin PIN! सदस्य नहीं हटाया गया।");
+  }
+}
+
+function openAddMemberModal() {
+  document.getElementById("addJoinDate").value = new Date().toISOString().split('T')[0];
+  updateAddModalPlans();
+  document.getElementById("addMemberModal").style.display = "flex";
+}
+
+function closeAddMemberModal() {
+  document.getElementById("addMemberModal").style.display = "none";
+  document.getElementById("formManualAdd").reset();
+}
+
+function handleManualAddSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById("addName").value.trim();
+  const father = document.getElementById("addFather").value.trim() || "-";
+  const phone = document.getElementById("addPhone").value.trim();
+  const emergency = document.getElementById("addEmergency").value.trim() || "-";
+  const address = document.getElementById("addAddress").value.trim() || "-";
+  const type = document.getElementById("addCategory").value;
+  const joinDate = document.getElementById("addJoinDate").value;
+  const status = document.getElementById("addFeeStatus").value;
+
+  const durSelect = document.getElementById("addPlanDuration");
+  const amt = parseFloat(durSelect.value) || 500;
+
+  let list = getMasterList();
+  const newMember = {
+    id: Date.now(),
+    name: name,
+    father: father,
+    phone: phone,
+    emergency: emergency,
+    address: address,
+    type: type,
+    joinDate: joinDate,
+    lastPaid: (status === "Paid") ? joinDate : "",
+    status: status,
+    payMode: "Cash",
+    amount: amt,
+    idSubmitted: (type === "student" ? false : true)
+  };
+
+  list.push(newMember);
+  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
+  alert(`✅ नया सदस्य "${name}" सफलतापूर्वक रजिस्टर में हमेशा के लिए जोड़ दिया गया!`);
+  closeAddMemberModal();
+  renderAdminTable();
+}
+
+function downloadCSV() {
+  const list = getMasterList();
+  let csv = "क्र.,तारीख,सदस्य का नाम,पिता का नाम,मोबाइल नंबर,इमरजेंसी संपर्क,पता,श्रेणी,स्थिति,माध्यम,आईडी जमा,अंतिम पेमेंट\n";
+  list.forEach((m, i) => {
+    let day = m.joinDate ? m.joinDate.split('-')[2] : '-';
+    csv += `"${i+1}","${day} तारीख","${m.name}","${m.father || '-'}","${m.phone}","${m.emergency || '-'}","${m.address || '-'}","${m.type || '-'}","${m.status}","${m.payMode || 'Cash'}","${m.idSubmitted ? 'Yes' : 'No'}","${m.lastPaid || '-'}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Gym_Master_Register_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function toggleRefInputBox() {
+  const b = document.getElementById("refInputForm");
+  b.style.display = b.style.display === "block" ? "none" : "block";
+}
+
+function submitManualReferral() {
+  const name = document.getElementById("refInName").value.trim();
+  const phone = document.getElementById("refInPhone").value.trim();
+  if (!name || !phone) { alert("रेफरल का नाम और मोबाइल लिखें!"); return; }
+  referredList.push({ name, phone });
+  referralCount = referredList.length;
+  document.getElementById("refInName").value = "";
+  document.getElementById("refInPhone").value = "";
+  document.getElementById("refInputForm").style.display = "none";
+  renderRefTags();
+  calculateFinalAmount();
+}
+
+function renderRefTags() {
+  const cont = document.getElementById("refTagsContainer");
+  cont.innerHTML = "";
+  referredList.forEach((r, idx) => {
+    let t = document.createElement("div");
+    t.style = "background:#222; border:1px solid #ffcc00; color:#ffcc00; padding:2px 6px; border-radius:10px; font-size:10px; display:flex; align-items:center; gap:4px;";
+    t.innerHTML = `<span>👤 ${r.name}</span><b onclick="removeRefTag(${idx})" style="color:red; cursor:pointer;">✕</b>`;
+    cont.appendChild(t);
+  });
+}
+
+function removeRefTag(idx) {
+  referredList.splice(idx, 1);
+  referralCount = referredList.length;
+  renderRefTags();
+  calculateFinalAmount();
+}
+
+function closeBillModalAndReset() {
+  document.getElementById("receiptModal").style.display = "none";
+  document.getElementById("formGymFee").reset();
+  referredList = [];
+  referralCount = 0;
+  pendingPaymentData = null;
+  renderRefTags();
+  updatePlanPrices();
+}
+</script>
+</body>
+</html>
