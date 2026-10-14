@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5 Brother's Fitness Club</title>
+  <meta name="theme-color" content="#ffcc00">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background: #0d0d0d;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 16px;
+    }
+    .hub-container {
+      width: 100%;
+      max-width: 420px;
+      background: radial-gradient(circle at top, #1c1c1c 0%, #0d0d0d 100%);
+      border: 2px solid #ffcc00;
+      border-radius: 20px;
+      padding: 28px 20px;
+      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.18);
+      text-align: center;
+    }
+    .badge-top {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      color: #000;
+      background: #ffcc00;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hub-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .hub-sub {
+      font-size: 13px;
+      color: #ffcc00;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .hub-loc {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 24px;
+    }
+    .select-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ccc;
+      margin-bottom: 16px;
+      text-align: left;
+      border-left: 3px solid #ffcc00;
+      padding-left: 8px;
+    }
+    .btn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .nav-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      padding: 16px 14px;
+      border-radius: 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .nav-card:active {
+      transform: scale(0.98);
+    }
+    .card-admission {
+      background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%);
+      color: #000;
+      box-shadow: 0 4px 14px rgba(255, 204, 0, 0.35);
+    }
+    .card-fees {
+      background: #181818;
+      border: 1.5px solid #00ff66;
+      color: #00ff66;
+      box-shadow: 0 4px 14px rgba(0, 255, 102, 0.15);
+    }
+    .card-store {
+      background: #181818;
+      border: 1.5px solid #00bfff;
+      color: #00bfff;
+      box-shadow: 0 4px 14px rgba(0, 191, 255, 0.15);
+    }
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+    }
+    .card-icon {
+      font-size: 22px;
+    }
+    .card-name {
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .card-desc {
+      font-size: 10px;
+      opacity: 0.8;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+    .arrow-icon {
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .footer-note {
+      margin-top: 24px;
+      font-size: 10px;
+      color: #555;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hub-container">
+    <div class="badge-top">🔥 Official Gym Portal 🔥</div>
+    
+    <h1 class="hub-title">5 BROTHER'S FITNESS CLUB</h1>
+    <div class="hub-sub">& SUPPLEMENT STORE</div>
+    <div class="hub-loc">📍 उमराव खेड़ा, अकरमपुर, उन्नाव | 📞 9140417259</div>
+
+    <div class="select-label">कृपया अपनी सेवा चुनें (Select Portal)</div>
+
+    <div class="btn-list">
+      <!-- 1. Admission Form Portal -->
+      <a href="admission.html" class="nav-card card-admission">
+        <div class="card-left">
+          <span class="card-icon">📝</span>
+          <div>
+            <div class="card-name">नया जिम एडमिशन</div>
+            <div class="card-desc">New Member Registration & KYC</div>
+          </div>
+        </div>
+        <span class="arrow-icon">➔</span>
+      </a>
+
+      <!-- 2. Monthly Fees Desk -->
+      <a href="admission.html#fees" class="nav-card card-fees">
+        <div class="card-left">
+          <span class="card-icon">💳</span>
+          <div>
+            <div class="card-name">मासिक फीस काउंटर</div>
+            <div class="card-desc">Renewal, Late Fees & Due Slips</div>
+          </div>
+        </div>
+        <span class="arrow-icon">➔</span>
+      </a>
+
+      <!-- 3. Supplement Store Portal -->
+      <a href="index.html" class="nav-card card-store">
+        <div class="card-left">
+          <span class="card-icon">💊</span>
+          <div>
+            <div class="card-name">सप्लीमेंट स्टोर</div>
+            <div class="card-desc">100% Authentic Nutrition Catalog</div>
+          </div>
+        </div>
+        <span class="arrow-icon">➔</span>
+      </a>
+    </div>
+
+    <div class="footer-note">
+      © 5 Brother's Fitness Club | Umrao Kheda, Unnao
+    </div>
+  </div>
+
+</body>
+</html>
