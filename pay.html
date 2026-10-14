@@ -657,9 +657,24 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
   document.getElementById("rPlanDetails").innerText = `${data.cat} | ${data.planText}`;
   document.getElementById("rGymFee").innerText = "₹" + data.amt;
   document.getElementById("rValidTill").innerText = validTill;
+  
+  // Agle payment ke bache hue din calculate karna
+  const todayDateObj = new Date();
+  todayDateObj.setHours(0, 0, 0, 0);
+  const validTillObj = new Date(n);
+  validTillObj.setHours(0, 0, 0, 0);
+  const diffTime = validTillObj - todayDateObj;
+  const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const daysText = daysLeft > 0 ? `(${daysLeft} दिन शेष)` : `(आज ही नवीनीकरण कराएं)`;
 
-  const msg = `✅ *5 BROTHER'S FITNESS CLUB - रसीद*\n*Bill ID:* ${billId}\n*सदस्य:* ${data.name}\n*प्लान:* ${data.cat} (${data.planText})\n*भुगतान तारीख:* ${paidDate}\n*जमा राशि:* ₹${data.amt}\n*वैधता:* ${validTill}\n*माध्यम:* ${modeText}\n\nधन्यवाद! फिटनेस बनाए रखें।`;
+  // Payment mode check
+  const modeDisplay = data.mode === 'cash' ? '💵 नकद (Cash - Admin Verified)' : '📱 ऑनलाइन UPI';
+
+  // Professional Official Receipt + Smart Savings Upsell
+  const msg = `🏋️‍♂️ *5 BROTHER'S FITNESS CLUB*\n*Official Payment Confirmation*\n━━━━━━━━━━━━━━━━━━━━\n*सदस्य:* ${data.name}\nआपकी जिम सदस्यता फीस सफलतापूर्वक प्राप्त हो गई है।\n\n• *रसीद संख्या:* #${billId}\n• *जमा राशि:* ₹${data.amt}\n• *भुगतान माध्यम:* ${modeDisplay}\n• *भुगतान तिथि:* ${paidDate}\n• *वैधता तिथि:* ${validTill}\n• *अगला भुगतान:* ${validTill} *${daysText}*\n• *खाता स्थिति:* सक्रिय (Active)\n━━━━━━━━━━━━━━━━━━━━\n💡 *स्मार्ट बचत योजना (Save Money):*\nहर महीने फीस जमा करने के बजाय लंबी सदस्यता लेकर बचत करें:\n• 3 महीने का प्लान: ₹1,200 *(सीधे ₹300 की बचत)*\n• 6 महीने का प्लान: ₹2,200 *(सीधे ₹800 की बचत)*\n*(अगली बार लंबा प्लान चुनें और पैसे बचाएं)*\n━━━━━━━━━━━━━━━━━━━━\n📍 उमराव खेड़ा, अकरमपुर, उन्नाव\n📞 संपर्क: 9140417259`;
+
   document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + data.phone + "?text=" + encodeURIComponent(msg), "_blank");
+  
 
   if (showHurray) {
     document.getElementById("hurrayModal").style.display = "flex";
