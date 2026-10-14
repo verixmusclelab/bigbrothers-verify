@@ -994,26 +994,34 @@ function renderAdminTable() {
   `).join("");
 }
 
-function editOrApprovePayment(memberId) {
+  function editOrApprovePayment(memberId) {
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   const m = records.find(r => r.id === memberId);
   if (!m) return;
+
+  const todayStr = new Date().toISOString().split("T")[0];
 
   const inputAmount = prompt(
     `👤 सदस्य: ${m.name}\nकुल प्लान शुल्क: ₹${m.totalFee}\nपहले से जमा: ₹${m.paidFee}\n\nअब कितना कैश जमा हुआ? (नया कुल जमा अमाउंट डालें):`,
     m.paidFee > 0 ? m.paidFee : m.totalFee
   );
-
   if (inputAmount === null) return;
 
   const paidNum = parseInt(inputAmount);
   if (isNaN(paidNum) || paidNum < 0) {
-    alert("❌ कृपया सही रकम (नंबर) दर्ज करें!");
+    alert("❌ कृपया सही रकम दर्ज करें!");
     return;
   }
 
+  const inputDate = prompt(
+    `📅 फीस किस तारीख को प्राप्त हुई? (YYYY-MM-DD):`,
+    m.payDate || todayStr
+  );
+  if (inputDate === null) return;
+
   m.paidFee = paidNum;
   m.dueFee = Math.max(0, m.totalFee - paidNum);
+  m.payDate = inputDate.trim() || todayStr;
   
   if (m.dueFee === 0) {
     m.status = "Full Paid";
@@ -1025,10 +1033,10 @@ function editOrApprovePayment(memberId) {
 
   localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
   renderAdminTable();
-  alert(`✅ पेमेंट अपडेट हुआ!\nजमा: ₹${m.paidFee} | बकाया: ₹${m.dueFee}\nअब इस अमाउंट की नई रसीद तैयार है।`);
+  alert(`✅ पेमेंट अपडेट हुआ!\nतारीख: ${m.payDate}\nजमा: ₹${m.paidFee} | बकाया: ₹${m.dueFee}\nअब इस रसीद पर सही तारीख व हिसाब दिखेगा।`);
 }
-
-function printFromAdmin(memberId) {
+    
+  function printFromAdmin(memberId) {
   const records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   const m = records.find(r => r.id === memberId);
   if (!m) return;
