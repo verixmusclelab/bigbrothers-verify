@@ -1,975 +1,557 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club - Fees Portal</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>मासिक फीस काउंटर - 5 Brother's Fitness Club</title>
+  <meta name="theme-color" content="#ffcc00">
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
-body{
-  background: linear-gradient(rgba(10, 10, 10, 0.88), rgba(10, 10, 10, 0.94)), url('owner.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: #fff;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
+    body {
+      background: #0d0d0d;
+      color: #fff;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-.main-card{
-  background: rgba(18, 16, 5, 0.92);
-  border: 2px solid #ffcc00;
-  border-radius: 18px;
-  max-width: 520px;
-  width: 100%;
-  padding: 16px;
-  box-shadow: 0 0 30px rgba(255,204,0,0.25);
-  margin-bottom: 20px;
-  backdrop-filter: blur(8px);
-}
+    .counter-card {
+      width: 100%;
+      max-width: 480px;
+      background: #161616;
+      border: 1.5px solid #ffcc00;
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
 
-.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;position:relative;}
-.header h1{color:#ffcc00;font-size:20px;letter-spacing:1px;font-weight:900;}
-.tagline{color:#e6c300;font-size:10px;font-weight:700;margin-top:4px;background:rgba(255,204,0,0.12);display:inline-block;padding:2px 8px;border-radius:10px;}
+    .header-box {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-.nav-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-.tab-btn{background:#181818;border:1.5px solid #444;color:#bbb;padding:9px 4px;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;}
-.tab-btn.active{background:#ffcc00;color:#000;border-color:#ffcc00;}
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      color: #000;
+      background: #ffcc00;
+      padding: 4px 12px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
 
-.field-group{margin-bottom:10px;position:relative;}
-label{display:block;font-size:11px;color:#ddd;margin-bottom:3px;font-weight:600;}
-label span{color:#ff3333;}
-input, select, textarea{width:100%;background:#181818;border:1.5px solid #444;color:#fff;padding:9px;border-radius:8px;font-size:12px;outline:none;}
-input:focus, select:focus, textarea:focus{border-color:#ffcc00;background:#141414;}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.box-panel{background:#141414;border:1.5px solid #333;border-radius:10px;padding:11px;margin-bottom:11px;}
-.btn-submit{width:100%;background:#25D366;color:#000;border:none;padding:12px;border-radius:8px;font-weight:bold;font-size:13px;cursor:pointer;margin-top:10px;}
-.btn-admin{background:#ffcc00;color:#000;border:none;padding:6px 12px;border-radius:6px;font-weight:bold;font-size:11px;cursor:pointer;}
-.late-warning{background:rgba(255,0,0,0.18);border:1.5px solid #ff3333;color:#ff6666;padding:8px;border-radius:8px;margin-bottom:10px;font-size:12px;font-weight:bold;display:none;text-align:center;}
+    h2 {
+      font-size: 20px;
+      color: #fff;
+      font-weight: 800;
+    }
 
-table{width:100%;border-collapse:collapse;font-size:11px;text-align:left;}
-th, td{padding:8px 5px;border-bottom:1px solid #333;vertical-align:middle;}
-th{color:#ffcc00;}
+    .sub-title {
+      font-size: 12px;
+      color: #ffcc00;
+      margin-top: 2px;
+    }
 
-.pagination-bar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:8px;border-top:1px dashed #444;}
-.page-btn{background:#222;border:1px solid #ffcc00;color:#ffcc00;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:bold;cursor:pointer;}
-.page-btn:disabled{border-color:#555;color:#666;cursor:not-allowed;}
+    .form-group {
+      margin-bottom: 14px;
+    }
 
-#receiptModal, #upiPayModal, #hurrayModal, #addMemberModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:99999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
-.receipt-wrapper{max-width:420px;width:100%;margin:15px auto;position:relative;}
-.receipt-card{background:#fff;color:#000;border-radius:12px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden;}
-.receipt-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) rotate(-30deg);font-size:26px;font-weight:900;color:rgba(0, 0, 0, 0.06);white-space:nowrap;pointer-events:none;text-transform:uppercase;letter-spacing:2px;z-index:1;}
-.receipt-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:6px;margin-bottom:6px;position:relative;z-index:2;}
-.r-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;border-bottom:1px dotted #ccc;padding-bottom:2px;position:relative;z-index:2;}
-.action-btns{display:flex;gap:6px;margin-top:8px;}
-.dl-btn{flex:1;background:#000;color:#ffcc00;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
-.wa-btn{flex:1;background:#25D366;color:#fff;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
-</style>
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #ddd;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px 14px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #ffcc00;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .calc-box {
+      background: #111;
+      border: 1px dashed #ffcc00;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 14px;
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+
+    .calc-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .calc-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .action-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-wa {
+      background: #25D366;
+      color: #fff;
+    }
+
+    .btn-pdf {
+      background: #ffcc00;
+      color: #000;
+    }
+
+    /* Hidden Printable Invoice Area */
+    #invoice-render {
+      display: none;
+      background: #fff;
+      color: #000;
+      padding: 30px;
+      width: 600px;
+      font-family: Arial, sans-serif;
+    }
+
+    .inv-header {
+      text-align: center;
+      border-bottom: 2px dashed #000;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .inv-table td {
+      padding: 8px 4px;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    .inv-table td.bold {
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-<!-- TOP BAR WITH HOME BUTTON -->
-<div style="max-width:520px; width:100%; margin:0 auto 12px auto; display:flex; justify-content:space-between; align-items:center; background:#111; border:1px solid #ffcc00; padding:10px 14px; border-radius:8px; box-sizing:border-box;">
-  <a href="home.html" style="background:#ffcc00; color:#000; text-decoration:none; font-weight:bold; font-size:12px; padding:6px 12px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
-    ⬅️ मुख्य मेन्यू (Home)
-  </a>
-  <span style="color:#ffcc00; font-size:12px; font-weight:bold;">5BFC FEES DESK</span>
-</div>
-  
-<div class="main-card">
-  <div class="header">
-    <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">OFFICIAL PORTAL</div>
-    <h1>5 Brother's Fitness Club</h1>
-    <div class="tagline">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</div>
-  </div>
 
-  <div class="nav-tabs">
-    <div class="tab-btn active" id="tabBtnFee" onclick="showFeeTab()">🏋️ केवल जिम फीस</div>
-    <div class="tab-btn" id="tabBtnAdmin" onclick="openAdminRecords()">📋 रजिस्टर व रिकॉर्ड्स</div>
-  </div>
-    <div id="sectionFees">
-    <div class="field-group">
-      <label>🔍 सदस्य खोजें (Live Auto Search - नाम / मोबाइल)</label>
-      <input type="text" id="feeSearchInput" oninput="handleAutoSearch()" placeholder="टाइप करें (उदा. lala, 9000, ravi)...">
+  <div class="counter-card">
+    <div class="header-box">
+      <div class="badge">Fees Desk</div>
+      <h2>5 BROTHER'S FITNESS CLUB</h2>
+      <div class="sub-title">मासिक फीस व रसीद काउंटर</div>
     </div>
 
-    <div id="searchResultCard" style="display:none; background:#181818; border:1.5px solid #ffcc00; border-radius:10px; padding:12px; margin-bottom:12px;"></div>
-    <div id="lateWarningBox" class="late-warning"></div>
+    <form id="feesForm">
+      <div class="form-group">
+        <label>सदस्य का नाम (Member Name)</label>
+        <input type="text" id="mName" placeholder="उदा. Ravi" required>
+      </div>
 
-    <form id="formGymFee" onsubmit="handleInitialSubmit(event)">
-      <div class="row">
-        <div class="field-group">
-          <label>सदस्य का नाम <span>*</span></label>
-          <input type="text" id="mFeeName" required placeholder="पूरा नाम">
+      <div class="form-group">
+        <label>पिता का नाम (Father's Name)</label>
+        <input type="text" id="fName" placeholder="उदा. Ram Snehi">
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>मोबाइल नंबर</label>
+          <input type="tel" id="mPhone" placeholder="9936344963" required>
         </div>
-        <div class="field-group">
-          <label>पिता का नाम</label>
-          <input type="text" id="mFeeFather" placeholder="पिता का नाम">
+        <div class="form-group">
+          <label>रसीद / बिल संख्या</label>
+          <input type="text" id="billNo" value="#5BFC-7821">
         </div>
       </div>
 
-      <div class="row">
-        <div class="field-group">
-          <label>मोबाइल नंबर <span>*</span></label>
-          <input type="tel" id="mFeePhone" required placeholder="10 अंक मोबाइल">
-        </div>
-        <div class="field-group">
-          <label>श्रेणी (Member Category) <span>*</span></label>
-          <select id="feeCategory" onchange="updatePlanPrices()">
-            <option value="student">विद्यार्थी (Student)</option>
-            <option value="job" selected>नौकरी / व्यापार (Job / Business)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="field-group">
-          <label>प्लान चुनें (Plan Duration) <span>*</span></label>
-          <select id="feeDuration" onchange="calculateFinalAmount()"></select>
-        </div>
-        <div class="field-group">
-          <label>देय फीस (₹) <span>*</span></label>
-          <input type="number" id="mFeeAmount" readonly style="color:#00ff99; font-weight:bold;">
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="field-group">
+      <div class="grid-2">
+        <div class="form-group">
           <label>जॉइनिंग तिथि (Joining Date)</label>
-          <input type="date" id="mFeeJoinDate" onclick="this.showPicker()">
+          <input type="date" id="joinDate" required>
         </div>
-        <div class="field-group">
-          <label>अंतिम भुगतान तिथि (Previous Payment)</label>
-          <input type="date" id="mFeePrevPaidDate" onchange="checkLateStatus()" onclick="this.showPicker()">
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="field-group">
-          <label>आज की भुगतान तिथि <span>*</span></label>
-          <input type="date" id="mFeePaidDate" onclick="this.showPicker()">
-        </div>
-        <div class="field-group">
-          <label>भुगतान माध्यम (Payment Mode) <span>*</span></label>
-          <select id="paymentMethod">
-            <option value="online">📱 ऑनलाइन (GPay/PhonePe/Paytm/Cards)</option>
-            <option value="cash">💵 नकद (Cash - Admin PIN Verified)</option>
-          </select>
+        <div class="form-group">
+          <label>भुगतान तिथि (Payment Date)</label>
+          <input type="date" id="payDate" required>
         </div>
       </div>
 
-      <div class="box-panel" style="border:1.5px dashed #ffcc00;background:rgba(255,204,0,0.03);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <b style="font-size:11px;color:#ffcc00;">🤝 रेफरल छूट (-₹100 प्रति भाई):</b>
-          <button type="button" onclick="toggleRefInputBox()" style="background:#ffcc00;color:#000;border:none;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:bold;cursor:pointer;">+ नया भाई जोड़ें</button>
-        </div>
-
-        <div id="refInputForm" style="display:none;background:#202020;padding:8px;border-radius:6px;margin-bottom:8px;border:1px solid #444;">
-          <div class="row">
-            <input type="text" id="refInName" placeholder="रेफरल का नाम" style="padding:6px;font-size:11px;">
-            <input type="tel" id="refInPhone" placeholder="रेफरल मोबाइल" style="padding:6px;font-size:11px;">
-          </div>
-          <button type="button" onclick="submitManualReferral()" style="background:#00ff99;color:#000;border:none;padding:6px;border-radius:4px;font-weight:bold;width:100%;margin-top:6px;font-size:10px;cursor:pointer;">सेव करें व ₹100 छूट घटाएं</button>
-        </div>
-
-        <div id="refTagsContainer" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
-        <div id="refDiscountText" style="font-size:10px;color:#00ff99;font-weight:bold;margin-top:5px;display:none;"></div>
+      <div class="form-group">
+        <label>पिछला भुगतान (Last Payment Date)</label>
+        <input type="date" id="lastPayDate">
       </div>
 
-      <button type="submit" class="btn-submit">💳 भुगतान आगे बढ़ाएं (Proceed to Pay)</button>
-    </form>
-    </div>
-    <div id="sectionAdmin" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:8px;">
-      <div style="display:flex; align-items:center; gap:6px;">
-        <button type="button" onclick="showFeeTab()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">⬅️ Back</button>
-        <div>
-          <h3 style="color:#ffcc00; font-size:12px; margin:0;">🔒 मास्टर रजिस्टर</h3>
-          <span id="adminMonthTitle" style="font-size:10px; color:#aaa; font-weight:bold;"></span>
-        </div>
+      <div class="form-group">
+        <label>प्लान चुनें (Membership Category)</label>
+        <select id="planSelect" onchange="applyPlanDefaults()">
+          <option value="500" data-cat="जॉब / व्यापार">जॉब / व्यापार (1 महीना) - ₹500</option>
+          <option value="400" data-cat="स्टूडेंट">स्टूडेंट प्लान (1 महीना) - ₹400</option>
+          <option value="1200" data-cat="3 महीने की बचत">3 महीने का प्लान - ₹1200</option>
+          <option value="2200" data-cat="6 महीने की बचत">6 महीने का प्लान - ₹2200</option>
+        </select>
       </div>
-      <div style="display:flex; gap:6px;">
-        <button type="button" onclick="openAddMemberModal()" style="background:#25D366; color:#000; border:none; padding:5px 8px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">+ नया सदस्य</button>
-        <button type="button" class="btn-admin" onclick="downloadCSV()">📥 Excel</button>
-      </div>
-    </div>
 
-    <div style="overflow-x:auto;">
-      <table>
-        <thead>
-          <tr>
-            <th>तारीख</th>
-            <th>सदस्य</th>
-            <th>स्थिति</th>
-            <th>माध्यम</th>
-            <th>स्टूडेंट ID</th>
-            <th>ऐक्शन</th>
-          </tr>
-        </thead>
-        <tbody id="adminTableBody"></tbody>
-      </table>
-    </div>
-
-    <div class="pagination-bar">
-      <button type="button" class="page-btn" id="prevPageBtn" onclick="changeAdminPage(-1)">⬅️ Previous</button>
-      <span id="pageInfoText" style="font-size:11px; color:#ffcc00; font-weight:bold;">Page 1 of 1</span>
-      <button type="button" class="page-btn" id="nextPageBtn" onclick="changeAdminPage(1)">Next ➡️</button>
-    </div>
-  </div>
-</div>
-
-<!-- MANUAL ADD MEMBER MODAL (DYNAMIC PLANS INCLUDED) -->
-<div id="addMemberModal">
-  <div class="receipt-wrapper" style="background:#181818; padding:16px; border-radius:12px; border:2px solid #ffcc00;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:6px;">
-      <h3 style="color:#ffcc00; font-size:14px; margin:0;">➕ नया सदस्य जोड़ें (Admin)</h3>
-      <button type="button" onclick="closeAddMemberModal()" style="background:#ff3333; color:#fff; border:none; padding:2px 7px; border-radius:4px; font-weight:bold; cursor:pointer;">✕</button>
-    </div>
-    
-    <form id="formManualAdd" onsubmit="handleManualAddSubmit(event)">
-      <div class="row">
-        <div class="field-group">
-          <label>सदस्य का नाम <span>*</span></label>
-          <input type="text" id="addName" required placeholder="पूरा नाम">
+      <div class="grid-2">
+        <div class="form-group">
+          <label>प्लान राशि (₹)</label>
+          <input type="number" id="planAmount" value="500" readonly>
         </div>
-        <div class="field-group">
-          <label>पिता का नाम</label>
-          <input type="text" id="addFather" placeholder="पिता का नाम">
+        <div class="form-group">
+          <label>जमा राशि (Manual Paid ₹)</label>
+          <input type="number" id="paidAmount" value="500" oninput="recalculate()" required>
         </div>
       </div>
 
-      <div class="row">
-        <div class="field-group">
-          <label>मोबाइल नंबर <span>*</span></label>
-          <input type="tel" id="addPhone" required placeholder="10 अंक मोबाइल">
+      <div class="form-group">
+        <label>भुगतान मोड (Payment Mode)</label>
+        <select id="payMode">
+          <option value="ऑनलाइन UPI">📱 ऑनलाइन UPI</option>
+          <option value="नकद (Cash)">💵 नकद (Cash)</option>
+        </select>
+      </div>
+
+      <div class="calc-box">
+        <div class="calc-line">
+          <span>विलंब स्थिति (Late Days):</span>
+          <strong id="lateText" style="color:#25D366;">समय पर (On Time) ✅</strong>
         </div>
-        <div class="field-group">
-          <label>इमरजेंसी मोबाइल नंबर</label>
-          <input type="tel" id="addEmergency" placeholder="इमरजेंसी संपर्क">
+        <div class="calc-line" id="discountLine" style="display:none;">
+          <span style="color:#ffcc00;">विशेष छूट (Special Discount):</span>
+          <strong id="discountVal" style="color:#ffcc00;">₹0</strong>
+        </div>
+        <div class="calc-line">
+          <span>बकाया राशि (Due Balance):</span>
+          <strong id="dueText">₹0</strong>
         </div>
       </div>
 
-      <div class="field-group">
-        <label>घर का पता (Address)</label>
-        <input type="text" id="addAddress" placeholder="पूरा पता...">
-      </div>
-
-      <div class="row">
-        <div class="field-group">
-          <label>श्रेणी (Category) <span>*</span></label>
-          <select id="addCategory" onchange="updateAddModalPlans()">
-            <option value="job">नौकरी / व्यापार (Job / Business)</option>
-            <option value="student">विद्यार्थी (Student)</option>
-          </select>
-        </div>
-        <div class="field-group">
-          <label>प्लान व अवधि <span>*</span></label>
-          <select id="addPlanDuration"></select>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="field-group">
-          <label>जॉइनिंग तिथि <span>*</span></label>
-          <input type="date" id="addJoinDate" required onclick="this.showPicker()">
-        </div>
-        <div class="field-group">
-          <label>शुरुआती फीस स्थिति</label>
-          <select id="addFeeStatus">
-            <option value="Paid">✅ Paid (फीस जमा)</option>
-            <option value="Pending">🔴 Pending (बाकी)</option>
-          </select>
-        </div>
-      </div>
-
-      <button type="submit" style="width:100%; background:#25D366; color:#000; border:none; padding:10px; border-radius:6px; font-weight:bold; margin-top:8px; cursor:pointer;">💾 रजिस्टर में हमेशा के लिए जोड़ें</button>
-      <button type="button" onclick="closeAddMemberModal()" style="width:100%; background:#333; color:#fff; border:none; padding:7px; border-radius:6px; margin-top:6px; cursor:pointer;">रद्द करें (Cancel)</button>
-    </form>
-  </div>
-</div>
-
-<!-- UPI CONFIRMATION MODAL -->
-<div id="upiPayModal">
-  <div class="receipt-wrapper" style="background:#181818; padding:16px; border-radius:12px; border:2px solid #ffcc00; text-align:center;">
-    <div style="display:flex; justify-content:flex-start; margin-bottom:8px;">
-      <button type="button" onclick="closeUpiModal()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">⬅️ Back</button>
-    </div>
-    <h3 style="color:#ffcc00; margin-bottom:8px;">📱 ऑनलाइन भुगतान करें</h3>
-    <p style="font-size:12px; color:#ccc; margin-bottom:10px;">कृपया नीचे बटन दबाकर UPI से फीस जमा करें।</p>
-    <div style="background:#222; padding:10px; border-radius:8px; margin-bottom:12px;">
-      <b style="color:#00ff99; font-size:16px;" id="onlinePayAmountText">₹500</b>
-    </div>
-    <button type="button" onclick="openUpiApp()" style="width:100%; background:#ffcc00; color:#000; border:none; padding:10px; border-radius:6px; font-weight:bold; font-size:13px; cursor:pointer; margin-bottom:12px;">🚀 UPI App खोलें (GPay / PhonePe / Paytm)</button>
-    
-    <div style="border-top:1px dashed #444; padding-top:12px; text-align:left;">
-      <label style="font-size:11px; color:#ffcc00;">पेमेंट के बाद UTR / Ref No दर्ज करें (Slip Unlock के लिए): <span>*</span></label>
-      <input type="text" id="upiRefNumber" placeholder="12 अंक UTR / UPI Ref No..." style="margin-top:4px;">
-      <button type="button" onclick="confirmOnlinePayment()" style="width:100%; background:#25D366; color:#000; border:none; padding:10px; border-radius:6px; font-weight:bold; margin-top:8px; cursor:pointer;">✅ पेमेंट हो गया, रसीद बनाएं</button>
-      <button type="button" onclick="closeUpiModal()" style="width:100%; background:#333; color:#fff; border:none; padding:8px; border-radius:6px; margin-top:6px; cursor:pointer;">रद्द करें (Cancel)</button>
-    </div>
-  </div>
-</div>
-<!-- CELEBRATORY HURRAY SUCCESS POPUP -->
-<div id="hurrayModal">
-  <div class="receipt-wrapper" style="background:#141414; border:2px solid #25D366; border-radius:16px; padding:20px; text-align:center; box-shadow:0 0 35px rgba(37,211,102,0.35); margin-top:50px;">
-    <div style="font-size:45px; margin-bottom:6px;">🎉💪🔥</div>
-    <h2 style="color:#25D366; font-size:20px; font-weight:900; margin-bottom:6px;">HURRAY! PAYMENT SUCCESSFUL!</h2>
-    <h3 style="color:#ffcc00; font-size:15px; font-weight:800; margin-bottom:10px;">Thanks So Much For Payment</h3>
-    <div style="background:#1e1e1e; border:1px dashed #ffcc00; border-radius:8px; padding:10px; margin-bottom:14px;">
-      <p style="font-size:13px; color:#fff; font-weight:bold; margin-bottom:4px;">5 Brother's Fitness Club</p>
-      <p style="font-size:11px; color:#aaa;">आपकी सदस्यता सक्रिय कर दी गई है। हार्ड वर्क और रिजल्ट्स जारी रखें!</p>
-    </div>
-    <button type="button" onclick="proceedToReceiptFromHurray()" style="width:100%; background:#25D366; color:#000; border:none; padding:11px; border-radius:8px; font-weight:900; font-size:13px; cursor:pointer;">📄 रसीद देखें व डाउनलोड करें ➡️</button>
-  </div>
-</div>
-
-<!-- OFFICIAL RECEIPT MODAL -->
-<div id="receiptModal">
-  <div class="receipt-wrapper">
-    <div style="display:flex; justify-content:flex-start; margin-bottom:8px;" data-html2canvas-ignore="true">
-      <button type="button" onclick="closeBillModalAndReset()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">⬅️ Back to Portal</button>
-    </div>
-
-    <div id="printablePages">
-      <div class="receipt-card">
-        <div class="receipt-watermark">5 Brother's Fitness Club</div>
-
-        <div class="receipt-header">
-          <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">PAGE 1 : OFFICIAL INVOICE</div>
-          <h2 style="font-size:16px; margin-top:4px; font-weight:900;">5 Brother's Fitness Club</h2>
-          <div style="font-size:10px; font-weight:bold; color:#555; margin-top:2px;">"100% असली और असरदार रिजल्ट"</div>
-          <p style="font-size:10px; color:#777; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
-        </div>
-
-        <div class="r-row"><span>Bill ID:</span><b id="billId" style="color:#b37400;"></b></div>
-        <div class="r-row"><span>प्रकार:</span><b id="rMode" style="color:#000;"></b></div>
-        <div class="r-row"><span>भुगतान तारीख:</span><b id="billDate"></b></div>
-        <div class="r-row"><span>सदस्य:</span><b id="rName"></b></div>
-        <div class="r-row" id="rFatherRow"><span>पिता का नाम:</span><b id="rFather"></b></div>
-        <div class="r-row"><span>मोबाइल:</span><b id="rPhone"></b></div>
-        <div class="r-row"><span>श्रेणी व प्लान:</span><b id="rPlanDetails"></b></div>
-        <div class="r-row"><span>जमा फीस:</span><b id="rGymFee" style="color:green;"></b></div>
-        <div class="r-row"><span>वैधता (Valid Till):</span><b id="rValidTill" style="color:#b37400;"></b></div>
-      </div>
-    </div>
-
-    <div class="action-btns" data-html2canvas-ignore="true">
-      <button type="button" class="dl-btn" id="dlBtn" onclick="downloadImageAndPDF()">📥 Image & PDF Re-download</button>
-      <button type="button" class="wa-btn" id="waBtn">📲 WhatsApp</button>
-    </div>
-    <button type="button" onclick="closeBillModalAndReset()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;" data-html2canvas-ignore="true">बंद करें (Reset)</button>
-  </div>
-</div>
-<script>
-const ADMIN_PIN = "5555";
-let referralCount = 0;
-let referredList = [];
-let pendingPaymentData = null;
-
-let currentAdminPage = 1;
-const itemsPerPage = 12;
-
-const INITIAL_MEMBERS = [
-  { id: 1, name: "अभिषेक शर्मा - मोटोले (Abhishekh Sharma)", father: "Devendra Kumar Sharma", phone: "7068541091", emergency: "", address: "", joinDate: "2026-10-02", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-02", idSubmitted: true },
-  { id: 2, name: "प्रियांशु (Priyanshu)", father: "सुरेश", phone: "8467813176", emergency: "", address: "", joinDate: "2026-09-03", type: "job", status: "Pending", payMode: "Cash", amount: 500, lastPaid: "2026-09-03", idSubmitted: true },
-  { id: 3, name: "विशाल रावत (Vishal Rawat)", father: "Ram Vilash", phone: "8470994110", emergency: "", address: "", joinDate: "2026-09-20", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-20", idSubmitted: true },
-  { id: 4, name: "उदय प्रताप सिंह (Uday Pratap Singh)", father: "Sandip Singh", phone: "9198727555", emergency: "", address: "", joinDate: "2026-10-11", type: "student", status: "Paid", payMode: "Online", amount: 300, lastPaid: "2026-10-11", idSubmitted: true },
-  { id: 5, name: "पवन (Pawan)", father: "Sudeep", phone: "9026899048", emergency: "", address: "", joinDate: "2026-10-12", type: "student", status: "Pending", payMode: "Cash", amount: 300, lastPaid: "2026-09-12", idSubmitted: false },
-  { id: 6, name: "राज राजपूत (Raj Rajput)", father: "Harishchandra", phone: "9169108569", emergency: "", address: "", joinDate: "2026-10-13", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-13", idSubmitted: true },
-  { id: 7, name: "ध्रुव (Dhruv)", father: "-", phone: "9000000001", emergency: "", address: "", joinDate: "2026-10-10", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-10", idSubmitted: true },
-  { id: 8, name: "कमल (Kamal)", father: "-", phone: "6306591914", emergency: "", address: "", joinDate: "2026-10-06", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-06", idSubmitted: true },
-  { id: 9, name: "साहिल (Sahil)", father: "-", phone: "7269081026", emergency: "", address: "", joinDate: "2026-10-06", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-06", idSubmitted: true },
-  { id: 10, name: "प्रवीन रावत (Praveen Rawat)", father: "इन्द्रपाल रावत", phone: "7275005052", emergency: "", address: "", joinDate: "2026-09-29", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-29", idSubmitted: true },
-  { id: 11, name: "दीपक चौहान 1 (Deepak Chauhan I)", father: "Prakash Chauhan", phone: "7037945582", emergency: "", address: "", joinDate: "2026-10-05", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-05", idSubmitted: true },
-  { id: 12, name: "दीपक चौहान 2 (Deepak Chauhan II)", father: "Shri Ram Chauhan", phone: "6351295709", emergency: "", address: "", joinDate: "2026-10-03", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-03", idSubmitted: true },
-  { id: 13, name: "हर्ष सैनी (Harsh Saini)", father: "-", phone: "6393944214", emergency: "", address: "", joinDate: "2026-09-10", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-09-10", idSubmitted: true },
-  { id: 14, name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "8429471919", emergency: "", address: "", joinDate: "2022-01-11", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-11", idSubmitted: true },
-  { id: 15, name: "रितेश रावत (Ritesh Rawat)", father: "Sanna Rawat", phone: "8187974525", emergency: "", address: "", joinDate: "2026-06-08", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-09-08", idSubmitted: true },
-  { id: 16, name: "तौसीफ (Tauseef)", father: "Mo Shabbir", phone: "7317323893", emergency: "", address: "", joinDate: "2026-06-11", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-11", idSubmitted: true },
-  { id: 17, name: "रवि (Ravi)", father: "रामसनेही", phone: "9936311963", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
-  { id: 18, name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
-  { id: 19, name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
-  { id: 20, name: "नैतिक (Naitik Gupta)", father: "अशोक गुप्ता", phone: "9795238010", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
-    { id: 21, name: "संदीप (Sandip Kashyap)", father: "बबलू कश्यप", phone: "8440812271", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
-  { id: 22, name: "सचिन (Sachin Rajput)", father: "राकेश राजपूत", phone: "9235819564", emergency: "", address: "", joinDate: "2026-10-01", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-01", idSubmitted: true },
-  { id: 23, name: "अर्जुन (Arjun)", father: "रामगोपाल", phone: "7388366670", emergency: "", address: "", joinDate: "2026-10-07", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-07", idSubmitted: true },
-  { id: 24, name: "शहनवाज़ (Shahnawaz)", father: "मो० शब्बीर", phone: "9867742095", emergency: "", address: "", joinDate: "2026-10-05", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-05", idSubmitted: true },
-  { id: 25, name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", emergency: "", address: "", joinDate: "2026-09-07", type: "job", status: "Pending", payMode: "Cash", amount: 500, lastPaid: "2026-09-07", idSubmitted: true },
-  { id: 26, name: "अतुल (Atul Vimal)", father: "अनूप", phone: "6306377217", emergency: "", address: "", joinDate: "2026-10-08", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-08", idSubmitted: true },
-  { id: 27, name: "अंशू (Anshu Verma)", father: "कमलेश", phone: "9044680605", emergency: "", address: "", joinDate: "2026-10-08", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-08", idSubmitted: true },
-  { id: 28, name: "देवेन्द्र (Devendra)", father: "विनोद", phone: "7905282515", emergency: "", address: "", joinDate: "2026-10-08", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-08", idSubmitted: true },
-  { id: 29, name: "निरंजन (Niranjan Suryavanshi)", father: "श्रीमती", phone: "8400748946", emergency: "", address: "", joinDate: "2026-10-08", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-10-08", idSubmitted: true },
-  { id: 30, name: "आकाश विश्वकर्मा (Akash Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "8953133193", emergency: "", address: "", joinDate: "2026-09-15", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 31, name: "दिनेश कुमार (Dinesh Kumar)", father: "लल्लन", phone: "7260981026", emergency: "", address: "", joinDate: "2026-10-08", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-08", idSubmitted: true },
-  { id: 32, name: "राकेश कुमार (Rakesh Kumar)", father: "राज कुमार", phone: "6306591914", emergency: "", address: "", joinDate: "2026-10-08", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-10-08", idSubmitted: true },
-  { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", emergency: "", address: "", joinDate: "2026-09-15", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 34, name: "दीपक (Deepak)", father: "पप्पू", phone: "7388264067", emergency: "", address: "", joinDate: "2026-09-15", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 35, name: "अंकित (Ankit)", father: "श्री राम", phone: "8090416252", emergency: "", address: "", joinDate: "2026-09-15", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 36, name: "चंदन (Chandan)", father: "श्री भूरे", phone: "8303504842", emergency: "", address: "", joinDate: "2026-09-15", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 37, name: "राजू (Mr Raju Verma)", father: "-", phone: "9219528229", emergency: "", address: "", joinDate: "2026-09-15", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 38, name: "राम रतन (Ram Ratan)", father: "श्री सोहन", phone: "7570994547", emergency: "", address: "", joinDate: "2026-09-16", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-16", idSubmitted: true },
-  { id: 39, name: "डॉ ए. के. (Dr A. K Prabhakar)", father: "-", phone: "7268902436", emergency: "", address: "", joinDate: "2026-09-15", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 40, name: "आयुष प्रभाकर (Ayush Junior)", father: "डॉ ए. के. प्रभाकर", phone: "7268902436", emergency: "", address: "", joinDate: "2026-09-15", type: "student", status: "Paid", payMode: "Online", amount: 300, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 41, name: "इशांत (Ishant Verma)", father: "सुशील कुमार", phone: "8090894105", emergency: "", address: "", joinDate: "2026-09-25", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-09-25", idSubmitted: true },
-  { id: 42, name: "साहिल वर्मा (Sahil Verma)", father: "शम्मी कपूर", phone: "9336898447", emergency: "", address: "", joinDate: "2026-09-15", type: "job", status: "Paid", payMode: "Online", amount: 500, lastPaid: "2026-09-15", idSubmitted: true },
-  { id: 43, name: "लाला वर्मा (Lala Verma)", father: "श्याम लाल", phone: "6386232805", emergency: "", address: "", joinDate: "2026-09-01", type: "job", status: "Pending", payMode: "Cash", amount: 500, lastPaid: "2026-09-01", idSubmitted: true },
-  { id: 44, name: "सोनू (Sonu)", father: "-", phone: "9198597057", emergency: "", address: "", joinDate: "2026-09-07", type: "job", status: "Paid", payMode: "Cash", amount: 500, lastPaid: "2026-09-07", idSubmitted: true },
-  { id: 45, name: "अरमान (Armaan)", father: "-", phone: "9000000002", emergency: "", address: "", joinDate: "2026-10-15", type: "job", status: "Pending", payMode: "Cash", amount: 500, lastPaid: "2026-09-15", idSubmitted: false }
-];
-
-function getMasterList() {
-  let saved = localStorage.getItem("bbf_master_records_v4");
-  if (!saved) {
-    localStorage.setItem("bbf_master_records_v4", JSON.stringify(INITIAL_MEMBERS));
-    return INITIAL_MEMBERS;
-  }
-  return JSON.parse(saved);
-  }
-  window.addEventListener("DOMContentLoaded", () => {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById("mFeeJoinDate").value = today;
-  document.getElementById("mFeePaidDate").value = today;
-  document.getElementById("mFeePrevPaidDate").value = today;
-  updatePlanPrices();
-  updateAddModalPlans();
-});
-
-function updatePlanPrices() {
-  const cat = document.getElementById("feeCategory").value;
-  const dur = document.getElementById("feeDuration");
-  dur.innerHTML = "";
-  if (cat === "student") {
-    dur.innerHTML = `
-      <option value="300" data-months="1">1 महीना - ₹300</option>
-      <option value="900" data-months="3">3 महीने - ₹900</option>
-      <option value="1500" data-months="6">6 महीने - ₹1,500</option>
-    `;
-  } else {
-    dur.innerHTML = `
-      <option value="500" data-months="1">1 महीना - ₹500</option>
-      <option value="1200" data-months="3">3 महीने - ₹1,200</option>
-      <option value="2200" data-months="6">6 महीने - ₹2,200</option>
-    `;
-  }
-  calculateFinalAmount();
-}
-
-function updateAddModalPlans() {
-  const cat = document.getElementById("addCategory").value;
-  const dur = document.getElementById("addPlanDuration");
-  dur.innerHTML = "";
-  if (cat === "student") {
-    dur.innerHTML = `
-      <option value="300" data-months="1">1 महीना (Student - ₹300)</option>
-      <option value="900" data-months="3">3 महीने (Student - ₹900)</option>
-      <option value="1500" data-months="6">6 महीने (Student - ₹1,500)</option>
-    `;
-  } else {
-    dur.innerHTML = `
-      <option value="500" data-months="1">1 महीना (Business - ₹500)</option>
-      <option value="1200" data-months="3">3 महीने (Business - ₹1,200)</option>
-      <option value="2200" data-months="6">6 महीने (Business - ₹2,200)</option>
-    `;
-  }
-}
-
-function calculateFinalAmount() {
-  const dur = document.getElementById("feeDuration");
-  const base = parseFloat(dur.value) || 0;
-  const disc = referralCount * 100;
-  const net = Math.max(0, base - disc);
-  document.getElementById("mFeeAmount").value = net;
-  const msg = document.getElementById("refDiscountText");
-  if (disc > 0) {
-    msg.style.display = "block";
-    msg.innerText = `✅ कुल रेफरल छूट: -₹${disc} | देय फीस: ₹${net}`;
-  } else {
-    msg.style.display = "none";
-  }
-}
-
-function handleAutoSearch() {
-  const q = document.getElementById("feeSearchInput").value.trim().toLowerCase();
-  const card = document.getElementById("searchResultCard");
-  
-  if (!q || q.length < 2) {
-    card.style.display = "none";
-    return;
-  }
-
-  const list = getMasterList();
-  const matches = list.filter(mem => 
-    (mem.name && mem.name.toLowerCase().includes(q)) ||
-    (mem.phone && mem.phone.includes(q)) ||
-    (mem.father && mem.father.toLowerCase().includes(q))
-  );
-
-  card.style.display = "block";
-  if (matches.length > 0) {
-    let html = `<div style="font-size:10px; color:#ffcc00; margin-bottom:6px; font-weight:bold;">मिलते-जुलते सदस्य (${matches.length}):</div>`;
-    matches.slice(0, 4).forEach(m => {
-      const maskedPhone = m.phone ? (m.phone.slice(0, 4) + "****" + m.phone.slice(-2)) : "N/A";
-      const isPaid = m.status === 'Paid';
-      html += `
-        <div style="background:#222; border:1px solid #444; border-radius:6px; padding:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <b style="color:#fff; font-size:12px;">${m.name}</b><br>
-            <small style="color:#aaa;">Ph: ${maskedPhone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${m.status}</span></small>
-          </div>
-          <button type="button" onclick="autoFillById(${m.id})" style="background:#ffcc00; color:#000; border:none; padding:5px 9px; border-radius:4px; font-weight:bold; font-size:11px; cursor:pointer;">लोड करें</button>
-        </div>
-      `;
-    });
-    card.innerHTML = html;
-  } else {
-    card.innerHTML = `<div style="color:#ff6666; font-size:11px; text-align:center;">कोई सदस्य नहीं मिला।</div>`;
-  }
-}
-
-function autoFillById(memberId) {
-  const m = getMasterList().find(x => x.id === memberId);
-  if (!m) return;
-  document.getElementById("mFeeName").value = m.name;
-  document.getElementById("mFeeFather").value = (m.father && m.father !== "-") ? m.father : "";
-  document.getElementById("mFeePhone").value = m.phone;
-  document.getElementById("feeCategory").value = m.type || "job";
-  updatePlanPrices();
-  document.getElementById("mFeeJoinDate").value = m.joinDate || new Date().toISOString().split('T')[0];
-  document.getElementById("mFeePrevPaidDate").value = m.lastPaid || new Date().toISOString().split('T')[0];
-  checkLateStatus();
-  document.getElementById("searchResultCard").style.display = "none";
-  document.getElementById("feeSearchInput").value = m.name;
-}
-
-function checkLateStatus() {
-  const prevDateVal = document.getElementById("mFeePrevPaidDate").value;
-  const warn = document.getElementById("lateWarningBox");
-  if (!prevDateVal) { warn.style.display = "none"; return; }
-
-  const prev = new Date(prevDateVal);
-  const today = new Date();
-  const diffDays = Math.floor((today - prev) / (1000 * 60 * 60 * 24));
-
-  if (diffDays > 30) {
-    const overdue = diffDays - 30;
-    warn.style.display = "block";
-    warn.innerHTML = `🚨 ध्यान दें: फीस तिथि समाप्त हुए <b>${overdue} दिन लेट</b> हो चुके हैं! कृपया तुरंत रिन्यू कराएं।`;
-  } else {
-    warn.style.display = "none";
-  }
-  }
- function handleInitialSubmit(e) {
-  e.preventDefault();
-  const name = document.getElementById("mFeeName").value.trim();
-  const phone = document.getElementById("mFeePhone").value.trim();
-  const father = document.getElementById("mFeeFather").value.trim() || "-";
-  const cat = document.getElementById("feeCategory").value === "student" ? "विद्यार्थी" : "जॉब / व्यापार";
-  const durSelect = document.getElementById("feeDuration");
-  const planText = durSelect.options[durSelect.selectedIndex].text;
-  const months = parseInt(durSelect.options[durSelect.selectedIndex].getAttribute("data-months")) || 1;
-  const amt = parseFloat(document.getElementById("mFeeAmount").value) || 0;
-  const mode = document.getElementById("paymentMethod").value;
-  const paidDateVal = document.getElementById("mFeePaidDate").value;
-
-  pendingPaymentData = { name, phone, father, cat, planText, months, amt, mode, paidDateVal };
-
-  if (mode === "cash") {
-    let pin = prompt("🔒 Cash Verification: Admin Security PIN दर्ज करें:");
-    if (pin === ADMIN_PIN) {
-      finalizeReceiptAndUnlock("Cash (Admin Verified)", "Cash", false);
-    } else {
-      alert("❌ गलत Admin PIN! पेमेंट अप्रूव नहीं हुआ और न ही रसीद बनेगी।");
-      pendingPaymentData = null;
-    }
-  } else {
-    document.getElementById("onlinePayAmountText").innerText = "देय राशि: ₹" + amt;
-    document.getElementById("upiRefNumber").value = "";
-    document.getElementById("upiPayModal").style.display = "flex";
-  }
-}
-
-function openUpiApp() {
-  if (!pendingPaymentData) return;
-  const { amt, name } = pendingPaymentData;
-  window.location.href = `upi://pay?pa=9140417259@okbizaxis&pn=5BrothersGym&am=${amt}&cu=INR&tn=Fee_${name}`;
-}
-
-function closeUpiModal() {
-  document.getElementById("upiPayModal").style.display = "none";
-  pendingPaymentData = null;
-}
-
-function confirmOnlinePayment() {
-  const ref = document.getElementById("upiRefNumber").value.trim();
-  if (!ref || ref.length < 6) {
-    alert("❌ कृपया सही UTR / Transaction Ref No दर्ज करें! बिना पेमेंट रिफरेन्स के रसीद नहीं बनेगी।");
-    return;
-  }
-  document.getElementById("upiPayModal").style.display = "none";
-  finalizeReceiptAndUnlock("Online UPI (Ref: " + ref + ")", "Online", true);
-}
-
-function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
-  const data = pendingPaymentData;
-  if (!data) return;
-
-  let n = data.paidDateVal ? new Date(data.paidDateVal) : new Date();
-  n.setMonth(n.getMonth() + data.months);
-  const validTill = n.toLocaleDateString('en-GB');
-  const paidDate = data.paidDateVal ? new Date(data.paidDateVal).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
-
-  let list = getMasterList();
-  let existingIndex = list.findIndex(x => x.name.toLowerCase() === data.name.toLowerCase() || x.phone === data.phone);
-  if (existingIndex >= 0) {
-    list[existingIndex].status = "Paid";
-    list[existingIndex].payMode = shortMode;
-    list[existingIndex].amount = data.amt;
-    list[existingIndex].lastPaid = data.paidDateVal;
-  } else {
-    list.push({ 
-      id: Date.now(),
-      name: data.name, 
-      father: data.father, 
-      phone: data.phone, 
-      emergency: "",
-      address: "",
-      status: "Paid", 
-      payMode: shortMode,
-      amount: data.amt, 
-      lastPaid: data.paidDateVal, 
-      type: document.getElementById("feeCategory").value, 
-      joinDate: document.getElementById("mFeeJoinDate").value,
-      idSubmitted: true
-    });
-  }
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-
-  const billId = "5BFC-" + Date.now().toString().slice(-4);
-  document.getElementById("billId").innerText = billId;
-  document.getElementById("rMode").innerText = modeText;
-  document.getElementById("billDate").innerText = paidDate;
-  document.getElementById("rName").innerText = data.name;
-  document.getElementById("rFather").innerText = data.father;
-  document.getElementById("rPhone").innerText = data.phone;
-  document.getElementById("rPlanDetails").innerText = `${data.cat} | ${data.planText}`;
-  document.getElementById("rGymFee").innerText = "₹" + data.amt;
-  document.getElementById("rValidTill").innerText = validTill;
-  
-  // Agle payment ke bache hue din calculate karna
-  const todayDateObj = new Date();
-  todayDateObj.setHours(0, 0, 0, 0);
-  const validTillObj = new Date(n);
-  validTillObj.setHours(0, 0, 0, 0);
-  const diffTime = validTillObj - todayDateObj;
-  const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  const daysText = daysLeft > 0 ? `(${daysLeft} दिन शेष)` : `(आज ही नवीनीकरण कराएं)`;
-
-  // Payment mode check
-  const modeDisplay = data.mode === 'cash' ? '💵 नकद (Cash - Admin Verified)' : '📱 ऑनलाइन UPI';
-
-  // Professional Official Receipt + Smart Savings Upsell
-  const msg = `🏋️‍♂️ *5 BROTHER'S FITNESS CLUB*\n*Official Payment Confirmation*\n━━━━━━━━━━━━━━━━━━━━\n*सदस्य:* ${data.name}\nआपकी जिम सदस्यता फीस सफलतापूर्वक प्राप्त हो गई है।\n\n• *रसीद संख्या:* #${billId}\n• *जमा राशि:* ₹${data.amt}\n• *भुगतान माध्यम:* ${modeDisplay}\n• *भुगतान तिथि:* ${paidDate}\n• *वैधता तिथि:* ${validTill}\n• *अगला भुगतान:* ${validTill} *${daysText}*\n• *खाता स्थिति:* सक्रिय (Active)\n━━━━━━━━━━━━━━━━━━━━\n💡 *स्मार्ट बचत योजना (Save Money):*\nहर महीने फीस जमा करने के बजाय लंबी सदस्यता लेकर बचत करें:\n• 3 महीने का प्लान: ₹1,200 *(सीधे ₹300 की बचत)*\n• 6 महीने का प्लान: ₹2,200 *(सीधे ₹800 की बचत)*\n*(अगली बार लंबा प्लान चुनें और पैसे बचाएं)*\n━━━━━━━━━━━━━━━━━━━━\n📍 उमराव खेड़ा, अकरमपुर, उन्नाव\n📞 संपर्क: 9140417259`;
-
-  document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + data.phone + "?text=" + encodeURIComponent(msg), "_blank");
-  
-
-  if (showHurray) {
-    document.getElementById("hurrayModal").style.display = "flex";
-  } else {
-    proceedToReceiptFromHurray();
-  }
-}
-
-function proceedToReceiptFromHurray() {
-  document.getElementById("hurrayModal").style.display = "none";
-  document.getElementById("receiptModal").style.display = "flex";
-  setTimeout(() => {
-    downloadImageAndPDF();
-  }, 500);
-}
-
-function downloadImageAndPDF() {
-  const element = document.getElementById("printablePages");
-  const billId = document.getElementById("billId").innerText || "Receipt";
-
-  html2canvas(element, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
-    const imgData = canvas.toDataURL("image/png");
-    let imgLink = document.createElement("a");
-    imgLink.download = "Bill_" + billId + ".png";
-    imgLink.href = imgData;
-    imgLink.click();
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a5"
-    });
-    const imgWidth = 130;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-    pdf.save("Bill_" + billId + ".pdf");
-  });
-  }
-  function showFeeTab() {
-  document.getElementById("sectionFees").style.display = "block";
-  document.getElementById("sectionAdmin").style.display = "none";
-  document.getElementById("tabBtnFee").classList.add("active");
-  document.getElementById("tabBtnAdmin").classList.remove("active");
-}
-
-function openAdminRecords() {
-  let pin = prompt("🔒 केवल एडमिन के लिए:\n4-अंकों का सिक्योरिटी PIN दर्ज करें:");
-  if (pin !== ADMIN_PIN) {
-    alert("❌ गलत PIN! रजिस्टर एक्सेस नहीं किया जा सकता।");
-    return;
-  }
-  document.getElementById("sectionFees").style.display = "none";
-  document.getElementById("sectionAdmin").style.display = "block";
-  document.getElementById("tabBtnAdmin").classList.add("active");
-  document.getElementById("tabBtnFee").classList.remove("active");
-  currentAdminPage = 1;
-  renderAdminTable();
-}
-
-function changeAdminPage(direction) {
-  let list = getMasterList();
-  const totalPages = Math.ceil(list.length / itemsPerPage);
-  currentAdminPage += direction;
-  if (currentAdminPage < 1) currentAdminPage = 1;
-  if (currentAdminPage > totalPages) currentAdminPage = totalPages;
-  renderAdminTable();
-}
-
-function renderAdminTable() {
-  const tbody = document.getElementById("adminTableBody");
-  tbody.innerHTML = "";
-  let list = getMasterList();
-
-  const dateObj = new Date();
-  const monthNames = ["जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
-  document.getElementById("adminMonthTitle").innerText = `माह: ${monthNames[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
-
-  list.sort((a, b) => {
-    let dayA = a.joinDate ? parseInt(a.joinDate.split('-')[2]) : 32;
-    let dayB = b.joinDate ? parseInt(b.joinDate.split('-')[2]) : 32;
-    return dayA - dayB;
-  });
-
-  const totalPages = Math.ceil(list.length / itemsPerPage) || 1;
-  document.getElementById("pageInfoText").innerText = `Page ${currentAdminPage} of ${totalPages} (${list.length} सदस्य)`;
-  document.getElementById("prevPageBtn").disabled = (currentAdminPage === 1);
-  document.getElementById("nextPageBtn").disabled = (currentAdminPage === totalPages);
-
-  const startIndex = (currentAdminPage - 1) * itemsPerPage;
-  const paginatedItems = list.slice(startIndex, startIndex + itemsPerPage);
-
-  paginatedItems.forEach((m) => {
-    const dueDay = m.joinDate ? parseInt(m.joinDate.split('-')[2]) : "-";
-    let tr = document.createElement("tr");
-
-    let idStatusHtml = "-";
-    if (m.type === "student") {
-      idStatusHtml = `
-        <button type="button" onclick="toggleStudentIdById(${m.id})" style="padding:3px 6px; font-size:10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; background:${m.idSubmitted ? '#00ff66' : '#ff4444'}; color:${m.idSubmitted ? '#000' : '#fff'};">
-          ${m.idSubmitted ? 'Yes (जमा)' : 'No (बाकी)'}
+      <div class="action-btns">
+        <button type="button" class="btn btn-wa" onclick="sendWhatsApp()">
+          📲 WhatsApp पर रसीद भेजें
         </button>
-      `;
+        <button type="button" class="btn btn-pdf" onclick="generatePDF()">
+          📄 Official Invoice (PDF) डाउनलोड करें
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Hidden Container for PDF Rendering -->
+  <div id="invoice-render">
+    <div class="inv-header">
+      <div style="font-size:12px; font-weight:bold; letter-spacing:1px;">PAGE 1 : OFFICIAL INVOICE</div>
+      <h2 style="font-size:24px; margin-top:5px;">5 Brother's Fitness Club</h2>
+      <div style="font-size:13px; color:#555; margin-top:3px;">"100% असली और असरदार रिजल्ट"</div>
+      <div style="font-size:12px; color:#444; margin-top:3px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</div>
+    </div>
+
+    <table class="inv-table">
+      <tr>
+        <td class="bold">Bill ID:</td>
+        <td style="text-align:right;" id="invBill">#5BFC-7821</td>
+      </tr>
+      <tr>
+        <td class="bold">प्रकार:</td>
+        <td style="text-align:right;" id="invMode">Online UPI</td>
+      </tr>
+      <tr>
+        <td class="bold">जॉइनिंग तारीख:</td>
+        <td style="text-align:right;" id="invJoin">--</td>
+      </tr>
+      <tr>
+        <td class="bold">भुगतान तारीख:</td>
+        <td style="text-align:right;" id="invPay">--</td>
+      </tr>
+      <tr>
+        <td class="bold">विलंब स्थिति:</td>
+        <td style="text-align:right;" id="invLate">--</td>
+      </tr>
+      <tr>
+        <td class="bold">सदस्य:</td>
+        <td style="text-align:right;" id="invMember">--</td>
+      </tr>
+      <tr>
+        <td class="bold">पिता का नाम:</td>
+        <td style="text-align:right;" id="invFather">--</td>
+      </tr>
+      <tr>
+        <td class="bold">मोबाइल:</td>
+        <td style="text-align:right;" id="invPhone">--</td>
+      </tr>
+      <tr>
+        <td class="bold">श्रेणी व प्लान:</td>
+        <td style="text-align:right;" id="invPlan">--</td>
+      </tr>
+      <tr id="invDiscountRow" style="display:none; color:#d97706;">
+        <td class="bold">विशेष छूट (Special Discount):</td>
+        <td style="text-align:right; font-weight:bold;" id="invDiscountVal">-₹0</td>
+      </tr>
+      <tr>
+        <td class="bold">जमा फीस:</td>
+        <td style="text-align:right; font-weight:bold; color:green; font-size:16px;" id="invPaid">₹0</td>
+      </tr>
+      <tr>
+        <td class="bold">बकाया राशि:</td>
+        <td style="text-align:right; font-weight:bold;" id="invDue">₹0</td>
+      </tr>
+      <tr>
+        <td class="bold">अगला भुगतान / वैधता:</td>
+        <td style="text-align:right; font-weight:bold;" id="invNextPay">--</td>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    // Set Default Dates to Today
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    document.getElementById('payDate').value = todayStr;
+    document.getElementById('joinDate').value = todayStr;
+
+    function applyPlanDefaults() {
+      const planVal = parseFloat(document.getElementById('planSelect').value);
+      document.getElementById('planAmount').value = planVal;
+      document.getElementById('paidAmount').value = planVal;
+      recalculate();
     }
 
-    tr.innerHTML = `
-      <td style="font-weight:bold; color:#ffcc00;">${dueDay} तारीख</td>
-      <td>
-        <b>${m.name}</b><br>
-        <small style="color:#888;">${m.phone}</small>
-      </td>
-      <td>
-        <span style="color:${m.status === 'Paid' ? '#00ff66' : '#ff4444'}; font-weight:bold;">${m.status}</span>
-      </td>
-      <td>
-        <span style="background:#222; padding:2px 6px; border-radius:4px; font-size:10px; color:#ffcc00;">${m.payMode || 'Cash'}</span>
-      </td>
-      <td>${idStatusHtml}</td>
-      <td>
-        <div style="display:flex; gap:3px;">
-          <button type="button" onclick="toggleMemberPaidById(${m.id})" style="padding:4px 6px; background:${m.status === 'Paid' ? '#444' : '#00ff66'}; color:${m.status === 'Paid' ? '#fff' : '#000'}; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">
-            ${m.status === 'Paid' ? 'Pending' : '✓ Paid'}
-          </button>
-          <button type="button" onclick="showMemberDetailById(${m.id})" style="padding:4px 6px; background:#ffcc00; color:#000; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">👁</button>
-          <button type="button" onclick="deleteMemberById(${m.id})" style="padding:4px 6px; background:#ff3333; color:#fff; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">🗑️</button>
-        </div>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+    function getCalculations() {
+      const planSelect = document.getElementById('planSelect');
+      const category = planSelect.options[planSelect.selectedIndex].getAttribute('data-cat');
+      const planAmount = parseFloat(document.getElementById('planAmount').value) || 0;
+      const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
 
-function toggleStudentIdById(memberId) {
-  let list = getMasterList();
-  const idx = list.findIndex(x => x.id === memberId);
-  if (idx < 0) return;
+      // Late Days Calculation
+      const joinVal = document.getElementById('joinDate').value;
+      const payVal = document.getElementById('payDate').value;
+      let lateText = "समय पर (On Time) ✅";
+      let lateDaysCount = 0;
 
-  list[idx].idSubmitted = !list[idx].idSubmitted;
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  
-  if (!list[idx].idSubmitted) {
-    const m = list[idx];
-    const warnMsg = `⚠️ *सूचना: 5 Brother's Fitness Club*\n\nप्रिय सदस्य *${m.name}*,\nआपका स्कूल/कॉलेज आईडी कार्ड (Student ID) अभी तक जिम में जमा नहीं हुआ है।\n\nकृपया *72 घंटे (3 दिन)* के अंदर अपना मान्य आईडी कार्ड जमा करें, अन्यथा आपकी सदस्यता नियमित (Job/Business) में बदल दी जाएगी और मासिक फीस ₹300 से बढ़कर ₹500 हो जाएगी।\n\n- सौरभ सिंह चंदेल (5 Brother's Fitness Club)`;
-    
-    if (confirm(`आईडी जमा नहीं है! क्या ${m.name} (${m.phone}) को 72 घंटे की चेतावनी का WhatsApp भेजना चाहते हैं?`)) {
-      window.open("https://wa.me/91" + m.phone + "?text=" + encodeURIComponent(warnMsg), "_blank");
+      if (joinVal && payVal) {
+        const jD = new Date(joinVal);
+        const pD = new Date(payVal);
+        // Compare day-of-month based cycle
+        const dueThisCycle = new Date(pD.getFullYear(), pD.getMonth(), jD.getDate());
+        if (pD > dueThisCycle) {
+          const diffMs = pD - dueThisCycle;
+          lateDaysCount = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          lateText = `${lateDaysCount} दिन लेट ⚠️`;
+        }
+      }
+
+      // Discount vs Due Logic
+      let discount = 0;
+      let due = 0;
+
+      if (category.includes("जॉब") && paidAmount < planAmount) {
+        // Special Discount logic for Job/Business Category
+        discount = planAmount - paidAmount;
+        due = 0;
+      } else {
+        if (paidAmount < planAmount) {
+          due = planAmount - paidAmount;
+        }
+      }
+
+      // Next Pay Date (Default +1 Month)
+      let nextPayDate = "--";
+      if (payVal) {
+        const pD = new Date(payVal);
+        pD.setMonth(pD.getMonth() + 1);
+        const day = String(pD.getDate()).padStart(2, '0');
+        const month = String(pD.getMonth() + 1).padStart(2, '0');
+        nextPayDate = `${day}/${month}/${pD.getFullYear()}`;
+      }
+
+      return {
+        category,
+        planAmount,
+        paidAmount,
+        discount,
+        due,
+        lateText,
+        nextPayDate
+      };
     }
-  }
-  renderAdminTable();
-  }
-  function toggleMemberPaidById(memberId) {
-  let list = getMasterList();
-  const idx = list.findIndex(x => x.id === memberId);
-  if (idx < 0) return;
 
-  list[idx].status = (list[idx].status === "Paid") ? "Pending" : "Paid";
-  list[idx].lastPaid = new Date().toISOString().split('T')[0];
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  renderAdminTable();
-}
+    function recalculate() {
+      const res = getCalculations();
+      
+      // Update UI Box
+      const discLine = document.getElementById('discountLine');
+      if (res.discount > 0) {
+        discLine.style.display = 'flex';
+        document.getElementById('discountVal').innerText = `₹${res.discount}`;
+      } else {
+        discLine.style.display = 'none';
+      }
 
-function showMemberDetailById(memberId) {
-  const m = getMasterList().find(x => x.id === memberId);
-  if (!m) return;
-  alert(`📋 सदस्य सम्पूर्ण रिकॉर्ड (ADMIN ONLY):\n\nनाम: ${m.name}\nपिता का नाम: ${m.father || 'N/A'}\nमोबाइल: ${m.phone}\nइमरजेंसी संपर्क: ${m.emergency || 'उपलब्ध नहीं'}\nपता: ${m.address || 'उपलब्ध नहीं'}\nश्रेणी: ${m.type === 'student' ? 'विद्यार्थी' : 'जॉब/व्यापार'}\nस्थिति: ${m.status}\nमाध्यम: ${m.payMode || 'Cash'}\nस्टूडेंट ID: ${m.type === 'student' ? (m.idSubmitted ? 'जमा है' : 'बाकी है') : 'लागू नहीं'}\nअंतिम पेमेंट तिथि: ${m.lastPaid || 'N/A'}\nजॉइनिंग तिथि: ${m.joinDate || 'N/A'}`);
-}
+      document.getElementById('dueText').innerText = res.due > 0 ? `₹${res.due}` : '₹0 (कोई बकाया नहीं)';
+      document.getElementById('lateText').innerText = res.lateText;
+      document.getElementById('lateText').style.color = res.lateText.includes("लेट") ? '#ff4d4d' : '#25D366';
+    }
 
-function deleteMemberById(memberId) {
-  let list = getMasterList();
-  const m = list.find(x => x.id === memberId);
-  if (!m) return;
+    function formatDateDMY(dateStr) {
+      if (!dateStr) return "--";
+      const [y, m, d] = dateStr.split('-');
+      return `${d}/${m}/${y}`;
+    }
 
-  let pin = prompt(`⚠️ क्या आप "${m.name}" का भुगतान स्टेटस रद्द (Reset to Pending) करना चाहते हैं?\nAdmin PIN दर्ज करें:`);
-  if (pin === ADMIN_PIN) {
-    m.status = "Pending";
-    m.payMode = "-";
-    m.amount = 0;
-    m.lastPaid = "";
-    localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-    alert(`✅ "${m.name}" की फीस स्थिति रद्द कर दी गई है (अब Pending है)। सदस्य रजिस्टर में सुरक्षित है।`);
-    renderAdminTable();
-  } else {
-    alert("❌ गलत Admin PIN! कोई बदलाव नहीं किया गया।");
-  }
-}
-  
+    function sendWhatsApp() {
+      const mName = document.getElementById('mName').value.trim();
+      const phone = document.getElementById('mPhone').value.trim();
+      if (!mName || !phone) {
+        alert("कृपया सदस्य का नाम और मोबाइल नंबर भरें!");
+        return;
+      }
 
-function openAddMemberModal() {
-  document.getElementById("addJoinDate").value = new Date().toISOString().split('T')[0];
-  updateAddModalPlans();
-  document.getElementById("addMemberModal").style.display = "flex";
-}
+      const res = getCalculations();
+      const billNo = document.getElementById('billNo').value;
+      const joinFormatted = formatDateDMY(document.getElementById('joinDate').value);
+      const payFormatted = formatDateDMY(document.getElementById('payDate').value);
+      const lastPayFormatted = formatDateDMY(document.getElementById('lastPayDate').value);
+      const payMode = document.getElementById('payMode').value;
 
-function closeAddMemberModal() {
-  document.getElementById("addMemberModal").style.display = "none";
-  document.getElementById("formManualAdd").reset();
-}
+      let discountMsg = "";
+      if (res.discount > 0) {
+        discountMsg = `• *विशेष छूट:* ₹${res.discount} (Special Discount) 🎁\n`;
+      }
 
-function handleManualAddSubmit(e) {
-  e.preventDefault();
-  const name = document.getElementById("addName").value.trim();
-  const father = document.getElementById("addFather").value.trim() || "-";
-  const phone = document.getElementById("addPhone").value.trim();
-  const emergency = document.getElementById("addEmergency").value.trim() || "-";
-  const address = document.getElementById("addAddress").value.trim() || "-";
-  const type = document.getElementById("addCategory").value;
-  const joinDate = document.getElementById("addJoinDate").value;
-  const status = document.getElementById("addFeeStatus").value;
+      let lastPayMsg = "";
+      if (lastPayFormatted !== "--") {
+        lastPayMsg = `• *पिछला भुगतान:* ${lastPayFormatted}\n`;
+      }
 
-  const durSelect = document.getElementById("addPlanDuration");
-  const amt = parseFloat(durSelect.value) || 500;
+      const msg = `🏋️‍♂️ *5 BROTHER'S FITNESS CLUB*
+*Official Payment & Fee Slip*
+━━━━━━━━━━━━━━━━━━━━
+*सदस्य:* ${mName}
+*रसीद संख्या:* ${billNo}
 
-  let list = getMasterList();
-  const newMember = {
-    id: Date.now(),
-    name: name,
-    father: father,
-    phone: phone,
-    emergency: emergency,
-    address: address,
-    type: type,
-    joinDate: joinDate,
-    lastPaid: (status === "Paid") ? joinDate : "",
-    status: status,
-    payMode: "Cash",
-    amount: amt,
-    idSubmitted: (type === "student" ? false : true)
-  };
+📅 *तारीख विवरण (Date Details):*
+• *जॉइनिंग तिथि:* ${joinFormatted}
+• *भुगतान तिथि:* ${payFormatted}
+• *विलंब स्थिति:* ${res.lateText}
+${lastPayMsg}
+💰 *शुल्क व भुगतान विवरण:*
+• *चुना गया प्लान:* ${res.category} (₹${res.planAmount})
+• *जमा राशि:* ₹${res.paidAmount} ${payMode}
+${discountMsg}• *बकाया राशि:* ₹${res.due} ${res.due === 0 ? '(कोई बकाया नहीं)' : ''}
+• *अगला भुगतान:* ${res.nextPayDate}
+• *खाता स्थिति:* सक्रिय (Active)
+━━━━━━━━━━━━━━━━━━━━
+💡 *स्मार्ट बचत योजना (Save Money):*
+हर महीने फीस जमा करने के बजाय लंबी सदस्यता लेकर बचत करें:
+• 3 महीने का प्लान: ₹1,200 *(सीधे ₹300 की बचत)*
+• 6 महीने का प्लान: ₹2,200 *(सीधे ₹800 की बचत)*
+*(अगली बार लंबा प्लान चुनें और पैसे बचाएं)*
+━━━━━━━━━━━━━━━━━━━━
+📍 उमराव खेड़ा, अकरमपुर, उन्नाव
+📞 संपर्क: 9140417259`;
 
-  list.push(newMember);
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  alert(`✅ नया सदस्य "${name}" सफलतापूर्वक रजिस्टर में हमेशा के लिए जोड़ दिया गया!`);
-  closeAddMemberModal();
-  renderAdminTable();
-}
+      const waUrl = `https://api.whatsapp.com/send?phone=91${phone}&text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
+    }
 
-function downloadCSV() {
-  const list = getMasterList();
-  let csv = "क्र.,तारीख,सदस्य का नाम,पिता का नाम,मोबाइल नंबर,इमरजेंसी संपर्क,पता,श्रेणी,स्थिति,माध्यम,आईडी जमा,अंतिम पेमेंट\n";
-  list.forEach((m, i) => {
-    let day = m.joinDate ? m.joinDate.split('-')[2] : '-';
-    csv += `"${i+1}","${day} तारीख","${m.name}","${m.father || '-'}","${m.phone}","${m.emergency || '-'}","${m.address || '-'}","${m.type || '-'}","${m.status}","${m.payMode || 'Cash'}","${m.idSubmitted ? 'Yes' : 'No'}","${m.lastPaid || '-'}"\n`;
-  });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `Gym_Master_Register_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-}
+    function generatePDF() {
+      const mName = document.getElementById('mName').value.trim();
+      if (!mName) {
+        alert("कृपया सदस्य का नाम भरें!");
+        return;
+      }
 
-function toggleRefInputBox() {
-  const b = document.getElementById("refInputForm");
-  b.style.display = b.style.display === "block" ? "none" : "block";
-}
+      const res = getCalculations();
+      
+      // Populate Printable Form
+      document.getElementById('invBill').innerText = document.getElementById('billNo').value;
+      document.getElementById('invMode').innerText = document.getElementById('payMode').value;
+      document.getElementById('invJoin').innerText = formatDateDMY(document.getElementById('joinDate').value);
+      document.getElementById('invPay').innerText = formatDateDMY(document.getElementById('payDate').value);
+      document.getElementById('invLate').innerText = res.lateText;
+      document.getElementById('invMember').innerText = mName;
+      document.getElementById('invFather').innerText = document.getElementById('fName').value.trim() || "--";
+      document.getElementById('invPhone').innerText = document.getElementById('mPhone').value.trim();
+      document.getElementById('invPlan').innerText = `${res.category} | ₹${res.planAmount}`;
+      document.getElementById('invPaid').innerText = `₹${res.paidAmount}`;
+      document.getElementById('invDue').innerText = `₹${res.due}`;
+      document.getElementById('invNextPay').innerText = res.nextPayDate;
 
-function submitManualReferral() {
-  const name = document.getElementById("refInName").value.trim();
-  const phone = document.getElementById("refInPhone").value.trim();
-  if (!name || !phone) { alert("रेफरल का नाम और मोबाइल लिखें!"); return; }
-  referredList.push({ name, phone });
-  referralCount = referredList.length;
-  document.getElementById("refInName").value = "";
-  document.getElementById("refInPhone").value = "";
-  document.getElementById("refInputForm").style.display = "none";
-  renderRefTags();
-  calculateFinalAmount();
-}
+      const discRow = document.getElementById('invDiscountRow');
+      if (res.discount > 0) {
+        discRow.style.display = 'table-row';
+        document.getElementById('invDiscountVal').innerText = `-₹${res.discount}`;
+      } else {
+        discRow.style.display = 'none';
+      }
 
-function renderRefTags() {
-  const cont = document.getElementById("refTagsContainer");
-  cont.innerHTML = "";
-  referredList.forEach((r, idx) => {
-    let t = document.createElement("div");
-    t.style = "background:#222; border:1px solid #ffcc00; color:#ffcc00; padding:2px 6px; border-radius:10px; font-size:10px; display:flex; align-items:center; gap:4px;";
-    t.innerHTML = `<span>👤 ${r.name}</span><b onclick="removeRefTag(${idx})" style="color:red; cursor:pointer;">✕</b>`;
-    cont.appendChild(t);
-  });
-}
+      const element = document.getElementById('invoice-render');
+      element.style.display = 'block';
 
-function removeRefTag(idx) {
-  referredList.splice(idx, 1);
-  referralCount = referredList.length;
-  renderRefTags();
-  calculateFinalAmount();
-}
+      const opt = {
+        margin:       10,
+        filename:     `Invoice_${mName}_${document.getElementById('billNo').value}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
+      };
 
-function closeBillModalAndReset() {
-  document.getElementById("receiptModal").style.display = "none";
-  document.getElementById("formGymFee").reset();
-  referredList = [];
-  referralCount = 0;
-  pendingPaymentData = null;
-  renderRefTags();
-  updatePlanPrices();
-}
-</script>
+      html2pdf().set(opt).from(element).save().then(() => {
+        element.style.display = 'none';
+      });
+    }
+
+    // Initial Trigger
+    recalculate();
+  </script>
 </body>
-</html>
+          </html>
+          
