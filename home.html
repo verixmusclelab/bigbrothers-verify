@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>5 Brother's Fitness Club</title>
   <meta name="theme-color" content="#ffcc00">
   <link rel="manifest" href="manifest.json">
@@ -13,127 +13,181 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+
     body {
-      background: #0d0d0d;
+      background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.88)), 
+                  url('https://i.ibb.co/6h6PD14/IMG-20261002-WA0000.jpg') no-repeat center center fixed;
+      background-size: cover;
       color: #fff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20px 16px;
+      padding: 24px 16px;
     }
+
     .hub-container {
       width: 100%;
-      max-width: 420px;
-      background: radial-gradient(circle at top, #1c1c1c 0%, #0d0d0d 100%);
-      border: 2px solid #ffcc00;
-      border-radius: 20px;
-      padding: 28px 20px;
-      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.18);
+      max-width: 440px;
+      background: rgba(18, 18, 18, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255, 204, 0, 0.55);
+      border-radius: 24px;
+      padding: 30px 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 204, 0, 0.2);
       text-align: center;
     }
+
     .badge-top {
       display: inline-block;
       font-size: 11px;
       font-weight: 800;
       color: #000;
       background: #ffcc00;
-      padding: 4px 12px;
+      padding: 5px 14px;
       border-radius: 20px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
+
     .hub-title {
-      font-size: 22px;
+      font-size: 23px;
       font-weight: 900;
       color: #ffffff;
-      line-height: 1.2;
+      line-height: 1.25;
       margin-bottom: 4px;
-      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
+
     .hub-sub {
       font-size: 13px;
       color: #ffcc00;
       font-weight: 700;
-      margin-bottom: 6px;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
     }
+
     .hub-loc {
-      font-size: 11px;
-      color: #888;
+      font-size: 11.5px;
+      color: #bbb;
       margin-bottom: 24px;
+      line-height: 1.4;
     }
+
     .select-label {
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 700;
-      color: #ccc;
+      color: #ffcc00;
       margin-bottom: 16px;
       text-align: left;
       border-left: 3px solid #ffcc00;
       padding-left: 8px;
+      letter-spacing: 0.5px;
     }
+
     .btn-list {
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
+
     .nav-card {
       display: flex;
       align-items: center;
       justify-content: space-between;
       text-decoration: none;
-      padding: 16px 14px;
-      border-radius: 14px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      padding: 16px 16px;
+      border-radius: 16px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
+
     .nav-card:active {
       transform: scale(0.98);
     }
+
     .card-admission {
       background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%);
       color: #000;
-      box-shadow: 0 4px 14px rgba(255, 204, 0, 0.35);
     }
+
     .card-fees {
-      background: #181818;
-      border: 1.5px solid #00ff66;
-      color: #00ff66;
-      box-shadow: 0 4px 14px rgba(0, 255, 102, 0.15);
+      background: rgba(25, 25, 25, 0.85);
+      border: 1.5px solid #25D366;
+      color: #fff;
     }
+
+    .card-fees:active {
+      background: rgba(37, 211, 102, 0.15);
+    }
+
     .card-store {
-      background: #181818;
-      border: 1.5px solid #00bfff;
-      color: #00bfff;
-      box-shadow: 0 4px 14px rgba(0, 191, 255, 0.15);
+      background: rgba(25, 25, 25, 0.85);
+      border: 1.5px solid #00d2ff;
+      color: #fff;
     }
+
+    .card-store:active {
+      background: rgba(0, 210, 255, 0.15);
+    }
+
     .card-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       text-align: left;
     }
+
     .card-icon {
-      font-size: 22px;
+      font-size: 24px;
+      line-height: 1;
     }
+
     .card-name {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
     }
-    .card-desc {
-      font-size: 10px;
-      opacity: 0.8;
-      margin-top: 2px;
-      font-weight: 500;
+
+    .card-admission .card-name {
+      color: #000;
     }
+
+    .card-fees .card-name {
+      color: #25D366;
+    }
+
+    .card-store .card-name {
+      color: #00d2ff;
+    }
+
+    .card-desc {
+      font-size: 11px;
+      margin-top: 3px;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    .card-admission .card-desc {
+      color: #222;
+    }
+
+    .card-fees .card-desc,
+    .card-store .card-desc {
+      color: #aaa;
+    }
+
     .arrow-icon {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 900;
     }
+
     .footer-note {
       margin-top: 24px;
-      font-size: 10px;
-      color: #555;
+      font-size: 10.5px;
+      color: #777;
       letter-spacing: 0.5px;
     }
   </style>
@@ -144,7 +198,7 @@
     <div class="badge-top">🔥 Official Gym Portal 🔥</div>
     
     <h1 class="hub-title">5 BROTHER'S FITNESS CLUB</h1>
-    <div class="hub-sub">& SUPPLEMENT STORE</div>
+    <div class="hub-sub">&amp; SUPPLEMENT STORE</div>
     <div class="hub-loc">📍 उमराव खेड़ा, अकरमपुर, उन्नाव | 📞 9140417259</div>
 
     <div class="select-label">कृपया अपनी सेवा चुनें (Select Portal)</div>
@@ -156,7 +210,7 @@
           <span class="card-icon">📝</span>
           <div>
             <div class="card-name">नया जिम एडमिशन</div>
-            <div class="card-desc">New Member Registration & KYC</div>
+            <div class="card-desc">New Member Registration &amp; KYC</div>
           </div>
         </div>
         <span class="arrow-icon">➔</span>
@@ -168,7 +222,7 @@
           <span class="card-icon">💳</span>
           <div>
             <div class="card-name">मासिक फीस काउंटर</div>
-            <div class="card-desc">Renewal, Late Fees & Due Slips</div>
+            <div class="card-desc">Renewal, Late Fees &amp; Due Slips</div>
           </div>
         </div>
         <span class="arrow-icon">➔</span>
@@ -176,7 +230,6 @@
 
       <!-- 3. Supplement Store Portal -->
       <a href="index.html?view=store" class="nav-card card-store">
-
         <div class="card-left">
           <span class="card-icon">💊</span>
           <div>
@@ -189,9 +242,10 @@
     </div>
 
     <div class="footer-note">
-      © 5 Brother's Fitness Club | Umrao Kheda, Unnao
+      &copy; 5 Brother's Fitness Club | Umrao Kheda, Unnao
     </div>
   </div>
 
 </body>
 </html>
+
