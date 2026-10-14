@@ -98,6 +98,31 @@
       gap: 10px;
     }
 
+    .checkbox-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 4px;
+      cursor: pointer;
+    }
+
+    .checkbox-box input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #ffcc00;
+      cursor: pointer;
+    }
+
+    .checkbox-box span {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffcc00;
+    }
+
     .calc-box {
       background: #111;
       border: 1px dashed #ffcc00;
@@ -149,37 +174,39 @@
       color: #000;
     }
 
-    /* Hidden Printable Invoice Area */
+    /* Print-ready PDF container */
     #invoice-render {
       display: none;
-      background: #fff;
-      color: #000;
+      background: #ffffff !important;
+      color: #000000 !important;
       padding: 30px;
-      width: 600px;
+      width: 650px;
       font-family: Arial, sans-serif;
     }
 
     .inv-header {
       text-align: center;
       border-bottom: 2px dashed #000;
-      padding-bottom: 15px;
+      padding-bottom: 12px;
       margin-bottom: 15px;
     }
 
     .inv-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      margin-top: 10px;
     }
 
     .inv-table td {
-      padding: 8px 4px;
-      border-bottom: 1px solid #ddd;
-      font-size: 14px;
+      padding: 9px 6px;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 13.5px;
+      color: #111;
     }
 
     .inv-table td.bold {
       font-weight: bold;
+      color: #000;
     }
   </style>
 </head>
@@ -187,51 +214,59 @@
 
   <div class="counter-card">
     <div class="header-box">
-      <div class="badge">Fees Desk</div>
+      <div class="badge">FEES DESK</div>
       <h2>5 BROTHER'S FITNESS CLUB</h2>
       <div class="sub-title">मासिक फीस व रसीद काउंटर</div>
     </div>
 
     <form id="feesForm">
       <div class="form-group">
+        <label>मोबाइल नंबर दर्ज करें (Auto-Search)</label>
+        <input type="tel" id="mPhone" placeholder="10 अंकों का नंबर लिखें..." oninput="autoSearchMember()" required>
+      </div>
+
+      <div class="form-group">
         <label>सदस्य का नाम (Member Name)</label>
-        <input type="text" id="mName" placeholder="उदा. Ravi" required>
+        <input type="text" id="mName" placeholder="सदस्य का नाम" required>
       </div>
 
       <div class="form-group">
         <label>पिता का नाम (Father's Name)</label>
-        <input type="text" id="fName" placeholder="उदा. Ram Snehi">
+        <input type="text" id="fName" placeholder="पिता का नाम">
       </div>
 
       <div class="grid-2">
-        <div class="form-group">
-          <label>मोबाइल नंबर</label>
-          <input type="tel" id="mPhone" placeholder="9936344963" required>
-        </div>
         <div class="form-group">
           <label>रसीद / बिल संख्या</label>
           <input type="text" id="billNo" value="#5BFC-7821">
         </div>
+        <div class="form-group">
+          <label>भुगतान मोड (Mode)</label>
+          <select id="payMode">
+            <option value="Online UPI">📱 Online UPI</option>
+            <option value="Cash">💵 Cash</option>
+          </select>
+        </div>
       </div>
 
       <div class="grid-2">
         <div class="form-group">
-          <label>जॉइनिंग तिथि (Joining Date)</label>
-          <input type="date" id="joinDate" required>
+          <label>जॉइनिंग तिथि</label>
+          <input type="date" id="joinDate" onchange="recalculate()" required>
         </div>
         <div class="form-group">
-          <label>भुगतान तिथि (Payment Date)</label>
-          <input type="date" id="payDate" required>
+          <label>भुगतान तिथि</label>
+          <input type="date" id="payDate" onchange="recalculate()" required>
         </div>
       </div>
 
       <div class="form-group">
-        <label>पिछला भुगतान (Last Payment Date)</label>
+        <label>पिछला भुगतान (Last Payment)</label>
         <input type="date" id="lastPayDate">
       </div>
 
       <div class="form-group">
-        <label>प्लान चुनें (Membership Category)</label>
+        <label>प्लान चुनें (Plan Category)</label>
         <select id="planSelect" onchange="applyPlanDefaults()">
           <option value="500" data-cat="जॉब / व्यापार">जॉब / व्यापार (1 महीना) - ₹500</option>
           <option value="400" data-cat="स्टूडेंट">स्टूडेंट प्लान (1 महीना) - ₹400</option>
@@ -251,12 +286,12 @@
         </div>
       </div>
 
+      <!-- Checkbox for Special Discount Option -->
       <div class="form-group">
-        <label>भुगतान मोड (Payment Mode)</label>
-        <select id="payMode">
-          <option value="ऑनलाइन UPI">📱 ऑनलाइन UPI</option>
-          <option value="नकद (Cash)">💵 नकद (Cash)</option>
-        </select>
+        <label class="checkbox-box">
+          <input type="checkbox" id="chkDiscount" onchange="recalculate()">
+          <span>कम राशि को "विशेष छूट (Special Discount)" में माफ करें?</span>
+        </label>
       </div>
 
       <div class="calc-box">
@@ -270,13 +305,13 @@
         </div>
         <div class="calc-line">
           <span>बकाया राशि (Due Balance):</span>
-          <strong id="dueText">₹0</strong>
+          <strong id="dueText" style="color:#fff;">₹0</strong>
         </div>
       </div>
 
       <div class="action-btns">
         <button type="button" class="btn btn-wa" onclick="sendWhatsApp()">
-          📲 WhatsApp पर रसीद भेजें
+          📲 WhatsApp पर पूरी रसीद भेजें
         </button>
         <button type="button" class="btn btn-pdf" onclick="generatePDF()">
           📄 Official Invoice (PDF) डाउनलोड करें
@@ -285,82 +320,101 @@
     </form>
   </div>
 
-  <!-- Hidden Container for PDF Rendering -->
+  <!-- Hidden Printable Official Invoice Area -->
   <div id="invoice-render">
     <div class="inv-header">
-      <div style="font-size:12px; font-weight:bold; letter-spacing:1px;">PAGE 1 : OFFICIAL INVOICE</div>
-      <h2 style="font-size:24px; margin-top:5px;">5 Brother's Fitness Club</h2>
-      <div style="font-size:13px; color:#555; margin-top:3px;">"100% असली और असरदार रिजल्ट"</div>
-      <div style="font-size:12px; color:#444; margin-top:3px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</div>
+      <div style="font-size:12px; font-weight:bold; letter-spacing:1px; color:#555;">PAGE 1 : OFFICIAL INVOICE</div>
+      <h2 style="font-size:24px; color:#000; margin-top:5px;">5 Brother's Fitness Club</h2>
+      <div style="font-size:13px; color:#444; margin-top:3px;">"100% असली और असरदार रिजल्ट"</div>
+      <div style="font-size:12px; color:#666; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</div>
     </div>
 
     <table class="inv-table">
       <tr>
         <td class="bold">Bill ID:</td>
-        <td style="text-align:right;" id="invBill">#5BFC-7821</td>
+        <td style="text-align:right;" id="invBill"></td>
       </tr>
       <tr>
         <td class="bold">प्रकार:</td>
-        <td style="text-align:right;" id="invMode">Online UPI</td>
+        <td style="text-align:right;" id="invMode"></td>
       </tr>
       <tr>
         <td class="bold">जॉइनिंग तारीख:</td>
-        <td style="text-align:right;" id="invJoin">--</td>
+        <td style="text-align:right;" id="invJoin"></td>
       </tr>
       <tr>
         <td class="bold">भुगतान तारीख:</td>
-        <td style="text-align:right;" id="invPay">--</td>
+        <td style="text-align:right;" id="invPay"></td>
       </tr>
       <tr>
         <td class="bold">विलंब स्थिति:</td>
-        <td style="text-align:right;" id="invLate">--</td>
+        <td style="text-align:right;" id="invLate"></td>
       </tr>
       <tr>
         <td class="bold">सदस्य:</td>
-        <td style="text-align:right;" id="invMember">--</td>
+        <td style="text-align:right;" id="invMember"></td>
       </tr>
       <tr>
         <td class="bold">पिता का नाम:</td>
-        <td style="text-align:right;" id="invFather">--</td>
+        <td style="text-align:right;" id="invFather"></td>
       </tr>
       <tr>
         <td class="bold">मोबाइल:</td>
-        <td style="text-align:right;" id="invPhone">--</td>
+        <td style="text-align:right;" id="invPhone"></td>
       </tr>
       <tr>
         <td class="bold">श्रेणी व प्लान:</td>
-        <td style="text-align:right;" id="invPlan">--</td>
+        <td style="text-align:right;" id="invPlan"></td>
       </tr>
-      <tr id="invDiscountRow" style="display:none; color:#d97706;">
+      <tr id="invDiscountRow" style="display:none; color:#b45309;">
         <td class="bold">विशेष छूट (Special Discount):</td>
         <td style="text-align:right; font-weight:bold;" id="invDiscountVal">-₹0</td>
       </tr>
       <tr>
         <td class="bold">जमा फीस:</td>
-        <td style="text-align:right; font-weight:bold; color:green; font-size:16px;" id="invPaid">₹0</td>
+        <td style="text-align:right; font-weight:bold; color:#15803d; font-size:16px;" id="invPaid"></td>
       </tr>
       <tr>
         <td class="bold">बकाया राशि:</td>
-        <td style="text-align:right; font-weight:bold;" id="invDue">₹0</td>
+        <td style="text-align:right; font-weight:bold;" id="invDue"></td>
       </tr>
       <tr>
         <td class="bold">अगला भुगतान / वैधता:</td>
-        <td style="text-align:right; font-weight:bold;" id="invNextPay">--</td>
+        <td style="text-align:right; font-weight:bold;" id="invNextPay"></td>
       </tr>
     </table>
   </div>
 
   <script>
-    // Set Default Dates to Today
+    // Set default dates
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];
     document.getElementById('payDate').value = todayStr;
     document.getElementById('joinDate').value = todayStr;
 
+    // Auto Search Member from Local Database / Storage
+    function autoSearchMember() {
+      const ph = document.getElementById('mPhone').value.trim();
+      if (ph.length === 10) {
+        const stored = localStorage.getItem('member_' + ph);
+        if (stored) {
+          try {
+            const data = JSON.parse(stored);
+            if (data.name) document.getElementById('mName').value = data.name;
+            if (data.father) document.getElementById('fName').value = data.father;
+            if (data.joinDate) document.getElementById('joinDate').value = data.joinDate;
+            if (data.lastPay) document.getElementById('lastPayDate').value = data.lastPay;
+            recalculate();
+          } catch(e) {}
+        }
+      }
+    }
+
     function applyPlanDefaults() {
       const planVal = parseFloat(document.getElementById('planSelect').value);
       document.getElementById('planAmount').value = planVal;
       document.getElementById('paidAmount').value = planVal;
+      document.getElementById('chkDiscount').checked = false;
       recalculate();
     }
 
@@ -369,40 +423,40 @@
       const category = planSelect.options[planSelect.selectedIndex].getAttribute('data-cat');
       const planAmount = parseFloat(document.getElementById('planAmount').value) || 0;
       const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+      const isDiscountChecked = document.getElementById('chkDiscount').checked;
 
       // Late Days Calculation
       const joinVal = document.getElementById('joinDate').value;
       const payVal = document.getElementById('payDate').value;
       let lateText = "समय पर (On Time) ✅";
-      let lateDaysCount = 0;
 
       if (joinVal && payVal) {
         const jD = new Date(joinVal);
         const pD = new Date(payVal);
-        // Compare day-of-month based cycle
         const dueThisCycle = new Date(pD.getFullYear(), pD.getMonth(), jD.getDate());
         if (pD > dueThisCycle) {
           const diffMs = pD - dueThisCycle;
-          lateDaysCount = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-          lateText = `${lateDaysCount} दिन लेट ⚠️`;
+          const lateDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          lateText = `${lateDays} दिन लेट ⚠️`;
         }
       }
 
-      // Discount vs Due Logic
+      // Discount vs Due Checkbox logic
       let discount = 0;
       let due = 0;
 
-      if (category.includes("जॉब") && paidAmount < planAmount) {
-        // Special Discount logic for Job/Business Category
-        discount = planAmount - paidAmount;
-        due = 0;
-      } else {
-        if (paidAmount < planAmount) {
-          due = planAmount - paidAmount;
+      if (paidAmount < planAmount) {
+        const diff = planAmount - paidAmount;
+        if (isDiscountChecked) {
+          discount = diff;
+          due = 0;
+        } else {
+          discount = 0;
+          due = diff;
         }
       }
 
-      // Next Pay Date (Default +1 Month)
+      // Next Pay / Validity
       let nextPayDate = "--";
       if (payVal) {
         const pD = new Date(payVal);
@@ -425,8 +479,7 @@
 
     function recalculate() {
       const res = getCalculations();
-      
-      // Update UI Box
+
       const discLine = document.getElementById('discountLine');
       if (res.discount > 0) {
         discLine.style.display = 'flex';
@@ -436,14 +489,31 @@
       }
 
       document.getElementById('dueText').innerText = res.due > 0 ? `₹${res.due}` : '₹0 (कोई बकाया नहीं)';
+      document.getElementById('dueText').style.color = res.due > 0 ? '#ff4d4d' : '#25D366';
       document.getElementById('lateText').innerText = res.lateText;
       document.getElementById('lateText').style.color = res.lateText.includes("लेट") ? '#ff4d4d' : '#25D366';
     }
 
     function formatDateDMY(dateStr) {
       if (!dateStr) return "--";
-      const [y, m, d] = dateStr.split('-');
-      return `${d}/${m}/${y}`;
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return dateStr;
+    }
+
+    function saveMemberData() {
+      const ph = document.getElementById('mPhone').value.trim();
+      if (ph.length === 10) {
+        const data = {
+          name: document.getElementById('mName').value.trim(),
+          father: document.getElementById('fName').value.trim(),
+          joinDate: document.getElementById('joinDate').value,
+          lastPay: document.getElementById('payDate').value
+        };
+        localStorage.setItem('member_' + ph, JSON.stringify(data));
+      }
     }
 
     function sendWhatsApp() {
@@ -454,6 +524,7 @@
         return;
       }
 
+      saveMemberData();
       const res = getCalculations();
       const billNo = document.getElementById('billNo').value;
       const joinFormatted = formatDateDMY(document.getElementById('joinDate').value);
@@ -461,14 +532,14 @@
       const lastPayFormatted = formatDateDMY(document.getElementById('lastPayDate').value);
       const payMode = document.getElementById('payMode').value;
 
-      let discountMsg = "";
+      let discountLine = "";
       if (res.discount > 0) {
-        discountMsg = `• *विशेष छूट:* ₹${res.discount} (Special Discount) 🎁\n`;
+        discountLine = `• *विशेष छूट:* ₹${res.discount} (Special Discount) 🎁\n`;
       }
 
-      let lastPayMsg = "";
+      let lastPayLine = "";
       if (lastPayFormatted !== "--") {
-        lastPayMsg = `• *पिछला भुगतान:* ${lastPayFormatted}\n`;
+        lastPayLine = `• *पिछला भुगतान:* ${lastPayFormatted}\n`;
       }
 
       const msg = `🏋️‍♂️ *5 BROTHER'S FITNESS CLUB*
@@ -481,11 +552,11 @@
 • *जॉइनिंग तिथि:* ${joinFormatted}
 • *भुगतान तिथि:* ${payFormatted}
 • *विलंब स्थिति:* ${res.lateText}
-${lastPayMsg}
+${lastPayLine}
 💰 *शुल्क व भुगतान विवरण:*
 • *चुना गया प्लान:* ${res.category} (₹${res.planAmount})
-• *जमा राशि:* ₹${res.paidAmount} ${payMode}
-${discountMsg}• *बकाया राशि:* ₹${res.due} ${res.due === 0 ? '(कोई बकाया नहीं)' : ''}
+• *जमा राशि:* ₹${res.paidAmount} (${payMode})
+${discountLine}• *बकाया राशि:* ₹${res.due} ${res.due === 0 ? '(कोई बकाया नहीं)' : '⚠️'}
 • *अगला भुगतान:* ${res.nextPayDate}
 • *खाता स्थिति:* सक्रिय (Active)
 ━━━━━━━━━━━━━━━━━━━━
@@ -493,7 +564,6 @@ ${discountMsg}• *बकाया राशि:* ₹${res.due} ${res.due === 0 
 हर महीने फीस जमा करने के बजाय लंबी सदस्यता लेकर बचत करें:
 • 3 महीने का प्लान: ₹1,200 *(सीधे ₹300 की बचत)*
 • 6 महीने का प्लान: ₹2,200 *(सीधे ₹800 की बचत)*
-*(अगली बार लंबा प्लान चुनें और पैसे बचाएं)*
 ━━━━━━━━━━━━━━━━━━━━
 📍 उमराव खेड़ा, अकरमपुर, उन्नाव
 📞 संपर्क: 9140417259`;
@@ -509,26 +579,27 @@ ${discountMsg}• *बकाया राशि:* ₹${res.due} ${res.due === 0 
         return;
       }
 
+      saveMemberData();
       const res = getCalculations();
-      
-      // Populate Printable Form
-      document.getElementById('invBill').innerText = document.getElementById('billNo').value;
-      document.getElementById('invMode').innerText = document.getElementById('payMode').value;
-      document.getElementById('invJoin').innerText = formatDateDMY(document.getElementById('joinDate').value);
-      document.getElementById('invPay').innerText = formatDateDMY(document.getElementById('payDate').value);
-      document.getElementById('invLate').innerText = res.lateText;
-      document.getElementById('invMember').innerText = mName;
-      document.getElementById('invFather').innerText = document.getElementById('fName').value.trim() || "--";
-      document.getElementById('invPhone').innerText = document.getElementById('mPhone').value.trim();
-      document.getElementById('invPlan').innerText = `${res.category} | ₹${res.planAmount}`;
-      document.getElementById('invPaid').innerText = `₹${res.paidAmount}`;
-      document.getElementById('invDue').innerText = `₹${res.due}`;
-      document.getElementById('invNextPay').innerText = res.nextPayDate;
+
+      // Values injection for printable official invoice
+      document.getElementById('invBill').textContent = document.getElementById('billNo').value;
+      document.getElementById('invMode').textContent = document.getElementById('payMode').value;
+      document.getElementById('invJoin').textContent = formatDateDMY(document.getElementById('joinDate').value);
+      document.getElementById('invPay').textContent = formatDateDMY(document.getElementById('payDate').value);
+      document.getElementById('invLate').textContent = res.lateText;
+      document.getElementById('invMember').textContent = mName;
+      document.getElementById('invFather').textContent = document.getElementById('fName').value.trim() || "--";
+      document.getElementById('invPhone').textContent = document.getElementById('mPhone').value.trim();
+      document.getElementById('invPlan').textContent = `${res.category} | ₹${res.planAmount}`;
+      document.getElementById('invPaid').textContent = `₹${res.paidAmount}`;
+      document.getElementById('invDue').textContent = res.due > 0 ? `₹${res.due}` : '₹0';
+      document.getElementById('invNextPay').textContent = res.nextPayDate;
 
       const discRow = document.getElementById('invDiscountRow');
       if (res.discount > 0) {
         discRow.style.display = 'table-row';
-        document.getElementById('invDiscountVal').innerText = `-₹${res.discount}`;
+        document.getElementById('invDiscountVal').textContent = `-₹${res.discount}`;
       } else {
         discRow.style.display = 'none';
       }
@@ -540,7 +611,7 @@ ${discountMsg}• *बकाया राशि:* ₹${res.due} ${res.due === 0 
         margin:       10,
         filename:     `Invoice_${mName}_${document.getElementById('billNo').value}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
+        html2canvas:  { scale: 2, useCORS: true },
         jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
       };
 
@@ -553,5 +624,5 @@ ${discountMsg}• *बकाया राशि:* ₹${res.due} ${res.due === 0 
     recalculate();
   </script>
 </body>
-          </html>
-          
+  </html>
+        
