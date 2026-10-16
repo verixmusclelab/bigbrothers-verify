@@ -277,26 +277,26 @@
 
     function getBestImage(item) {
       if (!item) return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
-      if (item.image && item.image.startsWith('http')) return item.image;
+      if (item.image && typeof item.image === 'string' && item.image.startsWith('http')) return item.image;
       return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
     }
 
     async function loadCatalog() {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ffcc00; font-size:16px;">Loading verified products...</div>';
+      
       try {
         const res = await fetch('products.json?v=' + Date.now());
+        if (!res.ok) throw new Error('Status: ' + res.status);
         catalog = await res.json();
         renderCatalog();
       } catch (err) {
-        document.getElementById('productGrid').innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px;">
-            Catalog load nahi ho saka: ${err.message}
-          </div>
-        `;
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px;">Error loading products: ' + err.message + '</div>';
       }
     }
 
     function renderCatalog() {
-      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
       const grid = document.getElementById('productGrid');
 
       const filtered = catalog.filter(p => {
@@ -310,52 +310,46 @@
         return;
       }
 
-      grid.innerHTML = filtered.map(item => {
-        const variants = item.variants && item.variants.length > 0 ? item.variants : [{ pack: 'Standard', price: 999, mrp: 1499 }];
-        const flavours = item.flavours && item.flavours.length > 0 ? item.flavours : ['Regular'];
+      let html = '';
+      filtered.forEach(item => {
+        const variants = (item.variants && item.variants.length > 0) ? item.variants : [{ pack: 'Standard', price: 999, mrp: 1499 }];
+        const flavours = (item.flavours && item.flavours.length > 0) ? item.flavours : ['Regular'];
         const firstVar = variants[0];
         const saveAmt = Math.max(300, (firstVar.mrp - firstVar.price) || 300);
         const imgSrc = getBestImage(item);
 
-        return `
-          <div class="card" id="card-${item.id}">
-            ${item.badge ? `<div class="card-badge">${item.badge}</div>` : ''}
-            <div class="img-container">
-              <img src="${imgSrc}" alt="${item.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.weserv.nl/?url=' + encodeURIComponent('${imgSrc}');">
-            </div>
-            <h3>${item.name}</h3>
-            <p class="desc">${item.brand} • ${firstVar.servings || '100% Genuine'}</p>
+        let packOptions = '';
+        variants.forEach(v => {
+          packOptions += '<option value="' + v.price + '" data-mrp="' + v.mrp + '" data-pack="' + v.pack + '">' + v.pack + '</option>';
+        });
 
-            <button class="product-info-btn" onclick="openProductDetails(${item.id})">📋 Full Details / पूरी जानकारी</button>
+        let flavOptions = '';
+        flavours.forEach(f => {
+          flavOptions += '<option value="' + f + '">' + f + '</option>';
+        });
 
-            <!-- ALAG-ALAG WEIGHT AUR FLAVOUR -->
-            <div class="dropdown-grp">
-              <div class="dropdown-box">
-                <label>Weight / Pack:</label>
-                <select class="size-select" onchange="updateCardPrice(${item.id}, this)">
-                  ${variants.map(v => `<option value="${v.price}" data-mrp="${v.mrp}" data-pack="${v.pack}" data-serv="${v.servings \vert{}\vert{} ''}">${v.pack}</option>`).join('')}
-                </select>
-              </div>
-              <div class="dropdown-box">
-                <label>Flavour:</label>
-                <select class="flavour-select">
-                  ${flavours.map(f => `<option value="${f}">${f}</option>`).join('')}
-                </select>
-              </div>
-            </div>
+        html += '<div class="card" id="card-' + item.id + '">' +
+          (item.badge ? '<div class="card-badge">' + item.badge + '</div>' : '') +
+          '<div class="img-container"><img src="' + imgSrc + '" alt="' + item.name + '" loading="lazy" referrerpolicy="no-referrer"></div>' +
+          '<h3>' + item.name + '</h3>' +
+          '<p class="desc">' + item.brand + ' • ' + (firstVar.servings || '100% Genuine') + '</p>' +
+          '<button class="product-info-btn" onclick="openProductDetails(' + item.id + ')">📋 Full Details / पूरी जानकारी</button>' +
+          '<div class="dropdown-grp">' +
+            '<div class="dropdown-box"><label>Weight / Pack:</label><select class="size-select" onchange="updateCardPrice(' + item.id + ', this)">' + packOptions + '</select></div>' +
+                        '<div class="dropdown-box"><label>Flavour:</label><select class="flavour-select">' + flavOptions + '</select></div>' +
+          '</div>' +
+          '<div class="price-container">' +
+            '<span class="mrp-cut" id="mrp-' + item.id + '">Flipkart: ₹' + firstVar.mrp + '</span>' +
+            '<div class="price" id="price-' + item.id + '">₹' + firstVar.price + '</div>' +
+            '<div class="save-badge" id="save-' + item.id + '">🔥 ₹' + saveAmt + ' Sasta Guaranteed</div>' +
+          '</div>' +
+          '<button onclick="addToCart(' + item.id + ')" class="buy-btn buy-cart">🛒 Add to Cart</button>' +
+          '<button onclick="quickWaOrder(' + item.id + ')" class="buy-btn buy-wa">WhatsApp Order</button>' +
+          '<a href="tel:9990954574" class="buy-btn buy-call">Call Now</a>' +
+        '</div>';
+      });
 
-            <div class="price-container">
-                       <span class="mrp-cut" id="mrp-${item.id}">Flipkart: ₹${firstVar.mrp}</span>
-              <div class="price" id="price-${item.id}">₹${firstVar.price}</div>
-              <div class="save-badge" id="save-${item.id}">🔥 ₹${saveAmt} Sasta Guaranteed</div>
-            </div>
-
-            <button onclick="addToCart(${item.id})" class="buy-btn buy-cart">🛒 Add to Cart</button>
-            <button onclick="quickWaOrder(${item.id})" class="buy-btn buy-wa">WhatsApp Order</button>
-            <a href="tel:9990954574" class="buy-btn buy-call">Call Now</a>
-          </div>
-        `;
-      }).join('');
+      grid.innerHTML = html;
     }
 
     function updateCardPrice(id, selectElem) {
@@ -386,20 +380,19 @@
       currentDetailItem = item;
 
       document.getElementById('detailTitle').innerText = item.name;
-      document.getElementById('detailDesc').innerText = `${item.brand} • ${item.badge || '100% Genuine'}`;
+      document.getElementById('detailDesc').innerText = item.brand + ' • ' + (item.badge || '100% Genuine');
       document.getElementById('detailImg').src = getBestImage(item);
 
       const sizesDiv = document.getElementById('detailSizes');
-      sizesDiv.innerHTML = (item.variants || []).map(v => `<div>${v.pack} — <strong>₹${v.price}</strong> <span style="text-decoration:line-through; color:#777;">(MRP ₹${v.mrp})</span></div>`).join('');
+      sizesDiv.innerHTML = (item.variants || []).map(v => '<div>' + v.pack + ' — <strong>₹' + v.price + '</strong> <span style="text-decoration:line-through; color:#777;">(MRP ₹' + v.mrp + ')</span></div>').join('');
 
       document.getElementById('detailFlavours').innerText = (item.flavours || []).join(', ') || 'Regular / Unflavoured';
 
-      let usageTxt = item.nutrition && item.nutrition.usage ? item.nutrition.usage : '1 scoop daily with cold water or milk as directed.';
+      let usageTxt = (item.nutrition && item.nutrition.usage) ? item.nutrition.usage : '1 scoop daily with cold water or milk as directed.';
       if (item.nutrition) {
-        usageTxt += '<br><br><strong>Nutrition Facts:</strong><br>' + Object.entries(item.nutrition).filter(([k]) => k !== 'usage').map(([k, v]) => `• ${k.replace(/_/g, ' ').toUpperCase()}: ${v}`).join('<br>');
+        usageTxt += '<br><br><strong>Nutrition Facts:</strong><br>' + Object.entries(item.nutrition).filter(([k]) => k !== 'usage').map(([k, v]) => '• ' + k.replace(/_/g, ' ').toUpperCase() + ': ' + v).join('<br>');
       }
       document.getElementById('detailUsage').innerHTML = usageTxt;
-
       document.getElementById('productInfoModal').style.display = 'flex';
     }
 
@@ -423,19 +416,19 @@
       const pack = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-pack');
       const price = parseInt(sizeSel.value);
       const mrp = parseInt(sizeSel.options[sizeSel.selectedIndex].getAttribute('data-mrp')) || (price + 300);
-      const flavour = flavSel.value;
+      const flavour = flavSel ? flavSel.value : 'Regular';
 
-      const cartId = `${id}_${pack}_${flavour}`;
+      const cartId = id + '_' + pack + '_' + flavour;
       const existing = cart.find(c => c.cartId === cartId);
 
       if (existing) {
         existing.qty += 1;
       } else {
-        cart.push({ cartId, id, name: item.name, pack, flavour, price, mrp, qty: 1 });
+        cart.push({ cartId: cartId, id: id, name: item.name, pack: pack, flavour: flavour, price: price, mrp: mrp, qty: 1 });
       }
 
       updateCartBadge();
-      showToast(`🛒 <b>${item.name}</b> (${pack} - ${flavour}) Cart mein add ho gaya!`);
+      showToast('🛒 <b>' + item.name + '</b> (' + pack + ' - ' + flavour + ') Cart mein add ho gaya!');
     }
 
     function updateCartBadge() {
@@ -467,20 +460,18 @@
       list.innerHTML = cart.map(c => {
         const sub = c.price * c.qty;
         total += sub;
-        return `
-          <div class="cart-item-row">
-            <div>
-              <div style="font-weight:bold; color:#fff;">${c.name}</div>
-              <div style="color:#aaa; font-size:11px;">${c.pack} • ${c.flavour}</div>
-              <div style="color:#ffcc00; margin-top:2px;">₹${c.price} × ${c.qty} = ₹${sub}</div>
-            </div>
-            <div class="cart-qty-ctrl">
-              <button onclick="changeCartQty('${c.cartId}', -1)">-</button>
-              <span>${c.qty}</span>
-              <button onclick="changeCartQty('${c.cartId}', 1)">+</button>
-            </div>
-          </div>
-        `;
+        return '<div class="cart-item-row">' +
+          '<div>' +
+            '<div style="font-weight:bold; color:#fff;">' + c.name + '</div>' +
+            '<div style="color:#aaa; font-size:11px;">' + c.pack + ' • ' + c.flavour + '</div>' +
+            '<div style="color:#ffcc00; margin-top:2px;">₹' + c.price + ' × ' + c.qty + ' = ₹' + sub + '</div>' +
+          '</div>' +
+          '<div class="cart-qty-ctrl">' +
+            '<button onclick="changeCartQty(\'' + c.cartId + '\', -1)">-</button>' +
+            '<span>' + c.qty + '</span>' +
+            '<button onclick="changeCartQty(\'' + c.cartId + '\', 1)">+</button>' +
+          '</div>' +
+        '</div>';
       }).join('');
 
       document.getElementById('billSubtotal').innerText = '₹' + total;
@@ -556,47 +547,46 @@
       let payTerms = "";
 
       if (isCod) {
-        advanceAmt = Math.round(d.totalAmt * 0.5); // 50% Advance
+        advanceAmt = Math.round(d.totalAmt * 0.5);
         remainingAmt = d.totalAmt - advanceAmt;
         payAmount = advanceAmt;
-        payTerms = `Cash on Delivery (50% Advance Online: ₹${advanceAmt} + 50% Baki Delivery Par: ₹${remainingAmt})`;
+        payTerms = "Cash on Delivery (50% Advance Online: ₹" + advanceAmt + " + 50% Baki Delivery Par: ₹" + remainingAmt + ")";
       } else {
-        payTerms = `100% Full Online Paid (₹${d.totalAmt}) via ${d.payMethod}`;
+        payTerms = "100% Full Online Paid (₹" + d.totalAmt + ") via " + d.payMethod;
       }
 
-      let waMsg = `*🔥 NAYA ORDER (${d.orderId})*%0A%0A` +
-        `*Customer Details:*%0A` +
-        `👤 Naam: ${encodeURIComponent(d.name)}%0A` +
-        `📞 Phone: ${encodeURIComponent(d.phone)}%0A` +
-        `🏠 Address: ${encodeURIComponent(d.addr)}, ${encodeURIComponent(d.city)} - ${encodeURIComponent(d.pin)}%0A%0A` +
-        `*Ordered Products:*%0A`;
+      let waMsg = "*🔥 NAYA ORDER (" + d.orderId + ")*%0A%0A" +
+        "*Customer Details:*%0A" +
+        "👤 Naam: " + encodeURIComponent(d.name) + "%0A" +
+        "📞 Phone: " + encodeURIComponent(d.phone) + "%0A" +
+        "🏠 Address: " + encodeURIComponent(d.addr) + ", " + encodeURIComponent(d.city) + " - " + encodeURIComponent(d.pin) + "%0A%0A" +
+        "*Ordered Products:*%0A";
 
       cart.forEach((c, i) => {
-        waMsg += `${i+1}. ${encodeURIComponent(c.name)} (${c.pack}, ${c.flavour}) × ${c.qty} = ₹${c.price * c.qty}%0A`;
+        waMsg += (i+1) + ". " + encodeURIComponent(c.name) + " (" + c.pack + ", " + c.flavour + ") × " + c.qty + " = ₹" + (c.price * c.qty) + "%0A";
       });
 
-      waMsg += `%0A*Total Bill:* ₹${d.totalAmt}%0A` +
-        `*Payment Terms:* ${encodeURIComponent(payTerms)}%0A` +
-        `*Delivery Time:* 1 Week ke andar doorstep delivery%0A` +
-        `*UPI ID:* ${UPI_CONFIG.vpa}%0A` +
-        `*Status:* Order Initiated & Payment In Progress`;
+      waMsg += "%0A*Total Bill:* ₹" + d.totalAmt + "%0A" +
+        "*Payment Terms:* " + encodeURIComponent(payTerms) + "%0A" +
+        "*Delivery Time:* 1 Week ke andar doorstep delivery%0A" +
+        "*UPI ID:* " + UPI_CONFIG.vpa + "%0A" +
+        "*Status:* Order Initiated & Payment In Progress";
 
-      const waUrl = `https://wa.me/${UPI_CONFIG.whatsappNumber}?text=${waMsg}`;
+      const waUrl = "https://wa.me/" + UPI_CONFIG.whatsappNumber + "?text=" + waMsg;
 
       document.getElementById('wowModal').style.display = 'none';
       cart = [];
       updateCartBadge();
 
-      // Universal UPI Intent Link
-      let upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${payAmount}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
+      let upiUrl = "upi://pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + payAmount + "&cu=INR&tn=" + encodeURIComponent(d.orderId);
       
       if (d.payMethod === 'Google Pay') {
-        upiUrl = `gpay://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${payAmount}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
+        upiUrl = "gpay://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + payAmount + "&cu=INR&tn=" + encodeURIComponent(d.orderId);
       } else if (d.payMethod === 'PhonePe') {
-        upiUrl = `phonepe://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${payAmount}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
+        upiUrl = "phonepe://upi/pay?pa=" + encodeURIComponent(UPI_CONFIG.vpa) + "&pn=" + encodeURIComponent(UPI_CONFIG.merchantName) + "&am=" + payAmount + "&cu=INR&tn=" + encodeURIComponent(d.orderId);
       }
 
-      alert(`Order ${d.orderId} Place Ho Raha Hai!\n\nBhugtan Rashi: ₹${payAmount}\n(Delivery Timeline: 1 Week)\n\nOk dabate hi Payment App khulega aur details WhatsApp par send ho jayegi.`);
+      alert("Order " + d.orderId + " Place Ho Raha Hai!\n\nBhugtan Rashi: ₹" + payAmount + "\n(Delivery Timeline: 1 Week)\n\nOk dabate hi Payment App khulega aur details WhatsApp par send ho jayegi.");
 
       setTimeout(() => { window.open(waUrl, '_blank'); }, 1500);
       window.location.href = upiUrl;
@@ -613,16 +603,16 @@
       const mrp = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-mrp') || (parseInt(price) + 300);
       const flav = flavSel ? flavSel.value : 'Regular';
 
-      const msg = `*DIRECT ENQUIRY / ORDER*%0A%0A` +
-        `*Product:* ${encodeURIComponent(item.name)}%0A` +
-        `*Brand:* ${encodeURIComponent(item.brand)}%0A` +
-        `*Pack:* ${pack}%0A` +
-        `*Flavour:* ${flav}%0A` +
-        `*Store Offer Price:* ₹${price} (Flipkart: ₹${mrp})%0A` +
-        `*Delivery Time:* 1 Week Delivery%0A%0A` +
-        `Mujhe ye product order karna hai. Delivery details batayein.`;
+      const msg = "*DIRECT ENQUIRY / ORDER*%0A%0A" +
+        "*Product:* " + encodeURIComponent(item.name) + "%0A" +
+        "*Brand:* " + encodeURIComponent(item.brand) + "%0A" +
+        "*Pack:* " + pack + "%0A" +
+        "*Flavour:* " + flav + "%0A" +
+        "*Store Offer Price:* ₹" + price + " (Flipkart: ₹" + mrp + ")%0A" +
+        "*Delivery Time:* 1 Week Delivery%0A%0A" +
+        "Mujhe ye product order karna hai. Delivery details batayein.";
 
-      window.open(`https://wa.me/${UPI_CONFIG.whatsappNumber}?text=${msg}`, '_blank');
+      window.open("https://wa.me/" + UPI_CONFIG.whatsappNumber + "?text=" + msg, '_blank');
     }
 
     function showToast(msg) {
@@ -641,17 +631,13 @@
 
       const content = document.getElementById("verify-content");
       if (code.startsWith("LBR") || code.startsWith("ON") || code.startsWith("GNC") || code.startsWith("FIS") || code.startsWith("MSW") || code.startsWith("ULT")) {
-        content.innerHTML = `
-          <div style="font-size:45px; margin-bottom:8px;">✅</div>
-          <h2 style="color:#00ff66; font-size:18px; font-weight:900; margin-bottom:8px;">100% GENUINE CERTIFIED</h2>
-          <p style="color:#ddd; font-size:13px; line-height:1.5;">Batch & Seal Authenticity Verified.<br><strong>Code:</strong> <span style="color:#ffcc00;">${code}</span><br><strong>Store:</strong> 5 Brothers Fitness Club</p>
-        `;
+        content.innerHTML = '<div style="font-size:45px; margin-bottom:8px;">✅</div>' +
+          '<h2 style="color:#00ff66; font-size:18px; font-weight:900; margin-bottom:8px;">100% GENUINE CERTIFIED</h2>' +
+          '<p style="color:#ddd; font-size:13px; line-height:1.5;">Batch & Seal Authenticity Verified.<br><strong>Code:</strong> <span style="color:#ffcc00;">' + code + '</span><br><strong>Store:</strong> 5 Brothers Fitness Club</p>';
       } else {
-        content.innerHTML = `
-          <div style="font-size:45px; margin-bottom:8px;">❌</div>
-          <h2 style="color:#ef4444; font-size:18px; font-weight:900; margin-bottom:8px;">VERIFICATION FAILED</h2>
-          <p style="color:#ddd; font-size:13px;">Code authenticated database mein nahi mila. Duplicate ya invalid code.</p>
-        `;
+        content.innerHTML = '<div style="font-size:45px; margin-bottom:8px;">❌</div>' +
+          '<h2 style="color:#ef4444; font-size:18px; font-weight:900; margin-bottom:8px;">VERIFICATION FAILED</h2>' +
+          '<p style="color:#ddd; font-size:13px;">Code authenticated database mein nahi mila. Duplicate ya invalid code.</p>';
       }
       document.getElementById("verification-overlay").style.display = "flex";
       document.getElementById("manualCodeInput").value = "";
