@@ -54,7 +54,7 @@
     .product-info-btn { display:block; width:100%; padding:9px; margin:4px 0 10px; border:1px solid #ffcc00; border-radius:8px; background:#222; color:#ffcc00; font-size:13px; font-weight:bold; cursor:pointer; }
     .product-info-btn:hover { background:#ffcc00; color:#000; }
 
-    /* ALAG-ALAG WEIGHT AUR FLAVOUR ROW */
+    /* Dropdown Grid */
     .dropdown-grp { display:flex; gap:8px; margin-bottom:12px; text-align:left; }
     .dropdown-box { width:50%; }
     .dropdown-box label { display:block; font-size:11px; color:#aaa; margin-bottom:3px; font-weight:bold; }
@@ -328,7 +328,7 @@
 
             <button class="product-info-btn" onclick="openProductDetails(${item.id})">📋 Full Details / पूरी जानकारी</button>
 
-            <!-- EK TARAF WEIGHT AUR EK TARAF FLAVOUR -->
+            <!-- ALAG-ALAG WEIGHT AUR FLAVOUR -->
             <div class="dropdown-grp">
               <div class="dropdown-box">
                 <label>Weight / Pack:</label>
@@ -344,8 +344,8 @@
               </div>
             </div>
 
-                        <div class="price-container">
-              <span class="mrp-cut" id="mrp-${item.id}">Flipkart: ₹${firstVar.mrp}</span>
+            <div class="price-container">
+                       <span class="mrp-cut" id="mrp-${item.id}">Flipkart: ₹${firstVar.mrp}</span>
               <div class="price" id="price-${item.id}">₹${firstVar.price}</div>
               <div class="save-badge" id="save-${item.id}">🔥 ₹${saveAmt} Sasta Guaranteed</div>
             </div>
