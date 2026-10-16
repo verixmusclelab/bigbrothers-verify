@@ -373,9 +373,7 @@
 
             <div class="dropdown-grp">
               <select class="size-select" onchange="updateCardPrice(${item.id}, this)">
-                ${variants.map((v, i) => `<option value="${v.price}" data-mrp="${v.mrp}" data-pack="${v.pack}" data-serv="${v.servings \vert{}\vert{} ''}">${v.pack}</option>`).join('')}
-              </select>
-              <select class="flavour-select">
+                ${variants.map((v, i) => `<option value="${v.price}" data-mrp="${v.mrp}" data-pack="${v.pack}" data-serv="${v.servings || ''}">${v.pack}</option>`).join('')}
                 ${flavours.map(f => `<option value="${f}">${f}</option>`).join('')}
               </select>
             </div>
