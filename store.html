@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>5 Brother's Fitness Club | Supplement Store</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #0c0d11; color: #fff; padding-bottom: 70px; }
+
+    /* Top Sticky Header */
+    .header-bar {
+      position: sticky;
+      top: 0;
+      background: #14171f;
+      padding: 12px 14px 8px 14px;
+      z-index: 100;
+      border-bottom: 1px solid #232733;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffcc00;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge-count {
+      font-size: 11px;
+      background: #232733;
+      color: #aaa;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    /* Search Bar */
+    .search-box {
+      width: 100%;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .search-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 2px solid #ffcc00;
+      background: #090a0d;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    /* Filter Scroll Bars */
+    .filter-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 4px 0 6px 0;
+      scrollbar-width: none;
+    }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+    .chip {
+      background: #1e222d;
+      border: 1px solid #313747;
+      color: #bbb;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    .chip.active {
+      background: #ffcc00;
+      color: #000;
+      border-color: #ffcc00;
+    }
+
+    /* Product Grid */
+    .grid-container {
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media(min-width: 600px) {
+      .grid-container { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+    }
+
+    /* Product Card */
+    .prod-card {
+      background: #151821;
+      border: 1px solid #232836;
+      border-radius: 12px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    .prod-img-box {
+      width: 100%;
+      height: 130px;
+      background: #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      margin-bottom: 8px;
+    }
+    .prod-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .prod-brand {
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffcc00;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .prod-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #e6e6e6;
+      margin: 3px 0 6px 0;
+      line-height: 1.3;
+      height: 32px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .sale-price {
+      font-size: 15px;
+      font-weight: 900;
+      color: #25D366;
+    }
+    .mrp {
+      font-size: 10px;
+      color: #777;
+      text-decoration: line-through;
+    }
+    .order-btn {
+      background: #ffcc00;
+      color: #000;
+      font-weight: 800;
+      font-size: 11px;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+    .order-btn:active { background: #e6b800; }
+
+    /* Loading & Empty State */
+    .msg-center {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px 20px;
+      color: #888;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header-bar">
+    <div class="brand-title">
+      <span>5BF LIVE STORE</span>
+      <span class="badge-count" id="itemCount">Loading...</span>
+    </div>
+
+    <!-- Search Input -->
+    <div class="search-box">
+      <input type="text" id="storeSearch" class="search-input" placeholder="Search Whey, Shilajit, Pre-Workout, Brand..." oninput="applyFilters()">
+    </div>
+
+    <!-- Categories Filter -->
+    <div class="filter-scroll" id="catChips">
+      <div class="chip active" onclick="setCategory('ALL', this)">All Categories</div>
+      <div class="chip" onclick="setCategory('Whey Protein', this)">Whey Protein</div>
+      <div class="chip" onclick="setCategory('Creatine', this)">Creatine</div>
+      <div class="chip" onclick="setCategory('Mass Gainer', this)">Mass Gainer</div>
+      <div class="chip" onclick="setCategory('Pre-Workout', this)">Pre-Workout</div>
+      <div class="chip" onclick="setCategory('Peanut Butter', this)">Peanut Butter</div>
+      <div class="chip" onclick="setCategory('Shilajit', this)">Shilajit</div>
+      <div class="chip" onclick="setCategory('Multivitamin', this)">Multivitamin</div>
+      <div class="chip" onclick="setCategory('Fish Oil', this)">Fish Oil</div>
+    </div>
+
+    <!-- Brand Filter -->
+    <div class="filter-scroll" id="brandChips">
+      <div class="chip active" onclick="setBrand('ALL', this)">All Brands</div>
+      <div class="chip" onclick="setBrand('MuscleBlaze', this)">MuscleBlaze</div>
+      <div class="chip" onclick="setBrand('Optimum Nutrition', this)">ON</div>
+      <div class="chip" onclick="setBrand('Labrada Nutrition', this)">Labrada</div>
+      <div class="chip" onclick="setBrand('Wellcore', this)">Wellcore</div>
+      <div class="chip" onclick="setBrand('Big Daddy Nutrition', this)">Big Daddy</div>
+      <div class="chip" onclick="setBrand('MyFitness', this)">MyFitness</div>
+      <div class="chip" onclick="setBrand('Pintola', this)">Pintola</div>
+      <div class="chip" onclick="setBrand('Kapiva', this)">Kapiva</div>
+      <div class="chip" onclick="setBrand('AS-IT-IS Nutrition', this)">AS-IT-IS</div>
+      <div class="chip" onclick="setBrand('MuscleTech', this)">MuscleTech</div>
+      <div class="chip" onclick="setBrand('GNC', this)">GNC</div>
+    </div>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="grid-container" id="productGrid">
+    <div class="msg-center">Loading catalogue...</div>
+  </div>
+
+  <script>
+    let allProducts = [];
+    let activeCategory = "ALL";
+    let activeBrand = "ALL";
+    const WHATSAPP_NUM = "919140417259";
+
+    // Load Master JSON
+    fetch("products.json")
+      .then(res => res.json())
+      .then(data => {
+        allProducts = data;
+        applyFilters();
+      })
+      .catch(err => {
+        document.getElementById("productGrid").innerHTML = `
+          <div class="msg-center">Error loading products.json. Make sure the file exists in your repository.</div>
+        `;
+      });
+
+    function renderProducts(list) {
+      const grid = document.getElementById("productGrid");
+      document.getElementById("itemCount").innerText = list.length + " Items";
+
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="msg-center">No matching products found.</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(item => {
+        const waMsg = encodeURIComponent("Hello 5BF, I want to buy " + item.title + " at " + item.price);
+        return `
+          <div class="prod-card">
+            <div class="prod-img-box">
+              <img src="${item.img}" class="prod-img" loading="lazy" alt="${item.title}">
+            </div>
+            <div>
+              <div class="prod-brand">${item.brand}</div>
+              <div class="prod-title">${item.title}</div>
+              <div class="price-row">
+                <span class="sale-price">${item.price}</span>
+                <span class="mrp">${item.mrp}</span>
+              </div>
+            </div>
+            <a href="https://wa.me/${WHATSAPP_NUM}?text=${waMsg}" class="order-btn" target="_blank">Order Now</a>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function applyFilters() {
+      const query = document.getElementById("storeSearch").value.toLowerCase().trim();
+
+      const filtered = allProducts.filter(item => {
+        const matchCat = (activeCategory === "ALL" || item.category.toLowerCase() === activeCategory.toLowerCase());
+        const matchBrand = (activeBrand === "ALL" || item.brand.toLowerCase() === activeBrand.toLowerCase());
+        const matchSearch = item.title.toLowerCase().includes(query) ||
+                            item.brand.toLowerCase().includes(query) ||
+                            item.category.toLowerCase().includes(query);
+
+        return matchCat && matchBrand && matchSearch;
+      });
+
+      renderProducts(filtered);
+    }
+
+    function setCategory(cat, el) {
+      activeCategory = cat;
+      document.querySelectorAll("#catChips .chip").forEach(c => c.classList.remove("active"));
+      el.classList.add("active");
+      applyFilters();
+    }
+
+    function setBrand(brand, el) {
+      activeBrand = brand;
+      document.querySelectorAll("#brandChips .chip").forEach(c => c.classList.remove("active"));
+      el.classList.add("active");
+      applyFilters();
+    }
+  </script>
+</body>
+</html>
