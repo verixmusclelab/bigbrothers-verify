@@ -1,1638 +1,4137 @@
 [
   {
     "id": 1,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Biozyme Performance Whey (Rich Chocolate, 2 kg)",
-    "category": "Whey Protein",
-    "price": "₹4,699",
-    "mrp": "₹5,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/s/w/s/-original-imagpjh87zfyfh6y.jpeg"
+    "brand": "Wellcore",
+    "name": "Wellcore Micronised Creatine Monohydrate",
+    "category": "Creatine",
+    "badge": "Top Rated",
+    "rating": "4.4",
+    "rating_count": "1.4L+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61bKk8VqZQL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g Unflavoured / 4.5g Flavoured)",
+      "protein_per_serving": "0 g",
+      "creatine": "3000 mg",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 200-250ml of cold water or juice. Drink 3-4 litres of water daily."
+    },
+    "flavours": ["Unflavoured", "Tropical Tango", "Watermelon", "Cola Blast"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "33 Servings",
+        "mrp": 699,
+        "price": 549
+      },
+      {
+        "pack": "122 g",
+        "servings": "27 Servings",
+        "mrp": 699,
+        "price": 539
+      },
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 1199,
+        "price": 899
+      },
+      {
+        "pack": "307 g",
+        "servings": "68 Servings",
+        "mrp": 1399,
+        "price": 1029
+      }
+    ]
   },
   {
     "id": 2,
     "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Raw Whey Isolate 90% (Unflavoured, 1 kg)",
-    "category": "Whey Protein",
-    "price": "₹2,499",
-    "mrp": "₹3,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/b/0/v/-original-imagxufz5yhgqzcf.jpeg"
+    "name": "MuscleBlaze Micronized Creatine Monohydrate",
+    "category": "Creatine",
+    "badge": "Best Seller",
+    "rating": "4.3",
+    "rating_count": "85K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x0aYh4pML._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g)",
+      "protein_per_serving": "0 g",
+      "creatine": "3000 mg (Creapure Grade)",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Consume 3g daily with protein shake, juice or water. Recommended post-workout."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "33 Servings",
+        "mrp": 649,
+        "price": 499
+      },
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 1199,
+        "price": 849
+      },
+      {
+        "pack": "400 g",
+        "servings": "133 Servings",
+        "mrp": 1699,
+        "price": 1199
+      }
+    ]
   },
   {
     "id": 3,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Fuel One Whey Protein (Chocolate, 2 kg)",
-    "category": "Whey Protein",
-    "price": "₹3,299",
-    "mrp": "₹4,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/s/w/s/-original-imagpjh87zfyfh6y.jpeg"
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS Pure Creatine Monohydrate",
+    "category": "Creatine",
+    "badge": "100% Pure",
+    "rating": "4.2",
+    "rating_count": "50K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x4fL8z3KL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g)",
+      "protein_per_serving": "0 g",
+      "creatine": "3000 mg",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Take 1 scoop with fruit juice or shake. Drink ample water throughout the day."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "33 Servings",
+        "mrp": 499,
+        "price": 389
+      },
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 999,
+        "price": 749
+      },
+      {
+        "pack": "500 g",
+        "servings": "166 Servings",
+        "mrp": 1799,
+        "price": 1349
+      }
+    ]
   },
   {
     "id": 4,
-    "brand": "Labrada Nutrition",
-    "title": "Labrada 100% Premium Whey Protein (Chocolate, 2 kg)",
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Biozyme Performance Whey",
     "category": "Whey Protein",
-    "price": "₹4,899",
-    "mrp": "₹6,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/9/v/h/-original-imah4hzyr8yvfygq.jpeg"
+    "badge": "Clinically Tested",
+    "rating": "4.4",
+    "rating_count": "1.2L+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61z7zU3+uIL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (36g)",
+      "protein_per_serving": "25 g",
+      "bcaa": "5.51 g",
+      "eaa": "11.75 g",
+      "carbs": "3.5 g",
+      "fat": "1.8 g",
+      "calories": "130 kcal",
+      "usage": "1 scoop 200ml thande paani me mix karke post-workout lein."
+    },
+    "flavours": ["Rich Chocolate", "Chocolate Fudge", "Magical Mango"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "28 Servings",
+        "mrp": 3199,
+        "price": 2299
+      },
+      {
+        "pack": "2 kg (4.4 lbs)",
+        "servings": "56 Servings",
+        "mrp": 5999,
+        "price": 4199
+      },
+      {
+        "pack": "4 kg (8.8 lbs)",
+        "servings": "112 Servings",
+        "mrp": 11499,
+        "price": 7999
+      }
+    ]
   },
   {
     "id": 5,
     "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Gold Standard 100% Whey (Double Rich Chocolate, 2 lb / 907 g)",
+    "name": "Optimum Nutrition (ON) Gold Standard 100% Whey",
     "category": "Whey Protein",
-    "price": "₹3,499",
-    "mrp": "₹4,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/g/h/x/-original-imagzfs7zfqygff9.jpeg"
+    "badge": "World's #1",
+    "rating": "4.5",
+    "rating_count": "90K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71Y+K5zSgqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (30.4g)",
+      "protein_per_serving": "24 g",
+      "bcaa": "5.5 g",
+      "glutamine": "4 g",
+      "carbs": "3 g",
+      "fat": "1.5 g",
+      "calories": "120 kcal",
+      "usage": "1 scoop 180-240ml cold water ya toned milk me mix karein."
+    },
+    "flavours": ["Double Rich Chocolate", "Delicious Strawberry"],
+    "variants": [
+      {
+        "pack": "2 lbs (907 g)",
+        "servings": "29 Servings",
+        "mrp": 4299,
+        "price": 3199
+      },
+      {
+        "pack": "5 lbs (2.27 kg)",
+        "servings": "74 Servings",
+        "mrp": 9199,
+        "price": 6899
+      }
+    ]
   },
   {
     "id": 6,
-    "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Gold Standard 100% Whey (Double Rich Chocolate, 5 lb / 2.27 kg)",
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS Atom Whey Protein",
     "category": "Whey Protein",
-    "price": "₹7,299",
-    "mrp": "₹8,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/g/h/x/-original-imagzfs7zfqygff9.jpeg"
+    "badge": "High Protein",
+    "rating": "4.2",
+    "rating_count": "45K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71LgU4074OL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (36g)",
+      "protein_per_serving": "27 g",
+      "bcaa": "5.7 g",
+      "carbs": "4.5 g",
+      "fat": "1.5 g",
+      "calories": "139 kcal",
+      "usage": "Workout ke baad 1 scoop 200ml paani me lein."
+    },
+    "flavours": ["Double Chocolate", "Cafe Latte"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "28 Servings",
+        "mrp": 2799,
+        "price": 1749
+      },
+      {
+        "pack": "2 kg",
+        "servings": "56 Servings",
+        "mrp": 5499,
+        "price": 3299
+      }
+    ]
   },
   {
     "id": 7,
-    "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Performance Whey (Chocolate, 1 kg)",
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS Whey Protein Concentrate 80% (Raw)",
     "category": "Whey Protein",
-    "price": "₹2,199",
-    "mrp": "₹2,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/g/h/x/-original-imagzfs7zfqygff9.jpeg"
+    "badge": "100% Raw Pure",
+    "rating": "4.1",
+    "rating_count": "1.1L+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61r5hC8uN3L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (30g)",
+      "protein_per_serving": "24 g",
+      "bcaa": "5.4 g",
+      "carbs": "2.5 g",
+      "fat": "1.5 g",
+      "calories": "119 kcal",
+      "usage": "Add 1 scoop in 200ml cold water, milk or smoothie. Consume post-workout."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "250 g",
+        "servings": "8 Servings",
+        "mrp": 699,
+        "price": 499
+      },
+      {
+        "pack": "500 g",
+        "servings": "16 Servings",
+        "mrp": 1299,
+        "price": 899
+      },
+      {
+        "pack": "1 kg",
+        "servings": "33 Servings",
+        "mrp": 2399,
+        "price": 1599
+      },
+      {
+        "pack": "2 kg",
+        "servings": "66 Servings",
+        "mrp": 4599,
+        "price": 2999
+      },
+      {
+        "pack": "5 kg",
+        "servings": "166 Servings",
+        "mrp": 10999,
+        "price": 7299
+      }
+    ]
   },
   {
     "id": 8,
-    "brand": "MuscleTech",
-    "title": "MuscleTech Nitro-Tech Performance Series (Milk Chocolate, 1.81 kg)",
-    "category": "Whey Protein",
-    "price": "₹5,299",
-    "mrp": "₹7,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/e/j/g/-original-imah4f6w7yqfz7f8.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada Muscle Mass Gainer",
+    "category": "Mass Gainer",
+    "badge": "High Calorie",
+    "rating": "4.3",
+    "rating_count": "60K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71X8k49y4PL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "3 Scoops (333g)",
+      "protein_per_serving": "52 g",
+      "carbs": "250 g",
+      "calories": "1244 kcal",
+      "fat": "4.5 g",
+      "creatine": "1000 mg",
+      "usage": "1-2 scoop doodh aur banana ke sath shake banakar lein."
+    },
+    "flavours": ["Chocolate", "Vanilla"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "9 Servings",
+        "mrp": 1999,
+        "price": 1449
+      },
+      {
+        "pack": "3 kg (6.6 lbs)",
+        "servings": "27 Servings",
+        "mrp": 4599,
+        "price": 3299
+      },
+      {
+        "pack": "5 kg (11 lbs)",
+        "servings": "45 Servings",
+        "mrp": 7299,
+        "price": 5199
+      }
+    ]
   },
   {
     "id": 9,
-    "brand": "MuscleTech",
-    "title": "MuscleTech Nitro-Tech 100% Whey Gold (Double Rich Chocolate, 2 kg)",
-    "category": "Whey Protein",
-    "price": "₹4,999",
-    "mrp": "₹6,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/e/j/g/-original-imah4f6w7yqfz7f8.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Super Gainer XXL",
+    "category": "Mass Gainer",
+    "badge": "Mass Bulk",
+    "rating": "4.2",
+    "rating_count": "75K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61b7UjB2j+L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (100g) / 3 Scoops Full",
+      "protein_per_serving": "22.5 g per 100g",
+      "carbs": "150 g",
+      "calories": "750 kcal",
+      "fat": "3 g",
+      "usage": "Blend 1-2 scoops in 300ml milk with bananas or oats for maximum mass building."
+    },
+    "flavours": ["Chocolate", "Banana"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "10 Servings",
+        "mrp": 1599,
+        "price": 1099
+      },
+      {
+        "pack": "3 kg",
+        "servings": "30 Servings",
+        "mrp": 4299,
+        "price": 2899
+      }
+    ]
   },
   {
     "id": 10,
-    "brand": "Avvatar",
-    "title": "Avvatar 100% Whey Protein (Belgian Chocolate, 2 kg)",
-    "category": "Whey Protein",
-    "price": "₹4,399",
-    "mrp": "₹5,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/r/z/u/-original-imagk7yhgzxcvf7y.jpeg"
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Serious Mass Gainer",
+    "category": "Mass Gainer",
+    "badge": "High Calorie Weight Gainer",
+    "rating": "4.3",
+    "rating_count": "52K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61b1CwtV+ML._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Heaping Scoops (334g)",
+      "protein_per_serving": "50 g",
+      "carbs": "252 g",
+      "calories": "1250 kcal",
+      "fat": "4.5 g",
+      "creatine": "1000 mg",
+      "usage": "Mix 2 scoops with 700ml of cold water or milk. Beginners can start with 1 scoop daily."
+    },
+    "flavours": ["Chocolate", "Vanilla"],
+    "variants": [
+      {
+        "pack": "3 lbs (1.36 kg)",
+        "servings": "4 Full Servings (8 Scoops)",
+        "mrp": 2499,
+        "price": 1899
+      },
+      {
+        "pack": "6 lbs (2.72 kg)",
+        "servings": "8 Full Servings (16 Scoops)",
+        "mrp": 4599,
+        "price": 3499
+      },
+      {
+        "pack": "12 lbs (5.44 kg)",
+        "servings": "16 Full Servings (32 Scoops)",
+        "mrp": 8299,
+        "price": 6299
+      }
+    ]
   },
   {
     "id": 11,
-    "brand": "Avvatar",
-    "title": "Avvatar Raw Whey Protein (Unflavoured, 1 kg)",
-    "category": "Whey Protein",
-    "price": "₹2,199",
-    "mrp": "₹2,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/r/z/u/-original-imagk7yhgzxcvf7y.jpeg"
+    "brand": "Cellucor",
+    "name": "Cellucor C4 Original Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "Explosive Energy",
+    "rating": "4.4",
+    "rating_count": "35K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Level Scoop (6.5g)",
+      "caffeine": "150 mg",
+      "beta_alanine": "1600 mg",
+      "creatine_nitrate": "1000 mg",
+      "arginine_akg": "1000 mg",
+      "calories": "0 kcal",
+      "usage": "Take 1 scoop mixed with 180-240ml cold water 20-30 minutes before workout."
+    },
+    "flavours": ["Fruit Punch", "Icy Blue Razz", "Watermelon"],
+    "variants": [
+      {
+        "pack": "195 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 2799,
+        "price": 1999
+      },
+      {
+        "pack": "390 g (60 Servings)",
+        "servings": "60 Servings",
+        "mrp": 4899,
+        "price": 3499
+      }
+    ]
   },
   {
     "id": 12,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS Nutrition Whey Protein Concentrate 80% (Unflavoured, 1 kg)",
-    "category": "Whey Protein",
-    "price": "₹1,699",
-    "mrp": "₹2,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/r/z/u/-original-imagk7yhgzxcvf7y.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Pre Workout 200",
+    "category": "Pre-Workout",
+    "badge": "Maximum Pump",
+    "rating": "4.2",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (5g)",
+      "caffeine": "200 mg",
+      "l_citrulline": "2000 mg",
+      "beta_alanine": "1500 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 level scoop (5g) with 200-250ml chilled water 20-30 minutes before training."
+    },
+    "flavours": ["Fruit Punch", "Green Apple"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "20 Servings",
+        "mrp": 799,
+        "price": 549
+      },
+      {
+        "pack": "250 g",
+        "servings": "50 Servings",
+        "mrp": 1599,
+        "price": 1099
+      }
+    ]
   },
   {
     "id": 13,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS ATOM Whey Protein (Double Chocolate, 1 kg)",
-    "category": "Whey Protein",
-    "price": "₹1,849",
-    "mrp": "₹2,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/r/z/u/-original-imagk7yhgzxcvf7y.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze MB-Vite Daily Multivitamin",
+    "category": "Multivitamin",
+    "badge": "Immunity & Energy",
+    "rating": "4.4",
+    "rating_count": "55K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61gVj4L9Z6L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "active_ingredients": "51 Ingredients (Vitamins, Minerals, Amino Acids)",
+      "usage": "Rozana subah breakfast ke baad 1 tablet lein."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 699,
+        "price": 499
+      },
+      {
+        "pack": "120 Tablets",
+        "servings": "120 Days Supply",
+        "mrp": 1299,
+        "price": 849
+      }
+    ]
   },
   {
     "id": 14,
-    "brand": "Nakpro",
-    "title": "Nakpro Platinum 100% Whey Protein Isolate (Chocolate, 1 kg)",
-    "category": "Whey Protein",
-    "price": "₹1,999",
-    "mrp": "₹2,799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/r/z/u/-original-imagk7yhgzxcvf7y.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Omega-3 Fish Oil (1000mg)",
+    "category": "Fish Oil",
+    "badge": "Joint & Heart Support",
+    "rating": "4.4",
+    "rating_count": "40K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61D7d7f7MBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Softgel",
+      "fish_oil": "1000 mg",
+      "epa": "180 mg",
+      "dha": "120 mg",
+      "usage": "Take 1 softgel twice daily with meals."
+    },
+    "flavours": ["Enteric Coated"],
+    "variants": [
+      {
+        "pack": "30 Capsules",
+        "servings": "30 Days Supply",
+        "mrp": 499,
+        "price": 349
+      },
+      {
+        "pack": "60 Capsules",
+        "servings": "60 Days Supply",
+        "mrp": 899,
+        "price": 549
+      },
+      {
+        "pack": "90 Capsules",
+        "servings": "90 Days Supply",
+        "mrp": 1249,
+        "price": 749
+      }
+    ]
   },
   {
     "id": 15,
-    "brand": "Nakpro",
-    "title": "Nakpro Gold Whey Protein Concentrate (Chocolate, 1 kg)",
-    "category": "Whey Protein",
-    "price": "₹1,499",
-    "mrp": "₹2,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/r/z/u/-original-imagk7yhgzxcvf7y.jpeg"
+    "brand": "MyFitness",
+    "name": "MyFitness Chocolate Peanut Butter (Crispy)",
+    "category": "Peanut Butter",
+    "badge": "High Protein Butter",
+    "rating": "4.5",
+    "rating_count": "95K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71R1c8v3rUL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "8 g",
+      "carbs": "9 g",
+      "healthy_fats": "16 g",
+      "energy": "204 kcal",
+      "usage": "Spread 2 tablespoons over bread, oatmeal, or blend in shakes."
+    },
+    "flavours": ["Chocolate Crispy"],
+    "variants": [
+      {
+        "pack": "510 g",
+        "servings": "16 Servings",
+        "mrp": 349,
+        "price": 279
+      },
+      {
+        "pack": "1.25 kg",
+        "servings": "39 Servings",
+        "mrp": 699,
+        "price": 579
+      },
+      {
+        "pack": "2.5 kg",
+        "servings": "78 Servings",
+        "mrp": 1399,
+        "price": 1099
+      }
+    ]
   },
   {
     "id": 16,
-    "brand": "Nutrabay",
-    "title": "Nutrabay Pure 100% Raw Whey Protein Concentrate (1 kg)",
-    "category": "Whey Protein",
-    "price": "₹1,599",
-    "mrp": "₹2,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/r/z/u/-original-imagk7yhgzxcvf7y.jpeg"
+    "brand": "Kapiva",
+    "name": "Kapiva Himalayan Shilajit Resin (Pure)",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Lab Certified 60%+ Fulvic",
+    "rating": "4.3",
+    "rating_count": "48K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61r5P8Z6QWL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "Pea-sized ball (approx 250mg)",
+      "fulvic_acid": "> 60%",
+      "minerals": "80+ Trace Minerals",
+      "usage": "Dissolve a pea-sized amount in lukewarm water or milk. Consume morning on an empty stomach."
+    },
+    "flavours": ["Pure Resin"],
+    "variants": [
+      {
+        "pack": "20 g Jar",
+        "servings": "80 Servings",
+        "mrp": 1499,
+        "price": 999
+      }
+    ]
   },
   {
     "id": 17,
-    "brand": "Dymatize",
-    "title": "Dymatize ISO 100 Hydrolyzed Whey Isolate (Gourmet Chocolate, 5 lb / 2.3 kg)",
-    "category": "Whey Protein",
-    "price": "₹9,499",
-    "mrp": "₹12,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/e/j/g/-original-imah4f6w7yqfz7f8.jpeg"
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Micronized Creatine Powder",
+    "category": "Creatine",
+    "badge": "100% Pure Creapure",
+    "rating": "4.5",
+    "rating_count": "64K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61b7tT4kQDL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Rounded Teaspoon (3.6g)",
+      "protein_per_serving": "0 g",
+      "creatine": "3000 mg",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Mix 1 rounded teaspoon with 240ml cold water or juice post-workout."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "27 Servings",
+        "mrp": 799,
+        "price": 649
+      },
+      {
+        "pack": "250 g",
+        "servings": "69 Servings",
+        "mrp": 1499,
+        "price": 1149
+      }
+    ]
   },
   {
     "id": 18,
-    "brand": "GNC",
-    "title": "GNC Pro Performance 100% Whey Protein (Chocolate Supreme, 2 kg)",
-    "category": "Whey Protein",
-    "price": "₹4,499",
-    "mrp": "₹6,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/c/x/k/-original-imagk7yh8yffv78a.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada Creatine Monohydrate (Creapure)",
+    "category": "Creatine",
+    "badge": "Pharmaceutical Grade",
+    "rating": "4.3",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61-f0qK3XzL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g)",
+      "protein_per_serving": "0 g",
+      "creatine": "3000 mg",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Take 1 scoop daily with 250ml water, juice, or your protein shake."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 1299,
+        "price": 949
+      },
+      {
+        "pack": "500 g",
+        "servings": "166 Servings",
+        "mrp": 2299,
+        "price": 1699
+      }
+    ]
   },
   {
     "id": 19,
-    "brand": "BigMuscles Nutrition",
-    "title": "BigMuscles Nutrition Premium Gold Whey (Belgian Chocolate, 1 kg)",
-    "category": "Whey Protein",
-    "price": "₹1,499",
-    "mrp": "₹2,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/r/z/u/-original-imagk7yhgzxcvf7y.jpeg"
+    "brand": "MuscleTech",
+    "name": "MuscleTech Platinum 100% Creatine",
+    "category": "Creatine",
+    "badge": "HPLC Tested Ultra-Pure",
+    "rating": "4.4",
+    "rating_count": "32K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61NqK+qZ+BL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g)",
+      "protein_per_serving": "0 g",
+      "creatine": "3000 mg",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 250ml water immediately after training. Drink 3-4L water daily."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "33 Servings",
+        "mrp": 799,
+        "price": 599
+      },
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 1499,
+        "price": 1099
+      },
+      {
+        "pack": "400 g",
+        "servings": "133 Servings",
+        "mrp": 2199,
+        "price": 1599
+      }
+    ]
   },
   {
     "id": 20,
-    "brand": "Ultimate Nutrition",
-    "title": "Ultimate Nutrition Prostar 100% Whey Protein (Chocolate Creme, 5.28 lb / 2.39 kg)",
+    "brand": "MuscleTech",
+    "name": "MuscleTech Nitro-Tech 100% Whey Gold",
     "category": "Whey Protein",
-    "price": "₹5,199",
-    "mrp": "₹7,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/e/j/g/-original-imah4f6w7yqfz7f8.jpeg"
-  }
-,
+    "badge": "Peptides & Isolate",
+    "rating": "4.3",
+    "rating_count": "38K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71o8bW1yLAL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (34g)",
+      "protein_per_serving": "24 g",
+      "bcaa": "5.5 g",
+      "glutamine": "4 g",
+      "carbs": "2 g",
+      "fat": "2 g",
+      "calories": "120 kcal",
+      "usage": "Mix 1 scoop with 180-240ml cold water or skimmed milk. Consume between meals and post-workout."
+    },
+    "flavours": ["Double Rich Chocolate", "French Vanilla"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "30 Servings",
+        "mrp": 3999,
+        "price": 2799
+      },
+      {
+        "pack": "2.2 kg (5 lbs)",
+        "servings": "65 Servings",
+        "mrp": 7999,
+        "price": 5499
+      }
+    ]
+  },
   {
     "id": 21,
-    "brand": "Wellcore",
-    "title": "Wellcore Micronised Creatine Monohydrate (Unflavoured, 250 g)",
-    "category": "Creatine",
-    "price": "₹899",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/1/x/-original-imah2d7gq4f8pffg.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada 100% Whey Protein",
+    "category": "Whey Protein",
+    "badge": "Instantized Protein",
+    "rating": "4.3",
+    "rating_count": "24K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71lZc5f+8SL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (38g)",
+      "protein_per_serving": "26 g",
+      "bcaa": "5.6 g",
+      "glutamine": "4.3 g",
+      "carbs": "4 g",
+      "fat": "2 g",
+      "calories": "140 kcal",
+      "usage": "Add 1 scoop to 200-250ml water or milk. Shake for 20-30 seconds post workout."
+    },
+    "flavours": ["Chocolate", "Vanilla", "Strawberry"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "26 Servings",
+        "mrp": 3499,
+        "price": 2499
+      },
+      {
+        "pack": "2 kg (4.4 lbs)",
+        "servings": "52 Servings",
+        "mrp": 6499,
+        "price": 4499
+      }
+    ]
   },
   {
     "id": 22,
-    "brand": "Wellcore",
-    "title": "Wellcore Micronised Creatine Monohydrate (Fruit Fusion, 250 g)",
-    "category": "Creatine",
-    "price": "₹949",
-    "mrp": "₹1,599",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/1/x/-original-imah2d7gq4f8pffg.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Fuel One Whey Protein",
+    "category": "Whey Protein",
+    "badge": "100% Whey Concentrate",
+    "rating": "4.2",
+    "rating_count": "45K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61yB+7s3BGL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (39g)",
+      "protein_per_serving": "24 g",
+      "bcaa": "5.29 g",
+      "eaa": "11.28 g",
+      "carbs": "5 g",
+      "fat": "2 g",
+      "calories": "136 kcal",
+      "usage": "Mix 1 scoop with 200ml chilled water and shake for 30 seconds."
+    },
+    "flavours": ["Chocolate", "Cafe Mocha", "Mango"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "25 Servings",
+        "mrp": 2499,
+        "price": 1699
+      },
+      {
+        "pack": "2 kg",
+        "servings": "51 Servings",
+        "mrp": 4799,
+        "price": 3199
+      }
+    ]
   },
   {
     "id": 23,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Creatine Monohydrate CreAMP (Unflavoured, 250 g)",
-    "category": "Creatine",
-    "price": "₹799",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/z/d/m/-original-imagpjh8zfgcvy67.jpeg"
+    "brand": "Pintola",
+    "name": "Pintola High Protein Dark Chocolate Peanut Butter",
+    "category": "Peanut Butter",
+    "badge": "Added Whey Protein",
+    "rating": "4.5",
+    "rating_count": "55K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71N1G+fT2jL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "11 g (Whey Infused)",
+      "carbs": "8 g",
+      "healthy_fats": "14 g",
+      "energy": "200 kcal",
+      "usage": "Spread 2 tablespoons over bread slices or add to oatmeal/protein shakes."
+    },
+    "flavours": ["Dark Chocolate Crunchy", "Dark Chocolate Smooth"],
+    "variants": [
+      {
+        "pack": "510 g",
+        "servings": "16 Servings",
+        "mrp": 399,
+        "price": 329
+      },
+      {
+        "pack": "1 kg",
+        "servings": "31 Servings",
+        "mrp": 749,
+        "price": 599
+      }
+    ]
   },
   {
     "id": 24,
     "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Creatine Monohydrate (Unflavoured, 100 g)",
-    "category": "Creatine",
-    "price": "₹449",
-    "mrp": "₹649",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/z/d/m/-original-imagpjh8zfgcvy67.jpeg"
+    "name": "MuscleBlaze Koshaveda Pure Himalayan Shilajit",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Gold Grade Resin",
+    "rating": "4.4",
+    "rating_count": "25K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61Xz1bU+4lL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "Pea-sized ball (~250mg)",
+      "fulvic_acid": "> 75%",
+      "minerals": "80+ Trace Minerals",
+      "usage": "Dissolve pea-sized resin in 100ml warm water or milk. Consume daily morning."
+    },
+    "flavours": ["Pure Resin"],
+    "variants": [
+      {
+        "pack": "20 g Jar",
+        "servings": "80 Servings",
+        "mrp": 1599,
+        "price": 1099
+      }
+    ]
   },
   {
     "id": 25,
-    "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Micronized Creatine Powder (250 g)",
-    "category": "Creatine",
-    "price": "₹999",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/m/d/k/-original-imagzfs7jjhc7yfe.jpeg"
+    "brand": "TrueBasics",
+    "name": "TrueBasics Ultra Omega-3 Fish Oil (Triple Strength)",
+    "category": "Fish Oil",
+    "badge": "Triple Strength EPA/DHA",
+    "rating": "4.5",
+    "rating_count": "30K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61K5Q6F5tZL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Softgel (1250mg)",
+      "epa": "525 mg",
+      "dha": "400 mg",
+      "total_omega_3": "1000 mg",
+      "usage": "Take 1 softgel daily after dinner or major meal with plenty of water."
+    },
+    "flavours": ["Enteric Coated"],
+    "variants": [
+      {
+        "pack": "60 Capsules",
+        "servings": "60 Days Supply",
+        "mrp": 1299,
+        "price": 899
+      },
+      {
+        "pack": "90 Capsules",
+        "servings": "90 Days Supply",
+        "mrp": 1799,
+        "price": 1249
+      }
+    ]
   },
   {
     "id": 26,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS Nutrition Pure Creatine Monohydrate (250 g)",
-    "category": "Creatine",
-    "price": "₹649",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/x/m/l/-original-imagk7yhfhcvy78b.jpeg"
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Opti-Men Multivitamin",
+    "category": "Multivitamin",
+    "badge": "75+ Active Ingredients",
+    "rating": "4.5",
+    "rating_count": "35K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61qH+J07uBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "active_ingredients": "High-potency 25 vitamins & essential minerals + botanical blends",
+      "usage": "Take 1 tablet daily with food, preferably in the morning."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 1599,
+        "price": 1199
+      },
+      {
+        "pack": "90 Tablets",
+        "servings": "90 Days Supply",
+        "mrp": 2199,
+        "price": 1699
+      }
+    ]
   },
   {
     "id": 27,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS ATOM Creatine Monohydrate (250 g)",
+    "brand": "Wellcore",
+    "name": "Wellcore Pure Micronised Creatine (Unflavoured)",
     "category": "Creatine",
-    "price": "₹699",
-    "mrp": "₹1,099",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/x/m/l/-original-imagk7yhfhcvy78b.jpeg"
+    "badge": "Clean Fuel",
+    "rating": "4.4",
+    "rating_count": "70K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61-7WbWdKML._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g)",
+      "protein_per_serving": "0 g",
+      "creatine": "3000 mg",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 200ml cold water or pre/post workout drink."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "33 Servings",
+        "mrp": 699,
+        "price": 549
+      },
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 1199,
+        "price": 899
+      }
+    ]
   },
   {
     "id": 28,
-    "brand": "MuscleTech",
-    "title": "MuscleTech Platinum 100% Creatine (Unflavoured, 250 g)",
-    "category": "Creatine",
-    "price": "₹849",
-    "mrp": "₹1,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/u/x/y/-original-imah4f6whhcvyfg7.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze BCAA Pro (Intra-Workout)",
+    "category": "BCAA & Amino",
+    "badge": "2:1:1 Ratio BCAA",
+    "rating": "4.3",
+    "rating_count": "42K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61q3j7V5tVL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Heaping Scoop (15g)",
+      "bcaa": "7 g (Leucine, Isoleucine, Valine)",
+      "glutamine": "1 g",
+      "electrolytes": "Sodium & Potassium blend",
+      "calories": "0 kcal",
+      "usage": "Sip 1 scoop mixed with 400-500ml cold water during workout sessions."
+    },
+    "flavours": ["Watermelon", "Fruit Punch", "Green Apple", "Blue Raspberry"],
+    "variants": [
+      {
+        "pack": "250 g",
+        "servings": "16 Servings",
+        "mrp": 1499,
+        "price": 999
+      },
+      {
+        "pack": "450 g",
+        "servings": "30 Servings",
+        "mrp": 2399,
+        "price": 1699
+      }
+    ]
   },
   {
     "id": 29,
-    "brand": "Labrada Nutrition",
-    "title": "Labrada Crealean 100% Pure Creatine (250 g)",
-    "category": "Creatine",
-    "price": "₹899",
-    "mrp": "₹1,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/t/d/z/-original-imah4hzyggcfy87c.jpeg"
+    "brand": "Scivation",
+    "name": "Scivation Xtend BCAA Intra-Workout Powder",
+    "category": "BCAA & Amino",
+    "badge": "World's #1 BCAA",
+    "rating": "4.4",
+    "rating_count": "55K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71o0W1QzNqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (14g)",
+      "bcaa": "7 g (2:1:1)",
+      "glutamine": "2.5 g",
+      "electrolytes": "1170 mg Electrolyte Blend",
+      "calories": "0 kcal",
+      "usage": "Mix 1 level scoop with 300-400ml cold water and sip during exercise or sports."
+    },
+    "flavours": ["Watermelon Explosion", "Blue Raspberry Ice", "Mango Madness"],
+    "variants": [
+      {
+        "pack": "420 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 2999,
+        "price": 2099
+      }
+    ]
   },
   {
     "id": 30,
-    "brand": "Nutrabay",
-    "title": "Nutrabay Pure Micronised Creatine Monohydrate (250 g)",
-    "category": "Creatine",
-    "price": "₹649",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/x/m/l/-original-imagk7yhfhcvy78b.jpeg"
+    "brand": "MyFitness",
+    "name": "MyFitness Original Peanut Butter (Crunchy)",
+    "category": "Peanut Butter",
+    "badge": "High Protein",
+    "rating": "4.5",
+    "rating_count": "65K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71c6t4kR6lL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "8 g",
+      "carbs": "8 g",
+      "healthy_fats": "15 g",
+      "energy": "195 kcal",
+      "usage": "Use as a daily healthy spread on brown bread, toast, or mix in oatmeal."
+    },
+    "flavours": ["Original Crunchy", "Original Smooth"],
+    "variants": [
+      {
+        "pack": "510 g",
+        "servings": "16 Servings",
+        "mrp": 299,
+        "price": 239
+      },
+      {
+        "pack": "1.25 kg",
+        "servings": "39 Servings",
+        "mrp": 629,
+        "price": 499
+      },
+      {
+        "pack": "2.5 kg",
+        "servings": "78 Servings",
+        "mrp": 1249,
+        "price": 979
+      }
+    ]
   },
+
   {
     "id": 31,
-    "brand": "Nakpro",
-    "title": "Nakpro Micronized Creatine Monohydrate (250 g)",
-    "category": "Creatine",
-    "price": "₹599",
-    "mrp": "₹899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/x/m/l/-original-imagk7yhfhcvy78b.jpeg"
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Gold Standard 100% Isolate",
+    "category": "Whey Protein",
+    "badge": "Pure Whey Isolate",
+    "rating": "4.6",
+    "rating_count": "18K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61kGgO5p+cL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (30g)",
+      "protein_per_serving": "25 g (Hydrolyzed & Isolate)",
+      "bcaa": "5.5 g",
+      "glutamine": "4.3 g",
+      "carbs": "1 g",
+      "fat": "0.5 g",
+      "calories": "110 kcal",
+      "usage": "Mix 1 scoop with 180-240ml chilled water immediately post workout for ultra-fast absorption."
+    },
+    "flavours": ["Rich Vanilla", "Chocolate Bliss", "Strawberry"],
+    "variants": [
+      {
+        "pack": "1.6 lbs (720 g)",
+        "servings": "24 Servings",
+        "mrp": 4499,
+        "price": 3499
+      },
+      {
+        "pack": "3 lbs (1.36 kg)",
+        "servings": "44 Servings",
+        "mrp": 7499,
+        "price": 5799
+      },
+      {
+        "pack": "5 lbs (2.27 kg)",
+        "servings": "76 Servings",
+        "mrp": 11499,
+        "price": 8999
+      }
+    ]
   },
   {
     "id": 32,
-    "brand": "Avvatar",
-    "title": "Avvatar Absolute Creatine Monohydrate (250 g)",
-    "category": "Creatine",
-    "price": "₹749",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/x/m/l/-original-imagk7yhfhcvy78b.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Biozyme Iso-Zero Whey",
+    "category": "Whey Protein",
+    "badge": "Zero Carb & Lactose Free",
+    "rating": "4.4",
+    "rating_count": "32K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61F9OQ81QIL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (34g)",
+      "protein_per_serving": "27 g",
+      "bcaa": "5.96 g",
+      "eaa": "12.69 g",
+      "carbs": "0 g",
+      "fat": "0.3 g",
+      "calories": "111 kcal",
+      "usage": "Take 1 scoop post workout in 200ml chilled water. Ideal for lean muscle and fat loss."
+    },
+    "flavours": ["Low Carb Chocolate", "Cookies & Cream", "Mango"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "29 Servings",
+        "mrp": 3999,
+        "price": 2899
+      },
+      {
+        "pack": "2 kg (4.4 lbs)",
+        "servings": "58 Servings",
+        "mrp": 7499,
+        "price": 5399
+      }
+    ]
   },
   {
     "id": 33,
-    "brand": "GNC",
-    "title": "GNC Pro Performance Creatine Monohydrate (250 g)",
-    "category": "Creatine",
-    "price": "₹899",
-    "mrp": "₹1,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/u/x/y/-original-imah4f6whhcvyfg7.jpeg"
+    "brand": "Dymatize",
+    "name": "Dymatize ISO 100 Hydrolyzed Whey Isolate",
+    "category": "Whey Protein",
+    "badge": "100% Hydrolyzed Isolate",
+    "rating": "4.6",
+    "rating_count": "40K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71c6t4kR6lL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (30g)",
+      "protein_per_serving": "25 g",
+      "bcaa": "5.5 g",
+      "leucine": "2.6 g",
+      "carbs": "<1 g",
+      "fat": "<1 g",
+      "calories": "110 kcal",
+      "usage": "Mix 1 scoop in 150-180ml water or milk. Consume within 30 minutes of training."
+    },
+    "flavours": ["Gourmet Chocolate", "Fudge Brownie", "Smooth Banana"],
+    "variants": [
+      {
+        "pack": "1.1 lbs (500 g)",
+        "servings": "16 Servings",
+        "mrp": 4299,
+        "price": 3199
+      },
+      {
+        "pack": "3 lbs (1.36 kg)",
+        "servings": "43 Servings",
+        "mrp": 8999,
+        "price": 6699
+      },
+      {
+        "pack": "5 lbs (2.27 kg)",
+        "servings": "71 Servings",
+        "mrp": 13999,
+        "price": 9999
+      }
+    ]
   },
   {
     "id": 34,
-    "brand": "BigMuscles Nutrition",
-    "title": "BigMuscles Nutrition Creatine Monohydrate (250 g)",
-    "category": "Creatine",
-    "price": "₹549",
-    "mrp": "₹899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/x/m/l/-original-imagk7yhfhcvy78b.jpeg"
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS Whey Protein Isolate 90%",
+    "category": "Whey Protein",
+    "badge": "90% Pure Isolate",
+    "rating": "4.3",
+    "rating_count": "38K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61r5hC8uN3L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (30g)",
+      "protein_per_serving": "27 g",
+      "bcaa": "5.9 g",
+      "glutamine": "4.5 g",
+      "carbs": "0.5 g",
+      "fat": "0.3 g",
+      "calories": "113 kcal",
+      "usage": "Add 1 scoop to 200ml cold water or juice post-workout."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "250 g",
+        "servings": "8 Servings",
+        "mrp": 999,
+        "price": 749
+      },
+      {
+        "pack": "500 g",
+        "servings": "16 Servings",
+        "mrp": 1899,
+        "price": 1399
+      },
+      {
+        "pack": "1 kg",
+        "servings": "33 Servings",
+        "mrp": 3499,
+        "price": 2499
+      },
+      {
+        "pack": "2 kg",
+        "servings": "66 Servings",
+        "mrp": 6799,
+        "price": 4799
+      }
+    ]
   },
   {
     "id": 35,
-    "brand": "Fuel One",
-    "title": "Fuel One Creatine Monohydrate (100 g)",
-    "category": "Creatine",
-    "price": "₹349",
-    "mrp": "₹549",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/z/d/m/-original-imagpjh8zfgcvy67.jpeg"
+    "brand": "MuscleTech",
+    "name": "MuscleTech Mass Tech Extreme 2000",
+    "category": "Mass Gainer",
+    "badge": "Extreme Calorie Gainer",
+    "rating": "4.2",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71X8k49y4PL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "6 Scoops (570g with milk)",
+      "protein_per_serving": "80 g (with milk)",
+      "carbs": "400 g",
+      "calories": "2000 kcal",
+      "creatine": "10 g",
+      "usage": "Mix 1/2 serving (3 scoops) with 450-500ml water or milk twice daily."
+    },
+    "flavours": ["Triple Chocolate Brownie", "Vanilla Milkshake"],
+    "variants": [
+      {
+        "pack": "3 kg (6.6 lbs)",
+        "servings": "12 Full Servings",
+        "mrp": 4899,
+        "price": 3499
+      },
+      {
+        "pack": "5 kg (11 lbs)",
+        "servings": "20 Full Servings",
+        "mrp": 7899,
+        "price": 5599
+      }
+    ]
   },
   {
     "id": 36,
-    "brand": "Doctor's Choice",
-    "title": "Doctor's Choice Micronized Creatine Monohydrate (300 g)",
-    "category": "Creatine",
-    "price": "₹849",
-    "mrp": "₹1,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/x/m/l/-original-imagk7yhfhcvy78b.jpeg"
+    "brand": "GNC",
+    "name": "GNC Pro Performance Weight Gainer",
+    "category": "Mass Gainer",
+    "badge": "Double Chocolate Bulk",
+    "rating": "4.2",
+    "rating_count": "22K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61b7UjB2j+L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "3 Heaping Scoops (220g)",
+      "protein_per_serving": "50 g",
+      "carbs": "148 g",
+      "calories": "850 kcal",
+      "bcaa": "7 g",
+      "usage": "Mix 3 scoops with 480ml water or milk post-workout or before bedtime."
+    },
+    "flavours": ["Double Chocolate", "Vanilla"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "5 Servings",
+        "mrp": 1899,
+        "price": 1349
+      },
+      {
+        "pack": "3 kg (6.6 lbs)",
+        "servings": "14 Servings",
+        "mrp": 4699,
+        "price": 3299
+      },
+      {
+        "pack": "5 kg (11 lbs)",
+        "servings": "23 Servings",
+        "mrp": 7299,
+        "price": 5199
+      }
+    ]
   },
   {
     "id": 37,
-    "brand": "Dymatize",
-    "title": "Dymatize Micronized Creatine (300 g)",
-    "category": "Creatine",
-    "price": "₹1,299",
-    "mrp": "₹1,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/u/x/y/-original-imah4f6whhcvyfg7.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada Super Charge Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "High Energy & Strength",
+    "rating": "4.3",
+    "rating_count": "15K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (12g)",
+      "caffeine": "250 mg",
+      "l_citrulline": "3000 mg",
+      "beta_alanine": "2000 mg",
+      "electrolytes": "Sodium & Potassium",
+      "usage": "Take 1 scoop with 250ml chilled water 20-30 minutes prior to intense workout."
+    },
+    "flavours": ["Furious Fruit Punch", "Blue Ice", "Orange Splash"],
+    "variants": [
+      {
+        "pack": "240 g (20 Servings)",
+        "servings": "20 Servings",
+        "mrp": 2199,
+        "price": 1549
+      },
+      {
+        "pack": "480 g (40 Servings)",
+        "servings": "40 Servings",
+        "mrp": 3899,
+        "price": 2699
+      }
+    ]
   },
   {
     "id": 38,
-    "brand": "Universal Nutrition",
-    "title": "Universal Nutrition Creatine Powder (300 g)",
-    "category": "Creatine",
-    "price": "₹1,199",
-    "mrp": "₹1,799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/u/x/y/-original-imah4f6whhcvyfg7.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze WrathX Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "Hardcore Energy Formula",
+    "rating": "4.3",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (11g)",
+      "caffeine": "300 mg",
+      "l_citrulline": "3000 mg",
+      "beta_alanine": "2000 mg",
+      "theanine": "100 mg",
+      "usage": "Mix 1 scoop with 250ml water 30 minutes before heavy lifting sessions."
+    },
+    "flavours": ["Fiery Orange", "Fruit Monster", "Blue Colada"],
+    "variants": [
+      {
+        "pack": "330 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 2399,
+        "price": 1699
+      }
+    ]
   },
   {
     "id": 39,
-    "brand": "Cellucor",
-    "title": "Cellucor Cor-Performance Creatine (300 g)",
-    "category": "Creatine",
-    "price": "₹1,099",
-    "mrp": "₹1,699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/u/x/y/-original-imah4f6whhcvyfg7.jpeg"
+    "brand": "HealthKart",
+    "name": "HK Vitals Multivitamin with Ginseng & Ginkgo Biloba",
+    "category": "Multivitamin",
+    "badge": "Daily Energy & Focus",
+    "rating": "4.3",
+    "rating_count": "65K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61gVj4L9Z6L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "active_ingredients": "Ginseng extract, Ginkgo Biloba, 9 Essential Amino Acids, 24 Vitamins & Minerals",
+      "usage": "Take 1 tablet daily with or immediately after breakfast."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 649,
+        "price": 429
+      },
+      {
+        "pack": "90 Tablets",
+        "servings": "90 Days Supply",
+        "mrp": 899,
+        "price": 599
+      }
+    ]
   },
   {
     "id": 40,
-    "brand": "MyProtein",
-    "title": "MyProtein Creatine Monohydrate (Unflavoured, 250 g)",
-    "category": "Creatine",
-    "price": "₹999",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/x/m/l/-original-imagk7yhfhcvy78b.jpeg"
-  }
-,
+    "brand": "HealthKart",
+    "name": "HK Vitals Fish Oil 1000mg with Omega-3",
+    "category": "Fish Oil",
+    "badge": "Heart & Joint Care",
+    "rating": "4.3",
+    "rating_count": "58K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61D7d7f7MBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Softgel (1000mg)",
+      "epa": "180 mg",
+      "dha": "120 mg",
+      "total_omega_3": "300 mg",
+      "usage": "Consume 1 softgel daily after your lunch or dinner with a glass of water."
+    },
+    "flavours": ["Enteric Coated"],
+    "variants": [
+      {
+        "pack": "60 Softgels",
+        "servings": "60 Days Supply",
+        "mrp": 699,
+        "price": 449
+      },
+      {
+        "pack": "90 Softgels",
+        "servings": "90 Days Supply",
+        "mrp": 999,
+        "price": 649
+      }
+    ]
+  },
   {
     "id": 41,
-    "brand": "Labrada Nutrition",
-    "title": "Labrada Muscle Mass Gainer (Chocolate, 3 kg / 6.6 lbs)",
-    "category": "Mass Gainer",
-    "price": "₹3,199",
-    "mrp": "₹4,599",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/h/j/u/-original-imah4hzyzfhcyv7b.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Whey Gold 100% Whey Isolate",
+    "category": "Whey Protein",
+    "badge": "Labdoor USA Certified",
+    "rating": "4.4",
+    "rating_count": "55K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61F9OQ81QIL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (30g)",
+      "protein_per_serving": "25 g (Pure Isolate)",
+      "bcaa": "5.5 g",
+      "eaa": "11.75 g",
+      "carbs": "1.65 g",
+      "fat": "0.46 g",
+      "calories": "110 kcal",
+      "usage": "Mix 1 scoop with 180-200ml chilled water. Consume immediately post-workout."
+    },
+    "flavours": ["Rich Milk Chocolate", "Mocha Cappuccino", "Gourmet Vanilla"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "33 Servings",
+        "mrp": 3899,
+        "price": 2799
+      },
+      {
+        "pack": "2 kg (4.4 lbs)",
+        "servings": "66 Servings",
+        "mrp": 7299,
+        "price": 5199
+      },
+      {
+        "pack": "4 kg (8.8 lbs)",
+        "servings": "133 Servings",
+        "mrp": 13999,
+        "price": 9999
+      }
+    ]
   },
   {
     "id": 42,
-    "brand": "Labrada Nutrition",
-    "title": "Labrada Muscle Mass Gainer (Chocolate, 1 kg)",
-    "category": "Mass Gainer",
-    "price": "₹1,249",
-    "mrp": "₹1,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/h/j/u/-original-imah4hzyzfhcyv7b.jpeg"
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Performance Whey",
+    "category": "Whey Protein",
+    "badge": "All-Whey Blend",
+    "rating": "4.3",
+    "rating_count": "30K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71Y+K5zSgqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (34g)",
+      "protein_per_serving": "24 g",
+      "bcaa": "5 g",
+      "carbs": "4 g",
+      "fat": "2 g",
+      "calories": "130 kcal",
+      "usage": "Add 1 scoop in 180-240ml cold water or skimmed milk post-workout."
+    },
+    "flavours": ["Chocolate Milkshake", "Vanilla Shake"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "29 Servings",
+        "mrp": 2999,
+        "price": 2199
+      },
+      {
+        "pack": "2 kg (4.4 lbs)",
+        "servings": "58 Servings",
+        "mrp": 5699,
+        "price": 3999
+      }
+    ]
   },
   {
     "id": 43,
-    "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Serious Mass Gainer (Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹3,299",
-    "mrp": "₹4,699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/b/9/k/-original-imagzfs7zhcfv7y6.jpeg"
+    "brand": "Wellcore",
+    "name": "Wellcore All-In-One Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "Clean Energy & Focus",
+    "rating": "4.3",
+    "rating_count": "19K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (8.5g)",
+      "caffeine": "200 mg",
+      "l_citrulline": "2500 mg",
+      "beta_alanine": "1800 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 200ml cold water 20-30 minutes before heavy lifting."
+    },
+    "flavours": ["Tropical Punch", "Green Apple Crisp", "Watermelon"],
+    "variants": [
+      {
+        "pack": "255 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 1999,
+        "price": 1399
+      }
+    ]
   },
   {
     "id": 44,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Super Gainer XXL (Chocolate, 3 kg)",
+    "brand": "MuscleTech",
+    "name": "MuscleTech Mass Tech (Advanced Muscle Gainer)",
     "category": "Mass Gainer",
-    "price": "₹2,699",
-    "mrp": "₹3,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "badge": "Scientifically Advanced",
+    "rating": "4.2",
+    "rating_count": "24K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71X8k49y4PL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "5 Scoops (230g)",
+      "protein_per_serving": "63 g (with 2 cups skim milk)",
+      "carbs": "132 g",
+      "calories": "840 kcal",
+      "creatine": "5 g",
+      "usage": "Mix 1 serving (5 scoops) with 470ml water or skim milk daily."
+    },
+    "flavours": ["Milk Chocolate", "Strawberry"],
+    "variants": [
+      {
+        "pack": "3.2 kg (7 lbs)",
+        "servings": "14 Full Servings",
+        "mrp": 5499,
+        "price": 3899
+      },
+      {
+        "pack": "5 kg (11 lbs)",
+        "servings": "22 Full Servings",
+        "mrp": 8499,
+        "price": 5999
+      }
+    ]
   },
   {
     "id": 45,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Weight Gainer with Added Digezyme (Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹2,199",
-    "mrp": "₹3,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "brand": "Kapiva",
+    "name": "Kapiva Shilajit Gold Resin (24K Gold Dust)",
+    "category": "Ayurvedic & Wellness",
+    "badge": "24K Gold Infused",
+    "rating": "4.4",
+    "rating_count": "22K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61r5P8Z6QWL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "Pea-sized resin (~250mg)",
+      "gold_content": "24K Swarna Bhasma",
+      "fulvic_acid": "> 65%",
+      "herbs": "Ashwagandha, Gokshura, Safed Musli",
+      "usage": "Dissolve pea-sized amount in 100ml warm milk and drink once daily."
+    },
+    "flavours": ["Pure Gold Resin"],
+    "variants": [
+      {
+        "pack": "20 g Jar",
+        "servings": "80 Servings",
+        "mrp": 1999,
+        "price": 1399
+      }
+    ]
   },
   {
     "id": 46,
-    "brand": "MuscleTech",
-    "title": "MuscleTech Mass Tech Extreme 2000 (Triple Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹3,499",
-    "mrp": "₹4,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/s/a/b/-original-imah4f6wghdf78vy.jpeg"
+    "brand": "Upakarma Ayurveda",
+    "name": "Upakarma Pure Shilajit Resin",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Authentic Ayurvedic Grade",
+    "rating": "4.3",
+    "rating_count": "32K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61Xz1bU+4lL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "Pea-sized resin (~250mg)",
+      "fulvic_acid": "> 60%",
+      "minerals": "84+ Minerals",
+      "usage": "Consume pea-sized ball daily dissolved in lukewarm water, green tea or milk."
+    },
+    "flavours": ["Pure Resin"],
+    "variants": [
+      {
+        "pack": "15 g Jar",
+        "servings": "60 Servings",
+        "mrp": 1249,
+        "price": 849
+      },
+      {
+        "pack": "25 g Jar",
+        "servings": "100 Servings",
+        "mrp": 1799,
+        "price": 1199
+      }
+    ]
   },
   {
     "id": 47,
-    "brand": "MuscleTech",
-    "title": "MuscleTech 100% Mass Gainer (Chocolate, 2.3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹2,799",
-    "mrp": "₹3,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/s/a/b/-original-imah4f6wghdf78vy.jpeg"
+    "brand": "Alpino",
+    "name": "Alpino High Protein Super Peanut Butter",
+    "category": "Peanut Butter",
+    "badge": "Whey Protein Enriched",
+    "rating": "4.4",
+    "rating_count": "40K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71R1c8v3rUL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "10 g",
+      "carbs": "7 g",
+      "healthy_fats": "15 g",
+      "energy": "198 kcal",
+      "usage": "Eat with bread, roti, oats or directly with banana pre-workout."
+    },
+    "flavours": ["Chocolate Crunchy", "Super Smooth"],
+    "variants": [
+      {
+        "pack": "500 g",
+        "servings": "15 Servings",
+        "mrp": 375,
+        "price": 299
+      },
+      {
+        "pack": "1 kg",
+        "servings": "31 Servings",
+        "mrp": 699,
+        "price": 549
+      },
+      {
+        "pack": "2.5 kg",
+        "servings": "78 Servings",
+        "mrp": 1499,
+        "price": 1149
+      }
+    ]
   },
   {
     "id": 48,
-    "brand": "GNC",
-    "title": "GNC Pro Performance Weight Gainer (Dark Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹2,899",
-    "mrp": "₹4,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/s/a/b/-original-imah4f6wghdf78vy.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Raw Whey Isolate 90%",
+    "category": "Whey Protein",
+    "badge": "Zero Flavour / Zero Filler",
+    "rating": "4.3",
+    "rating_count": "35K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61r5hC8uN3L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (30g)",
+      "protein_per_serving": "27 g",
+      "bcaa": "5.9 g",
+      "eaa": "12.6 g",
+      "carbs": "0.75 g",
+      "fat": "0.3 g",
+      "calories": "114 kcal",
+      "usage": "Add 1 scoop to 200ml cold water, juice or smoothie post-workout."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "33 Servings",
+        "mrp": 3699,
+        "price": 2599
+      },
+      {
+        "pack": "2 kg",
+        "servings": "66 Servings",
+        "mrp": 6999,
+        "price": 4899
+      }
+    ]
   },
   {
     "id": 49,
-    "brand": "Dymatize",
-    "title": "Dymatize Super Mass Gainer (Rich Chocolate, 2.7 kg)",
-    "category": "Mass Gainer",
-    "price": "₹3,699",
-    "mrp": "₹5,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/s/a/b/-original-imah4f6wghdf78vy.jpeg"
+    "brand": "GNC",
+    "name": "GNC Mega Men One Daily Multivitamin",
+    "category": "Multivitamin",
+    "badge": "Customised For Men",
+    "rating": "4.4",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61qH+J07uBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "active_ingredients": "32 Premium Nutrients, B-Complex for Energy, Electrolytes for Hydration",
+      "usage": "Take 1 caplet daily with food, preferably in the morning."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 1499,
+        "price": 999
+      }
+    ]
   },
   {
     "id": 50,
-    "brand": "BigMuscles Nutrition",
-    "title": "BigMuscles Nutrition Real Mass Gainer (Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹1,899",
-    "mrp": "₹2,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Biozyme Daily Multivitamin",
+    "category": "Multivitamin",
+    "badge": "With Muscle Building Enzymes",
+    "rating": "4.4",
+    "rating_count": "34K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61gVj4L9Z6L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "active_ingredients": "5-in-1 formula (Vitamins, Joint Blend, Immunity, T-Booster, Digestive Enzymes)",
+      "usage": "Consume 1 tablet post-breakfast daily."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 899,
+        "price": 649
+      },
+      {
+        "pack": "90 Tablets",
+        "servings": "90 Days Supply",
+        "mrp": 1299,
+        "price": 899
+      }
+    ]
   },
-  {
+    {
     "id": 51,
-    "brand": "Endura",
-    "title": "Endura Mass Weight Gainer (Chocolate, 1 kg)",
-    "category": "Mass Gainer",
-    "price": "₹1,099",
-    "mrp": "₹1,375",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze High Protein Peanut Butter",
+    "category": "Peanut Butter",
+    "badge": "37g Protein per 100g",
+    "rating": "4.4",
+    "rating_count": "50K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71R1c8v3rUL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "12 g (Whey Enriched)",
+      "carbs": "6.5 g",
+      "healthy_fats": "14 g",
+      "energy": "198 kcal",
+      "usage": "Spread 2 tablespoons over toast, fruit slices or blend into workout shakes."
+    },
+    "flavours": ["Dark Chocolate Crunchy", "Natural Crunchy"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "31 Servings",
+        "mrp": 799,
+        "price": 599
+      },
+      {
+        "pack": "2.5 kg",
+        "servings": "78 Servings",
+        "mrp": 1699,
+        "price": 1299
+      }
+    ]
   },
   {
     "id": 52,
     "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS Nutrition Mass Gainer (Chocolate, 1 kg)",
-    "category": "Mass Gainer",
-    "price": "₹999",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "name": "AS-IT-IS Peanut Butter (100% Natural)",
+    "category": "Peanut Butter",
+    "badge": "Zero Added Sugar & Salt",
+    "rating": "4.3",
+    "rating_count": "38K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71L5T6n+aRL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "9.6 g",
+      "carbs": "6 g",
+      "healthy_fats": "15 g",
+      "energy": "194 kcal",
+      "usage": "Mix oil layer and consume 2 tablespoons daily with oats, brown bread or shakes."
+    },
+    "flavours": ["Crunchy", "Creamy"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "31 Servings",
+        "mrp": 450,
+        "price": 349
+      },
+      {
+        "pack": "2.5 kg",
+        "servings": "78 Servings",
+        "mrp": 1050,
+        "price": 829
+      }
+    ]
   },
   {
     "id": 53,
-    "brand": "Nakpro",
-    "title": "Nakpro Gold Mass Gainer (Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹1,799",
-    "mrp": "₹2,699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "brand": "Kapiva",
+    "name": "Kapiva TestoFuel Ayurvedic Shilajit Capsule",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Natural Vitality Booster",
+    "rating": "4.2",
+    "rating_count": "24K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61r5P8Z6QWL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Capsules",
+      "active_herbs": "Shuddha Shilajit, Ashwagandha, Safed Musli, Gokshura, Black Pepper",
+      "usage": "Take 1-2 capsules daily after dinner with warm milk or water."
+    },
+    "flavours": ["Vegetarian Capsules"],
+    "variants": [
+      {
+        "pack": "60 Capsules",
+        "servings": "30 Days Supply",
+        "mrp": 999,
+        "price": 699
+      }
+    ]
   },
   {
     "id": 54,
-    "brand": "Nutrabay",
-    "title": "Nutrabay Gold Mega Mass Gainer (Rich Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹1,999",
-    "mrp": "₹2,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "brand": "Himalaya",
+    "name": "Himalaya Pure Herbs Ashwagandha",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Stress Relief & Strength",
+    "rating": "4.4",
+    "rating_count": "75K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61gVj4L9Z6L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "active_herbs": "Ashwagandha (Withania somnifera) root extract 250mg",
+      "usage": "Take 1 tablet twice daily before meals with water."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "30 Days Supply",
+        "mrp": 250,
+        "price": 199
+      }
+    ]
   },
   {
     "id": 55,
-    "brand": "Avvatar",
-    "title": "Avvatar Massive Mass Gainer (Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹2,899",
-    "mrp": "₹3,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Creatine HMB (Muscle Strength)",
+    "category": "Creatine",
+    "badge": "Advanced Strength Formula",
+    "rating": "4.3",
+    "rating_count": "15K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x0aYh4pML._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (5.5g)",
+      "creatine": "3000 mg",
+      "hmb": "1500 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 200ml cold water post-workout to support power output and lean mass."
+    },
+    "flavours": ["Tangy Orange", "Fruit Punch"],
+    "variants": [
+      {
+        "pack": "200 g",
+        "servings": "36 Servings",
+        "mrp": 1499,
+        "price": 1099
+      }
+    ]
   },
   {
     "id": 56,
-    "brand": "Ultimate Nutrition",
-    "title": "Ultimate Nutrition Muscle Juice Revolution 2600 (5.04 kg)",
-    "category": "Mass Gainer",
-    "price": "₹4,899",
-    "mrp": "₹6,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/s/a/b/-original-imah4f6wghdf78vy.jpeg"
+    "brand": "Fast&Up",
+    "name": "Fast&Up Charge Natural Vitamin C & Zinc",
+    "category": "Multivitamin",
+    "badge": "Effervescent Drink",
+    "rating": "4.3",
+    "rating_count": "60K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61qH+J07uBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Effervescent Tablet",
+      "vitamin_c": "1000 mg (Amla Extract)",
+      "zinc": "10 mg",
+      "usage": "Drop 1 tablet in 250ml water, let it dissolve completely, and drink immediately post-breakfast."
+    },
+    "flavours": ["Orange", "Lemon"],
+    "variants": [
+      {
+        "pack": "20 Tablets",
+        "servings": "20 Days Supply",
+        "mrp": 390,
+        "price": 279
+      },
+      {
+        "pack": "60 Tablets (Tube of 3)",
+        "servings": "60 Days Supply",
+        "mrp": 1170,
+        "price": 749
+      }
+    ]
   },
   {
     "id": 57,
-    "brand": "BSN",
-    "title": "BSN True-Mass High Protein Weight Gainer (Chocolate, 2.64 kg)",
-    "category": "Mass Gainer",
-    "price": "₹3,999",
-    "mrp": "₹5,699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/s/a/b/-original-imah4f6wghdf78vy.jpeg"
+    "brand": "Wellcore",
+    "name": "Wellcore Micronised L-Carnitine L-Tartrate",
+    "category": "Fat Burner & Energy",
+    "badge": "Metabolic Powerhouse",
+    "rating": "4.2",
+    "rating_count": "16K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61bKk8VqZQL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (2g)",
+      "l_carnitine": "2000 mg",
+      "calories": "0 kcal",
+      "usage": "Take 1 scoop with 150ml water 20-30 minutes prior to morning cardio or training."
+    },
+    "flavours": ["Citrus Lemon", "Berry Blast"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "50 Servings",
+        "mrp": 999,
+        "price": 699
+      }
+    ]
   },
   {
     "id": 58,
-    "brand": "Fuel One",
-    "title": "Fuel One Mega Mass Gainer (Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹1,849",
-    "mrp": "₹2,799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Liquid L-Carnitine 3300",
+    "category": "Fat Burner & Energy",
+    "badge": "Fast Liquid Absorption",
+    "rating": "4.3",
+    "rating_count": "30K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "15 ml (1 Cap)",
+      "l_carnitine": "3300 mg",
+      "vitamin_b5": "5 mg",
+      "calories": "0 kcal",
+      "usage": "Drink 15ml directly or mix in 100ml water 15 minutes before your workout session."
+    },
+    "flavours": ["Tangy Orange", "Lemon Lime"],
+    "variants": [
+      {
+        "pack": "450 ml",
+        "servings": "30 Servings",
+        "mrp": 1299,
+        "price": 899
+      }
+    ]
   },
   {
     "id": 59,
-    "brand": "Doctor's Choice",
-    "title": "Doctor's Choice Hulk Mass Gainer (Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹2,399",
-    "mrp": "₹3,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
+    "brand": "GNC",
+    "name": "GNC Triple Strength Fish Oil 1000mg",
+    "category": "Fish Oil",
+    "badge": "Purified 1000mg Omega-3",
+    "rating": "4.5",
+    "rating_count": "26K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61K5Q6F5tZL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Softgel Capsule",
+      "total_omega_3": "1000 mg",
+      "epa": "734 mg",
+      "dha": "266 mg",
+      "usage": "Take 1 softgel daily with food for heart, joint, brain and skin health."
+    },
+    "flavours": ["Enteric Coated"],
+    "variants": [
+      {
+        "pack": "60 Softgels",
+        "servings": "60 Days Supply",
+        "mrp": 1999,
+        "price": 1399
+      },
+      {
+        "pack": "120 Softgels",
+        "servings": "120 Days Supply",
+        "mrp": 3499,
+        "price": 2499
+      }
+    ]
   },
   {
     "id": 60,
-    "brand": "Proburst",
-    "title": "Proburst Ultimate Mass Gainer (Chocolate, 3 kg)",
-    "category": "Mass Gainer",
-    "price": "₹1,999",
-    "mrp": "₹2,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/protein-supplement/w/e/4/-original-imagpjh8fhefgzfc.jpeg"
-  }
-,
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Fish Oil Omega-3",
+    "category": "Fish Oil",
+    "badge": "Enteric-Coated Softgels",
+    "rating": "4.4",
+    "rating_count": "34K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61D7d7f7MBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Softgel",
+      "fish_oil": "1000 mg",
+      "epa": "180 mg",
+      "dha": "120 mg",
+      "usage": "Take 1 softgel up to 3 times daily with whole food meals."
+    },
+    "flavours": ["Enteric Coated"],
+    "variants": [
+      {
+        "pack": "100 Softgels",
+        "servings": "100 Days Supply",
+        "mrp": 1299,
+        "price": 899
+      },
+      {
+        "pack": "200 Softgels",
+        "servings": "200 Days Supply",
+        "mrp": 2299,
+        "price": 1599
+      }
+    ]
+  },
   {
     "id": 61,
-    "brand": "Big Daddy Nutrition",
-    "title": "Big Daddy Explosive Hardcore Pre-Workout (Fruit Punch, 300 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,299",
-    "mrp": "₹1,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Creatine Monohydrate CreAMP",
+    "category": "Creatine",
+    "badge": "CreAMP Fast Absorption",
+    "rating": "4.4",
+    "rating_count": "45K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x0aYh4pML._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g)",
+      "protein_per_serving": "0 g",
+      "creatine": "3000 mg",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Consume 3g post-workout with protein shake or juice for fast muscle saturation."
+    },
+    "flavours": ["Fruit Punch", "Tangy Orange"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "33 Servings",
+        "mrp": 699,
+        "price": 549
+      },
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 1299,
+        "price": 949
+      }
+    ]
   },
   {
     "id": 62,
-    "brand": "Cellucor",
-    "title": "Cellucor C4 Original Explosive Pre-Workout (Fruit Punch, 195 g)",
-    "category": "Pre-Workout",
-    "price": "₹2,199",
-    "mrp": "₹3,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "Wellcore",
+    "name": "Wellcore 100% Whey Protein Isolate",
+    "category": "Whey Protein",
+    "badge": "Cold Microfiltered Isolate",
+    "rating": "4.4",
+    "rating_count": "22K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71Y+K5zSgqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (31g)",
+      "protein_per_serving": "26 g",
+      "bcaa": "5.8 g",
+      "carbs": "1 g",
+      "fat": "0.5 g",
+      "calories": "112 kcal",
+      "usage": "Mix 1 scoop in 200ml cold water post-workout for rapid recovery."
+    },
+    "flavours": ["Belgian Chocolate", "Vanilla Cream"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "32 Servings",
+        "mrp": 3799,
+        "price": 2699
+      },
+      {
+        "pack": "2 kg",
+        "servings": "64 Servings",
+        "mrp": 7199,
+        "price": 4999
+      }
+    ]
   },
   {
     "id": 63,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Pre Workout 200 Xtreme (Fruit Punch, 100 g)",
-    "category": "Pre-Workout",
-    "price": "₹699",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/w/g/y/-original-imagpjh8g3s4hshk.jpeg"
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Micronized BCAA Powder",
+    "category": "BCAA & Amino",
+    "badge": "Instantized BCAA 2:1:1",
+    "rating": "4.4",
+    "rating_count": "25K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71o0W1QzNqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Rounded Teaspoon (5.75g)",
+      "bcaa": "5000 mg (Leucine 2.5g, Isoleucine 1.25g, Valine 1.25g)",
+      "calories": "0 kcal",
+      "usage": "Mix 1 rounded teaspoon with cold water or post-workout protein shake."
+    },
+    "flavours": ["Unflavoured", "Fruit Punch"],
+    "variants": [
+      {
+        "pack": "345 g (60 Servings)",
+        "servings": "60 Servings",
+        "mrp": 2199,
+        "price": 1649
+      }
+    ]
   },
   {
     "id": 64,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Pre Workout 300 (Green Apple, 250 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,199",
-    "mrp": "₹1,749",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/w/g/y/-original-imagpjh8g3s4hshk.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada ProV60 Multi-Purpose Protein",
+    "category": "Whey Protein",
+    "badge": "Time-Released Blend",
+    "rating": "4.3",
+    "rating_count": "14K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71lZc5f+8SL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Scoops (75g)",
+      "protein_per_serving": "60 g",
+      "bcaa": "12 g",
+      "glutamine": "10 g",
+      "calories": "310 kcal",
+      "usage": "Mix 2 scoops with 450ml cold water or milk between meals or before bedtime."
+    },
+    "flavours": ["Chocolate", "Vanilla"],
+    "variants": [
+      {
+        "pack": "1.5 kg (3.5 lbs)",
+        "servings": "20 Servings",
+        "mrp": 4299,
+        "price": 3199
+      }
+    ]
   },
   {
     "id": 65,
     "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Game On Pre-Workout (Orange, 200 g)",
+    "name": "MuscleBlaze L-Arginine 1500mg",
     "category": "Pre-Workout",
-    "price": "₹599",
-    "mrp": "₹899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/w/g/y/-original-imagpjh8g3s4hshk.jpeg"
+    "badge": "Maximum Nitric Oxide Pump",
+    "rating": "4.2",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Capsules",
+      "l_arginine": "1500 mg",
+      "usage": "Take 2 capsules with water 30-45 minutes before intense training."
+    },
+    "flavours": ["Capsules"],
+    "variants": [
+      {
+        "pack": "60 Capsules",
+        "servings": "30 Days Supply",
+        "mrp": 699,
+        "price": 499
+      },
+      {
+        "pack": "90 Capsules",
+        "servings": "45 Days Supply",
+        "mrp": 999,
+        "price": 699
+      }
+    ]
   },
   {
     "id": 66,
-    "brand": "Insane Labz",
-    "title": "Insane Labz Psychotic High Stimulant Pre-Workout (Fruit Punch, 216 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,899",
-    "mrp": "₹2,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "MuscleTech",
+    "name": "MuscleTech Essential Series Platinum 100% Glutamine",
+    "category": "BCAA & Amino",
+    "badge": "Ultra-Pure Micronized",
+    "rating": "4.4",
+    "rating_count": "18K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61NqK+qZ+BL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (5g)",
+      "l_glutamine": "5000 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 240ml cold water or post-workout protein shake daily."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "300 g",
+        "servings": "60 Servings",
+        "mrp": 1799,
+        "price": 1249
+      }
+    ]
   },
   {
     "id": 67,
-    "brand": "Doctor's Choice",
-    "title": "Doctor's Choice Shatter Shredz Pro Pre-Workout (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹1,399",
-    "mrp": "₹2,099",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "HealthKart",
+    "name": "HK Vitals Vitamin D3 2000 IU",
+    "category": "Multivitamin",
+    "badge": "Bone & Muscle Health",
+    "rating": "4.5",
+    "rating_count": "38K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61D7d7f7MBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Softgel Capsule",
+      "vitamin_d3": "2000 IU (Cholecalciferol)",
+      "usage": "Take 1 softgel daily after your highest-fat meal of the day."
+    },
+    "flavours": ["Softgels"],
+    "variants": [
+      {
+        "pack": "60 Softgels",
+        "servings": "60 Days Supply",
+        "mrp": 499,
+        "price": 329
+      },
+      {
+        "pack": "120 Softgels",
+        "servings": "120 Days Supply",
+        "mrp": 899,
+        "price": 579
+      }
+    ]
   },
   {
     "id": 68,
-    "brand": "Nutrabay",
-    "title": "Nutrabay Pure Spark Pre-Workout (Watermelon, 250 g)",
-    "category": "Pre-Workout",
-    "price": "₹799",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Koshaveda Shilajit Pro",
+    "category": "Ayurvedic & Wellness",
+    "badge": "With Shodhit Shilajit & Kesar",
+    "rating": "4.4",
+    "rating_count": "15K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61Xz1bU+4lL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "Pea-sized ball (~250mg)",
+      "fulvic_acid": "> 80%",
+      "infusions": "Kashmiri Kesar, Safed Musli, Ashwagandha",
+      "usage": "Mix pea-sized ball in 100ml warm milk and consume 30 minutes before sleep."
+    },
+    "flavours": ["Pure Resin with Kesar"],
+    "variants": [
+      {
+        "pack": "20 g Jar",
+        "servings": "80 Servings",
+        "mrp": 1899,
+        "price": 1299
+      }
+    ]
   },
   {
     "id": 69,
-    "brand": "BigMuscles Nutrition",
-    "title": "BigMuscles Nutrition Freak Explosive Pre-Workout (Cola, 30 Servings)",
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS L-Citrulline Malate 2:1",
     "category": "Pre-Workout",
-    "price": "₹699",
-    "mrp": "₹1,099",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "badge": "Raw Pre-Workout Pump",
+    "rating": "4.3",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x4fL8z3KL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (2.5g)",
+      "l_citrulline_malate": "2500 mg (2:1 Ratio)",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 200ml cold water 20 minutes before training for vasodilation and muscle pumps."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "40 Servings",
+        "mrp": 549,
+        "price": 399
+      },
+      {
+        "pack": "250 g",
+        "servings": "100 Servings",
+        "mrp": 1199,
+        "price": 849
+      }
+    ]
   },
   {
     "id": 70,
-    "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Gold Standard Pre-Workout (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹1,799",
-    "mrp": "₹2,599",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "MyFitness",
+    "name": "MyFitness Crispy Dark Chocolate Peanut Butter",
+    "category": "Peanut Butter",
+    "badge": "Crunchy Brown Rice Crisps",
+    "rating": "4.6",
+    "rating_count": "72K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71R1c8v3rUL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "8.5 g",
+      "carbs": "9 g",
+      "healthy_fats": "16 g",
+      "energy": "205 kcal",
+      "usage": "Spread 2 tablespoons over toast, fruit slices or mix in high-protein oats."
+    },
+    "flavours": ["Crispy Dark Chocolate"],
+    "variants": [
+      {
+        "pack": "510 g",
+        "servings": "16 Servings",
+        "mrp": 349,
+        "price": 279
+      },
+      {
+        "pack": "1.25 kg",
+        "servings": "39 Servings",
+        "mrp": 699,
+        "price": 579
+      },
+      {
+        "pack": "2.5 kg",
+        "servings": "78 Servings",
+        "mrp": 1399,
+        "price": 1099
+      }
+    ]
   },
-  {
+      {
     "id": 71,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS ATOM Pre-Workout (Green Apple, 250 g)",
-    "category": "Pre-Workout",
-    "price": "₹749",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Biozyme Daily Multivitamin for Women",
+    "category": "Multivitamin",
+    "badge": "Enzymes & Iron Rich",
+    "rating": "4.4",
+    "rating_count": "18K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61gVj4L9Z6L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "active_ingredients": "Iron, Folic Acid, Calcium, Vitamin D3, Digestive Enzymes & 40+ Nutrients",
+      "usage": "Take 1 tablet daily post-breakfast with water."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 899,
+        "price": 649
+      }
+    ]
   },
   {
     "id": 72,
-    "brand": "MuscleTech",
-    "title": "MuscleTech Vapor X5 Next Gen Pre-Workout (Blue Raspberry, 263 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,999",
-    "mrp": "₹2,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 73,
-    "brand": "GNC",
-    "title": "GNC Pro Performance Pre-Workout (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹1,499",
-    "mrp": "₹2,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 74,
-    "brand": "Proburst",
-    "title": "Proburst Predator Pre-Workout (Orange, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹799",
-    "mrp": "₹1,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 75,
-    "brand": "Redskull",
-    "title": "Redskull Aggressive Pre-Workout (Fruit Punch, 300 g)",
-    "category": "Pre-Workout",
-    "price": "₹999",
-    "mrp": "₹1,599",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 76,
-    "brand": "Wild Bull",
-    "title": "Wild Bull High Energy Pre-Workout (Watermelon, 300 g)",
-    "category": "Pre-Workout",
-    "price": "₹899",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 77,
-    "brand": "Labrada Nutrition",
-    "title": "Labrada Super Charge Pre-Workout (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹1,699",
-    "mrp": "₹2,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 78,
-    "brand": "Avvatar",
-    "title": "Avvatar Fire Power Pre-Workout (Tropical Punch, 250 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,199",
-    "mrp": "₹1,799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 79,
-    "brand": "Nakpro",
-    "title": "Nakpro Explosive Pre-Workout (Green Apple, 200 g)",
-    "category": "Pre-Workout",
-    "price": "₹649",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 80,
-    "brand": "BSN",
-    "title": "BSN N.O.-XPLODE Pre-Workout Igniter (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹2,299",
-    "mrp": "₹3,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  }
-,
-  {
-    "id": 61,
-    "brand": "Big Daddy Nutrition",
-    "title": "Big Daddy Explosive Hardcore Pre-Workout (Fruit Punch, 300 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,299",
-    "mrp": "₹1,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 62,
-    "brand": "Cellucor",
-    "title": "Cellucor C4 Original Explosive Pre-Workout (Fruit Punch, 195 g)",
-    "category": "Pre-Workout",
-    "price": "₹2,199",
-    "mrp": "₹3,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 63,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Pre Workout 200 Xtreme (Fruit Punch, 100 g)",
-    "category": "Pre-Workout",
-    "price": "₹699",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/w/g/y/-original-imagpjh8g3s4hshk.jpeg"
-  },
-  {
-    "id": 64,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Pre Workout 300 (Green Apple, 250 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,199",
-    "mrp": "₹1,749",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/w/g/y/-original-imagpjh8g3s4hshk.jpeg"
-  },
-  {
-    "id": 65,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Game On Pre-Workout (Orange, 200 g)",
-    "category": "Pre-Workout",
-    "price": "₹599",
-    "mrp": "₹899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/w/g/y/-original-imagpjh8g3s4hshk.jpeg"
-  },
-  {
-    "id": 66,
-    "brand": "Insane Labz",
-    "title": "Insane Labz Psychotic High Stimulant Pre-Workout (Fruit Punch, 216 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,899",
-    "mrp": "₹2,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 67,
-    "brand": "Doctor's Choice",
-    "title": "Doctor's Choice Shatter Shredz Pro Pre-Workout (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹1,399",
-    "mrp": "₹2,099",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 68,
-    "brand": "Nutrabay",
-    "title": "Nutrabay Pure Spark Pre-Workout (Watermelon, 250 g)",
-    "category": "Pre-Workout",
-    "price": "₹799",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 69,
-    "brand": "BigMuscles Nutrition",
-    "title": "BigMuscles Nutrition Freak Explosive Pre-Workout (Cola, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹699",
-    "mrp": "₹1,099",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 70,
     "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Gold Standard Pre-Workout (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹1,799",
-    "mrp": "₹2,599",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 71,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS ATOM Pre-Workout (Green Apple, 250 g)",
-    "category": "Pre-Workout",
-    "price": "₹749",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  },
-  {
-    "id": 72,
-    "brand": "MuscleTech",
-    "title": "MuscleTech Vapor X5 Next Gen Pre-Workout (Blue Raspberry, 263 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,999",
-    "mrp": "₹2,999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "name": "Optimum Nutrition (ON) Opti-Women Multivitamin",
+    "category": "Multivitamin",
+    "badge": "23 Essential Vitamins",
+    "rating": "4.5",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61qH+J07uBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Capsules",
+      "active_ingredients": "17 Specialty Ingredients, 23 Vitamins & Minerals, 600mcg Folic Acid",
+      "usage": "Consume 2 capsules daily with food, preferably in the morning."
+    },
+    "flavours": ["Capsules"],
+    "variants": [
+      {
+        "pack": "60 Capsules",
+        "servings": "30 Days Supply",
+        "mrp": 1499,
+        "price": 1099
+      }
+    ]
   },
   {
     "id": 73,
-    "brand": "GNC",
-    "title": "GNC Pro Performance Pre-Workout (Fruit Punch, 30 Servings)",
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS L-Arginine Pure Powder",
     "category": "Pre-Workout",
-    "price": "₹1,499",
-    "mrp": "₹2,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "badge": "100% Pure Free-Form",
+    "rating": "4.2",
+    "rating_count": "21K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x4fL8z3KL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (2.5g)",
+      "l_arginine": "2500 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 200ml cold water 30 minutes before workout for increased vascularity."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "40 Servings",
+        "mrp": 499,
+        "price": 369
+      },
+      {
+        "pack": "250 g",
+        "servings": "100 Servings",
+        "mrp": 999,
+        "price": 729
+      }
+    ]
   },
   {
     "id": 74,
-    "brand": "Proburst",
-    "title": "Proburst Predator Pre-Workout (Orange, 30 Servings)",
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Beta Alanine (100% Pure)",
     "category": "Pre-Workout",
-    "price": "₹799",
-    "mrp": "₹1,299",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "badge": "Endurance Booster",
+    "rating": "4.3",
+    "rating_count": "16K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g)",
+      "beta_alanine": "3000 mg (CarnoSyn Quality)",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with water or pre-workout drink 20 minutes prior to exercise."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "33 Servings",
+        "mrp": 699,
+        "price": 499
+      },
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 1299,
+        "price": 949
+      }
+    ]
   },
   {
     "id": 75,
-    "brand": "Redskull",
-    "title": "Redskull Aggressive Pre-Workout (Fruit Punch, 300 g)",
-    "category": "Pre-Workout",
-    "price": "₹999",
-    "mrp": "₹1,599",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada EAA (Essential Amino Acids)",
+    "category": "BCAA & Amino",
+    "badge": "All 9 Essential Aminos",
+    "rating": "4.4",
+    "rating_count": "14K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61q3j7V5tVL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (10g)",
+      "eaa": "7.4 g",
+      "bcaa": "5 g",
+      "electrolytes": "Coconut Water Powder",
+      "usage": "Mix 1 scoop with 350-400ml chilled water and drink intra-workout."
+    },
+    "flavours": ["Watermelon", "Fruit Punch", "Mango Tango"],
+    "variants": [
+      {
+        "pack": "300 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 1899,
+        "price": 1399
+      }
+    ]
   },
   {
     "id": 76,
-    "brand": "Wild Bull",
-    "title": "Wild Bull High Energy Pre-Workout (Watermelon, 300 g)",
+    "brand": "MuscleTech",
+    "name": "MuscleTech Vapor X5 Ripped Pre-Workout",
     "category": "Pre-Workout",
-    "price": "₹899",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "badge": "Pre-Workout + Fat Burner",
+    "rating": "4.3",
+    "rating_count": "19K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (9g)",
+      "caffeine": "200 mg",
+      "beta_alanine": "1600 mg",
+      "l_carnitine_l_tartrate": "500 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 250ml cold water 30 minutes before morning training or cardio."
+    },
+    "flavours": ["Icy Rocket Freeze", "Strawberry Lime"],
+    "variants": [
+      {
+        "pack": "270 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 2799,
+        "price": 1999
+      }
+    ]
   },
   {
     "id": 77,
-    "brand": "Labrada Nutrition",
-    "title": "Labrada Super Charge Pre-Workout (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹1,699",
-    "mrp": "₹2,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "Fast&Up",
+    "name": "Fast&Up Reload Hydration & Electrolytes",
+    "category": "BCAA & Amino",
+    "badge": "Instant Hypotonic Hydration",
+    "rating": "4.4",
+    "rating_count": "45K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61qH+J07uBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Effervescent Tablet",
+      "electrolytes": "Sodium, Potassium, Magnesium, Chlorides, Calcium",
+      "vitamin_c_b12": "Added Vitamin C & B12",
+      "usage": "Drop 1 tablet in 500ml water during gym workouts or sports for non-stop energy."
+    },
+    "flavours": ["Citrus", "Berry", "Cola"],
+    "variants": [
+      {
+        "pack": "20 Tablets",
+        "servings": "20 Servings",
+        "mrp": 310,
+        "price": 239
+      },
+      {
+        "pack": "60 Tablets (Tube of 3)",
+        "servings": "60 Servings",
+        "mrp": 930,
+        "price": 649
+      }
+    ]
   },
   {
     "id": 78,
-    "brand": "Avvatar",
-    "title": "Avvatar Fire Power Pre-Workout (Tropical Punch, 250 g)",
-    "category": "Pre-Workout",
-    "price": "₹1,199",
-    "mrp": "₹1,799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Tribulus Gokshura 1000mg",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Natural Strength & Stamina",
+    "rating": "4.3",
+    "rating_count": "22K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61gVj4L9Z6L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "gokshura_extract": "1000 mg (40% Saponins)",
+      "usage": "Take 1 tablet twice daily with water or milk post-meals."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "30 Days Supply",
+        "mrp": 649,
+        "price": 449
+      }
+    ]
   },
   {
     "id": 79,
-    "brand": "Nakpro",
-    "title": "Nakpro Explosive Pre-Workout (Green Apple, 200 g)",
-    "category": "Pre-Workout",
-    "price": "₹649",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
+    "brand": "Pintola",
+    "name": "Pintola Performance Organic Peanut Butter",
+    "category": "Peanut Butter",
+    "badge": "100% Certified Organic",
+    "rating": "4.5",
+    "rating_count": "30K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71L5T6n+aRL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "10 g",
+      "carbs": "5 g",
+      "healthy_fats": "15 g",
+      "energy": "190 kcal",
+      "usage": "Eat 2 tablespoons daily with brown bread or blend in pre/post workout shake."
+    },
+    "flavours": ["Organic Crunchy", "Organic Creamy"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "31 Servings",
+        "mrp": 599,
+        "price": 469
+      },
+      {
+        "pack": "2.5 kg",
+        "servings": "78 Servings",
+        "mrp": 1399,
+        "price": 1099
+      }
+    ]
   },
   {
     "id": 80,
-    "brand": "BSN",
-    "title": "BSN N.O.-XPLODE Pre-Workout Igniter (Fruit Punch, 30 Servings)",
-    "category": "Pre-Workout",
-    "price": "₹2,299",
-    "mrp": "₹3,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/energy-sport-drink-mix/d/f/e/-original-imagk7yh7yvfgyc8.jpeg"
-  }
-,
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Fish Oil Gold (Triple Strength)",
+    "category": "Fish Oil",
+    "badge": "Enteric Coated Triple Strength",
+    "rating": "4.5",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61K5Q6F5tZL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Softgel Capsule",
+      "total_omega_3": "1250 mg",
+      "epa": "560 mg",
+      "dha": "400 mg",
+      "usage": "Take 1 softgel daily after your biggest meal of the day."
+    },
+    "flavours": ["Enteric Coated"],
+    "variants": [
+      {
+        "pack": "60 Softgels",
+        "servings": "60 Days Supply",
+        "mrp": 1299,
+        "price": 899
+      },
+      {
+        "pack": "90 Softgels",
+        "servings": "90 Days Supply",
+        "mrp": 1799,
+        "price": 1249
+      }
+    ]
+  },
   {
     "id": 81,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze MB-Vite Daily Multivitamin (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹499",
-    "mrp": "₹749",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Gold Standard 100% Casein",
+    "category": "Whey Protein",
+    "badge": "Slow-Digesting Night Protein",
+    "rating": "4.5",
+    "rating_count": "24K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71Y+K5zSgqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Heaping Scoop (34g)",
+      "protein_per_serving": "24 g (Micellar Casein)",
+      "bcaa": "5 g",
+      "glutamine": "5 g",
+      "carbs": "3 g",
+      "fat": "1 g",
+      "calories": "120 kcal",
+      "usage": "Mix 1 scoop with 300ml cold water or milk before bed for sustained 8-hour protein release."
+    },
+    "flavours": ["Chocolate Supreme", "Creamy Vanilla"],
+    "variants": [
+      {
+        "pack": "2 lbs (907 g)",
+        "servings": "27 Servings",
+        "mrp": 4699,
+        "price": 3499
+      },
+      {
+        "pack": "4 lbs (1.81 kg)",
+        "servings": "53 Servings",
+        "mrp": 8499,
+        "price": 6299
+      }
+    ]
   },
   {
     "id": 82,
     "brand": "MuscleBlaze",
-    "title": "MuscleBlaze MB-Vite Gold with 100% RDA (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹799",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "name": "MuscleBlaze Micellar Casein",
+    "category": "Whey Protein",
+    "badge": "Bedtime Muscle Repair",
+    "rating": "4.3",
+    "rating_count": "19K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61z7zU3+uIL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (35g)",
+      "protein_per_serving": "24 g",
+      "bcaa": "5.27 g",
+      "eaa": "11.16 g",
+      "carbs": "4 g",
+      "fat": "1 g",
+      "calories": "122 kcal",
+      "usage": "Mix 1 scoop with 250ml milk or water 30 minutes before sleeping."
+    },
+    "flavours": ["Cafe Mocha", "Chocolate"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "28 Servings",
+        "mrp": 3499,
+        "price": 2499
+      },
+      {
+        "pack": "2 kg",
+        "servings": "57 Servings",
+        "mrp": 6699,
+        "price": 4699
+      }
+    ]
   },
   {
     "id": 83,
-    "brand": "GNC",
-    "title": "GNC Mega Men Sport Daily Multivitamin (60 Caplets)",
-    "category": "Multivitamin",
-    "price": "₹1,199",
-    "mrp": "₹1,799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/u/7/t/-original-imagk7yhhjhcy7f8.jpeg"
+    "brand": "Wellcore",
+    "name": "Wellcore Pure Ashwagandha KSM-66",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Full Spectrum Root Extract",
+    "rating": "4.4",
+    "rating_count": "16K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61bKk8VqZQL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Capsule",
+      "ksm66_ashwagandha": "600 mg",
+      "withanolides": "5% Bioactive Withanolides",
+      "usage": "Take 1 capsule daily after dinner with warm water or milk for deep recovery."
+    },
+    "flavours": ["Vegetarian Capsules"],
+    "variants": [
+      {
+        "pack": "60 Capsules",
+        "servings": "60 Days Supply",
+        "mrp": 899,
+        "price": 599
+      }
+    ]
   },
   {
     "id": 84,
-    "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Opti-Men Daily Multivitamin (90 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹1,699",
-    "mrp": "₹2,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Koshaveda Gokshura",
+    "category": "Ayurvedic & Wellness",
+    "badge": "1000mg Herbal Strength",
+    "rating": "4.3",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61Xz1bU+4lL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "gokshura_extract": "1000 mg",
+      "usage": "Take 1 tablet daily with lukewarm water or milk post meal."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 599,
+        "price": 429
+      }
+    ]
   },
   {
     "id": 85,
-    "brand": "TrueBasics",
-    "title": "TrueBasics Multivit Sport Daily Multivitamin (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹899",
-    "mrp": "₹1,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada Glutamine Lean Muscle",
+    "category": "BCAA & Amino",
+    "badge": "100% Fermented Glutamine",
+    "rating": "4.4",
+    "rating_count": "17K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61-f0qK3XzL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (5g)",
+      "l_glutamine": "5000 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 200ml cold water or post-workout whey shake to prevent muscle breakdown."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "250 g",
+        "servings": "50 Servings",
+        "mrp": 1299,
+        "price": 899
+      },
+      {
+        "pack": "500 g",
+        "servings": "100 Servings",
+        "mrp": 2299,
+        "price": 1599
+      }
+    ]
   },
   {
     "id": 86,
-    "brand": "HK Vitals",
-    "title": "HK Vitals (HealthKart) Multivitamin with Ginseng (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹399",
-    "mrp": "₹649",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS L-Carnitine L-Tartrate Pure",
+    "category": "Fat Burner & Energy",
+    "badge": "100% Pure Raw Powder",
+    "rating": "4.2",
+    "rating_count": "25K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x4fL8z3KL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (2g)",
+      "l_carnitine_l_tartrate": "2000 mg",
+      "calories": "0 kcal",
+      "usage": "Consume 2g mixed with water 20 minutes before workout or fasted cardio."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "50 Servings",
+        "mrp": 799,
+        "price": 549
+      },
+      {
+        "pack": "250 g",
+        "servings": "125 Servings",
+        "mrp": 1699,
+        "price": 1199
+      }
+    ]
   },
   {
     "id": 87,
-    "brand": "Nutrabay",
-    "title": "Nutrabay Pro Daily Multivitamin for Men (60 Tablets)",
+    "brand": "HealthKart",
+    "name": "HK Vitals Biotin 10000 mcg",
     "category": "Multivitamin",
-    "price": "₹449",
-    "mrp": "₹699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "badge": "Hair, Skin & Nails",
+    "rating": "4.4",
+    "rating_count": "70K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61gVj4L9Z6L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "biotin": "10000 mcg (Vitamin B7)",
+      "usage": "Take 1 tablet daily after lunch or breakfast with water."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 599,
+        "price": 379
+      },
+      {
+        "pack": "90 Tablets",
+        "servings": "90 Days Supply",
+        "mrp": 849,
+        "price": 529
+      }
+    ]
   },
   {
     "id": 88,
-    "brand": "Carbamide Forte",
-    "title": "Carbamide Forte Multivitamin with Probiotics (60 Tablets)",
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Biotin 10000 mcg",
     "category": "Multivitamin",
-    "price": "₹499",
-    "mrp": "₹799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "badge": "Keratin & Energy Booster",
+    "rating": "4.3",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61D7d7f7MBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "biotin": "10000 mcg",
+      "usage": "Consume 1 tablet daily with meal."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 649,
+        "price": 429
+      }
+    ]
   },
   {
     "id": 89,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS Daily Multivitamin with Zinc & Vitamin C (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹429",
-    "mrp": "₹649",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Fast&Up",
+    "name": "Fast&Up BCAA 2:1:1 Ultra-Pure",
+    "category": "BCAA & Amino",
+    "badge": "Fermented BCAA + Glutamine",
+    "rating": "4.3",
+    "rating_count": "32K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (10.5g)",
+      "bcaa": "5 g (2:1:1)",
+      "glutamine": "2.5 g",
+      "l_carnitine": "375 mg",
+      "electrolytes": "Hydration Blend",
+      "usage": "Mix 1 scoop in 500ml water and sip during intense gym training."
+    },
+    "flavours": ["Watermelon", "Cola", "Lime & Lemon"],
+    "variants": [
+      {
+        "pack": "315 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 1950,
+        "price": 1399
+      }
+    ]
   },
   {
     "id": 90,
-    "brand": "Centrum",
-    "title": "Centrum Men Daily Multivitamin & Immunity Support (50 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹475",
-    "mrp": "₹550",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "MyFitness",
+    "name": "MyFitness Honey Peanut Butter (Crunchy)",
+    "category": "Peanut Butter",
+    "badge": "Sweetened with Raw Honey",
+    "rating": "4.5",
+    "rating_count": "45K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71c6t4kR6lL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "8 g",
+      "raw_honey": "100% Pure Honey Infused",
+      "carbs": "9 g",
+      "healthy_fats": "15 g",
+      "energy": "195 kcal",
+      "usage": "Spread 2 tablespoons over toast, fruit bowl, or blend in breakfast shakes."
+    },
+    "flavours": ["Honey Crunchy", "Honey Smooth"],
+    "variants": [
+      {
+        "pack": "510 g",
+        "servings": "16 Servings",
+        "mrp": 329,
+        "price": 259
+      },
+      {
+        "pack": "1.25 kg",
+        "servings": "39 Servings",
+        "mrp": 679,
+        "price": 539
+      }
+    ]
   },
-  {
+      {
     "id": 91,
-    "brand": "MuscleTech",
-    "title": "MuscleTech Platinum Multivitamin High Potency (90 Caplets)",
-    "category": "Multivitamin",
-    "price": "₹1,249",
-    "mrp": "₹1,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 92,
-    "brand": "Universal Nutrition",
-    "title": "Universal Nutrition Daily Formula Multivitamin (100 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹999",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 93,
-    "brand": "Doctor's Choice",
-    "title": "Doctor's Choice Daily Multivitamin for Men (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹549",
-    "mrp": "₹899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 94,
-    "brand": "Boldfit",
-    "title": "Boldfit Multivitamin for Men with 36 Ingredients (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹399",
-    "mrp": "₹699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 95,
-    "brand": "Himalayan Organics",
-    "title": "Himalayan Organics Whole Food Multivitamin for Men (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹649",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 96,
-    "brand": "BigMuscles Nutrition",
-    "title": "BigMuscles Nutrition Multivitamin Sports (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹449",
-    "mrp": "₹799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 97,
-    "brand": "Fast&Up",
-    "title": "Fast&Up Vitalize Daily Multivitamin (20 Effervescent Tablets)",
-    "category": "Multivitamin",
-    "price": "₹349",
-    "mrp": "₹495",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 98,
-    "brand": "HealthVit",
-    "title": "HealthVit Mulvit Daily Multivitamin (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹299",
-    "mrp": "₹450",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 99,
-    "brand": "Zincovit",
-    "title": "Zincovit Multivitamin & Minerals Daily Strip (15 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹115",
-    "mrp": "₹130",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 100,
-    "brand": "Becadexamin",
-    "title": "Becadexamin Daily Multivitamin Capsules (30 Softgels)",
-    "category": "Multivitamin",
-    "price": "₹65",
-    "mrp": "₹75",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  }
-,
-  {
-    "id": 81,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze MB-Vite Daily Multivitamin (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹499",
-    "mrp": "₹749",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 82,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze MB-Vite Gold with 100% RDA (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹799",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 83,
-    "brand": "GNC",
-    "title": "GNC Mega Men Sport Daily Multivitamin (60 Caplets)",
-    "category": "Multivitamin",
-    "price": "₹1,199",
-    "mrp": "₹1,799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/u/7/t/-original-imagk7yhhjhcy7f8.jpeg"
-  },
-  {
-    "id": 84,
     "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Opti-Men Daily Multivitamin (90 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹1,699",
-    "mrp": "₹2,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 85,
-    "brand": "TrueBasics",
-    "title": "TrueBasics Multivit Sport Daily Multivitamin (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹899",
-    "mrp": "₹1,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 86,
-    "brand": "HK Vitals",
-    "title": "HK Vitals (HealthKart) Multivitamin with Ginseng (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹399",
-    "mrp": "₹649",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 87,
-    "brand": "Nutrabay",
-    "title": "Nutrabay Pro Daily Multivitamin for Men (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹449",
-    "mrp": "₹699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 88,
-    "brand": "Carbamide Forte",
-    "title": "Carbamide Forte Multivitamin with Probiotics (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹499",
-    "mrp": "₹799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 89,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS Daily Multivitamin with Zinc & Vitamin C (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹429",
-    "mrp": "₹649",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 90,
-    "brand": "Centrum",
-    "title": "Centrum Men Daily Multivitamin & Immunity Support (50 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹475",
-    "mrp": "₹550",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 91,
-    "brand": "MuscleTech",
-    "title": "MuscleTech Platinum Multivitamin High Potency (90 Caplets)",
-    "category": "Multivitamin",
-    "price": "₹1,249",
-    "mrp": "₹1,899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "name": "Optimum Nutrition (ON) Micronized Glutamine",
+    "category": "BCAA & Amino",
+    "badge": "100% Pure Free-Form",
+    "rating": "4.4",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71Y+K5zSgqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Rounded Teaspoon (5g)",
+      "l_glutamine": "5000 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 rounded teaspoon with 240ml cold water or your favourite protein shake post-workout."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "250 g",
+        "servings": "50 Servings",
+        "mrp": 1499,
+        "price": 1099
+      },
+      {
+        "pack": "500 g",
+        "servings": "100 Servings",
+        "mrp": 2699,
+        "price": 1999
+      }
+    ]
   },
   {
     "id": 92,
-    "brand": "Universal Nutrition",
-    "title": "Universal Nutrition Daily Formula Multivitamin (100 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹999",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze L-Carnitine CarniCore 3000",
+    "category": "Fat Burner & Energy",
+    "badge": "Fast Liquid Shot",
+    "rating": "4.3",
+    "rating_count": "15K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "15 ml (1 Serving)",
+      "l_carnitine": "3000 mg",
+      "calories": "0 kcal",
+      "usage": "Consume 15ml directly 15-20 minutes before exercise or morning cardio."
+    },
+    "flavours": ["Lemon Lime", "Tangy Orange"],
+    "variants": [
+      {
+        "pack": "450 ml",
+        "servings": "30 Servings",
+        "mrp": 1199,
+        "price": 849
+      }
+    ]
   },
   {
     "id": 93,
-    "brand": "Doctor's Choice",
-    "title": "Doctor's Choice Daily Multivitamin for Men (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹549",
-    "mrp": "₹899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS L-Leucine Powder",
+    "category": "BCAA & Amino",
+    "badge": "Anabolic Trigger Amino",
+    "rating": "4.2",
+    "rating_count": "12K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x4fL8z3KL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (2.5g)",
+      "l_leucine": "2500 mg",
+      "calories": "0 kcal",
+      "usage": "Add 2.5g to your pre or post workout shake to trigger muscle protein synthesis."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "40 Servings",
+        "mrp": 549,
+        "price": 399
+      },
+      {
+        "pack": "250 g",
+        "servings": "100 Servings",
+        "mrp": 1199,
+        "price": 849
+      }
+    ]
   },
   {
     "id": 94,
-    "brand": "Boldfit",
-    "title": "Boldfit Multivitamin for Men with 36 Ingredients (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹399",
-    "mrp": "₹699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "MuscleTech",
+    "name": "MuscleTech Hydroxycut Hardcore Elite",
+    "category": "Fat Burner & Energy",
+    "badge": "Super-Thermogenic Formula",
+    "rating": "4.3",
+    "rating_count": "26K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Rapid-Release Capsules",
+      "caffeine_anhydrous": "270 mg",
+      "green_coffee_extract": "200 mg",
+      "coleus_extract": "100 mg",
+      "usage": "Take 1 capsule 30-60 minutes before 2 largest meals. Assess tolerance before increasing to 2 capsules."
+    },
+    "flavours": ["Capsules"],
+    "variants": [
+      {
+        "pack": "110 Capsules",
+        "servings": "55 Servings",
+        "mrp": 2999,
+        "price": 2199
+      }
+    ]
   },
   {
     "id": 95,
-    "brand": "Himalayan Organics",
-    "title": "Himalayan Organics Whole Food Multivitamin for Men (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹649",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Pintola",
+    "name": "Pintola Wood Pressed Virgin Coconut Oil",
+    "category": "Ayurvedic & Wellness",
+    "badge": "100% Pure Cold Pressed",
+    "rating": "4.6",
+    "rating_count": "18K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71L5T6n+aRL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablespoon (15ml)",
+      "healthy_mct_fats": "14 g",
+      "lauric_acid": "50%",
+      "energy": "125 kcal",
+      "usage": "Add 1 tablespoon to black coffee (bulletproof coffee) or keto cooking."
+    },
+    "flavours": ["Pure Unrefined"],
+    "variants": [
+      {
+        "pack": "500 ml Glass Jar",
+        "servings": "33 Servings",
+        "mrp": 449,
+        "price": 349
+      },
+      {
+        "pack": "1 Litre Glass Bottle",
+        "servings": "66 Servings",
+        "mrp": 849,
+        "price": 649
+      }
+    ]
   },
   {
     "id": 96,
-    "brand": "BigMuscles Nutrition",
-    "title": "BigMuscles Nutrition Multivitamin Sports (60 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹449",
-    "mrp": "₹799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada Lean Body Ready-to-Drink Protein Shake",
+    "category": "Whey Protein",
+    "badge": "Zero Sugar RTD Shake",
+    "rating": "4.5",
+    "rating_count": "14K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71lZc5f+8SL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tetrapack Bottle (500ml)",
+      "protein_per_serving": "40 g",
+      "carbs": "9 g",
+      "fat": "5 g",
+      "sugar": "0 g",
+      "calories": "260 kcal",
+      "usage": "Drink chilled straight from pack immediately post-workout or on-the-go meal replacement."
+    },
+    "flavours": ["Chocolate Shake", "Vanilla Shake"],
+    "variants": [
+      {
+        "pack": "Pack of 4 (500ml each)",
+        "servings": "4 Servings",
+        "mrp": 1599,
+        "price": 1199
+      }
+    ]
   },
   {
     "id": 97,
-    "brand": "Fast&Up",
-    "title": "Fast&Up Vitalize Daily Multivitamin (20 Effervescent Tablets)",
-    "category": "Multivitamin",
-    "price": "₹349",
-    "mrp": "₹495",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Kapiva",
+    "name": "Kapiva Ashwagandha Gold Capsules",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Nagori Ashwagandha + Swarna Bhasma",
+    "rating": "4.3",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61r5P8Z6QWL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Capsule",
+      "active_herbs": "Shuddha Ashwagandha Root 500mg, 24K Gold Bhasma, Shilajit",
+      "usage": "Take 1 capsule at night with lukewarm milk."
+    },
+    "flavours": ["Vegetarian Capsules"],
+    "variants": [
+      {
+        "pack": "60 Capsules",
+        "servings": "60 Days Supply",
+        "mrp": 1299,
+        "price": 899
+      }
+    ]
   },
   {
     "id": 98,
-    "brand": "HealthVit",
-    "title": "HealthVit Mulvit Daily Multivitamin (60 Tablets)",
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Joint Support Formula",
     "category": "Multivitamin",
-    "price": "₹299",
-    "mrp": "₹450",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "badge": "Glucosamine + Chondroitin + MSM",
+    "rating": "4.4",
+    "rating_count": "22K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61D7d7f7MBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "glucosamine_sulfate": "1000 mg",
+      "chondroitin_sulfate": "200 mg",
+      "msm": "200 mg",
+      "usage": "Take 1 tablet twice daily with water post heavy lifting meals."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "30 Days Supply",
+        "mrp": 849,
+        "price": 599
+      },
+      {
+        "pack": "90 Tablets",
+        "servings": "45 Days Supply",
+        "mrp": 1199,
+        "price": 849
+      }
+    ]
   },
   {
     "id": 99,
-    "brand": "Zincovit",
-    "title": "Zincovit Multivitamin & Minerals Daily Strip (15 Tablets)",
-    "category": "Multivitamin",
-    "price": "₹115",
-    "mrp": "₹130",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Wellcore",
+    "name": "Wellcore Electrolyte + Amino Fuel",
+    "category": "BCAA & Amino",
+    "badge": "Instant Hydration Matrix",
+    "rating": "4.3",
+    "rating_count": "16K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61bKk8VqZQL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (10g)",
+      "bcaa_eaa": "6000 mg",
+      "hydration_electrolytes": "Coconut water powder, Himalayan pink salt",
+      "usage": "Mix 1 scoop in 500ml ice-cold water during intense workouts."
+    },
+    "flavours": ["Blue Lagoon", "Watermelon Splash"],
+    "variants": [
+      {
+        "pack": "300 g",
+        "servings": "30 Servings",
+        "mrp": 1799,
+        "price": 1249
+      }
+    ]
   },
   {
     "id": 100,
-    "brand": "Becadexamin",
-    "title": "Becadexamin Daily Multivitamin Capsules (30 Softgels)",
-    "category": "Multivitamin",
-    "price": "₹65",
-    "mrp": "₹75",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  }
-,
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Pro BCAA Intra-Workout (Sugar Free)",
+    "category": "BCAA & Amino",
+    "badge": "7g Vegan BCAA 2:1:1",
+    "rating": "4.3",
+    "rating_count": "38K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61q3j7V5tVL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (15g)",
+      "bcaa": "7 g",
+      "l_glutamine": "1 g",
+      "citrulline_malate": "1 g",
+      "electrolytes": "Sodium, Potassium blend",
+      "usage": "Mix 1 scoop with 500ml water and drink during workout sessions."
+    },
+    "flavours": ["Pineapple", "Fruit Punch", "Green Apple"],
+    "variants": [
+      {
+        "pack": "450 g",
+        "servings": "30 Servings",
+        "mrp": 2399,
+        "price": 1699
+      }
+    ]
+  },
   {
     "id": 101,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Omega 3 Fish Oil 1000 mg (90 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹649",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "GNC",
+    "name": "GNC AMP Pure Isolate Whey",
+    "category": "Whey Protein",
+    "badge": "Micro-Filtered Fast Digesting",
+    "rating": "4.4",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61F9OQ81QIL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (32g)",
+      "protein_per_serving": "25 g (Hydrolyzed & Isolate)",
+      "bcaa": "5 g",
+      "glutamine": "4 g",
+      "carbs": "1 g",
+      "fat": "0.5 g",
+      "calories": "110 kcal",
+      "usage": "Mix 1 scoop with 180ml-240ml chilled water immediately after intense training."
+    },
+    "flavours": ["Chocolate Frosting", "Vanilla Dream"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "31 Servings",
+        "mrp": 3999,
+        "price": 2899
+      },
+      {
+        "pack": "2 kg (4.4 lbs)",
+        "servings": "62 Servings",
+        "mrp": 7599,
+        "price": 5499
+      }
+    ]
   },
   {
     "id": 102,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Gold Triple Strength Fish Oil (60 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹949",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS Pure Beta Alanine",
+    "category": "Pre-Workout",
+    "badge": "Carnosine & Muscular Endurance",
+    "rating": "4.2",
+    "rating_count": "18K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x4fL8z3KL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (2.5g)",
+      "beta_alanine": "2500 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 2.5g with 200ml water or pre-workout drink 20 minutes prior to gym session."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "40 Servings",
+        "mrp": 549,
+        "price": 389
+      },
+      {
+        "pack": "250 g",
+        "servings": "100 Servings",
+        "mrp": 1199,
+        "price": 799
+      }
+    ]
   },
   {
     "id": 103,
-    "brand": "TrueBasics",
-    "title": "TrueBasics Ultra Omega-3 Triple Strength (60 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹899",
-    "mrp": "₹1,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Pre-Workout Ripped",
+    "category": "Pre-Workout",
+    "badge": "Pre-Workout + Thermogenic",
+    "rating": "4.3",
+    "rating_count": "16K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (9g)",
+      "caffeine": "200 mg",
+      "l_carnitine_l_tartrate": "500 mg",
+      "garcinia_cambogia": "300 mg",
+      "l_citrulline": "2000 mg",
+      "usage": "Mix 1 scoop with 200ml chilled water 30 minutes before cardio or weight lifting."
+    },
+    "flavours": ["Fruit Splash", "Tangy Orange"],
+    "variants": [
+      {
+        "pack": "270 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 1999,
+        "price": 1399
+      }
+    ]
   },
   {
     "id": 104,
-    "brand": "HK Vitals",
-    "title": "HK Vitals (HealthKart) Fish Oil 1000 mg (60 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹399",
-    "mrp": "₹699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Kapiva",
+    "name": "Kapiva Pure Himalayan Shilajit Fizz",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Effervescent Shilajit Tablets",
+    "rating": "4.2",
+    "rating_count": "14K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61r5P8Z6QWL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Effervescent Tablet",
+      "shuddha_shilajit": "500 mg",
+      "ashwagandha": "250 mg",
+      "safed_musli": "100 mg",
+      "usage": "Drop 1 tablet into 200ml water, watch it dissolve completely, and drink."
+    },
+    "flavours": ["Cola Burst"],
+    "variants": [
+      {
+        "pack": "15 Tablets",
+        "servings": "15 Servings",
+        "mrp": 599,
+        "price": 429
+      },
+      {
+        "pack": "30 Tablets (Pack of 2)",
+        "servings": "30 Servings",
+        "mrp": 1198,
+        "price": 799
+      }
+    ]
   },
   {
     "id": 105,
     "brand": "Optimum Nutrition",
-    "title": "Optimum Nutrition (ON) Enteric Coated Fish Oil (100 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹1,149",
-    "mrp": "₹1,699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "name": "Optimum Nutrition (ON) Superior Amino 2222",
+    "category": "BCAA & Amino",
+    "badge": "Full Spectrum Micronized Amino",
+    "rating": "4.4",
+    "rating_count": "22K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71o0W1QzNqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablets",
+      "amino_acids": "2222 mg (BCAA, Essential & Non-Essential Aminos)",
+      "usage": "Take 2 tablets before workouts and 2 tablets immediately post-workout."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "160 Tablets",
+        "servings": "80 Servings",
+        "mrp": 1999,
+        "price": 1499
+      },
+      {
+        "pack": "320 Tablets",
+        "servings": "160 Servings",
+        "mrp": 3499,
+        "price": 2599
+      }
+    ]
   },
   {
     "id": 106,
-    "brand": "WOW Life Science",
-    "title": "WOW Life Science Omega-3 Fish Oil Triple Strength (60 Capsules)",
-    "category": "Fish Oil",
-    "price": "₹699",
-    "mrp": "₹1,099",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Dymatize",
+    "name": "Dymatize Elite 100% Whey Protein",
+    "category": "Whey Protein",
+    "badge": "100% Whey Blend",
+    "rating": "4.4",
+    "rating_count": "30K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71Y+K5zSgqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (36g)",
+      "protein_per_serving": "25 g",
+      "bcaa": "5.5 g",
+      "glutamine": "4 g",
+      "carbs": "3 g",
+      "fat": "2 g",
+      "calories": "140 kcal",
+      "usage": "Mix 1 scoop in 180ml-240ml cold water or milk post-workout."
+    },
+    "flavours": ["Rich Chocolate", "Gourmet Vanilla"],
+    "variants": [
+      {
+        "pack": "2 lbs (907 g)",
+        "servings": "25 Servings",
+        "mrp": 3899,
+        "price": 2799
+      },
+      {
+        "pack": "5 lbs (2.27 kg)",
+        "servings": "63 Servings",
+        "mrp": 8499,
+        "price": 5999
+      }
+    ]
   },
   {
     "id": 107,
-    "brand": "Carbamide Forte",
-    "title": "Carbamide Forte Triple Strength Fish Oil 1400 mg (60 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹599",
-    "mrp": "₹999",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "MyFitness",
+    "name": "MyFitness Chocolate Peanut Butter with Flax Seeds",
+    "category": "Peanut Butter",
+    "badge": "Omega-3 & High Fiber",
+    "rating": "4.5",
+    "rating_count": "34K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71R1c8v3rUL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "8.5 g",
+      "omega_3_flax": "Brown Flax Seeds Infused",
+      "carbs": "8 g",
+      "healthy_fats": "16 g",
+      "energy": "202 kcal",
+      "usage": "Spread 2 tablespoons over toast or mix in fruit salads and morning oats."
+    },
+    "flavours": ["Flax Seeds Crunchy"],
+    "variants": [
+      {
+        "pack": "510 g",
+        "servings": "16 Servings",
+        "mrp": 369,
+        "price": 289
+      },
+      {
+        "pack": "1.25 kg",
+        "servings": "39 Servings",
+        "mrp": 729,
+        "price": 589
+      }
+    ]
   },
   {
     "id": 108,
-    "brand": "Nutrabay",
-    "title": "Nutrabay Pure Omega-3 Fish Oil 1000 mg (60 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹449",
-    "mrp": "₹699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Fast&Up",
+    "name": "Fast&Up Magnesio (Muscle Recovery & Sleep)",
+    "category": "Multivitamin",
+    "badge": "Elemental Magnesium + Zinc",
+    "rating": "4.3",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61qH+J07uBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Effervescent Tablet",
+      "magnesium": "300 mg (Elemental)",
+      "zinc": "10 mg",
+      "usage": "Drop 1 tablet into 250ml water 30 minutes before sleep for muscle cramp relief and deep rest."
+    },
+    "flavours": ["Lime & Lemon"],
+    "variants": [
+      {
+        "pack": "20 Tablets",
+        "servings": "20 Days Supply",
+        "mrp": 395,
+        "price": 289
+      },
+      {
+        "pack": "60 Tablets (Tube of 3)",
+        "servings": "60 Days Supply",
+        "mrp": 1185,
+        "price": 799
+      }
+    ]
   },
   {
     "id": 109,
-    "brand": "GNC",
-    "title": "GNC Triple Strength Fish Oil 1000 mg (60 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹1,499",
-    "mrp": "₹2,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/u/7/t/-original-imagk7yhhjhcy7f8.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Koshaveda Ashwagandha 1000mg",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Natural Stress & Cortisol Reducer",
+    "rating": "4.4",
+    "rating_count": "26K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61Xz1bU+4lL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "ashwagandha_extract": "1000 mg",
+      "usage": "Take 1 tablet daily with warm milk or water post-dinner."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 599,
+        "price": 399
+      }
+    ]
   },
   {
     "id": 110,
-    "brand": "Neuherbs",
-    "title": "Neuherbs Deep Sea Fish Oil with Vitamin E (60 Softgels)",
-    "category": "Fish Oil",
-    "price": "₹749",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/vitamin-supplement/8/e/c/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
+    "brand": "HealthKart",
+    "name": "HK Vitals Calcium Magnesium Zinc with Vitamin D3",
+    "category": "Multivitamin",
+    "badge": "Complete Bone & Joint Support",
+    "rating": "4.4",
+    "rating_count": "45K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61D7d7f7MBL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Tablet",
+      "calcium_citrate_malate": "1000 mg",
+      "magnesium": "100 mg",
+      "zinc": "4 mg",
+      "vitamin_d3": "400 IU",
+      "usage": "Take 1 tablet daily after lunch or dinner with a glass of water."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "60 Days Supply",
+        "mrp": 599,
+        "price": 379
+      },
+      {
+        "pack": "120 Tablets",
+        "servings": "120 Days Supply",
+        "mrp": 999,
+        "price": 629
+      }
+    ],
+    {
     "id": 111,
-    "brand": "Kapiva",
-    "title": "Kapiva Pure Himalayan Shilajit Resin (20 g)",
-    "category": "Shilajit",
-    "price": "₹999",
-    "mrp": "₹1,499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/f/k/-original-imahf39shfzzrkyf.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze 100% Whey Isolate (CreAbsorb)",
+    "category": "Whey Protein",
+    "badge": "Low Carb Ultra Pure",
+    "rating": "4.4",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61F9OQ81QIL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (30g)",
+      "protein_per_serving": "27 g (Pure Isolate)",
+      "bcaa": "5.9 g",
+      "eaa": "12.6 g",
+      "carbs": "0.8 g",
+      "fat": "0.3 g",
+      "calories": "112 kcal",
+      "usage": "Mix 1 scoop with 180-200ml cold water post-workout for lean muscle gains."
+    },
+    "flavours": ["Rich Milk Chocolate", "Cafe Mocha"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "33 Servings",
+        "mrp": 3799,
+        "price": 2699
+      },
+      {
+        "pack": "2 kg (4.4 lbs)",
+        "servings": "66 Servings",
+        "mrp": 7199,
+        "price": 5099
+      }
+    ]
   },
   {
     "id": 112,
-    "brand": "Kapiva",
-    "title": "Kapiva Himalayan Shilajit Gold Resin with 24K Gold (20 g)",
-    "category": "Shilajit",
-    "price": "₹1,499",
-    "mrp": "₹2,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/d/w/s/-original-imahf39sjhcvy8ff.jpeg"
+    "brand": "Optimum Nutrition",
+    "name": "Optimum Nutrition (ON) Amino Energy",
+    "category": "BCAA & Amino",
+    "badge": "Anytime Energy + Amino",
+    "rating": "4.4",
+    "rating_count": "32K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71o0W1QzNqL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Scoops (9g)",
+      "amino_blend": "5000 mg (Micronized Taurine, Glutamine, BCAA)",
+      "energy_blend": "160 mg (Caffeine from Green Tea & Green Coffee)",
+      "calories": "10 kcal",
+      "usage": "Mix 2 scoops with 300ml cold water for morning energy or 4-6 scoops for pre-workout."
+    },
+    "flavours": ["Fruit Fusion", "Blue Raspberry", "Watermelon"],
+    "variants": [
+      {
+        "pack": "270 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 2499,
+        "price": 1799
+      }
+    ]
   },
   {
     "id": 113,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Koshaveda Pure Shilajit Resin (20 g)",
-    "category": "Shilajit",
-    "price": "₹1,099",
-    "mrp": "₹1,699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/c/p/-original-imagwb5zfdvf9ghc.jpeg"
+    "brand": "Labrada Nutrition",
+    "name": "Labrada ISO Whey 100% Pure Isolate",
+    "category": "Whey Protein",
+    "badge": "Zero Sugar Isolate",
+    "rating": "4.4",
+    "rating_count": "19K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71lZc5f+8SL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (32g)",
+      "protein_per_serving": "26 g",
+      "bcaa": "5.7 g",
+      "glutamine": "4.2 g",
+      "carbs": "0.5 g",
+      "fat": "0.3 g",
+      "calories": "110 kcal",
+      "usage": "Add 1 scoop to 200ml cold water or juice immediately after training."
+    },
+    "flavours": ["Gourmet Chocolate", "Strawberry"],
+    "variants": [
+      {
+        "pack": "1 kg (2.2 lbs)",
+        "servings": "31 Servings",
+        "mrp": 3899,
+        "price": 2799
+      },
+      {
+        "pack": "2 kg (4.4 lbs)",
+        "servings": "62 Servings",
+        "mrp": 7499,
+        "price": 5399
+      }
+    ]
   },
   {
     "id": 114,
-    "brand": "Upakarma Ayurveda",
-    "title": "Upakarma Ayurveda Pure Shilajit Resin (20 g)",
-    "category": "Shilajit",
-    "price": "₹949",
-    "mrp": "₹1,450",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/f/k/-original-imahf39shfzzrkyf.jpeg"
+    "brand": "MuscleTech",
+    "name": "MuscleTech Cell-Tech Creatine Formula",
+    "category": "Creatine",
+    "badge": "Post-Workout Creatine Matrix",
+    "rating": "4.3",
+    "rating_count": "24K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61NqK+qZ+BL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (42g)",
+      "creatine_monohydrate": "5000 mg",
+      "creatine_hcl": "1500 mg",
+      "bcaa": "2000 mg",
+      "multi_stage_carbs": "30 g",
+      "usage": "Take 1 scoop with 350ml cold water immediately post-workout."
+    },
+    "flavours": ["Fruit Punch", "Grape"],
+    "variants": [
+      {
+        "pack": "1.36 kg (3 lbs)",
+        "servings": "32 Servings",
+        "mrp": 3499,
+        "price": 2499
+      },
+      {
+        "pack": "2.7 kg (6 lbs)",
+        "servings": "64 Servings",
+        "mrp": 6299,
+        "price": 4499
+      }
+    ]
   },
   {
     "id": 115,
-    "brand": "Rasayanam",
-    "title": "Rasayanam Pure Himalayan Shilajit Resin (20 g)",
-    "category": "Shilajit",
-    "price": "₹1,199",
-    "mrp": "₹1,799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/f/k/-original-imahf39shfzzrkyf.jpeg"
+    "brand": "AS-IT-IS Nutrition",
+    "name": "AS-IT-IS L-Glutamine Powder",
+    "category": "BCAA & Amino",
+    "badge": "100% Pure Fermented Grade",
+    "rating": "4.2",
+    "rating_count": "26K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x4fL8z3KL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (5g)",
+      "l_glutamine": "5000 mg",
+      "calories": "0 kcal",
+      "usage": "Consume 1 scoop with 200ml cold water or post-workout whey shake."
+    },
+    "flavours": ["Raw Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "20 Servings",
+        "mrp": 499,
+        "price": 349
+      },
+      {
+        "pack": "250 g",
+        "servings": "50 Servings",
+        "mrp": 999,
+        "price": 699
+      },
+      {
+        "pack": "500 g",
+        "servings": "100 Servings",
+        "mrp": 1899,
+        "price": 1299
+      }
+    ]
   },
   {
     "id": 116,
-    "brand": "Dabur",
-    "title": "Dabur Himalayan Shilajit Pure Resin (15 g)",
-    "category": "Shilajit",
-    "price": "₹849",
-    "mrp": "₹1,200",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/f/k/-original-imahf39shfzzrkyf.jpeg"
+    "brand": "Pintola",
+    "name": "Pintola Dark Chocolate Peanut Butter",
+    "category": "Peanut Butter",
+    "badge": "Belgian Dark Chocolate Infused",
+    "rating": "4.5",
+    "rating_count": "42K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71N1G+fT2jL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablespoons (32g)",
+      "protein_per_serving": "9 g",
+      "carbs": "8 g",
+      "healthy_fats": "15 g",
+      "energy": "198 kcal",
+      "usage": "Spread 2 tablespoons over toast, fruit slices or mix in high-protein shakes."
+    },
+    "flavours": ["Dark Chocolate Crunchy", "Dark Chocolate Creamy"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "31 Servings",
+        "mrp": 549,
+        "price": 429
+      },
+      {
+        "pack": "2.5 kg",
+        "servings": "78 Servings",
+        "mrp": 1299,
+        "price": 999
+      }
+    ]
   },
   {
     "id": 117,
-    "brand": "Zandu",
-    "title": "Zandu Pure Ayurvedic Shilajit Resin (20 g)",
-    "category": "Shilajit",
-    "price": "₹799",
-    "mrp": "₹1,150",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/f/k/-original-imahf39shfzzrkyf.jpeg"
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze ZMA (Zinc, Magnesium & Vitamin B6)",
+    "category": "Multivitamin",
+    "badge": "Night Recovery & Anabolic Support",
+    "rating": "4.3",
+    "rating_count": "20K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61gVj4L9Z6L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "2 Tablets",
+      "zinc_monomethionine": "30 mg",
+      "magnesium_aspartate": "450 mg",
+      "vitamin_b6": "10.5 mg",
+      "usage": "Take 2 tablets daily 30-60 minutes before bedtime on an empty stomach."
+    },
+    "flavours": ["Tablets"],
+    "variants": [
+      {
+        "pack": "60 Tablets",
+        "servings": "30 Days Supply",
+        "mrp": 699,
+        "price": 499
+      },
+      {
+        "pack": "90 Tablets",
+        "servings": "45 Days Supply",
+        "mrp": 999,
+        "price": 699
+      }
+    ]
   },
   {
     "id": 118,
-    "brand": "Patanjali",
-    "title": "Patanjali Pure Shilajit Capsules & Pure Extract",
-    "category": "Shilajit",
-    "price": "₹450",
-    "mrp": "₹550",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/f/k/-original-imahf39shfzzrkyf.jpeg"
+    "brand": "GNC",
+    "name": "GNC Creatine Monohydrate",
+    "category": "Creatine",
+    "badge": "100% Micronized Pure",
+    "rating": "4.4",
+    "rating_count": "16K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61x0aYh4pML._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (3g)",
+      "creatine": "3000 mg",
+      "carbs": "0 g",
+      "fat": "0 g",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 200ml cold water or juice post-workout."
+    },
+    "flavours": ["Unflavoured"],
+    "variants": [
+      {
+        "pack": "100 g",
+        "servings": "33 Servings",
+        "mrp": 699,
+        "price": 549
+      },
+      {
+        "pack": "250 g",
+        "servings": "83 Servings",
+        "mrp": 1299,
+        "price": 999
+      }
+    ]
   },
   {
     "id": 119,
-    "brand": "Man Matters",
-    "title": "Man Matters Pure Himalayan Shilajit Resin (20 g)",
-    "category": "Shilajit",
-    "price": "₹899",
-    "mrp": "₹1,399",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/f/k/-original-imahf39shfzzrkyf.jpeg"
+    "brand": "Wellcore",
+    "name": "Wellcore Pure Marine Collagen Peptides",
+    "category": "Ayurvedic & Wellness",
+    "badge": "Hydrolyzed Type 1 & 3",
+    "rating": "4.4",
+    "rating_count": "12K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61bKk8VqZQL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (10g)",
+      "marine_collagen": "8000 mg",
+      "hyaluronic_acid": "100 mg",
+      "vitamin_c": "50 mg",
+      "usage": "Mix 1 scoop with 200ml cold water, juice or morning tea."
+    },
+    "flavours": ["Orange Sunset", "Unflavoured"],
+    "variants": [
+      {
+        "pack": "200 g",
+        "servings": "20 Servings",
+        "mrp": 1499,
+        "price": 1099
+      }
+    ]
   },
   {
     "id": 120,
-    "brand": "Nature Mania",
-    "title": "Nature Mania Pure Organic Shilajit Resin (20 g)",
-    "category": "Shilajit",
-    "price": "₹749",
-    "mrp": "₹1,199",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/ayurvedic/t/f/k/-original-imahf39shfzzrkyf.jpeg"
-  }
-,
+    "brand": "MuscleBlaze",
+    "name": "MuscleBlaze Fuel One Mass Gainer",
+    "category": "Mass Gainer",
+    "badge": "High Protein Mass Formula",
+    "rating": "4.2",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61b7UjB2j+L._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (100g)",
+      "protein_per_serving": "20 g",
+      "carbs": "70 g",
+      "calories": "385 kcal",
+      "usage": "Mix 1-2 scoops in 300ml whole milk with banana for steady weight gain."
+    },
+    "flavours": ["Chocolate", "Kesar Pista"],
+    "variants": [
+      {
+        "pack": "1 kg",
+        "servings": "10 Servings",
+        "mrp": 1299,
+        "price": 899
+      },
+      {
+        "pack": "3 kg",
+        "servings": "30 Servings",
+        "mrp": 3499,
+        "price": 2399
+      }
+    ]
+  },
   {
     "id": 121,
-    "brand": "MyFitness",
-    "title": "MyFitness Chocolate Peanut Butter (Crispy, 1.25 kg)",
-    "category": "Peanut Butter",
-    "price": "₹649",
-    "mrp": "₹799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Bigmuscles Nutrition",
+    "name": "Bigmuscles Nutrition The Real Pre-Workout (Big Daddy Edition)",
+    "category": "Pre-Workout",
+    "badge": "Hardcore Energy & Focus",
+    "rating": "4.3",
+    "rating_count": "24K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (10g)",
+      "caffeine": "300 mg",
+      "l_citrulline": "4000 mg",
+      "beta_alanine": "3200 mg",
+      "l_arginine": "1000 mg",
+      "calories": "0 kcal",
+      "usage": "Mix 1 scoop with 250-300ml cold water 20-30 minutes before heavy lifting."
+    },
+    "flavours": ["Fruit Punch", "Blue Slush", "Watermelon"],
+    "variants": [
+      {
+        "pack": "250 g",
+        "servings": "25 Servings",
+        "mrp": 1499,
+        "price": 999
+      },
+      {
+        "pack": "400 g",
+        "servings": "40 Servings",
+        "mrp": 2199,
+        "price": 1499
+      }
+    ]
   },
   {
     "id": 122,
-    "brand": "MyFitness",
-    "title": "MyFitness Original Peanut Butter (Crunchy, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹499",
-    "mrp": "₹649",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Insane Labz",
+    "name": "Insane Labz Psychotic High Stimulant Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "Extreme Energy & Focus",
+    "rating": "4.4",
+    "rating_count": "32K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (6g)",
+      "caffeine_blend": "400 mg (Anhydrous & Infinergy)",
+      "beta_alanine": "2500 mg",
+      "ampiberry": "Infused",
+      "calories": "0 kcal",
+      "usage": "Take 1/2 scoop initially to assess tolerance with 200ml cold water 30 minutes before workout."
+    },
+    "flavours": ["Fruit Punch", "Cotton Candy", "Watermelon", "Gummy Candy"],
+    "variants": [
+      {
+        "pack": "216 g (35 Servings)",
+        "servings": "35 Servings",
+        "mrp": 2899,
+        "price": 1899
+      }
+    ]
   },
   {
     "id": 123,
-    "brand": "MyFitness",
-    "title": "MyFitness High Protein Dark Chocolate Peanut Butter with Added Whey (1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹699",
-    "mrp": "₹899",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Bigmuscles Nutrition",
+    "name": "Bigmuscles Nutrition Freak Next Gen Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "Maximum Explosive Pump",
+    "rating": "4.2",
+    "rating_count": "18K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (9g)",
+      "caffeine": "250 mg",
+      "l_citrulline_malate": "3000 mg",
+      "beta_alanine": "2500 mg",
+      "taurine": "500 mg",
+      "usage": "Mix 1 scoop with 200-250ml water 20 minutes prior to training."
+    },
+    "flavours": ["Cola Burst", "Orange Sunrise", "Electric Blue"],
+    "variants": [
+      {
+        "pack": "180 g (20 Servings)",
+        "servings": "20 Servings",
+        "mrp": 1299,
+        "price": 849
+      },
+      {
+        "pack": "360 g (40 Servings)",
+        "servings": "40 Servings",
+        "mrp": 2299,
+        "price": 1499
+      }
+    ]
   },
   {
     "id": 124,
-    "brand": "MyFitness",
-    "title": "MyFitness Unsweetened Natural Peanut Butter (Smooth, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹449",
-    "mrp": "₹599",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Bigmuscles Nutrition",
+    "name": "Bigmuscles Nutrition Karnage Hardcore Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "Laser Focus & Muscle Volume",
+    "rating": "4.3",
+    "rating_count": "15K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/61k1jM8+6xL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (12g)",
+      "l_citrulline": "4500 mg",
+      "beta_alanine": "3500 mg",
+      "caffeine_anhydrous": "350 mg",
+      "tyrosine": "500 mg",
+      "usage": "Consume 1 level scoop with 250ml chilled water 15-20 minutes before lifting."
+    },
+    "flavours": ["Bloody Berry", "Sour Apple"],
+    "variants": [
+      {
+        "pack": "300 g (25 Servings)",
+        "servings": "25 Servings",
+        "mrp": 1799,
+        "price": 1199
+      }
+    ]
   },
   {
     "id": 125,
-    "brand": "Pintola",
-    "title": "Pintola All Natural Peanut Butter (Crunchy, Unsweetened, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹425",
-    "mrp": "₹550",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "Wild Bull",
+    "name": "Wild Bull Hardcore High Stim Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "Insane Muscle Pump",
+    "rating": "4.2",
+    "rating_count": "11K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (8.5g)",
+      "caffeine": "300 mg",
+      "l_citrulline": "3000 mg",
+      "beta_alanine": "2000 mg",
+      "l_arginine": "1000 mg",
+      "usage": "Mix 1 scoop in 200ml cold water 20 minutes prior to workouts."
+    },
+    "flavours": ["Green Apple", "Fruit Blast"],
+    "variants": [
+      {
+        "pack": "250 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 1699,
+        "price": 999
+      }
+    ]
   },
   {
     "id": 126,
-    "brand": "Pintola",
-    "title": "Pintola All Natural High Protein Peanut Butter with Whey (Dark Chocolate, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹649",
-    "mrp": "₹850",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 127,
-    "brand": "Pintola",
-    "title": "Pintola All Natural Peanut Butter (Creamy, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹425",
-    "mrp": "₹550",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 128,
-    "brand": "Pintola",
-    "title": "Pintola Classic Peanut Butter (Crunchy, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹349",
-    "mrp": "₹450",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 129,
-    "brand": "Alpino",
-    "title": "Alpino Natural Peanut Butter (Crunchy, Unsweetened, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹429",
-    "mrp": "₹549",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 130,
-    "brand": "Alpino",
-    "title": "Alpino High Protein Super Peanut Butter with Whey (Dark Chocolate, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹649",
-    "mrp": "₹799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 131,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze High Protein Peanut Butter with Whey (Dark Chocolate, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹599",
-    "mrp": "₹799",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 132,
-    "brand": "MuscleBlaze",
-    "title": "MuscleBlaze Natural Peanut Butter (Crunchy, Unsweetened, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹399",
-    "mrp": "₹549",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 133,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS Nutrition Peanut Butter (Natural Crunchy, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹379",
-    "mrp": "₹499",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 134,
-    "brand": "AS-IT-IS Nutrition",
-    "title": "AS-IT-IS ATOM High Protein Peanut Butter with Whey (Chocolate, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹549",
-    "mrp": "₹749",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 135,
-    "brand": "Disano",
-    "title": "Disano All Natural Peanut Butter (Creamy, Unsweetened, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹329",
-    "mrp": "₹450",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 136,
-    "brand": "Disano",
-    "title": "Disano Classic Peanut Butter (Crunchy, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹299",
-    "mrp": "₹420",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 137,
-    "brand": "The Butternut Co.",
-    "title": "The Butternut Co. 100% All Natural Peanut Butter (Unsweetened, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹499",
-    "mrp": "₹650",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 138,
-    "brand": "Yoga Bar",
-    "title": "Yoga Bar Dark Chocolate Peanut Butter (Slow Roasted, 1 kg)",
-    "category": "Peanut Butter",
-    "price": "₹499",
-    "mrp": "₹699",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 139,
-    "brand": "Dr. Oetker FunFoods",
-    "title": "Dr. Oetker FunFoods Peanut Butter (Crunchy, 925 g)",
-    "category": "Peanut Butter",
-    "price": "₹285",
-    "mrp": "₹349",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
-  },
-  {
-    "id": 140,
-    "brand": "Sundrop",
-    "title": "Sundrop Peanut Butter (Regular Crunchy, 924 g)",
-    "category": "Peanut Butter",
-    "price": "₹275",
-    "mrp": "₹330",
-    "img": "https://rukminim2.flixcart.com/image/612/612/xif0q/jam-spread/w/s/b/-original-imagpjh8jhcfy7gf.jpeg"
+    "brand": "GAT Sport",
+    "name": "GAT Sport Nitraflex High-Intensity Pre-Workout",
+    "category": "Pre-Workout",
+    "badge": "Testosterone & Hyperemia Matrix",
+    "rating": "4.5",
+    "rating_count": "28K+",
+    "verified": true,
+    "image": "https://m.media-amazon.com/images/I/71yV8s7c6nL._SL1500_.jpg",
+    "nutrition": {
+      "serving_size": "1 Scoop (10g)",
+      "caffeine": "325 mg",
+      "l_citrulline": "3000 mg",
+      "beta_alanine": "1500 mg",
+      "boron_citrate": "200 mg",
+      "usage": "Take 1 scoop with 250ml water 30 minutes before heavy compound workouts."
+    },
+    "flavours": ["Blue Raspberry", "Fruit Punch", "Green Apple"],
+    "variants": [
+      {
+        "pack": "300 g (30 Servings)",
+        "servings": "30 Servings",
+        "mrp": 3499,
+        "price": 2499
+      }
+    ]
   }
 ]
 
 
+      
 
 
 
 
+      
 
 
