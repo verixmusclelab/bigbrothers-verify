@@ -3609,9 +3609,10 @@
         "servings": "120 Days Supply",
         "mrp": 999,
         "price": 629
-      }
-    ],
-    {
+    }
+  ]
+},
+{
     "id": 111,
     "brand": "MuscleBlaze",
     "name": "MuscleBlaze 100% Whey Isolate (CreAbsorb)",
