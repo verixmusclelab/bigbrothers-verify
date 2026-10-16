@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -125,9 +125,15 @@ body {
 
 .badge-box {
   width: 100%;
-  padding: 16px;
+  padding: 18px 16px;
   border-radius: 14px;
   text-align: center;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .badge-verified {
@@ -148,39 +154,60 @@ body {
   box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
 }
 
-/* Admin / Download Area */
-.download-section {
+/* Authorized Dealer & Certificates */
+.cert-section {
   width: 100%;
-  text-align: center;
-  margin-top: 10px;
-  padding-top: 15px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.15);
-}
-
-.download-title {
-  font-size: 12px;
-  color: #ffcc00;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-.pill-container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
 }
 
-.pill-btn {
-  background: #1f1f1f;
-  color: #ffcc00;
+.cert-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(20, 20, 20, 0.85);
   border: 1px solid #333333;
-  padding: 7px 12px;
-  border-radius: 20px;
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.cert-card.gold {
+  border-color: rgba(255, 204, 0, 0.4);
+  background: linear-gradient(90deg, rgba(255, 204, 0, 0.08) 0%, rgba(20, 20, 20, 0.9) 100%);
+}
+
+.cert-card.green {
+  border-color: rgba(0, 255, 102, 0.4);
+  background: linear-gradient(90deg, rgba(0, 255, 102, 0.08) 0%, rgba(20, 20, 20, 0.9) 100%);
+}
+
+.cert-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.cert-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.cert-sub {
   font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
+  color: #888888;
+  margin-top: 2px;
+}
+
+.footer-text {
+  font-size: 11px;
+  color: #666666;
+  margin-top: 20px;
+  text-align: center;
+  letter-spacing: 0.5px;
 }
 </style>
 </head>
@@ -202,23 +229,34 @@ body {
     <button type="button" class="verify-btn" onclick="runVerification()">VERIFY CODE</button>
   </div>
 
-  <!-- RESULT NOTIFICATION CARD (PEHLE SE HIDE RAHEGA) -->
-  <div id="resultBox">
-    <!-- Jaisa result hoga, javascript se yahan badge aayega -->
-  </div>
+  <!-- RESULT NOTIFICATION CARD -->
+  <div id="resultBox"></div>
 
-  <!-- ADMIN / STICKER CODES DOWNLOAD AREA -->
-  <div class="download-section">
-    <div class="download-title">📥 Download - Sticker Printing (.txt)</div>
-    <div class="pill-container">
-      <button type="button" class="pill-btn" onclick="downloadCodes('WP', 'Whey_Protein')">Whey Protein</button>
-      <button type="button" class="pill-btn" onclick="downloadCodes('MG', 'Mass_Gainer')">Mass Gainer</button>
-      <button type="button" class="pill-btn" onclick="downloadCodes('CR', 'Creatine')">Creatine</button>
-      <button type="button" class="pill-btn" onclick="downloadCodes('MV', 'Multivitamin')">Multivitamin</button>
+  <!-- AUTHORIZED DEALER & CERTIFICATES -->
+  <div class="cert-section">
+    <div class="cert-card gold">
+      <span class="cert-icon">🎖️</span>
+      <div>
+        <div class="cert-title">OFFICIALLY AUTHORIZED DEALER</div>
+        <div class="cert-sub">Direct Brand Sourcing | 100% Original Products</div>
+      </div>
+    </div>
+
+    <div class="cert-card green">
+      <span class="cert-icon">🛡️</span>
+      <div>
+        <div class="cert-title">100% AUTHENTICITY CERTIFIED</div>
+        <div class="cert-sub">Lab-Tested Quality | Guaranteed Genuine Nutrition</div>
+      </div>
     </div>
   </div>
 
+  <div class="footer-text">
+    &copy; Big Brothers Fitness & Nutrition | Authenticity Guaranteed
+  </div>
+
 </div>
+
 <script>
 const CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 
@@ -245,10 +283,10 @@ const BRAND_DIRECTORY = {
   "GNC": "GNC Live Well",
   "MB": "MuscleBlaze",
   "MT": "MuscleTech",
-  "WP": "Big Brothers Whey",
-  "MG": "Big Brothers Gainer",
-  "CR": "Big Brothers Creatine",
-  "MV": "Big Brothers Multivitamin"
+  "WP": "Big Brothers Nutrition",
+  "MG": "Big Brothers Nutrition",
+  "CR": "Big Brothers Nutrition",
+  "MV": "Big Brothers Nutrition"
 };
 
 function identifyProduct(c) {
@@ -257,7 +295,8 @@ function identifyProduct(c) {
   if (c.startsWith("ACT")) return { brand: "Active Shake Nutrition", name: "Active Shake Protein" };
   if (c.startsWith("KNG")) return { brand: "KN Nutrition", name: "Real Mass Gainer" };
   if (c.startsWith("ANX")) return { brand: "Americian Nutrition", name: "Xtreme Mass" };
-  if (c.startsWith("WP") || c.startsWith("LBR") || c.startsWith("ULT")) return { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
+  if (c.startsWith("LBR")) return { brand: "Labrada Nutrition", name: "100% Whey Protein" };
+  if (c.startsWith("WP") || c.startsWith("ULT")) return { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
   if (c.startsWith("MG") || c.startsWith("LMG")) return { brand: "Big Brothers Fitness", name: "100% Genuine Mass Gainer" };
   if (c.startsWith("CR") || c.startsWith("CRE") || c.startsWith("GNC-C")) return { brand: "Big Brothers Fitness", name: "100% Genuine Creatine" };
   if (c.startsWith("MV") || c.startsWith("VIT") || c.startsWith("MUL")) return { brand: "Big Brothers Fitness", name: "100% Genuine Multivitamin" };
@@ -288,8 +327,8 @@ function runVerification() {
     resultBox.style.display = "block";
     resultBox.innerHTML = `
       <div class="badge-box badge-failed">
-        <div style="font-size:18px; font-weight:800; color:#ff3333; margin-bottom:4px;">❌ CODE REQUIRED</div>
-        <div style="font-size:13px; color:#bbb;">Kripya box me scratch code enter karein.</div>
+        <div style="font-size:17px; font-weight:800; color:#ff3333; margin-bottom:4px;">❌ SECURITY CODE REQUIRED</div>
+        <div style="font-size:13px; color:#bbb;">Please enter the authentication code to continue.</div>
       </div>
     `;
     return;
@@ -302,14 +341,14 @@ function runVerification() {
 
     let scanCount = parseInt(localStorage.getItem("scan_" + code)) || 0;
 
-    if (scanCount >= 2) {
+    if (scanCount >= 1) {
       resultBox.style.display = "block";
       resultBox.innerHTML = `
         <div class="badge-box badge-warning">
-          <div style="font-size:18px; font-weight:800; color:#ffcc00; margin-bottom:4px;">⚠️ ALREADY VERIFIED</div>
-          <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:4px;">BRAND: ${productData.brand}</div>
-          <div style="font-size:13px; color:#ddd; margin-bottom:4px;">PRODUCT: ${productData.name}</div>
-          <div style="font-size:12px; color:#aaa;">Ye code pehle hi 2 baar scan kiya ja chuka hai (Limit 2/2).</div>
+          <div style="font-size:17px; font-weight:800; color:#ffcc00; margin-bottom:6px;">⚠️ PREVIOUSLY AUTHENTICATED</div>
+          <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:3px;">BRAND: ${productData.brand}</div>
+          <div style="font-size:13px; color:#ddd; margin-bottom:8px;">PRODUCT: ${productData.name}</div>
+          <div style="font-size:12px; color:#ccc; line-height:1.4;">This security code has already been verified. Ensure product tamper-seal was intact prior to use.</div>
         </div>
       `;
     } else {
@@ -319,10 +358,10 @@ function runVerification() {
       resultBox.style.display = "block";
       resultBox.innerHTML = `
         <div class="badge-box badge-verified">
-          <div style="font-size:18px; font-weight:800; color:#00ff66; margin-bottom:4px;">✔ 100% ORIGINAL & VERIFIED</div>
-          <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:4px;">BRAND: ${productData.brand}</div>
-          <div style="font-size:13px; color:#ddd; margin-bottom:6px;">PRODUCT: ${productData.name}</div>
-          <div style="font-size:12px; color:#00ff66; font-weight:600;">Verification Scan: ${scanCount} / 2</div>
+          <div style="font-size:17px; font-weight:800; color:#00ff66; margin-bottom:6px;">✔ 100% ORIGINAL & VERIFIED</div>
+          <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:3px;">BRAND: ${productData.brand}</div>
+          <div style="font-size:13px; color:#ddd; margin-bottom:8px;">PRODUCT: ${productData.name}</div>
+          <div style="font-size:12px; color:#00ff66; font-weight:600; line-height:1.4;">Officially Verified via ${productData.brand} Authenticity Network</div>
         </div>
       `;
     }
@@ -330,23 +369,11 @@ function runVerification() {
     resultBox.style.display = "block";
     resultBox.innerHTML = `
       <div class="badge-box badge-failed">
-        <div style="font-size:18px; font-weight:800; color:#ff3333; margin-bottom:4px;">❌ INVALID PRODUCT CODE</div>
-        <div style="font-size:13px; color:#bbb;">Ye code verify record me uplabdh nahi hai.</div>
+        <div style="font-size:17px; font-weight:800; color:#ff3333; margin-bottom:6px;">❌ INVALID PRODUCT CODE</div>
+        <div style="font-size:13px; color:#bbb; line-height:1.4;">The security code entered is invalid or unrecognized. Please check your product packaging.</div>
       </div>
     `;
   }
-}
-
-function downloadCodes(prefix, fileName) {
-  let list = [];
-  for (let i = 1; i <= 2000; i++) {
-    list.push(getCodeForIndex(prefix, i));
-  }
-  let blob = new Blob([list.join("\n")], { type: "text/plain;charset=utf-8" });
-  let a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `2000_${fileName}_Codes.txt`;
-  a.click();
 }
 </script>
 
