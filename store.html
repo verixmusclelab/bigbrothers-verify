@@ -267,14 +267,14 @@
     let cart = [];
     let activeCat = 'ALL';
     let currentDetailItem = null;
+    let catalog = [];
 
-    let catalog = 
-  ;
-
-function loadCatalog() {
+  async function loadCatalog() {
+  const res = await fetch('https://raw.githubusercontent.com/verixmusclelab/bigbrothers-verify/main/products.json');
+  catalog = await res.json();
   renderCatalog();
 }
-
+        
 function getBestImage(item) {
   if (!item) return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
   const nameLower = (item.name || '').toLowerCase();
