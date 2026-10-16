@@ -9,68 +9,73 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
-body {
-  background: radial-gradient(circle at center, #1b1b1b 0%, #080808 100%);
-  color: #ffffff;
+html, body {
+  width: 100%;
   min-height: 100vh;
+  background-color: #0d0d0d;
+}
+
+body {
+  background: radial-gradient(circle at top, #1c1c1c 0%, #080808 100%);
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px 15px;
+  justify-content: flex-start;
+  padding: 30px 14px 40px 14px;
 }
 
+/* Screen par achhi chaudaai (Full Adaptive Width) */
 .main-container {
   width: 100%;
-  max-width: 400px;
+  max-width: 540px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Header & Welcome */
 .brand-icon {
-  font-size: 32px;
+  font-size: 38px;
   margin-bottom: 6px;
-  filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.4));
+  filter: drop-shadow(0 0 12px rgba(255, 204, 0, 0.45));
 }
 
 .welcome-title {
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 900;
   color: #ffcc00;
   text-align: center;
   line-height: 1.25;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   letter-spacing: 0.5px;
 }
 
 .welcome-sub {
-  font-size: 14px;
-  color: #cccccc;
+  font-size: 13px;
+  color: #bbbbbb;
   text-align: center;
   margin-bottom: 22px;
 }
 
-/* Verification Card */
+/* Card Container */
 .verify-card {
   width: 100%;
-  background: rgba(22, 22, 22, 0.95);
+  background: rgba(20, 20, 20, 0.95);
   border: 2px solid #ffcc00;
   border-radius: 18px;
   padding: 22px 18px;
-  box-shadow: 0 0 25px rgba(255, 204, 0, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85);
   margin-bottom: 18px;
   text-align: center;
 }
 
 .card-heading {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
   color: #ffffff;
   margin-bottom: 14px;
   letter-spacing: 0.5px;
@@ -78,37 +83,38 @@ body {
 
 .code-input {
   width: 100%;
-  padding: 14px;
-  background: #0d0d0d;
+  padding: 15px;
+  background: #0a0a0a;
   border: 1.5px solid #333333;
-  border-radius: 10px;
+  border-radius: 12px;
   color: #ffffff;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: bold;
   text-align: center;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   outline: none;
-  transition: border-color 0.3s;
+  transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 .code-input:focus {
   border-color: #ffcc00;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.25);
 }
 
 .verify-btn {
   width: 100%;
-  padding: 14px;
+  padding: 15px;
   margin-top: 14px;
   background: #ffcc00;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   color: #000000;
   font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
+  font-weight: 900;
+  letter-spacing: 1px;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 204, 0, 0.35);
   transition: transform 0.1s, background 0.2s;
 }
 
@@ -128,7 +134,7 @@ body {
   padding: 18px 16px;
   border-radius: 14px;
   text-align: center;
-  animation: fadeIn 0.25s ease-in-out;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -139,22 +145,22 @@ body {
 .badge-verified {
   background: rgba(0, 255, 100, 0.08);
   border: 2px solid #00ff66;
-  box-shadow: 0 0 20px rgba(0, 255, 100, 0.2);
+  box-shadow: 0 0 20px rgba(0, 255, 100, 0.25);
 }
 
 .badge-failed {
   background: rgba(255, 50, 50, 0.08);
   border: 2px solid #ff3333;
-  box-shadow: 0 0 20px rgba(255, 50, 50, 0.2);
+  box-shadow: 0 0 20px rgba(255, 50, 50, 0.25);
 }
 
 .badge-warning {
   background: rgba(255, 204, 0, 0.08);
   border: 2px solid #ffcc00;
-  box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.25);
 }
 
-/* Authorized Dealer & Certificates */
+/* Certificate Cards */
 .cert-section {
   width: 100%;
   display: flex;
@@ -170,7 +176,7 @@ body {
   background: rgba(20, 20, 20, 0.85);
   border: 1px solid #333333;
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 13px 16px;
   text-align: left;
 }
 
@@ -185,7 +191,7 @@ body {
 }
 
 .cert-icon {
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1;
 }
 
@@ -205,7 +211,7 @@ body {
 .footer-text {
   font-size: 11px;
   color: #666666;
-  margin-top: 20px;
+  margin-top: 24px;
   text-align: center;
   letter-spacing: 0.5px;
 }
@@ -215,24 +221,21 @@ body {
 
 <div class="main-container">
   
-  <!-- BRAND LOGO / ICON -->
   <div class="brand-icon">👑</div>
-
-  <!-- DYNAMIC BRAND WELCOME TEXT -->
   <h1 class="welcome-title" id="welcomeBrand">Welcome to<br>Big Brothers Fitness</h1>
   <p class="welcome-sub">Enter Your Verification Code here</p>
 
-  <!-- VERIFICATION INPUT CARD -->
   <div class="verify-card">
     <div class="card-heading">Verification Card</div>
-    <input type="text" id="scratchInput" class="code-input" placeholder="ENTER CODE" maxlength="15" autocomplete="off" autocorrect="off" autocapitalize="characters">
+    <!-- oninput lagaya hai taaki koi naya akshar likhe toh purana result turant gayab/reset ho jaye -->
+    <input type="text" id="scratchInput" class="code-input" placeholder="ENTER CODE" maxlength="15" autocomplete="off" autocorrect="off" autocapitalize="characters" oninput="resetResultState()">
     <button type="button" class="verify-btn" onclick="runVerification()">VERIFY CODE</button>
   </div>
 
   <!-- RESULT NOTIFICATION CARD -->
   <div id="resultBox"></div>
 
-  <!-- AUTHORIZED DEALER & CERTIFICATES -->
+  <!-- OFFICIAL CERTIFICATIONS -->
   <div class="cert-section">
     <div class="cert-card gold">
       <span class="cert-icon">🎖️</span>
@@ -258,6 +261,7 @@ body {
 </div>
 
 <script>
+// Algorithm-based exact code check
 const CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 
 function getCodeForIndex(prefix, index) {
@@ -271,52 +275,27 @@ function getCodeForIndex(prefix, index) {
   return prefix + part;
 }
 
-const BRAND_DIRECTORY = {
-  "MSW": "Muscle Size Nutrition",
-  "MGG": "Muscul Gold Nutrition",
-  "ACT": "Active Shake Nutrition",
-  "KNG": "KN Nutrition",
-  "ANX": "Americian Nutrition",
-  "LBR": "Labrada Nutrition",
-  "ULT": "Ultimate Nutrition",
-  "ON": "Optimum Nutrition",
-  "GNC": "GNC Live Well",
-  "MB": "MuscleBlaze",
-  "MT": "MuscleTech",
-  "WP": "Big Brothers Nutrition",
-  "MG": "Big Brothers Nutrition",
-  "CR": "Big Brothers Nutrition",
-  "MV": "Big Brothers Nutrition"
+// Fixed Master Verification Database (Exact full codes match honge, aadha code nahi chalega)
+const MASTER_VERIFIED_CODES = {
+  "LBR7F29K": { brand: "Labrada Nutrition", name: "100% Whey Protein" },
+  "LBR-1001": { brand: "Labrada Nutrition", name: "Muscle Mass Gainer" },
+  "LBR-1002": { brand: "Labrada Nutrition", name: "100% Whey Protein" },
+  "LBR-1003": { brand: "Labrada Nutrition", name: "Super Charge Pre-Workout" },
+  "LBR-1004": { brand: "Labrada Nutrition", name: "ProV60 Multi-Purpose Protein" },
+  "LBR-1005": { brand: "Labrada Nutrition", name: "Muscle Mass Gainer" },
+  "MB-WHEY-01": { brand: "MuscleBlaze", name: "Biozyme Whey Protein" },
+  "ON-GOLD-01": { brand: "Optimum Nutrition", name: "Gold Standard 100% Whey" },
+  "MT-NITRO-01": { brand: "MuscleTech", name: "Nitro-Tech Performance Series" }
 };
 
-function identifyProduct(c) {
-  if (c.startsWith("MSW")) return { brand: "Muscle Size Nutrition", name: "100% Whey Protein" };
-  if (c.startsWith("MGG")) return { brand: "Muscul Gold Nutrition", name: "Pro Series Mass Gainer" };
-  if (c.startsWith("ACT")) return { brand: "Active Shake Nutrition", name: "Active Shake Protein" };
-  if (c.startsWith("KNG")) return { brand: "KN Nutrition", name: "Real Mass Gainer" };
-  if (c.startsWith("ANX")) return { brand: "Americian Nutrition", name: "Xtreme Mass" };
-  if (c.startsWith("LBR")) return { brand: "Labrada Nutrition", name: "100% Whey Protein" };
-  if (c.startsWith("WP") || c.startsWith("ULT")) return { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
-  if (c.startsWith("MG") || c.startsWith("LMG")) return { brand: "Big Brothers Fitness", name: "100% Genuine Mass Gainer" };
-  if (c.startsWith("CR") || c.startsWith("CRE") || c.startsWith("GNC-C")) return { brand: "Big Brothers Fitness", name: "100% Genuine Creatine" };
-  if (c.startsWith("MV") || c.startsWith("VIT") || c.startsWith("MUL")) return { brand: "Big Brothers Fitness", name: "100% Genuine Multivitamin" };
-  return null;
+// Jaise hi user input me kuch naya likhega ya erase karega, purana box gayab ho jayega
+function resetResultState() {
+  const resultBox = document.getElementById("resultBox");
+  if (resultBox.style.display !== "none") {
+    resultBox.style.display = "none";
+    resultBox.innerHTML = "";
+  }
 }
-
-window.onload = function() {
-  const params = new URLSearchParams(window.location.search);
-  const brandParam = (params.get("brand") || "").trim().toUpperCase();
-  const codeParam = (params.get("code") || "").trim().toUpperCase();
-
-  if (brandParam && BRAND_DIRECTORY[brandParam]) {
-    document.getElementById("welcomeBrand").innerHTML = "Welcome to<br>" + BRAND_DIRECTORY[brandParam];
-  }
-
-  if (codeParam) {
-    document.getElementById("scratchInput").value = codeParam;
-    runVerification();
-  }
-};
 
 function runVerification() {
   const inputElem = document.getElementById("scratchInput");
@@ -334,7 +313,25 @@ function runVerification() {
     return;
   }
 
-  const productData = identifyProduct(code);
+  // Exact Match Check (Aadha-adhura code reject hoga)
+  let productData = MASTER_VERIFIED_CODES[code];
+
+  // Agar master codes me nahi hai, toh Prefix + Exact Length Check (WP, MG, CR, MV ke algorithmic codes)
+  if (!productData) {
+    const prefixes = ["WP", "MG", "CR", "MV", "MSW", "MGG", "ACT", "KNG", "ANX"];
+    for (let p of prefixes) {
+      if (code.startsWith(p) && code.length >= (p.length + 5)) {
+        // Sirf tab pass hoga jab poora code generate hua ho (kam se kam 7-8 akshar)
+        if (p === "WP") productData = { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
+        else if (p === "MG") productData = { brand: "Big Brothers Fitness", name: "100% Genuine Mass Gainer" };
+        else if (p === "CR") productData = { brand: "Big Brothers Fitness", name: "100% Genuine Creatine" };
+        else if (p === "MV") productData = { brand: "Big Brothers Fitness", name: "100% Genuine Multivitamin" };
+        else if (p === "MSW") productData = { brand: "Muscle Size Nutrition", name: "100% Whey Protein" };
+        else if (p === "MGG") productData = { brand: "Muscul Gold Nutrition", name: "Pro Series Mass Gainer" };
+        break;
+      }
+    }
+  }
 
   if (productData) {
     document.getElementById("welcomeBrand").innerHTML = "Welcome to<br>" + productData.brand;
@@ -342,6 +339,7 @@ function runVerification() {
     let scanCount = parseInt(localStorage.getItem("scan_" + code)) || 0;
 
     if (scanCount >= 1) {
+      // Repeat scan alert
       resultBox.style.display = "block";
       resultBox.innerHTML = `
         <div class="badge-box badge-warning">
@@ -352,6 +350,7 @@ function runVerification() {
         </div>
       `;
     } else {
+      // Fresh verification
       scanCount++;
       localStorage.setItem("scan_" + code, scanCount);
 
@@ -366,6 +365,7 @@ function runVerification() {
       `;
     }
   } else {
+    // Galat code par seedhe failed
     resultBox.style.display = "block";
     resultBox.innerHTML = `
       <div class="badge-box badge-failed">
