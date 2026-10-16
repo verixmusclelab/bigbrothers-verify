@@ -42,7 +42,7 @@
     .section-title { text-align:center; font-size:22px; margin:18px 0 10px; color:#ffcc00; font-weight:800; }
 
     /* Products Grid */
-    .product-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; padding:16px; max-width:1350px; margin:auto; }
+    .product-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:18px; padding:16px; max-width:1350px; margin:auto; }
     .card { background:#141414; border-radius:16px; padding:15px; text-align:center; border:1px solid #292929; display:flex; flex-direction:column; justify-content:space-between; position:relative; }
     .card-badge { position:absolute; top:10px; left:10px; background:#dc2626; color:#fff; font-size:10px; font-weight:800; padding:3px 7px; border-radius:4px; text-transform:uppercase; z-index:2; }
     
@@ -54,8 +54,11 @@
     .product-info-btn { display:block; width:100%; padding:9px; margin:4px 0 10px; border:1px solid #ffcc00; border-radius:8px; background:#222; color:#ffcc00; font-size:13px; font-weight:bold; cursor:pointer; }
     .product-info-btn:hover { background:#ffcc00; color:#000; }
 
-    .dropdown-grp { display:flex; gap:8px; margin-bottom:10px; }
-    .dropdown-grp select { width:50%; padding:7px 5px; background:#222; color:#ffcc00; border:1px solid #444; border-radius:6px; font-size:12px; font-weight:bold; outline:none; }
+    /* ALAG-ALAG WEIGHT AUR FLAVOUR ROW */
+    .dropdown-grp { display:flex; gap:8px; margin-bottom:12px; text-align:left; }
+    .dropdown-box { width:50%; }
+    .dropdown-box label { display:block; font-size:11px; color:#aaa; margin-bottom:3px; font-weight:bold; }
+    .dropdown-box select { width:100%; padding:7px 5px; background:#222; color:#ffcc00; border:1px solid #444; border-radius:6px; font-size:12px; font-weight:bold; outline:none; }
 
     .price-container { margin-bottom:10px; }
     .mrp-cut { font-size:12px; color:#888; text-decoration:line-through; margin-right:6px; }
@@ -88,7 +91,7 @@
     .proceed-btn { width:100%; padding:13px; background:#25D366; color:#000; border:none; border-radius:10px; font-size:15px; font-weight:900; cursor:pointer; }
 
     /* WOW Modal */
-    .wow-card { width:100%; max-width:400px; background:radial-gradient(circle at top, #1c1800 0%, #0d0d0d 85%); border:2px solid #ffcc00; border-radius:20px; padding:22px 18px; text-align:center; }
+    .wow-card { width:100%; max-width:420px; background:radial-gradient(circle at top, #1c1800 0%, #0d0d0d 85%); border:2px solid #ffcc00; border-radius:20px; padding:22px 18px; text-align:center; }
     .wow-badge { background:rgba(0,255,102,0.1); border:1.5px solid #00ff66; border-radius:12px; padding:12px; margin:12px 0 16px; }
     .wow-btn { width:100%; padding:12px; border-radius:8px; font-weight:900; font-size:14px; cursor:pointer; border:none; margin-bottom:8px; }
     .wow-btn-pay { background:#00ff66; color:#000; }
@@ -188,7 +191,7 @@
 
       <div class="bill-card">
         <div class="bill-line"><span>Subtotal</span><span id="billSubtotal">₹0</span></div>
-        <div class="bill-line"><span>Delivery</span><span style="color:#25D366; font-weight:bold;">FREE</span></div>
+        <div class="bill-line"><span>Delivery</span><span style="color:#25D366; font-weight:bold;">FREE (1 Week Delivery)</span></div>
         <div class="bill-total"><span>Total Payable</span><span id="billFinal">₹0</span></div>
       </div>
 
@@ -211,6 +214,10 @@
         <label><input type="radio" name="payMethod" value="Cash on Delivery"> Cash on Delivery</label>
       </div>
 
+      <div style="text-align:center; font-size:11px; color:#aaa; margin-bottom:10px;">
+        Payment UPI ID: <strong style="color:#ffcc00;">9990954574@nyes</strong>
+      </div>
+
       <button onclick="proceedToPay()" class="proceed-btn">Place Order & Pay</button>
     </div>
   </div>
@@ -227,8 +234,12 @@
         <div id="wowSummaryText" style="color:#fff; font-size:13px; margin-top:4px;">Total Payable: ₹0</div>
       </div>
 
-      <button class="wow-btn wow-btn-pay" onclick="executeOrder('ONLINE')">🟢 PROCEED TO PAY (UPI APPS)</button>
-      <button class="wow-btn wow-btn-cod" onclick="executeOrder('COD')">🟡 CASH ON DELIVERY (COD)</button>
+      <div id="wowCodNotice" style="font-size:12px; color:#ffcc00; margin-bottom:12px; font-weight:bold; display:none; background:#222; padding:8px; border-radius:6px;">
+        ⚠️ COD Policy: 50% Advance Online Pay Karein + 50% Baki Delivery Par (Delivery Time: 1 Week)
+      </div>
+
+      <button class="wow-btn wow-btn-pay" onclick="executeOrder('ONLINE')">🟢 PROCEED TO PAY (UPI / GPAY / PHONEPE)</button>
+      <button class="wow-btn wow-btn-cod" onclick="executeOrder('COD')">🟡 CASH ON DELIVERY (50% ADVANCE)</button>
       <button onclick="closeWowModal()" style="background:none; border:none; color:#777; font-size:12px; cursor:pointer; margin-top:6px; text-decoration:underline;">Back to Cart</button>
     </div>
   </div>
@@ -259,54 +270,6 @@
       whatsappNumber: "919990954574"
     };
 
-    // Purani working links ka image map (Fallback ke liye)
-    const OLD_IMAGE_MAP = {
-      "labrada 100% whey": "https://i.ibb.co/ynbr1YCw/download-1.webp",
-      "intra bulk": "https://i.ibb.co/yn3mRvFs/1791659472066.png",
-      "active shake": "https://i.ibb.co/67XfZvnT/1791659637738.png",
-      "muscle size 100% whey": "https://i.ibb.co/fv0J0Lx/multivitamin.jpg",
-      "on gold standard": "https://i.ibb.co/Psd0wvRZ/1118910-1-af26fc31-6747-4679-8e5f-00dc04b9aecd.jpg",
-      "muscletech nitrotech": "https://i.ibb.co/MyLYJcjV/HVPM75-X4-2.jpg",
-      "ultimate nutrition": "https://i.ibb.co/N222hjM1/IMG-20261010-025107.jpg",
-      "biozyme": "https://i.ibb.co/p67wpMTy/IMG-20261010-130116.jpg",
-      "dymatize iso 100": "https://i.ibb.co/JFmY1sTF/prd-4581381-Dymatize-ISO-100-Whey-Protein-Isolate-5-lb-Gourmet-Chocolate-o.jpg",
-      "gnc pro performance whey": "https://i.ibb.co/QFf09jR0/hvuf18c2-1-1.webp",
-      "as-it-is nutrition whey": "https://i.ibb.co/5xRPPRd6/hvkp34c8-1.webp",
-      "avvatar": "https://i.ibb.co/Cs3YzhqK/prd-1813216-Avvatar-Whey-Protein-2-2-lb-Malai-Kulfi-c-l.jpg",
-      "nutrabay pure whey": "https://i.ibb.co/tTztMrJZ/download.jpg",
-      "labrada muscle mass": "https://i.ibb.co/ccv7zKnP/download-7.webp",
-      "power muscles gain": "https://i.ibb.co/sJjstZh7/Gainer-Choc-1-K-Front-1200x.jpg",
-      "on serious mass": "https://i.ibb.co/kg6h7vc7/download-2.webp",
-      "super gainer xxl": "https://i.ibb.co/qYkQz960/nut5225-02-1.webp",
-      "mass tech extreme": "https://i.ibb.co/NdJv3Rrg/download-3.webp",
-      "super mass gainer": "https://i.ibb.co/6RBX1WQX/download-4.webp",
-      "gnc weight gainer": "https://i.ibb.co/4Rc3vFQS/download-5.webp",
-      "mutant mass": "https://i.ibb.co/j9B7MDwC/download-6.webp",
-      "endura mass": "https://i.ibb.co/bgvndWVS/IMG-20261010-030543.jpg",
-      "scitron mega mass": "https://i.ibb.co/8gQPKqj3/IMG-20261010-030556.jpg",
-      "bigmuscles nutrition real mass": "https://i.ibb.co/nqsGF4RG/IMG-20261010-030616.jpg",
-      "gnc creatine": "https://i.ibb.co/kjbvcn2/download-17.webp",
-      "muscletech platinum creatine": "https://i.ibb.co/DgQWCh9R/IMG-20261010-052518.jpg",
-      "muscleblaze creatine": "https://i.ibb.co/qF2zMxZM/IMG-20261010-052714.jpg",
-      "wellcore": "https://i.ibb.co/BxSkC0Q/download-16.webp",
-      "on micronized creatine": "https://i.ibb.co/7dRy6WQz/download-10.webp",
-      "labrada creatine": "https://i.ibb.co/5gQQ0L05/download-11.webp",
-      "as-it-is pure creatine": "https://i.ibb.co/gLGxY1b1/download-12.webp",
-      "nutrabay creatine": "https://i.ibb.co/hxgwSfjw/download-13.webp",
-      "fast&up creatine": "https://i.ibb.co/Gfc9K442/download-14.webp",
-      "scitron pure creatine": "https://i.ibb.co/ZpWJz7Vr/download-15.webp",
-      "gnc mega men": "https://i.ibb.co/PGqFBbfg/90200084-1-c57c6b2f-fd51-472a-ae45-c0e6ab0b3b7c.jpg",
-      "muscletech platinum multi": "https://www.muscletech.in/wp-content/uploads/2022/11/multi-vitamin-60units-1.webp",
-      "muscleblaze daily multi": "https://i.ibb.co/d41R5F8m/download-18.webp",
-      "on opti-men": "https://i.ibb.co/Zzpp8Pwk/download-19.webp",
-      "universal daily formula": "https://i.ibb.co/sJ3N3BkT/IMG-20261010-053636.jpg",
-      "himalayan organics": "https://i.ibb.co/Xf4D123p/IMG-20261010-053251.jpg",
-      "truebasics": "https://i.ibb.co/q3Lbj8Y0/IMG-20261010-053356.jpg",
-      "hk vitals": "https://i.ibb.co/chmrQWCR/download-20.webp",
-      "carbamide forte": "https://i.ibb.co/qLdm0pgK/download-21.webp",
-      "centrum men": "https://i.ibb.co/kVLfx5WD/men-multivitamin-30-tabs-1.jpg"
-    };
-
     let catalog = [];
     let cart = [];
     let activeCat = 'ALL';
@@ -314,13 +277,7 @@
 
     function getBestImage(item) {
       if (!item) return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
-      const nameLower = (item.name || '').toLowerCase();
-      for (const [key, val] of Object.entries(OLD_IMAGE_MAP)) {
-        if (nameLower.includes(key)) return val;
-      }
-      if (item.image && item.image.startsWith('http')) {
-                return item.image;
-      }
+      if (item.image && item.image.startsWith('http')) return item.image;
       return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
     }
 
@@ -354,8 +311,8 @@
       }
 
       grid.innerHTML = filtered.map(item => {
-        const variants = item.variants || [{ pack: 'Standard', price: 999, mrp: 1499 }];
-        const flavours = item.flavours || ['Chocolate', 'Regular'];
+        const variants = item.variants && item.variants.length > 0 ? item.variants : [{ pack: 'Standard', price: 999, mrp: 1499 }];
+        const flavours = item.flavours && item.flavours.length > 0 ? item.flavours : ['Regular'];
         const firstVar = variants[0];
         const saveAmt = Math.max(300, (firstVar.mrp - firstVar.price) || 300);
         const imgSrc = getBestImage(item);
@@ -364,21 +321,30 @@
           <div class="card" id="card-${item.id}">
             ${item.badge ? `<div class="card-badge">${item.badge}</div>` : ''}
             <div class="img-container">
-              <img src="${imgSrc}" alt="${item.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.weserv.nl/?url=' + encodeURIComponent('${item.image || imgSrc}');">
+              <img src="${imgSrc}" alt="${item.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.weserv.nl/?url=' + encodeURIComponent('${imgSrc}');">
             </div>
             <h3>${item.name}</h3>
             <p class="desc">${item.brand} • ${firstVar.servings || '100% Genuine'}</p>
 
             <button class="product-info-btn" onclick="openProductDetails(${item.id})">📋 Full Details / पूरी जानकारी</button>
 
+            <!-- EK TARAF WEIGHT AUR EK TARAF FLAVOUR -->
             <div class="dropdown-grp">
-              <select class="size-select" onchange="updateCardPrice(${item.id}, this)">
-                ${variants.map((v, i) => `<option value="${v.price}" data-mrp="${v.mrp}" data-pack="${v.pack}" data-serv="${v.servings || ''}">${v.pack}</option>`).join('')}
-                ${flavours.map(f => `<option value="${f}">${f}</option>`).join('')}
-              </select>
+              <div class="dropdown-box">
+                <label>Weight / Pack:</label>
+                <select class="size-select" onchange="updateCardPrice(${item.id}, this)">
+                  ${variants.map(v => `<option value="${v.price}" data-mrp="${v.mrp}" data-pack="${v.pack}" data-serv="${v.servings \vert{}\vert{} ''}">${v.pack}</option>`).join('')}
+                </select>
+              </div>
+              <div class="dropdown-box">
+                <label>Flavour:</label>
+                <select class="flavour-select">
+                  ${flavours.map(f => `<option value="${f}">${f}</option>`).join('')}
+                </select>
+              </div>
             </div>
 
-            <div class="price-container">
+                        <div class="price-container">
               <span class="mrp-cut" id="mrp-${item.id}">Flipkart: ₹${firstVar.mrp}</span>
               <div class="price" id="price-${item.id}">₹${firstVar.price}</div>
               <div class="save-badge" id="save-${item.id}">🔥 ₹${saveAmt} Sasta Guaranteed</div>
@@ -469,7 +435,7 @@
       }
 
       updateCartBadge();
-      showToast(`🛒 <b>${item.name}</b> Cart me add ho gaya!`);
+      showToast(`🛒 <b>${item.name}</b> (${pack} - ${flavour}) Cart mein add ho gaya!`);
     }
 
     function updateCartBadge() {
@@ -562,6 +528,14 @@
 
       document.getElementById('wowSaveTitle').innerText = "WOW! YOU SAVED ₹" + totalSaved + "!";
       document.getElementById('wowSummaryText').innerText = "Total Payable: ₹" + totalAmt + " (Flipkart Se Sasta)";
+      
+      const codNotice = document.getElementById('wowCodNotice');
+      if (payMethod === 'Cash on Delivery') {
+        codNotice.style.display = 'block';
+      } else {
+        codNotice.style.display = 'none';
+      }
+
       document.getElementById('cartModal').style.display = 'none';
       document.getElementById('wowModal').style.display = 'flex';
     }
@@ -574,9 +548,23 @@
     function executeOrder(chosenType) {
       if (!pendingOrder) return;
       const d = pendingOrder;
-      const finalMode = (chosenType === 'COD') ? 'Cash on Delivery' : d.payMethod;
+      const isCod = (chosenType === 'COD') || (d.payMethod === 'Cash on Delivery');
+      
+      let payAmount = d.totalAmt;
+      let advanceAmt = 0;
+      let remainingAmt = 0;
+      let payTerms = "";
 
-      let waMsg = `*🔥 NAYA ORDER RECEIVED (${d.orderId})*%0A%0A` +
+      if (isCod) {
+        advanceAmt = Math.round(d.totalAmt * 0.5); // 50% Advance
+        remainingAmt = d.totalAmt - advanceAmt;
+        payAmount = advanceAmt;
+        payTerms = `Cash on Delivery (50% Advance Online: ₹${advanceAmt} + 50% Baki Delivery Par: ₹${remainingAmt})`;
+      } else {
+        payTerms = `100% Full Online Paid (₹${d.totalAmt}) via ${d.payMethod}`;
+      }
+
+      let waMsg = `*🔥 NAYA ORDER (${d.orderId})*%0A%0A` +
         `*Customer Details:*%0A` +
         `👤 Naam: ${encodeURIComponent(d.name)}%0A` +
         `📞 Phone: ${encodeURIComponent(d.phone)}%0A` +
@@ -588,10 +576,10 @@
       });
 
       waMsg += `%0A*Total Bill:* ₹${d.totalAmt}%0A` +
-        `*Bachat (Discount):* ₹${d.totalSaved}%0A` +
-        `*Payment Mode:* ${encodeURIComponent(finalMode)}%0A` +
+        `*Payment Terms:* ${encodeURIComponent(payTerms)}%0A` +
+        `*Delivery Time:* 1 Week ke andar doorstep delivery%0A` +
         `*UPI ID:* ${UPI_CONFIG.vpa}%0A` +
-        `*Status:* Order Initiated`;
+        `*Status:* Order Initiated & Payment In Progress`;
 
       const waUrl = `https://wa.me/${UPI_CONFIG.whatsappNumber}?text=${waMsg}`;
 
@@ -599,18 +587,16 @@
       cart = [];
       updateCartBadge();
 
-      if (finalMode === 'Cash on Delivery') {
-        alert(`🎉 Order Confirmed!\nOrder ID: ${d.orderId}\nTotal: ₹${d.totalAmt}\nHum delivery verify karne ke liye call karenge.`);
-        window.location.href = waUrl;
-        return;
+      // Universal UPI Intent Link
+      let upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${payAmount}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
+      
+      if (d.payMethod === 'Google Pay') {
+        upiUrl = `gpay://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${payAmount}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
+      } else if (d.payMethod === 'PhonePe') {
+        upiUrl = `phonepe://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${payAmount}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
       }
 
-      let upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
-      if (finalMode === 'Google Pay') {
-        upiUrl = `gpay://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
-      } else if (finalMode === 'PhonePe') {
-        upiUrl = `phonepe://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
-      }
+      alert(`Order ${d.orderId} Place Ho Raha Hai!\n\nBhugtan Rashi: ₹${payAmount}\n(Delivery Timeline: 1 Week)\n\nOk dabate hi Payment App khulega aur details WhatsApp par send ho jayegi.`);
 
       setTimeout(() => { window.open(waUrl, '_blank'); }, 1500);
       window.location.href = upiUrl;
@@ -624,15 +610,16 @@
 
       const pack = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-pack');
       const price = sizeSel.value;
-      const mrp = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-mrp');
-      const flav = flavSel.value;
+      const mrp = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-mrp') || (parseInt(price) + 300);
+      const flav = flavSel ? flavSel.value : 'Regular';
 
       const msg = `*DIRECT ENQUIRY / ORDER*%0A%0A` +
         `*Product:* ${encodeURIComponent(item.name)}%0A` +
         `*Brand:* ${encodeURIComponent(item.brand)}%0A` +
         `*Pack:* ${pack}%0A` +
         `*Flavour:* ${flav}%0A` +
-        `*Store Offer Price:* ₹${price} (Flipkart: ₹${mrp})%0A%0A` +
+        `*Store Offer Price:* ₹${price} (Flipkart: ₹${mrp})%0A` +
+        `*Delivery Time:* 1 Week Delivery%0A%0A` +
         `Mujhe ye product order karna hai. Delivery details batayein.`;
 
       window.open(`https://wa.me/${UPI_CONFIG.whatsappNumber}?text=${msg}`, '_blank');
@@ -674,4 +661,3 @@
   </script>
 </body>
 </html>
-
