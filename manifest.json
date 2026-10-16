@@ -1,7 +1,7 @@
 {
   "name": "5 Brother's Fitness Club",
-  "short_name": "5BFC Gym",
-  "start_url": "./index.html",
+  "short_name": "5 Brother's Fitness Gym",
+  "start_url": "store.html"
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#ffcc00",
