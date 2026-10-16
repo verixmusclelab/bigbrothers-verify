@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>5 Brother's Fitness Club | Supplement Store</title>
+  <title>Big Brothers Nutrition | Official Supplement Store</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: #0c0d11; color: #fff; padding-bottom: 70px; }
@@ -19,13 +19,14 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
     .brand-title {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       color: #ffcc00;
       margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      letter-spacing: 0.5px;
     }
     .badge-count {
       font-size: 11px;
@@ -182,13 +183,13 @@
   <!-- Header -->
   <div class="header-bar">
     <div class="brand-title">
-      <span>5BF LIVE STORE</span>
+      <span>BIG BROTHERS NUTRITION</span>
       <span class="badge-count" id="itemCount">Loading...</span>
     </div>
 
     <!-- Search Input -->
     <div class="search-box">
-      <input type="text" id="storeSearch" class="search-input" placeholder="Search Whey, Shilajit, Pre-Workout, Brand..." oninput="applyFilters()">
+      <input type="text" id="storeSearch" class="search-input" placeholder="Search Whey, Creatine, Pre-Workout, Brand..." oninput="applyFilters()">
     </div>
 
     <!-- Categories Filter -->
@@ -207,11 +208,11 @@
     <!-- Brand Filter -->
     <div class="filter-scroll" id="brandChips">
       <div class="chip active" onclick="setBrand('ALL', this)">All Brands</div>
+      <div class="chip" onclick="setBrand('Big Daddy Nutrition', this)">Big Daddy</div>
       <div class="chip" onclick="setBrand('MuscleBlaze', this)">MuscleBlaze</div>
       <div class="chip" onclick="setBrand('Optimum Nutrition', this)">ON</div>
       <div class="chip" onclick="setBrand('Labrada Nutrition', this)">Labrada</div>
       <div class="chip" onclick="setBrand('Wellcore', this)">Wellcore</div>
-      <div class="chip" onclick="setBrand('Big Daddy Nutrition', this)">Big Daddy</div>
       <div class="chip" onclick="setBrand('MyFitness', this)">MyFitness</div>
       <div class="chip" onclick="setBrand('Pintola', this)">Pintola</div>
       <div class="chip" onclick="setBrand('Kapiva', this)">Kapiva</div>
@@ -255,7 +256,7 @@
       }
 
       grid.innerHTML = list.map(item => {
-        const waMsg = encodeURIComponent("Hello 5BF, I want to buy " + item.title + " at " + item.price);
+        const waMsg = encodeURIComponent("Hello Big Brothers Nutrition, I want to order " + item.title + " (" + item.price + ")");
         return `
           <div class="prod-card">
             <div class="prod-img-box">
