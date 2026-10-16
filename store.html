@@ -3,455 +3,564 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>5 Brothers Nutrition Store</title>
+  <title>Big Brothers Fitness - 100% Authentic Store</title>
   <style>
     :root {
-      --primary: #f59e0b;
-      --dark: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent: #22c55e;
-      --border: #334155;
+      --gold: #ffcc00;
+      --gold-dark: #e6b800;
+      --dark: #000000;
+      --card-bg: #0d0d0d;
+      --border: #222222;
+      --text: #ffffff;
+      --text-muted: #888888;
+      --blue: #007bff;
+      --green: #25d366;
+      --green-dark: #1eb855;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    body {
-      background-color: var(--dark);
-      color: var(--text);
-      padding-bottom: 90px;
-    }
-    header {
-      background: #020617;
-      padding: 16px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      border-bottom: 1px solid var(--border);
-    }
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .brand-title {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .search-box input {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      color: var(--text);
-      font-size: 0.95rem;
-      outline: none;
-    }
-    .categories {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      scrollbar-width: none;
-    }
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
-    .cat-btn {
-      white-space: nowrap;
-      padding: 8px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .cat-btn.active {
-      background: var(--primary);
-      color: #000;
-      border-color: var(--primary);
-      font-weight: 700;
-    }
-    main {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 0 16px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-    .card-img-wrap {
-      width: 100%;
-      height: 220px;
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px;
-    }
-    .card-img-wrap img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-    .badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: #dc2626;
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-    }
-    .card-content {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      gap: 10px;
-    }
-    .brand-name {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    .product-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      line-height: 1.3;
-    }
-    .rating-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-    .rating-pill {
-      background: #064e3b;
-      color: #34d399;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    .variant-selector {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-    .variant-pill {
-      padding: 5px 9px;
-      border: 1px solid var(--border);
-      background: #0f172a;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      color: var(--text-muted);
-    }
-    .variant-pill.active {
-      border-color: var(--primary);
-      color: var(--primary);
-      font-weight: 700;
-      background: #78350f33;
-    }
-    .price-box {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      margin-top: auto;
-      padding-top: 8px;
-    }
-    .current-price {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: #fff;
-    }
-    .mrp-price {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      text-decoration: line-through;
-    }
-    .servings-tag {
-      font-size: 0.75rem;
-      color: var(--accent);
-      font-weight: 600;
-    }
-    .buy-btn {
-      width: 100%;
-      padding: 10px;
-      background: var(--accent);
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-    /* Checkout Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-    .modal-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--dark); color: var(--text); padding-bottom: 90px; }
+
+    /* Top Strip */
+    .top-strip { background: #000; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; border-bottom: 1px solid #1a1a1a; }
+    .top-strip-tag { background: var(--gold); color: #000; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-decoration: none; }
+    .top-strip-sub { color: #888; font-weight: 700; letter-spacing: 0.5px; }
+
+    /* Header */
+    header { background: #050505; padding: 12px 16px; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #1a1a1a; }
+    .header-main { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .brand-box h1 { font-size: 1.25rem; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px; }
+    .brand-box p { font-size: 0.7rem; color: var(--text-muted); }
+    .header-actions { display: flex; gap: 6px; align-items: center; }
+    .btn-header { padding: 6px 11px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; border: none; cursor: pointer; }
+    .btn-cart { background: var(--blue); color: #fff; }
+    .btn-call { background: var(--gold); color: #000; }
+    .btn-wa { background: var(--green); color: #000; font-weight: 900; }
+
+    /* Main Container */
+    .store-container { max-width: 1200px; margin: 0 auto; padding: 14px; }
+    .headline-wrap { text-align: center; margin: 12px 0 16px; }
+    .headline-wrap h2 { color: var(--gold); font-size: 1.45rem; font-weight: 900; text-transform: uppercase; }
+    .headline-wrap p { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* Search & Categories */
+    .search-input { width: 100%; padding: 12px 14px; background: #0e0e0e; border: 1px solid #222; color: #fff; border-radius: 8px; font-size: 0.9rem; outline: none; margin-bottom: 12px; }
+    .cat-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+    .cat-scroll::-webkit-scrollbar { display: none; }
+    .cat-pill { white-space: nowrap; padding: 6px 14px; background: #161616; border: 1px solid #262626; color: #aaa; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+    .cat-pill.active { background: var(--gold); color: #000; border-color: var(--gold); }
+
+    .section-title { margin: 16px 0 12px; font-size: 1.05rem; font-weight: 800; color: #ff9900; display: flex; align-items: center; gap: 6px; }
+
+    /* Grid & Cards */
+    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .p-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .p-badge { position: absolute; top: 10px; left: 10px; background: #dc2626; color: #fff; font-size: 0.65rem; font-weight: 900; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; z-index: 2; }
+    
+    .p-img-box { width: 100%; height: 210px; background: #ffffff; display: flex; align-items: center; justify-content: center; padding: 10px; }
+    .p-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    
+    .p-info { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; gap: 8px; }
+    .p-title { font-size: 0.95rem; font-weight: 800; color: #fff; line-height: 1.3; }
+    .p-sub { font-size: 0.72rem; color: var(--text-muted); }
+
+    .btn-details { width: 100%; background: #141414; border: 1px solid #2a2a2a; color: var(--gold); padding: 7px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; text-align: center; }
+
+    /* Dropdowns */
+    .selectors-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px; }
+    .selectors-row select { width: 100%; background: #000; color: var(--gold); border: 1px solid #333; padding: 6px 8px; border-radius: 6px; font-size: 0.78rem; outline: none; }
+
+    /* Pricing */
+    .p-pricing { text-align: center; padding: 6px 0 2px; }
+    .fk-comp { font-size: 0.72rem; color: #777; text-decoration: line-through; }
+    .cur-price { font-size: 1.35rem; font-weight: 900; color: var(--gold); margin: 2px 0; }
+    .sasta-badge { display: inline-block; background: #032b17; color: #22c55e; border: 1px solid #054f2a; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+
+    /* Action Buttons */
+    .btn-grid-actions { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+    .act-btn { width: 100%; padding: 9px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; }
+    .btn-add-cart { background: var(--blue); color: #fff; }
+    .btn-act-wa { background: var(--green); color: #000; font-weight: 900; }
+    .btn-act-call { background: var(--gold); color: #000; font-weight: 900; }
+
+    /* Modal Wrapper */
+    .modal-wrap { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; padding: 14px; }
+    
+    /* Original Gold-Border Cart Checkout Modal */
+    .checkout-modal-card {
+      background: #121212;
+      border: 2px solid var(--gold);
+      border-radius: 14px;
       width: 100%;
       max-width: 440px;
-      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       gap: 12px;
+      position: relative;
     }
-    .modal-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-    .modal-box input, .modal-box textarea {
-      width: 100%;
-      padding: 10px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: #fff;
-      border-radius: 6px;
-      outline: none;
-      font-size: 0.9rem;
-    }
-    .order-action-btn {
-      padding: 12px;
-      background: #25d366;
-      color: #000;
-      font-weight: 800;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
-    .close-modal-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 8px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+    .modal-close-icon { position: absolute; top: 12px; right: 14px; font-size: 1.2rem; color: #999; background: none; border: none; cursor: pointer; }
+    .checkout-header { display: flex; align-items: center; gap: 8px; color: var(--gold); font-size: 1.15rem; font-weight: 800; }
+    
+    .cart-item-box { background: #1c1c1c; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; }
+    .qty-ctrl { display: flex; align-items: center; gap: 8px; background: #000; padding: 3px 8px; border-radius: 6px; border: 1px solid #333; }
+    .qty-btn { background: none; border: none; color: var(--gold); font-size: 1rem; font-weight: 900; cursor: pointer; }
+
+    .summary-table { width: 100%; font-size: 0.85rem; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 8px 0; }
+    .summary-row { display: flex; justify-content: space-between; padding: 3px 0; }
+    .summary-total { color: var(--gold); font-weight: 900; font-size: 1rem; }
+
+    /* Inputs */
+    .form-section-title { font-size: 0.82rem; font-weight: 800; color: #ff9900; display: flex; align-items: center; gap: 4px; }
+    .form-input { width: 100%; padding: 9px 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 6px; font-size: 0.85rem; outline: none; }
+    .form-input:focus { border-color: var(--gold); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    /* Payment Radio Grid */
+    .pay-options-title { font-size: 0.8rem; font-weight: 700; color: #aaa; margin-top: 2px; }
+    .pay-radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .pay-radio-card { background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    .pay-radio-card input { accent-color: var(--blue); cursor: pointer; }
+
+    .btn-place-order { background: #22c55e; color: #000; font-size: 1rem; font-weight: 900; padding: 12px; border-radius: 8px; border: none; width: 100%; cursor: pointer; margin-top: 4px; }
+    .btn-place-order:hover { background: var(--green-dark); }
+
+    /* Full Details Card */
+    .details-card { background: #121212; border: 1px solid #333; border-radius: 12px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+    .nutri-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 4px; }
+    .nutri-table td { padding: 5px; border-bottom: 1px solid #222; }
+    .nutri-table td:first-child { color: #888; font-weight: 600; }
   </style>
 </head>
 <body>
 
+  <!-- Top Strip -->
+  <div class="top-strip">
+    <a href="./home.html" class="top-strip-tag">मुख्य मेनू (Home)</a>
+    <span class="top-strip-sub">SBFC SUPPLEMENT STORE • UNNAO</span>
+  </div>
+
+  <!-- Header -->
   <header>
-    <div class="header-container">
-      <div class="brand-title">5 Brothers Nutrition Store</div>
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search protein, Big Daddy, creatine, brands...">
+    <div class="header-main">
+      <div class="brand-box">
+        <h1>Big Brothers Fitness</h1>
+        <p>100% Authentic Supplements</p>
       </div>
-      <div class="categories" id="catList">
-        <button class="cat-btn active" data-category="ALL">All Products</button>
-        <button class="cat-btn" data-category="Whey Protein">Whey Protein</button>
-        <button class="cat-btn" data-category="Pre-Workout">Pre-Workout</button>
-        <button class="cat-btn" data-category="Creatine">Creatine</button>
-        <button class="cat-btn" data-category="Mass Gainer">Mass Gainer</button>
-        <button class="cat-btn" data-category="Peanut Butter">Peanut Butter</button>
-        <button class="cat-btn" data-category="BCAA & Amino">BCAA & Amino</button>
-        <button class="cat-btn" data-category="Ayurvedic & Wellness">Ayurvedic</button>
-        <button class="cat-btn" data-category="Multivitamin">Multivitamin</button>
-        <button class="cat-btn" data-category="Fish Oil">Fish Oil</button>
+      <div class="header-actions">
+        <button class="btn-header btn-cart" onclick="openCartModal()">🛒 Cart <span id="cartCountBadge" style="background:red; border-radius:50%; padding:1px 5px; margin-left:2px;">0</span></button>
+        <a href="tel:9990954574" class="btn-header btn-call">📞 Call</a>
+        <a href="https://wa.me/919990954574" target="_blank" class="btn-header btn-wa">WhatsApp</a>
       </div>
     </div>
   </header>
 
-  <main>
-    <div class="grid" id="productGrid">
-      <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
-        Loading products catalog...
+  <!-- Store Body -->
+  <div class="store-container">
+    <div class="headline-wrap">
+      <h2>100% Authentic Store</h2>
+      <p>Select Weight & Flavour for Live Prices</p>
+    </div>
+
+    <!-- Search -->
+    <input type="text" id="storeSearch" class="search-input" placeholder="Search brands, products...">
+
+    <!-- Categories -->
+    <div class="cat-scroll">
+      <button class="cat-pill active" data-cat="ALL">All</button>
+      <button class="cat-pill" data-cat="Whey Protein">Whey Protein</button>
+      <button class="cat-pill" data-cat="Mass Gainer">Mass Gainer</button>
+      <button class="cat-pill" data-cat="Creatine">Creatine</button>
+      <button class="cat-pill" data-cat="Pre-Workout">Pre-Workout</button>
+      <button class="cat-pill" data-cat="Peanut Butter">Peanut Butter</button>
+      <button class="cat-pill" data-cat="Multivitamin">Multivitamin</button>
+      <button class="cat-pill" data-cat="Fish Oil">Fish Oil</button>
+    </div>
+
+    <div class="section-title">🔥 Featured Catalog</div>
+
+    <!-- Product Grid -->
+    <div class="catalog-grid" id="catalogGrid">
+      <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">
+        Loading 126+ products catalog...
       </div>
     </div>
-  </main>
+  </div>
 
-  <!-- Modal -->
-  <div class="modal-overlay" id="checkoutModal">
-    <div class="modal-box">
-      <div class="modal-title" id="orderModalTitle">Confirm Order</div>
-      <div id="orderModalSummary" style="font-size: 0.85rem; color: var(--text-muted);"></div>
-      <input type="text" id="custName" placeholder="Aapka Naam">
-      <input type="tel" id="custPhone" placeholder="Mobile / WhatsApp Number">
-      <textarea id="custAddress" rows="2" placeholder="Complete Delivery Address"></textarea>
-      <div style="font-size: 0.85rem; color: #f59e0b; background: #020617; padding: 8px; border-radius: 6px; text-align: center;">
-        Payment UPI ID: <strong>9990954574@nyes</strong>
+  <!-- 1. FULL DETAILS MODAL -->
+  <div class="modal-wrap" id="detailsModal">
+    <div class="details-card">
+      <button class="modal-close-icon" onclick="closeDetailsModal()">✕</button>
+      <div style="text-align: center;">
+        <img id="detailImg" src="" style="max-height: 180px; object-fit: contain; background: #fff; padding: 8px; border-radius: 8px;" alt="">
       </div>
-      <button class="order-action-btn" onclick="sendWhatsAppOrder()">Direct Order on WhatsApp</button>
-      <button class="close-modal-btn" onclick="closeModal()">Band Karein</button>
+      <h3 id="detailTitle" style="color: var(--gold); font-size: 1.1rem;"></h3>
+      <div id="detailBadge" class="p-badge" style="position: static; display: inline-block;"></div>
+      <div style="font-size: 0.8rem; color: #888;" id="detailSub"></div>
+      
+      <div style="font-weight: 800; font-size: 0.85rem; color: #fff; margin-top: 4px;">Nutrition & Formula:</div>
+      <table class="nutri-table" id="detailNutriTable"></table>
+
+      <div style="font-weight: 800; font-size: 0.85rem; color: #fff; margin-top: 4px;">Usage Guide:</div>
+      <p id="detailUsage" style="font-size: 0.8rem; color: #ccc; line-height: 1.4;"></p>
+
+      <button class="act-btn btn-act-wa" style="margin-top: 8px;" onclick="orderFromDetail()">Direct WhatsApp Order</button>
+    </div>
+  </div>
+
+  <!-- 2. ORIGINAL CART CHECKOUT MODAL (Yellow Border & Radio UPI) -->
+  <div class="modal-wrap" id="cartModal">
+    <div class="checkout-modal-card">
+      <button class="modal-close-icon" onclick="closeCartModal()">✕</button>
+      
+      <div class="checkout-header">
+        🛒 Cart Checkout
+      </div>
+
+      <!-- Items List -->
+      <div id="cartItemsContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto;"></div>
+
+      <!-- Subtotal / Summary -->
+      <div class="summary-table">
+        <div class="summary-row">
+          <span style="color:#aaa;">Subtotal</span>
+          <span>₹<span id="subTotalVal">0</span></span>
+        </div>
+        <div class="summary-row">
+          <span style="color:#aaa;">Delivery</span>
+          <span style="color:#22c55e; font-weight:800;">FREE</span>
+        </div>
+        <div class="summary-row summary-total" style="margin-top:4px;">
+          <span>Total Payable</span>
+          <span>₹<span id="grandTotalVal">0</span></span>
+        </div>
+      </div>
+
+      <!-- Delivery Inputs -->
+      <div class="form-section-title">📦 Delivery Details</div>
+      <input type="text" id="custName" class="form-input" placeholder="Full Name (Naam)*">
+      <input type="tel" id="custPhone" class="form-input" placeholder="Mobile Number*">
+      <textarea id="custAddress" class="form-input" rows="2" placeholder="Full Address (House, Colony, Gali)*"></textarea>
+      
+      <div class="form-row-2">
+        <input type="text" id="custCity" class="form-input" placeholder="City / District*">
+        <input type="text" id="custPin" class="form-input" placeholder="Pin Code*">
+      </div>
+
+      <!-- Payment Mode Radios -->
+      <div class="pay-options-title">Payment Option Chunein:</div>
+      <div class="pay-radio-grid">
+        <label class="pay-radio-card">
+          <input type="radio" name="payOption" value="Navi UPI" checked> Navi UPI
+        </label>
+        <label class="pay-radio-card">
+          <input type="radio" name="payOption" value="Google Pay"> Google Pay
+        </label>
+        <label class="pay-radio-card">
+          <input type="radio" name="payOption" value="PhonePe"> PhonePe
+        </label>
+        <label class="pay-radio-card">
+          <input type="radio" name="payOption" value="Cash on Delivery"> Cash on Delivery
+        </label>
+      </div>
+
+      <!-- Submit Button -->
+      <button class="btn-place-order" onclick="placeOrderAndPay()">Place Order & Pay</button>
     </div>
   </div>
 
   <script>
-    let allProducts = [];
+    let catalog = [];
+    let cart = [];
     let selectedVariants = {};
-    let activeCategory = 'ALL';
-    let currentOrderItem = null;
+    let selectedFlavours = {};
+    let activeCat = 'ALL';
+    let currentDetailItem = null;
 
-    async function loadCatalog() {
+    // Direct Image Fix (handles broken referrers)
+    function sanitizeImg(url) {
+      if (!url) return 'https://via.placeholder.com/200?text=Supplement';
+      return url.replace('http://', 'https://');
+    }
+
+    async function loadCatalogData() {
       try {
-        // Cache bust query string added (?t=...) to avoid stale browser cache
-        const res = await fetch('products.json?t=' + Date.now());
-        if (!res.ok) throw new Error('Network status: ' + res.status);
-        allProducts = await res.json();
-        renderProducts();
+        const res = await fetch('products.json?v=' + Date.now());
+        catalog = await res.json();
+        renderCatalog();
       } catch (err) {
-        document.getElementById('productGrid').innerHTML = `
+        document.getElementById('catalogGrid').innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px;">
-            products.json load nahi ho saki: ${err.message}.
+            Error loading catalog: ${err.message}
           </div>
         `;
       }
     }
 
-    function renderProducts() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const grid = document.getElementById('productGrid');
+    function renderCatalog() {
+      const q = document.getElementById('storeSearch').value.toLowerCase();
+      const grid = document.getElementById('catalogGrid');
 
-      const filtered = allProducts.filter(item => {
-        const matchCat = activeCategory === 'ALL' || item.category === activeCategory;
-        const matchText = (item.name || '').toLowerCase().includes(query) || (item.brand || '').toLowerCase().includes(query);
-        return matchCat && matchText;
+      const list = catalog.filter(p => {
+        const catMatch = activeCat === 'ALL' || p.category === activeCat;
+        const textMatch = (p.name || '').toLowerCase().includes(q) || (p.brand || '').toLowerCase().includes(q);
+        return catMatch && textMatch;
       });
 
-      if (filtered.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Koi product nahi mila.</div>';
+      if (list.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">Koi product match nahi hua.</div>';
         return;
       }
 
-      grid.innerHTML = filtered.map(item => {
-        if (!selectedVariants[item.id]) {
-          selectedVariants[item.id] = 0;
-        }
-        const activeVIdx = selectedVariants[item.id];
-        const v = (item.variants && item.variants[activeVIdx]) ? item.variants[activeVIdx] : (item.variants ? item.variants[0] : {});
+      grid.innerHTML = list.map(p => {
+        if (selectedVariants[p.id] === undefined) selectedVariants[p.id] = 0;
+        if (selectedFlavours[p.id] === undefined) selectedFlavours[p.id] = 0;
+
+        const vIdx = selectedVariants[p.id];
+        const v = (p.variants && p.variants[vIdx]) ? p.variants[vIdx] : { pack: 'Standard', price: 999, mrp: 1499 };
+        const fList = p.flavours || ['Chocolate', 'Regular'];
 
         return `
-          <div class="card">
-            ${item.badge ? `<div class="badge">${item.badge}</div>` : ''}
-            <div class="card-img-wrap">
-              <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=Supplement'">
+          <div class="p-card">
+            ${p.badge ? `<div class="p-badge">${p.badge}</div>` : ''}
+            <div class="p-img-box">
+              <img src="${sanitizeImg(p.image)}" alt="${p.name}" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/200?text=Product';">
             </div>
-            <div class="card-content">
-              <div class="brand-name">${item.brand || ''}</div>
-              <div class="product-title">${item.name || ''}</div>
-              <div class="rating-row">
-                <span class="rating-pill">★ ${item.rating || '4.5'}</span>
-                <span>(${item.rating_count || '10K+'})</span>
+            <div class="p-info">
+              <div class="p-title">${p.name}</div>
+              <div class="p-sub">${p.brand} • ${v.servings || 'Authentic'}</div>
+              
+              <button class="btn-details" onclick="openDetailsModal(${p.id})">📜 Full Details / पूरी जानकारी</button>
+
+              <div class="selectors-row">
+                <select onchange="changeVariant(${p.id}, this.value)">
+                  ${(p.variants || []).map((item, i) => `
+                    <option value="${i}" ${i === vIdx ? 'selected' : ''}>${item.pack}</option>
+                  `).join('')}
+                </select>
+                <select onchange="changeFlavour(${p.id}, this.value)">
+                  ${fList.map((flv, fi) => `
+                    <option value="${fi}" ${fi === selectedFlavours[p.id] ? 'selected' : ''}>${flv}</option>
+                  `).join('')}
+                </select>
               </div>
-              <div class="variant-selector">
-                ${(item.variants || []).map((variant, idx) => `
-                  <button class="variant-pill ${idx === activeVIdx ? 'active' : ''}" onclick="selectVariant(${item.id},${idx})">
-                    ${variant.pack}
-                  </button>
-                `).join('')}
+
+              <div class="p-pricing">
+                <div class="fk-comp">Flipkart: ₹${v.mrp}</div>
+                <div class="cur-price">₹${v.price}</div>
+                <div class="sasta-badge">₹300 SASTA GUARANTEED</div>
               </div>
-              <div class="price-box">
-                <span class="current-price">₹${v.price || ''}</span>
-                <span class="mrp-price">₹${v.mrp || ''}</span>
-                <span class="servings-tag">${v.servings || ''}</span>
+
+              <div class="btn-grid-actions">
+                <button class="act-btn btn-add-cart" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
+                <button class="act-btn btn-act-wa" onclick="quickWaOrder(${p.id})">WhatsApp Order</button>
+                <a href="tel:9990954574" class="act-btn btn-act-call">Call Now</a>
               </div>
-              <button class="buy-btn" onclick="openModal(${item.id})">Order Now</button>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    function selectVariant(prodId, varIdx) {
-      selectedVariants[prodId] = varIdx;
-      renderProducts();
+    function changeVariant(id, idx) {
+      selectedVariants[id] = parseInt(idx);
+      renderCatalog();
     }
 
-    document.querySelectorAll('.cat-btn').forEach(btn => {
+    function changeFlavour(id, idx) {
+      selectedFlavours[id] = parseInt(idx);
+    }
+
+    // Categories
+    document.querySelectorAll('.cat-pill').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        activeCategory = btn.getAttribute('data-category');
-        renderProducts();
+        activeCat = btn.getAttribute('data-cat');
+        renderCatalog();
       });
     });
 
-    document.getElementById('searchInput').addEventListener('input', renderProducts);
+    document.getElementById('storeSearch').addEventListener('input', renderCatalog);
 
-    function openModal(prodId) {
-      const prod = allProducts.find(p => p.id === prodId);
-      const v = prod.variants[selectedVariants[prodId] || 0];
-      currentOrderItem = { prod, variant: v };
+    // Full Details Modal
+    function openDetailsModal(id) {
+      const p = catalog.find(item => item.id === id);
+      if (!p) return;
+      currentDetailItem = p;
 
-      document.getElementById('orderModalTitle').innerText = prod.name;
-      document.getElementById('orderModalSummary').innerText = `Pack: ${v.pack} | Price: ₹${v.price} (MRP: ₹${v.mrp})`;
-      document.getElementById('checkoutModal').style.display = 'flex';
+      document.getElementById('detailImg').src = sanitizeImg(p.image);
+      document.getElementById('detailTitle').innerText = p.name;
+      document.getElementById('detailBadge').innerText = p.badge || '100% Genuine';
+      document.getElementById('detailSub').innerText = `${p.brand} | Rating: ★ ${p.rating || '4.5'} (${p.rating_count || '10K+'})`;
+      
+      const nTable = document.getElementById('detailNutriTable');
+      nTable.innerHTML = '';
+      if (p.nutrition) {
+               for (const [key, val] of Object.entries(p.nutrition)) {
+          if (key === 'usage') continue;
+          const row = `<tr><td>${key.replace(/_/g, ' ').toUpperCase()}</td><td>${val}</td></tr>`;
+          nTable.innerHTML += row;
+        }
+        document.getElementById('detailUsage').innerText = p.nutrition.usage || 'Consume 1 scoop daily with cold water or milk.';
+      } else {
+        document.getElementById('detailUsage').innerText = '100% genuine lab-tested supplement.';
+      }
+
+      document.getElementById('detailsModal').style.display = 'flex';
     }
 
-    function closeModal() {
-      document.getElementById('checkoutModal').style.display = 'none';
+    function closeDetailsModal() {
+      document.getElementById('detailsModal').style.display = 'none';
     }
 
-    function sendWhatsAppOrder() {
+    function orderFromDetail() {
+      if (currentDetailItem) {
+        closeDetailsModal();
+        quickWaOrder(currentDetailItem.id);
+      }
+    }
+
+    // Cart System
+    function addToCart(id) {
+      const p = catalog.find(item => item.id === id);
+      const v = p.variants[selectedVariants[id] || 0];
+      const f = (p.flavours || ['Chocolate'])[selectedFlavours[id] || 0];
+
+      const existing = cart.find(c => c.id === p.id && c.pack === v.pack && c.flavour === f);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: p.id,
+          name: p.name,
+          pack: v.pack,
+          flavour: f,
+          price: v.price,
+          qty: 1
+        });
+      }
+
+      updateCartBadge();
+      openCartModal();
+    }
+
+    function updateCartBadge() {
+      const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cartCountBadge').innerText = totalQty;
+    }
+
+    function changeQty(index, delta) {
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      updateCartBadge();
+      openCartModal();
+    }
+
+    function openCartModal() {
+      const container = document.getElementById('cartItemsContainer');
+      container.innerHTML = '';
+      let subtotal = 0;
+
+      if (cart.length === 0) {
+        container.innerHTML = '<div style="color:#888; text-align:center; padding:15px;">Cart abhi khali hai.</div>';
+      } else {
+        cart.forEach((item, i) => {
+          const itemTotal = item.price * item.qty;
+          subtotal += itemTotal;
+          container.innerHTML += `
+            <div class="cart-item-box">
+              <div>
+                <strong style="color:#fff;">${item.name}</strong><br>
+                <span style="color:#888; font-size:0.75rem;">${item.pack} • ${item.flavour}</span><br>
+                <span style="color:var(--gold); font-weight:700;">₹${item.price} × ${item.qty} = ₹${itemTotal}</span>
+              </div>
+              <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty(${i}, -1)">-</button>
+                <span style="font-weight:800; font-size:0.85rem;">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${i}, 1)">+</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById('subTotalVal').innerText = subtotal;
+      document.getElementById('grandTotalVal').innerText = subtotal;
+      document.getElementById('cartModal').style.display = 'flex';
+    }
+
+    function closeCartModal() {
+      document.getElementById('cartModal').style.display = 'none';
+    }
+
+    // Place Order & Pay Handler
+    function placeOrderAndPay() {
+      if (cart.length === 0) {
+        alert('Aapka cart khali hai.');
+        return;
+      }
       const name = document.getElementById('custName').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
       const address = document.getElementById('custAddress').value.trim();
+      const city = document.getElementById('custCity').value.trim();
+      const pin = document.getElementById('custPin').value.trim();
+      const payOption = document.querySelector('input[name="payOption"]:checked').value;
 
-      if (!name || !phone || !address) {
-        alert('Kripya apna naam, mobile number aur address dalein.');
+      if (!name || !phone || !address || !city || !pin) {
+        alert('Kripya Delivery Details (Naam, Mobile, Address, City aur Pin Code) poori bharein.');
         return;
       }
 
-      const msg = `*New Supplement Order*%0A%0A` +
-        `*Product:* ${currentOrderItem.prod.name}%0A` +
-        `*Brand:* ${currentOrderItem.prod.brand}%0A` +
-        `*Pack Size:* ${currentOrderItem.variant.pack}%0A` +
-        `*Final Price:* ₹${currentOrderItem.variant.price}%0A%0A` +
+      const total = document.getElementById('grandTotalVal').innerText;
+      let orderItemsText = cart.map((c, i) => `${i+1}. ${c.name}%0A   (${c.pack} | ${c.flavour}) × ${c.qty} = ₹${c.price * c.qty}`).join('%0A%0A');
+
+      const msg = `*NEW SUPPLEMENT ORDER - BIG BROTHERS FITNESS*%0A%0A` +
+        `*Ordered Products:*%0A${orderItemsText}%0A%0A` +
+        `*Subtotal:* ₹${total}%0A` +
+        `*Delivery:* FREE%0A` +
+        `*Total Payable:* ₹${total}%0A%0A` +
+        `*Payment Method:* ${payOption}%0A` +
+        `*Store UPI ID:* 9990954574@nyes%0A%0A` +
         `*Customer Details:*%0A` +
         `Name: ${name}%0A` +
         `Phone: ${phone}%0A` +
-        `Address: ${address}%0A%0A` +
-        `*UPI ID for Payment:* 9990954574@nyes`;
+        `Address: ${address}, ${city} - ${pin}`;
 
-      window.open(`https://wa.me/919990954574?text=${msg}`, '_blank');
-      closeModal();
+      if (payOption !== 'Cash on Delivery') {
+        const upiIntent = `upi://pay?pa=9990954574@nyes&pn=BigBrothersFitness&am=${total}&cu=INR&tn=Order_${name}`;
+        window.location.href = upiIntent;
+      }
+
+      setTimeout(() => {
+        window.open(`https://wa.me/919990954574?text=${msg}`, '_blank');
+      }, 500);
+
+      cart = [];
+      updateCartBadge();
+      closeCartModal();
     }
 
-    loadCatalog();
+    function quickWaOrder(id) {
+      const p = catalog.find(item => item.id === id);
+      const v = p.variants[selectedVariants[id] || 0];
+      const f = (p.flavours || ['Chocolate'])[selectedFlavours[id] || 0];
+
+      const msg = `*DIRECT ENQUIRY / ORDER*%0A%0A` +
+        `*Product:* ${p.name}%0A` +
+        `*Brand:* ${p.brand}%0A` +
+        `*Pack:* ${v.pack}%0A` +
+        `*Flavour:* ${f}%0A` +
+        `*Store Price:* ₹${v.price} (Flipkart: ₹${v.mrp})%0A%0A` +
+        `Mujhe ye product order karna hai. Delivery details batayein.`;
+
+      window.open(`https://wa.me/919990954574?text=${msg}`, '_blank');
+    }
+
+    loadCatalogData();
   </script>
 </body>
-        </html>
-  
+</html>
