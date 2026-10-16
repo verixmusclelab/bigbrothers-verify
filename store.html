@@ -10,9 +10,12 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; scroll-behavior:smooth; }
     body { background:#0d0d0d; color:white; padding-bottom:70px; }
+
+    /* Top Strip */
     .top-strip { background:#111; border-bottom:2px solid #ffcc00; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:9999; }
     .top-strip a { background:#ffcc00; color:#000; text-decoration:none; font-weight:bold; font-size:12px; padding:6px 12px; border-radius:6px; }
     .top-strip span { color:#ffcc00; font-size:12px; font-weight:bold; }
+
     header { background:black; padding:16px 20px; border-bottom:3px solid #ffcc00; position:sticky; top:42px; z-index:998; }
     .topbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; max-width:1350px; margin:auto; }
     .logo h1 { color:#ffcc00; font-size:22px; font-weight:900; }
@@ -23,67 +26,91 @@
     .whatsapp-btn { background:#25D366; color:white; }
     .cart-top-btn { background:#007bff; color:white; }
     .cart-badge { background:#ff3333; color:white; font-size:11px; padding:2px 7px; border-radius:20px; font-weight:bold; }
+
+    /* Categories Menu */
     .menu { display:flex; gap:10px; overflow-x:auto; padding:12px 20px; background:#111; position:sticky; top:112px; z-index:997; }
     .menu button { border:none; background:#1e1e1e; color:white; padding:9px 16px; border-radius:30px; font-weight:bold; cursor:pointer; white-space:nowrap; font-size:13px; }
     .menu button.active, .menu button:hover { background:#ffcc00; color:black; }
+
     .hero { padding:24px 20px 10px; text-align:center; }
     .hero h2 { font-size:26px; color:#ffcc00; margin-bottom:6px; font-weight:900; }
     .hero p { color:#bbb; margin-bottom:14px; font-size:13px; }
     .search-box { max-width:550px; margin:auto; }
     .search-box input { width:100%; padding:12px 16px; border:2px solid #333; border-radius:12px; font-size:14px; background:#181818; color:white; outline:none; }
     .search-box input:focus { border-color:#ffcc00; }
+
     .section-title { text-align:center; font-size:22px; margin:18px 0 10px; color:#ffcc00; font-weight:800; }
+
+    /* Products Grid */
     .product-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; padding:16px; max-width:1350px; margin:auto; }
     .card { background:#141414; border-radius:16px; padding:15px; text-align:center; border:1px solid #292929; display:flex; flex-direction:column; justify-content:space-between; position:relative; }
     .card-badge { position:absolute; top:10px; left:10px; background:#dc2626; color:#fff; font-size:10px; font-weight:800; padding:3px 7px; border-radius:4px; text-transform:uppercase; z-index:2; }
+    
     .img-container { width:100%; height:190px; background:#fff; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:6px; }
     .card img { max-width:100%; max-height:100%; object-fit:contain; }
     .card h3 { font-size:15px; margin-bottom:4px; color:#fff; line-height:1.3; font-weight:800; }
     .card p.desc { font-size:12px; color:#aaa; margin-bottom:10px; }
+
     .product-info-btn { display:block; width:100%; padding:9px; margin:4px 0 10px; border:1px solid #ffcc00; border-radius:8px; background:#222; color:#ffcc00; font-size:13px; font-weight:bold; cursor:pointer; }
     .product-info-btn:hover { background:#ffcc00; color:#000; }
+
     .dropdown-grp { display:flex; gap:8px; margin-bottom:10px; }
     .dropdown-grp select { width:50%; padding:7px 5px; background:#222; color:#ffcc00; border:1px solid #444; border-radius:6px; font-size:12px; font-weight:bold; outline:none; }
+
     .price-container { margin-bottom:10px; }
     .mrp-cut { font-size:12px; color:#888; text-decoration:line-through; margin-right:6px; }
     .price { font-size:22px; font-weight:900; color:#ffcc00; }
     .save-badge { display:inline-block; background:rgba(0,255,102,0.15); color:#00ff66; border:1px solid #00ff66; border-radius:4px; font-size:11px; font-weight:800; padding:2px 6px; margin-top:4px; }
+
     .buy-btn { display:block; padding:10px; border-radius:8px; margin:4px 0; font-weight:bold; text-decoration:none; border:none; cursor:pointer; font-size:13px; text-align:center; }
     .buy-cart { background:#007bff; color:white; }
     .buy-wa { background:#25D366; color:white; }
     .buy-call { background:#ffcc00; color:black; }
+
+    /* Modals */
     .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:99999; justify-content:center; align-items:center; padding:15px; backdrop-filter:blur(4px); }
     .modal-box { background:#181818; border:2px solid #ffcc00; border-radius:16px; max-width:480px; width:100%; padding:18px; color:white; max-height:92vh; overflow-y:auto; position:relative; }
     .modal-close-btn { position:absolute; right:14px; top:12px; background:none; border:none; color:#aaa; font-size:26px; cursor:pointer; }
+
+    /* Cart Specifics */
     .cart-item-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid #252525; font-size:13px; }
     .cart-qty-ctrl { display:flex; align-items:center; gap:8px; background:#252525; padding:3px 8px; border-radius:6px; }
     .cart-qty-ctrl button { background:none; border:none; color:#ffcc00; font-size:16px; font-weight:bold; cursor:pointer; }
     .bill-card { background:#111; padding:10px 14px; border-radius:10px; border:1px solid #292929; margin:12px 0; font-size:13px; }
     .bill-line { display:flex; justify-content:space-between; margin-bottom:4px; color:#ccc; }
     .bill-total { display:flex; justify-content:space-between; font-size:16px; font-weight:900; color:#ffcc00; border-top:1px solid #333; padding-top:6px; margin-top:6px; }
+
     .address-form input, .address-form textarea { width:100%; background:#222; border:1px solid #444; color:white; padding:8px 10px; border-radius:6px; font-size:13px; margin-bottom:8px; outline:none; }
     .address-form .row { display:flex; gap:8px; }
+
     .pay-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0 14px; }
     .pay-options label { display:flex; align-items:center; gap:6px; background:#222; padding:9px; border-radius:8px; font-size:12px; cursor:pointer; border:1px solid #333; font-weight:bold; }
     .proceed-btn { width:100%; padding:13px; background:#25D366; color:#000; border:none; border-radius:10px; font-size:15px; font-weight:900; cursor:pointer; }
+
+    /* WOW Modal */
     .wow-card { width:100%; max-width:400px; background:radial-gradient(circle at top, #1c1800 0%, #0d0d0d 85%); border:2px solid #ffcc00; border-radius:20px; padding:22px 18px; text-align:center; }
     .wow-badge { background:rgba(0,255,102,0.1); border:1.5px solid #00ff66; border-radius:12px; padding:12px; margin:12px 0 16px; }
     .wow-btn { width:100%; padding:12px; border-radius:8px; font-weight:900; font-size:14px; cursor:pointer; border:none; margin-bottom:8px; }
     .wow-btn-pay { background:#00ff66; color:#000; }
     .wow-btn-cod { background:#ffcc00; color:#000; }
+
+    /* Verification Box */
     .verify-section { padding:24px 16px; text-align:center; background:#111; margin:24px 16px; border-radius:16px; border:2px solid #ffcc00; max-width:550px; margin-inline:auto; }
     .verify-section input { padding:10px; width:85%; max-width:320px; border:none; border-radius:8px; font-size:14px; margin-top:10px; outline:none; }
     .verify-section button { padding:10px 20px; background:#ffcc00; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px; color:black; }
+
     #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#ffcc00; color:#000; padding:12px 20px; border-radius:10px; font-weight:bold; font-size:14px; display:none; z-index:9999999; }
   </style>
 </head>
 <body>
 
+  <!-- Top Strip -->
   <div class="top-strip">
     <a href="./home.html">⬅️ मुख्य मेनू (Home)</a>
     <span>5BFC SUPPLEMENT STORE • UNNAO</span>
   </div>
 
+  <!-- Header -->
   <header>
     <div class="topbar">
       <div class="logo">
@@ -98,6 +125,7 @@
     </div>
   </header>
 
+  <!-- Categories Bar -->
   <div class="menu" id="categoryMenu">
     <button class="active" onclick="filterCategory('ALL', this)">All</button>
     <button onclick="filterCategory('Whey Protein', this)">Whey Protein</button>
@@ -109,6 +137,7 @@
     <button onclick="filterCategory('Fish Oil', this)">Fish Oil</button>
   </div>
 
+  <!-- Hero & Search -->
   <section class="hero">
     <h2>100% Authentic Store</h2>
     <p>Select Weight & Flavour for Live Prices</p>
@@ -119,12 +148,14 @@
 
   <h2 class="section-title">🔥 Featured Catalog</h2>
 
+  <!-- Catalog Grid -->
   <div class="product-grid" id="productGrid">
     <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">
       Loading verified products...
     </div>
   </div>
 
+  <!-- 1. FULL DETAILS MODAL -->
   <div class="modal-overlay" id="productInfoModal">
     <div class="modal-box">
       <button class="modal-close-btn" onclick="closeProductDetails()">&times;</button>
@@ -147,16 +178,20 @@
     </div>
   </div>
 
+  <!-- 2. CART MODAL -->
   <div class="modal-overlay" id="cartModal">
     <div class="modal-box">
       <button class="modal-close-btn" onclick="closeCart()">&times;</button>
       <h3 style="color:#ffcc00; font-size:19px; margin-bottom:12px;">🛒 Cart Checkout</h3>
+
       <div id="cartItemsList" style="max-height:160px; overflow-y:auto; margin-bottom:12px;"></div>
+
       <div class="bill-card">
         <div class="bill-line"><span>Subtotal</span><span id="billSubtotal">₹0</span></div>
         <div class="bill-line"><span>Delivery</span><span style="color:#25D366; font-weight:bold;">FREE</span></div>
         <div class="bill-total"><span>Total Payable</span><span id="billFinal">₹0</span></div>
       </div>
+
       <div class="address-form">
         <h4 style="font-size:13px; color:#ffcc00; margin-bottom:8px;">📦 Delivery Details</h4>
         <input type="text" id="custName" placeholder="Full Name (Naam)*">
@@ -167,6 +202,7 @@
           <input type="text" id="custPin" placeholder="Pin Code*">
         </div>
       </div>
+
       <div style="font-size:13px; color:#bbb; margin-bottom:6px;">Payment Option Chunein:</div>
       <div class="pay-options">
         <label><input type="radio" name="payMethod" value="Navi UPI" checked> Navi UPI</label>
@@ -174,25 +210,30 @@
         <label><input type="radio" name="payMethod" value="PhonePe"> PhonePe</label>
         <label><input type="radio" name="payMethod" value="Cash on Delivery"> Cash on Delivery</label>
       </div>
+
       <button onclick="proceedToPay()" class="proceed-btn">Place Order & Pay</button>
     </div>
   </div>
 
+  <!-- 3. WOW CELEBRATION MODAL -->
   <div class="modal-overlay" id="wowModal">
     <div class="wow-card">
       <div style="font-size:36px; margin-bottom:4px;">🎉</div>
       <h2 style="color:#ffcc00; font-size:20px; font-weight:800; margin-bottom:4px;">ORDER DETAILS READY!</h2>
       <p style="color:#aaa; font-size:12px;">Flipkart Se Sasta Guaranteed • 100% Original</p>
+
       <div class="wow-badge">
         <div id="wowSaveTitle" style="color:#00ff66; font-size:17px; font-weight:900;">WOW! YOU SAVED ₹0</div>
         <div id="wowSummaryText" style="color:#fff; font-size:13px; margin-top:4px;">Total Payable: ₹0</div>
       </div>
+
       <button class="wow-btn wow-btn-pay" onclick="executeOrder('ONLINE')">🟢 PROCEED TO PAY (UPI APPS)</button>
       <button class="wow-btn wow-btn-cod" onclick="executeOrder('COD')">🟡 CASH ON DELIVERY (COD)</button>
       <button onclick="closeWowModal()" style="background:none; border:none; color:#777; font-size:12px; cursor:pointer; margin-top:6px; text-decoration:underline;">Back to Cart</button>
     </div>
   </div>
 
+  <!-- 4. VERIFY SECTION -->
   <section class="verify-section">
     <h2 style="color:#ffcc00; font-size:22px; font-weight:800;">Verify Product</h2>
     <p style="color:#aaa; font-size:13px; margin-top:4px;">Original Scan Authenticity Check</p>
@@ -201,6 +242,7 @@
     <button onclick="verifyCode()">Verify Product</button>
   </section>
 
+  <!-- Verification Overlay -->
   <div class="modal-overlay" id="verification-overlay">
     <div id="verify-box" style="background:#141414; max-width:380px; width:100%; padding:24px; border-radius:18px; border:2px solid #ffcc00; text-align:center;">
       <div id="verify-content"></div>
@@ -217,6 +259,7 @@
       whatsappNumber: "919990954574"
     };
 
+    // Purani working links ka image map (Fallback ke liye)
     const OLD_IMAGE_MAP = {
       "labrada 100% whey": "https://i.ibb.co/ynbr1YCw/download-1.webp",
       "intra bulk": "https://i.ibb.co/yn3mRvFs/1791659472066.png",
@@ -264,362 +307,373 @@
       "centrum men": "https://i.ibb.co/kVLfx5WD/men-multivitamin-30-tabs-1.jpg"
     };
 
+    let catalog = [];
     let cart = [];
     let activeCat = 'ALL';
     let currentDetailItem = null;
-    let catalog = [];
 
-  async function loadCatalog() {
-  const res = await fetch('https://raw.githubusercontent.com/verixmusclelab/bigbrothers-verify/main/products.json');
-  catalog = await res.json();
-  renderCatalog();
-}
-        
-function getBestImage(item) {
-  if (!item) return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
-  const nameLower = (item.name || '').toLowerCase();
-  for (const [key, val] of Object.entries(OLD_IMAGE_MAP)) {
-    if (nameLower.includes(key)) return val;
-  }
-  if (item.image && item.image.startsWith('http')) return item.image;
-  return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
-}
+    function getBestImage(item) {
+      if (!item) return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
+      const nameLower = (item.name || '').toLowerCase();
+      for (const [key, val] of Object.entries(OLD_IMAGE_MAP)) {
+        if (nameLower.includes(key)) return val;
+      }
+      if (item.image && item.image.startsWith('http')) {
+                return item.image;
+      }
+      return 'https://i.ibb.co/fv0J0Lx/multivitamin.jpg';
+    }
 
-function renderCatalog() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const grid = document.getElementById('productGrid');
+    async function loadCatalog() {
+      try {
+        const res = await fetch('products.json?v=' + Date.now());
+        catalog = await res.json();
+        renderCatalog();
+      } catch (err) {
+        document.getElementById('productGrid').innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px;">
+            Catalog load nahi ho saka: ${err.message}
+          </div>
+        `;
+      }
+    }
 
-  const filtered = catalog.filter(p => {
-    const matchCat = (activeCat === 'ALL') || (p.category === activeCat);
-    const matchText = (p.name || '').toLowerCase().includes(q) || (p.brand || '').toLowerCase().includes(q);
-    return matchCat && matchText;
-  });
+    function renderCatalog() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const grid = document.getElementById('productGrid');
 
-  if (filtered.length === 0) {
-    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">Koi product match nahi hua.</div>';
-    return;
-  }
+      const filtered = catalog.filter(p => {
+        const matchCat = (activeCat === 'ALL') || (p.category === activeCat);
+        const matchText = (p.name || '').toLowerCase().includes(q) || (p.brand || '').toLowerCase().includes(q);
+        return matchCat && matchText;
+      });
 
-  grid.innerHTML = filtered.map(item => {
-    const variants = item.variants || [{ pack: 'Standard', price: 999, mrp: 1499 }];
-    const flavours = item.flavours || ['Chocolate', 'Regular'];
-    const firstVar = variants[0];
-    const saveAmt = Math.max(300, (firstVar.mrp - firstVar.price) || 300);
-    const imgSrc = getBestImage(item);
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">Koi product match nahi hua.</div>';
+        return;
+      }
 
-    return `
-      <div class="card" id="card-${item.id}">
-        ${item.badge ? `<div class="card-badge">${item.badge}</div>` : ''}
-        <div class="img-container">
-          <img src="${imgSrc}" alt="${item.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.weserv.nl/?url=' + encodeURIComponent('${item.image || imgSrc}');">
-        </div>
-        <h3>${item.name}</h3>
-        <p class="desc">${item.brand} • ${firstVar.servings || '100% Genuine'}</p>
+      grid.innerHTML = filtered.map(item => {
+        const variants = item.variants || [{ pack: 'Standard', price: 999, mrp: 1499 }];
+        const flavours = item.flavours || ['Chocolate', 'Regular'];
+        const firstVar = variants[0];
+        const saveAmt = Math.max(300, (firstVar.mrp - firstVar.price) || 300);
+        const imgSrc = getBestImage(item);
 
-        <button class="product-info-btn" onclick="openProductDetails(${item.id})">📋 Full Details / पूरी जानकारी</button>
+        return `
+          <div class="card" id="card-${item.id}">
+            ${item.badge ? `<div class="card-badge">${item.badge}</div>` : ''}
+            <div class="img-container">
+              <img src="${imgSrc}" alt="${item.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.weserv.nl/?url=' + encodeURIComponent('${item.image || imgSrc}');">
+            </div>
+            <h3>${item.name}</h3>
+            <p class="desc">${item.brand} • ${firstVar.servings || '100% Genuine'}</p>
 
-        <div class="dropdown-grp">
-          <select class="size-select" onchange="updateCardPrice(${item.id}, this)">
-            ${variants.map((v) => `<option value="${v.price}" data-mrp="${v.mrp}" data-pack="${v.pack}">${v.pack}</option>`).join('')}
-          </select>
-          <select class="flavour-select">
-            ${flavours.map(f => `<option value="${f}">${f}</option>`).join('')}
-          </select>
-        </div>
+            <button class="product-info-btn" onclick="openProductDetails(${item.id})">📋 Full Details / पूरी जानकारी</button>
 
-        <div class="price-container">
-          <span class="mrp-cut" id="mrp-${item.id}">Flipkart: ₹${firstVar.mrp}</span>
-          <div class="price" id="price-${item.id}">₹${firstVar.price}</div>
-          <div class="save-badge" id="save-${item.id}">🔥 ₹${saveAmt} Sasta Guaranteed</div>
-        </div>
+            <div class="dropdown-grp">
+              <select class="size-select" onchange="updateCardPrice(${item.id}, this)">
+                ${variants.map((v, i) => `<option value="${v.price}" data-mrp="${v.mrp}" data-pack="${v.pack}" data-serv="${v.servings \vert{}\vert{} ''}">${v.pack}</option>`).join('')}
+              </select>
+              <select class="flavour-select">
+                ${flavours.map(f => `<option value="${f}">${f}</option>`).join('')}
+              </select>
+            </div>
 
-        <button onclick="addToCart(${item.id})" class="buy-btn buy-cart">🛒 Add to Cart</button>
-        <button onclick="quickWaOrder(${item.id})" class="buy-btn buy-wa">WhatsApp Order</button>
-        <a href="tel:9990954574" class="buy-btn buy-call">Call Now</a>
-      </div>
-    `;
-  }).join('');
-}
+            <div class="price-container">
+              <span class="mrp-cut" id="mrp-${item.id}">Flipkart: ₹${firstVar.mrp}</span>
+              <div class="price" id="price-${item.id}">₹${firstVar.price}</div>
+              <div class="save-badge" id="save-${item.id}">🔥 ₹${saveAmt} Sasta Guaranteed</div>
+            </div>
 
-function updateCardPrice(id, selectElem) {
-  const selected = selectElem.options[selectElem.selectedIndex];
-  const price = parseInt(selected.value);
-  const mrp = parseInt(selected.getAttribute('data-mrp')) || (price + 300);
-  const save = Math.max(300, mrp - price);
+            <button onclick="addToCart(${item.id})" class="buy-btn buy-cart">🛒 Add to Cart</button>
+            <button onclick="quickWaOrder(${item.id})" class="buy-btn buy-wa">WhatsApp Order</button>
+            <a href="tel:9990954574" class="buy-btn buy-call">Call Now</a>
+          </div>
+        `;
+      }).join('');
+    }
 
-  document.getElementById('price-' + id).innerText = '₹' + price;
-  document.getElementById('mrp-' + id).innerText = 'Flipkart: ₹' + mrp;
-  document.getElementById('save-' + id).innerText = '🔥 ₹' + save + ' Sasta Guaranteed';
-}
+    function updateCardPrice(id, selectElem) {
+      const selected = selectElem.options[selectElem.selectedIndex];
+      const price = parseInt(selected.value);
+      const mrp = parseInt(selected.getAttribute('data-mrp')) || (price + 300);
+      const save = Math.max(300, mrp - price);
 
-function filterCategory(cat, btn) {
-  activeCat = cat;
-  document.querySelectorAll('#categoryMenu button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCatalog();
-}
+      document.getElementById('price-' + id).innerText = '₹' + price;
+      document.getElementById('mrp-' + id).innerText = 'Flipkart: ₹' + mrp;
+      document.getElementById('save-' + id).innerText = '🔥 ₹' + save + ' Sasta Guaranteed';
+    }
 
-function searchProducts() {
-  renderCatalog();
-}
+    function filterCategory(cat, btn) {
+      activeCat = cat;
+      document.querySelectorAll('#categoryMenu button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCatalog();
+    }
 
-function openProductDetails(id) {
-  const item = catalog.find(p => p.id === id);
-  if (!item) return;
-  currentDetailItem = item;
+    function searchProducts() {
+      renderCatalog();
+    }
 
-  document.getElementById('detailTitle').innerText = item.name;
-  document.getElementById('detailDesc').innerText = `${item.brand} • ${item.badge || '100% Genuine'}`;
-  document.getElementById('detailImg').src = getBestImage(item);
+    function openProductDetails(id) {
+      const item = catalog.find(p => p.id === id);
+      if (!item) return;
+      currentDetailItem = item;
 
-  const sizesDiv = document.getElementById('detailSizes');
-  sizesDiv.innerHTML = (item.variants || []).map(v => `<div>${v.pack} — <strong>₹${v.price}</strong> <span style="text-decoration:line-through; color:#777;">(MRP ₹${v.mrp})</span></div>`).join('');
+      document.getElementById('detailTitle').innerText = item.name;
+      document.getElementById('detailDesc').innerText = `${item.brand} • ${item.badge || '100% Genuine'}`;
+      document.getElementById('detailImg').src = getBestImage(item);
 
-  document.getElementById('detailFlavours').innerText = (item.flavours || []).join(', ') || 'Regular / Unflavoured';
+      const sizesDiv = document.getElementById('detailSizes');
+      sizesDiv.innerHTML = (item.variants || []).map(v => `<div>${v.pack} — <strong>₹${v.price}</strong> <span style="text-decoration:line-through; color:#777;">(MRP ₹${v.mrp})</span></div>`).join('');
 
-  let usageTxt = item.nutrition && item.nutrition.usage ? item.nutrition.usage : '1 scoop daily with cold water or milk as directed.';
-  if (item.nutrition) {
-    usageTxt += '<br><br><strong>Nutrition Facts:</strong><br>' + Object.entries(item.nutrition).filter(([k]) => k !== 'usage').map(([k, v]) => `• ${k.replace(/_/g, ' ').toUpperCase()}: ${v}`).join('<br>');
-  }
-  document.getElementById('detailUsage').innerHTML = usageTxt;
+      document.getElementById('detailFlavours').innerText = (item.flavours || []).join(', ') || 'Regular / Unflavoured';
 
-  document.getElementById('productInfoModal').style.display = 'flex';
-}
+      let usageTxt = item.nutrition && item.nutrition.usage ? item.nutrition.usage : '1 scoop daily with cold water or milk as directed.';
+      if (item.nutrition) {
+        usageTxt += '<br><br><strong>Nutrition Facts:</strong><br>' + Object.entries(item.nutrition).filter(([k]) => k !== 'usage').map(([k, v]) => `• ${k.replace(/_/g, ' ').toUpperCase()}: ${v}`).join('<br>');
+      }
+      document.getElementById('detailUsage').innerHTML = usageTxt;
 
-function closeProductDetails() {
-  document.getElementById('productInfoModal').style.display = 'none';
-}
+      document.getElementById('productInfoModal').style.display = 'flex';
+    }
 
-function orderFromDetail() {
-  if (currentDetailItem) {
-    closeProductDetails();
-    quickWaOrder(currentDetailItem.id);
-  }
-}
+    function closeProductDetails() {
+      document.getElementById('productInfoModal').style.display = 'none';
+    }
 
-function addToCart(id) {
-  const item = catalog.find(p => p.id === id);
-  const card = document.getElementById('card-' + id);
-  const sizeSel = card.querySelector('.size-select');
-  const flavSel = card.querySelector('.flavour-select');
+    function orderFromDetail() {
+      if (currentDetailItem) {
+        closeProductDetails();
+        quickWaOrder(currentDetailItem.id);
+      }
+    }
 
-  const pack = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-pack');
-  const price = parseInt(sizeSel.value);
-  const mrp = parseInt(sizeSel.options[sizeSel.selectedIndex].getAttribute('data-mrp')) || (price + 300);
-  const flavour = flavSel.value;
+    function addToCart(id) {
+      const item = catalog.find(p => p.id === id);
+      const card = document.getElementById('card-' + id);
+      const sizeSel = card.querySelector('.size-select');
+      const flavSel = card.querySelector('.flavour-select');
 
-  const cartId = `${id}_${pack}_${flavour}`;
-  const existing = cart.find(c => c.cartId === cartId);
+      const pack = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-pack');
+      const price = parseInt(sizeSel.value);
+      const mrp = parseInt(sizeSel.options[sizeSel.selectedIndex].getAttribute('data-mrp')) || (price + 300);
+      const flavour = flavSel.value;
 
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({ cartId, id, name: item.name, pack, flavour, price, mrp, qty: 1 });
-  }
+      const cartId = `${id}_${pack}_${flavour}`;
+      const existing = cart.find(c => c.cartId === cartId);
 
-  updateCartBadge();
-  showToast(`🛒 <b>${item.name}</b> Cart me add ho gaya!`);
-}
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ cartId, id, name: item.name, pack, flavour, price, mrp, qty: 1 });
+      }
 
-function updateCartBadge() {
-  const total = cart.reduce((s, i) => s + i.qty, 0);
-  document.getElementById('cartCountBadge').innerText = total;
-}
+      updateCartBadge();
+      showToast(`🛒 <b>${item.name}</b> Cart me add ho gaya!`);
+    }
 
-function changeCartQty(cartId, delta) {
-  const item = cart.find(c => c.cartId === cartId);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) {
-    cart = cart.filter(c => c.cartId !== cartId);
-  }
-  updateCartBadge();
-  renderCartUI();
-}
+    function updateCartBadge() {
+      const total = cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById('cartCountBadge').innerText = total;
+    }
 
-function renderCartUI() {
-  const list = document.getElementById('cartItemsList');
-  if (cart.length === 0) {
-    list.innerHTML = '<p style="text-align:center; color:#777; padding:20px 0;">Cart abhi khali hai! Products add karein.</p>';
-    document.getElementById('billSubtotal').innerText = '₹0';
-    document.getElementById('billFinal').innerText = '₹0';
-    return;
-  }
+    function changeCartQty(cartId, delta) {
+      const item = cart.find(c => c.cartId === cartId);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(c => c.cartId !== cartId);
+      }
+      updateCartBadge();
+      renderCartUI();
+    }
 
-  let total = 0;
-  list.innerHTML = cart.map(c => {
-    const sub = c.price * c.qty;
-    total += sub;
-    return `
-      <div class="cart-item-row">
-        <div>
-          <div style="font-weight:bold; color:#fff;">${c.name}</div>
-          <div style="color:#aaa; font-size:11px;">${c.pack} • ${c.flavour}</div>
-          <div style="color:#ffcc00; margin-top:2px;">₹${c.price} × ${c.qty} = ₹${sub}</div>
-        </div>
-        <div class="cart-qty-ctrl">
-          <button onclick="changeCartQty('${c.cartId}', -1)">-</button>
-          <span>${c.qty}</span>
-          <button onclick="changeCartQty('${c.cartId}', 1)">+</button>
-        </div>
-      </div>
-    `;
-  }).join('');
+    function renderCartUI() {
+      const list = document.getElementById('cartItemsList');
+      if (cart.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:#777; padding:20px 0;">Cart abhi khali hai! Products add karein.</p>';
+        document.getElementById('billSubtotal').innerText = '₹0';
+        document.getElementById('billFinal').innerText = '₹0';
+        return;
+      }
 
-  document.getElementById('billSubtotal').innerText = '₹' + total;
-  document.getElementById('billFinal').innerText = '₹' + total;
-}
+      let total = 0;
+      list.innerHTML = cart.map(c => {
+        const sub = c.price * c.qty;
+        total += sub;
+        return `
+          <div class="cart-item-row">
+            <div>
+              <div style="font-weight:bold; color:#fff;">${c.name}</div>
+              <div style="color:#aaa; font-size:11px;">${c.pack} • ${c.flavour}</div>
+              <div style="color:#ffcc00; margin-top:2px;">₹${c.price} × ${c.qty} = ₹${sub}</div>
+            </div>
+            <div class="cart-qty-ctrl">
+              <button onclick="changeCartQty('${c.cartId}', -1)">-</button>
+              <span>${c.qty}</span>
+              <button onclick="changeCartQty('${c.cartId}', 1)">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
 
-function openCart() {
-  renderCartUI();
-  document.getElementById('cartModal').style.display = 'flex';
-}
+      document.getElementById('billSubtotal').innerText = '₹' + total;
+      document.getElementById('billFinal').innerText = '₹' + total;
+    }
 
-function closeCart() {
-  document.getElementById('cartModal').style.display = 'none';
-}
+    function openCart() {
+      renderCartUI();
+      document.getElementById('cartModal').style.display = 'flex';
+    }
 
-let pendingOrder = null;
+    function closeCart() {
+      document.getElementById('cartModal').style.display = 'none';
+    }
 
-function proceedToPay() {
-  if (cart.length === 0) {
-    alert("Cart khali hai! Pehle supplements add karein.");
-    return;
-  }
-  const name = document.getElementById('custName').value.trim();
-  const phone = document.getElementById('custPhone').value.trim();
-  const addr = document.getElementById('custAddress').value.trim();
-  const city = document.getElementById('custCity').value.trim();
-  const pin = document.getElementById('custPin').value.trim();
+    let pendingOrder = null;
 
-  if (!name || !phone || !addr || !city || !pin) {
-    alert("Kripya Delivery Details poori bharein!");
-    return;
-  }
+    function proceedToPay() {
+      if (cart.length === 0) {
+        alert("Cart khali hai! Pehle supplements add karein.");
+        return;
+      }
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const addr = document.getElementById('custAddress').value.trim();
+      const city = document.getElementById('custCity').value.trim();
+      const pin = document.getElementById('custPin').value.trim();
 
-  let totalAmt = 0;
-  let totalSaved = 0;
-  cart.forEach(c => {
-    totalAmt += (c.price * c.qty);
-    totalSaved += (Math.max(300, c.mrp - c.price) * c.qty);
-  });
+      if (!name || !phone || !addr || !city || !pin) {
+        alert("Kripya Delivery Details (Naam, Phone, Address, City aur Pin Code) poori bharein!");
+        return;
+      }
 
-  const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
-  const orderId = "BBF" + Date.now().toString().slice(-6);
+      let totalAmt = 0;
+      let totalSaved = 0;
+      cart.forEach(c => {
+        totalAmt += (c.price * c.qty);
+        totalSaved += (Math.max(300, c.mrp - c.price) * c.qty);
+      });
 
-  pendingOrder = { name, phone, addr, city, pin, totalAmt, totalSaved, payMethod, orderId };
+      const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
+      const orderId = "BBF" + Date.now().toString().slice(-6);
 
-  document.getElementById('wowSaveTitle').innerText = "WOW! YOU SAVED ₹" + totalSaved + "!";
-  document.getElementById('wowSummaryText').innerText = "Total Payable: ₹" + totalAmt + " (Flipkart Se Sasta)";
-  document.getElementById('cartModal').style.display = 'none';
-  document.getElementById('wowModal').style.display = 'flex';
-}
+      pendingOrder = { name, phone, addr, city, pin, totalAmt, totalSaved, payMethod, orderId };
 
-function closeWowModal() {
-  document.getElementById('wowModal').style.display = 'none';
-  document.getElementById('cartModal').style.display = 'flex';
-}
+      document.getElementById('wowSaveTitle').innerText = "WOW! YOU SAVED ₹" + totalSaved + "!";
+      document.getElementById('wowSummaryText').innerText = "Total Payable: ₹" + totalAmt + " (Flipkart Se Sasta)";
+      document.getElementById('cartModal').style.display = 'none';
+      document.getElementById('wowModal').style.display = 'flex';
+    }
 
-function executeOrder(chosenType) {
-  if (!pendingOrder) return;
-  const d = pendingOrder;
-  const finalMode = (chosenType === 'COD') ? 'Cash on Delivery' : d.payMethod;
+    function closeWowModal() {
+      document.getElementById('wowModal').style.display = 'none';
+      document.getElementById('cartModal').style.display = 'flex';
+    }
 
-  let waMsg = `*🔥 NAYA ORDER RECEIVED (${d.orderId})*%0A%0A` +
-    `*Customer Details:*%0A` +
-    `👤 Naam: ${encodeURIComponent(d.name)}%0A` +
-    `📞 Phone: ${encodeURIComponent(d.phone)}%0A` +
-    `🏠 Address: ${encodeURIComponent(d.addr)}, ${encodeURIComponent(d.city)} - ${encodeURIComponent(d.pin)}%0A%0A` +
-    `*Ordered Products:*%0A`;
+    function executeOrder(chosenType) {
+      if (!pendingOrder) return;
+      const d = pendingOrder;
+      const finalMode = (chosenType === 'COD') ? 'Cash on Delivery' : d.payMethod;
 
-  cart.forEach((c, i) => {
-    waMsg += `${i+1}. ${encodeURIComponent(c.name)} (${c.pack}, ${c.flavour}) × ${c.qty} = ₹${c.price * c.qty}%0A`;
-  });
+      let waMsg = `*🔥 NAYA ORDER RECEIVED (${d.orderId})*%0A%0A` +
+        `*Customer Details:*%0A` +
+        `👤 Naam: ${encodeURIComponent(d.name)}%0A` +
+        `📞 Phone: ${encodeURIComponent(d.phone)}%0A` +
+        `🏠 Address: ${encodeURIComponent(d.addr)}, ${encodeURIComponent(d.city)} - ${encodeURIComponent(d.pin)}%0A%0A` +
+        `*Ordered Products:*%0A`;
 
-  waMsg += `%0A*Total Bill:* ₹${d.totalAmt}%0A` +
-    `*Bachat (Discount):* ₹${d.totalSaved}%0A` +
-    `*Payment Mode:* ${encodeURIComponent(finalMode)}%0A` +
-    `*UPI ID:* ${UPI_CONFIG.vpa}%0A` +
-    `*Status:* Order Initiated`;
+      cart.forEach((c, i) => {
+        waMsg += `${i+1}. ${encodeURIComponent(c.name)} (${c.pack}, ${c.flavour}) × ${c.qty} = ₹${c.price * c.qty}%0A`;
+      });
 
-  const waUrl = `https://wa.me/${UPI_CONFIG.whatsappNumber}?text=${waMsg}`;
+      waMsg += `%0A*Total Bill:* ₹${d.totalAmt}%0A` +
+        `*Bachat (Discount):* ₹${d.totalSaved}%0A` +
+        `*Payment Mode:* ${encodeURIComponent(finalMode)}%0A` +
+        `*UPI ID:* ${UPI_CONFIG.vpa}%0A` +
+        `*Status:* Order Initiated`;
 
-  document.getElementById('wowModal').style.display = 'none';
-  cart = [];
-  updateCartBadge();
+      const waUrl = `https://wa.me/${UPI_CONFIG.whatsappNumber}?text=${waMsg}`;
 
-  if (finalMode === 'Cash on Delivery') {
-    alert(`🎉 Order Confirmed!\nOrder ID: ${d.orderId}\nTotal: ₹${d.totalAmt}`);
-    window.location.href = waUrl;
-    return;
-  }
+      document.getElementById('wowModal').style.display = 'none';
+      cart = [];
+      updateCartBadge();
 
-  let upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
-  if (finalMode === 'Google Pay') {
-    upiUrl = `gpay://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
-  } else if (finalMode === 'PhonePe') {
-    upiUrl = `phonepe://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
-  }
+      if (finalMode === 'Cash on Delivery') {
+        alert(`🎉 Order Confirmed!\nOrder ID: ${d.orderId}\nTotal: ₹${d.totalAmt}\nHum delivery verify karne ke liye call karenge.`);
+        window.location.href = waUrl;
+        return;
+      }
 
-  setTimeout(() => { window.open(waUrl, '_blank'); }, 1500);
-  window.location.href = upiUrl;
-}
+      let upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
+      if (finalMode === 'Google Pay') {
+        upiUrl = `gpay://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
+      } else if (finalMode === 'PhonePe') {
+        upiUrl = `phonepe://upi/pay?pa=${encodeURIComponent(UPI_CONFIG.vpa)}&pn=${encodeURIComponent(UPI_CONFIG.merchantName)}&am=${d.totalAmt}&cu=INR&tn=${encodeURIComponent(d.orderId)}`;
+      }
 
-function quickWaOrder(id) {
-  const item = catalog.find(p => p.id === id);
-  const card = document.getElementById('card-' + id);
-  const sizeSel = card.querySelector('.size-select');
-  const flavSel = card.querySelector('.flavour-select');
+      setTimeout(() => { window.open(waUrl, '_blank'); }, 1500);
+      window.location.href = upiUrl;
+    }
 
-  const pack = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-pack');
-  const price = sizeSel.value;
-  const mrp = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-mrp');
-  const flav = flavSel.value;
+    function quickWaOrder(id) {
+      const item = catalog.find(p => p.id === id);
+      const card = document.getElementById('card-' + id);
+      const sizeSel = card.querySelector('.size-select');
+      const flavSel = card.querySelector('.flavour-select');
 
-  const msg = `*DIRECT ENQUIRY / ORDER*%0A%0A` +
-    `*Product:* ${encodeURIComponent(item.name)}%0A` +
-    `*Brand:* ${encodeURIComponent(item.brand)}%0A` +
-    `*Pack:* ${pack}%0A` +
-    `*Flavour:* ${flav}%0A` +
-    `*Store Offer Price:* ₹${price} (Flipkart: ₹${mrp})%0A%0A` +
-    `Mujhe ye product order karna hai. Delivery details batayein.`;
+      const pack = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-pack');
+      const price = sizeSel.value;
+      const mrp = sizeSel.options[sizeSel.selectedIndex].getAttribute('data-mrp');
+      const flav = flavSel.value;
 
-  window.open(`https://wa.me/${UPI_CONFIG.whatsappNumber}?text=${msg}`, '_blank');
-}
+      const msg = `*DIRECT ENQUIRY / ORDER*%0A%0A` +
+        `*Product:* ${encodeURIComponent(item.name)}%0A` +
+        `*Brand:* ${encodeURIComponent(item.brand)}%0A` +
+        `*Pack:* ${pack}%0A` +
+        `*Flavour:* ${flav}%0A` +
+        `*Store Offer Price:* ₹${price} (Flipkart: ₹${mrp})%0A%0A` +
+        `Mujhe ye product order karna hai. Delivery details batayein.`;
 
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.innerHTML = msg;
-  t.style.display = "block";
-  setTimeout(() => { t.style.display = "none"; }, 3500);
-}
+      window.open(`https://wa.me/${UPI_CONFIG.whatsappNumber}?text=${msg}`, '_blank');
+    }
 
-function verifyCode() {
-  const code = (document.getElementById("manualCodeInput").value || '').trim().toUpperCase();
-  if (!code) {
-    alert("Kripya code enter karein!");
-    return;
-  }
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.innerHTML = msg;
+      t.style.display = "block";
+      setTimeout(() => { t.style.display = "none"; }, 3500);
+    }
 
-  const content = document.getElementById("verify-content");
-  if (code.startsWith("LBR") || code.startsWith("ON") || code.startsWith("GNC") || code.startsWith("FIS") || code.startsWith("MSW") || code.startsWith("ULT")) {
-    content.innerHTML = `
-      <div style="font-size:45px; margin-bottom:8px;">✅</div>
-      <h2 style="color:#00ff66; font-size:18px; font-weight:900; margin-bottom:8px;">100% GENUINE CERTIFIED</h2>
-      <p style="color:#ddd; font-size:13px; line-height:1.5;">Batch & Seal Authenticity Verified.<br><strong>Code:</strong> <span style="color:#ffcc00;">${code}</span><br><strong>Store:</strong> 5 Brothers Fitness Club</p>
-    `;
-  } else {
-    content.innerHTML = `
-      <div style="font-size:45px; margin-bottom:8px;">❌</div>
-      <h2 style="color:#ef4444; font-size:18px; font-weight:900; margin-bottom:8px;">VERIFICATION FAILED</h2>
-      <p style="color:#ddd; font-size:13px;">Code authenticated database mein nahi mila.</p>
-    `;
-  }
-  document.getElementById("verification-overlay").style.display = "flex";
-  document.getElementById("manualCodeInput").value = "";
-}
+    function verifyCode() {
+      const code = (document.getElementById("manualCodeInput").value || '').trim().toUpperCase();
+      if (!code) {
+        alert("Kripya code enter karein!");
+        return;
+      }
 
-loadCatalog();
-</script>
+      const content = document.getElementById("verify-content");
+      if (code.startsWith("LBR") || code.startsWith("ON") || code.startsWith("GNC") || code.startsWith("FIS") || code.startsWith("MSW") || code.startsWith("ULT")) {
+        content.innerHTML = `
+          <div style="font-size:45px; margin-bottom:8px;">✅</div>
+          <h2 style="color:#00ff66; font-size:18px; font-weight:900; margin-bottom:8px;">100% GENUINE CERTIFIED</h2>
+          <p style="color:#ddd; font-size:13px; line-height:1.5;">Batch & Seal Authenticity Verified.<br><strong>Code:</strong> <span style="color:#ffcc00;">${code}</span><br><strong>Store:</strong> 5 Brothers Fitness Club</p>
+        `;
+      } else {
+        content.innerHTML = `
+          <div style="font-size:45px; margin-bottom:8px;">❌</div>
+          <h2 style="color:#ef4444; font-size:18px; font-weight:900; margin-bottom:8px;">VERIFICATION FAILED</h2>
+          <p style="color:#ddd; font-size:13px;">Code authenticated database mein nahi mila. Duplicate ya invalid code.</p>
+        `;
+      }
+      document.getElementById("verification-overlay").style.display = "flex";
+      document.getElementById("manualCodeInput").value = "";
+    }
+
+    window.addEventListener('DOMContentLoaded', loadCatalog);
+  </script>
 </body>
 </html>
+
