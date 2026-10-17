@@ -1,9 +1,9 @@
 {
   "name": "5 Brother's Fitness Club",
   "short_name": "5BFC",
-  "start_url": "store.html",
+  "start_url": "app.html",
   "display": "standalone",
-  "background_color": "#050505",
+  "background_color": "#080808",
   "theme_color": "#ffcc00",
   "orientation": "portrait",
   "icons": [
