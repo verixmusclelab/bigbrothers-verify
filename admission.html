@@ -28,9 +28,9 @@
     <input 
       type="text" 
       id="quickSearchInput" 
-      placeholder="नाम या मोबाइल के 4 अंक दर्ज करें..." 
+      placeholder="नाम या मोबाइल के 2 अंक दर्ज करें..." 
       style="flex:1; background:#000; border:1px solid #444; color:#fff; padding:8px 10px; border-radius:6px; font-size:11.5px; outline:none; box-sizing:border-box;"
-      onkeypress="if(event.key==='Enter') searchAndDownloadAdmissionCard()"
+      oninput="searchAndDownloadAdmissionCard()"
     >
     <button 
       type="button" 
@@ -83,8 +83,32 @@
         <option value="">-- श्रेणी चुनें --</option>
         <option value="trial">🔥 7 दिन का ट्रायल (7 Days Trial - ₹99)</option>
         <option value="student">विद्यार्थी (Student Offer - ₹300/माह)</option>
-        <option value="general">सामान्य (General Fitness - ₹500/माह)</option>
+        <option value="general" selected>सामान्य (General Fitness - ₹500/माह)</option>
         <option value="cardio">युवा / गैर-नौकरीपेशा (Job Seeker / Unemployed - ₹400/माह)</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="display:block; font-size:11px; color:#aaa; margin-bottom:4px;">
+        बैच समय स्लॉट (Time Slot) *
+      </label>
+      <select 
+        id="admSlotSelect" 
+        style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px; box-sizing:border-box;"
+      >
+        <optgroup label="🌅 Morning Shift">
+          <option value="05:00 AM - 06:00 AM">05:00 AM - 06:00 AM</option>
+          <option value="06:00 AM - 07:00 AM" selected>06:00 AM - 07:00 AM</option>
+          <option value="07:00 AM - 08:00 AM">07:00 AM - 08:00 AM</option>
+          <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+        </optgroup>
+        <optgroup label="🌙 Evening Shift">
+          <option value="04:30 PM - 05:30 PM">04:30 PM - 05:30 PM</option>
+          <option value="05:30 PM - 06:30 PM">05:30 PM - 06:30 PM</option>
+          <option value="06:30 PM - 07:30 PM">06:30 PM - 07:30 PM</option>
+          <option value="07:30 PM - 08:30 PM">07:30 PM - 08:30 PM</option>
+          <option value="08:30 PM - 09:30 PM">08:30 PM - 09:30 PM</option>
+        </optgroup>
       </select>
     </div>
 
@@ -97,14 +121,17 @@
         onchange="calculateAdmissionFee()" 
         style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px; box-sizing:border-box;"
       >
-        <option value="">-- पहले श्रेणी चुनें --</option>
+        <option value="1M|500|30" selected>1 महीना - ₹500</option>
+        <option value="3M|1400|90">3 महीने - ₹1400</option>
+        <option value="6M|2600|180">6 महीने - ₹2600</option>
+        <option value="1Y|4800|365">1 वर्ष - ₹4800</option>
       </select>
     </div>
 
     <!-- Fee Display Box -->
     <div style="background:#141414; border:1.5px solid #00ff66; padding:8px; border-radius:8px; text-align:center; margin-bottom:14px;">
       <span style="font-size:11px; color:#aaa; display:block;">कुल फीस (Total Fee):</span>
-      <span id="admFeeDisplay" style="font-size:22px; font-weight:bold; color:#00ff66;">₹0</span>
+      <span id="admFeeDisplay" style="font-size:22px; font-weight:bold; color:#00ff66;">₹500</span>
     </div>
 
     <button 
@@ -280,7 +307,7 @@
     <div style="display:flex; gap:8px;">
       <button type="button" onclick="goToStep(3)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
       <button type="button" onclick="goToStep(5)" style="flex:2; background:#ffcc00; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">भुगतान पर जाएं (NEXT ➔)</button>
-    </div>
+  </div>
   </div>
 
   <!-- STEP 5: PAYMENT SELECTION & ALL ONLINE OPTIONS -->
@@ -398,7 +425,7 @@
 
     <div style="display:flex; flex-direction:column; gap:8px;">
       <button type="button" id="btnDownloadSlip" onclick="downloadAdmissionCardNow()" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:11px; border:none; border-radius:8px; cursor:pointer; font-size:13px;">
-        📄 डिजिटल एडमिशन कार्ड डाउनलोड करें (PDF)
+        📄 डिजिटल एडमिशन फॉर्म डाउनलोड करें (PDF)
       </button>
       <button type="button" onclick="closeWelcomeModal()" style="width:100%; background:#222; color:#aaa; font-weight:bold; padding:9px; border:1px solid #444; border-radius:8px; cursor:pointer; font-size:11px;">
         बंद करें (CLOSE)
@@ -432,64 +459,87 @@
 </div>
 
 <script>
-// ==========================================
-// GLOBAL VARIABLES & LOCAL DATA POOL
-// ==========================================
 let selectedPaymentMode = "Cash";
 const ADMIN_SECURITY_PIN = "5555";
 let activeReceiptMember = null;
-
+  
 const PINCODE_LOCALITY_MAP = {
   "209862": ["उमराव खेड़ा (Umrao Khera) - 209862", "अकरमपुर (Akrampur) - 209862", "दही चौकी - 209862", "मगरवारा - 209862", "देवी खेड़ा - 209862"],
   "209801": ["बड़ा चौराहा - 209801", "छोटा चौराहा - 209801", "आवास विकास - 209801", "सिविल लाइंस - 209801"]
 };
 
-// Default Date Init (Manual Date selection enabled)
+// 45 MASTER MEMBERS FALLBACK
+const DEFAULT_MASTER_ROSTER = [
+  { id: 1, name: "अभिषेक शर्मा - मोटोले (Abhishekh Sharma)", parentName: "Devendra Kumar Sharma", phone: "7068541091", joinDate: "2026-10-02", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", village: "Unnao", activeInGym: true },
+  { id: 2, name: "प्रियांशु (Priyanshu)", parentName: "सुरेश", phone: "8467813176", joinDate: "2026-09-03", plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", village: "Unnao", activeInGym: true },
+  { id: 3, name: "विशाल रावत (Vishal Rawat)", parentName: "Ram Vilash", phone: "8470994110", joinDate: "2026-09-20", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", village: "Unnao", activeInGym: true },
+  { id: 4, name: "उदय प्रताप सिंह (Uday Pratap Singh)", parentName: "Sandip Singh", phone: "9198727555", joinDate: "2026-10-11", plan: "विद्यार्थी (₹300)", status: "Full Paid", fees: "Paid", slot: "05:30 PM - 06:30 PM", village: "Unnao", activeInGym: true },
+  { id: 5, name: "पवन (Pawan)", parentName: "Sudeep", phone: "9026899048", joinDate: "2026-10-12", plan: "विद्यार्थी (₹300)", status: "Pending", fees: "Due", slot: "05:30 PM - 06:30 PM", village: "Unnao", activeInGym: true },
+  { id: 6, name: "राज राजपूत (Raj Rajput)", parentName: "Harishchandra", phone: "9169108569", joinDate: "2026-10-13", plan: "विद्यार्थी (₹300)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", village: "Unnao", activeInGym: true },
+  { id: 7, name: "ध्रुव (Dhruv)", parentName: "-", phone: "9000000001", joinDate: "2026-10-10", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", village: "Unnao", activeInGym: true },
+  { id: 8, name: "कमल (Kamal)", parentName: "-", phone: "6306591914", joinDate: "2026-10-06", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", village: "Unnao", activeInGym: true },
+  { id: 9, name: "साहिल (Sahil)", parentName: "-", phone: "7269081026", joinDate: "2026-10-06", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", village: "Unnao", activeInGym: true },
+  { id: 10, name: "प्रवीन रावत (Praveen Rawat)", parentName: "इन्द्रपाल रावत", phone: "7275005052", joinDate: "2026-09-29", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", village: "Unnao", activeInGym: true },
+  { id: 14, name: "आशीष द्विवेदी (Ashish Diwedi)", parentName: "-", phone: "8429471919", joinDate: "2022-01-11", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", village: "Unnao", activeInGym: true },
+  { id: 25, name: "शिवा (Shiva Vishwakarma)", parentName: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07", plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", village: "Unnao", activeInGym: true },
+  { id: 43, name: "लाला वर्मा (Lala Verma)", parentName: "श्याम लाल", phone: "6386232805", joinDate: "2026-09-01", plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:30 PM - 07:30 PM", village: "उमराव खेड़ा, अकरमपुर, उन्नाव", activeInGym: true }
+];
+
 window.addEventListener("DOMContentLoaded", () => {
   const dateField = document.getElementById("admDateInput");
   if (dateField && !dateField.value) {
     dateField.value = new Date().toISOString().split("T")[0];
   }
+  let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  if (records.length === 0) {
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(DEFAULT_MASTER_ROSTER));
+    localStorage.setItem("5bfc_admissions", JSON.stringify(DEFAULT_MASTER_ROSTER));
+  }
   renderAdminTable();
 });
 
-// QUICK SEARCH FOR ADMISSION CARD (4-Digit Phone or Name)
+// QUICK SEARCH FOR ADMISSION CARD
 function searchAndDownloadAdmissionCard() {
   const query = document.getElementById("quickSearchInput").value.trim().toLowerCase();
   const resultsBox = document.getElementById("quickSearchResults");
   resultsBox.innerHTML = "";
 
-  if (!query) {
-    alert("कृपया नाम या मोबाइल नंबर के 4 अंक दर्ज करें!");
+  if (!query || query.length < 2) {
     return;
   }
 
-  const allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  if (allRecords.length === 0) allRecords = DEFAULT_MASTER_ROSTER;
+
   const matched = allRecords.filter(m => 
     (m.name && m.name.toLowerCase().includes(query)) || 
     (m.phone && m.phone.includes(query)) ||
+    (m.parentName && m.parentName.toLowerCase().includes(query)) ||
     (m.code && m.code.toLowerCase().includes(query))
   );
 
   if (matched.length === 0) {
-    resultsBox.innerHTML = `<div style="font-size:11px; color:#ff6666; padding:6px; text-align:center;">कोई रिकॉर्ड नहीं मिला।</div>`;
+    resultsBox.innerHTML = `<div style="font-size:11px; color:#ff6666; padding:8px; text-align:center; background:#181818; border-radius:6px;">कोई सदस्य नहीं मिला ("${query}")</div>`;
     return;
   }
 
-  resultsBox.innerHTML = matched.map(m => `
-    <div style="background:#1c1c1c; border:1px solid #333; border-radius:6px; padding:8px 10px; margin-top:6px; display:flex; justify-content:space-between; align-items:center;">
-      <div style="font-size:11px; text-align:left;">
-        <b style="color:#ffcc00;">${m.name}</b> (${m.phone})<br>
-        <span style="color:#888;">प्रवेश: ${m.joinDate} | ${m.plan}</span>
+  resultsBox.innerHTML = matched.slice(0, 5).map(m => {
+    const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid');
+    return `
+      <div style="background:#1c1c1c; border:1px solid #333; border-left:3px solid #ffcc00; border-radius:6px; padding:10px; margin-top:6px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size:11px; text-align:left; line-height:1.45;">
+          <b style="color:#ffcc00;">${m.name}</b> (${m.phone})<br>
+          <span style="color:#aaa;">प्रवेश: ${m.joinDate} | ${m.plan}</span><br>
+          <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPaid ? '✔ PAID' : '⚠️ DUE'}</span>
+        </div>
+        <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)})' style="background:#00ff66; color:#000; font-size:11px; font-weight:900; padding:8px 12px; border:none; border-radius:5px; cursor:pointer;">
+          📥 एडमिशन फॉर्म डाउनलोड करें
+        </button>
       </div>
-      <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)})' style="background:#00ff66; color:#000; font-size:10.5px; font-weight:bold; padding:6px 10px; border:none; border-radius:5px; cursor:pointer;">
-        📥 डाउनलोड कार्ड
-      </button>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
-// 1. Category & Plan Calculation
 function updatePlanDurations() {
   const cat = document.getElementById("admCategorySelect").value;
   const dur = document.getElementById("admDurationSelect");
@@ -505,7 +555,7 @@ function updatePlanDurations() {
     `;
   } else if (cat === "general") {
     dur.innerHTML += `
-      <option value="1M|500|30">1 महीना - ₹500</option>
+      <option value="1M|500|30" selected>1 महीना - ₹500</option>
       <option value="3M|1400|90">3 महीने - ₹1400</option>
       <option value="6M|2600|180">6 महीने - ₹2600</option>
       <option value="1Y|4800|365">1 वर्ष - ₹4800</option>
@@ -526,7 +576,7 @@ function calculateAdmissionFee() {
     const fee = durVal.split("|")[1];
     display.innerText = "₹" + fee;
   } else {
-    display.innerText = "₹0";
+    display.innerText = "₹500";
   }
 }
 
@@ -567,7 +617,6 @@ function toggleDiseaseCondition() {
   document.getElementById("condFit").checked = !anyChecked;
 }
 
-// Pincode Search
 async function onPincodeEntered() {
   const pin = document.getElementById("memberPincode").value.trim();
   const dropdown = document.getElementById("unnaoAreaDropdown");
@@ -618,7 +667,6 @@ function selectUnnaoArea(val) {
   document.getElementById("unnaoAreaDropdown").style.display = "none";
 }
 
-// Navigation Between Steps
 function goToStep(step) {
   if (step === 2) {
     if (!document.getElementById("admDateInput").value) { alert("कृपया प्रवेश तिथि चुनें!"); return; }
@@ -640,7 +688,6 @@ function goToStep(step) {
   });
 }
 
-// Payment Mode Selector
 function selectPaymentMode(mode) {
   selectedPaymentMode = mode;
   const btnCash = document.getElementById("payBtnCash");
@@ -665,7 +712,6 @@ function selectPaymentMode(mode) {
   }
 }
 
-// Direct App Launchers
 function triggerUPIApp(app) {
   const feeText = document.getElementById("admFeeDisplay").innerText.replace(/[^0-9]/g, '');
   const amount = parseInt(feeText) || 0;
@@ -686,7 +732,6 @@ function toggleQrView() {
   qb.style.display = (qb.style.display === "none" || qb.style.display === "") ? "block" : "none";
 }
 
-// FORM SUBMISSION & AUTO-SYNC ENGINE
 function submitAdmissionForm() {
   const totalNum = parseInt(document.getElementById("admFeeDisplay").innerText.replace(/[^0-9]/g, '')) || 0;
   const durVal = document.getElementById("admDurationSelect").value;
@@ -714,7 +759,7 @@ function submitAdmissionForm() {
     totalPackageDays: totalDays,
     attendedDaysCount: 0,
     plan: document.getElementById("admCategorySelect").selectedOptions[0].text,
-    slot: "06:00 AM - 07:00 AM",
+    slot: document.getElementById("admSlotSelect").value || "06:00 AM - 07:00 AM",
     totalFee: totalNum,
     paidFee: selectedPaymentMode === "Online" ? totalNum : 0,
     dueFee: selectedPaymentMode === "Online" ? 0 : totalNum,
@@ -726,7 +771,6 @@ function submitAdmissionForm() {
 
   activeReceiptMember = memberData;
 
-  // Persist across all sync keys
   let bfcRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   bfcRecords.unshift(memberData);
   localStorage.setItem("5BFC_MEMBERS", JSON.stringify(bfcRecords));
@@ -741,7 +785,6 @@ function submitAdmissionForm() {
 
   renderAdminTable();
 
-  // Send Alert to Gym Admin WhatsApp
   const adminMsg = encodeURIComponent(
     `🚨 *NEW GYM ADMISSION ALERT*\n👤 *नाम:* ${memberData.name}\n📞 *फोन:* ${memberData.phone}\n📦 *प्लान:* ${memberData.plan} (₹${memberData.totalFee})\n📅 *प्रवेश:* ${memberData.joinDate}\n💳 *माध्यम:* ${memberData.payMode}`
   );
@@ -763,11 +806,11 @@ function triggerWelcomeModal(m) {
   if (m.status === "Pending") {
     statusLine.innerHTML = "⏳ <span style='color:#ffcc00;'>कैश वेरिफिकेशन पेंडिंग (Admin Approval प्रतीक्षित)</span>";
     slipBtn.style.background = "#ffcc00";
-    slipBtn.innerText = "📄 डिजिटल एडमिशन फॉर्म / स्लिप (PDF)";
+    slipBtn.innerText = "📄 डिजिटल एडमिशन फॉर्म (PDF)";
   } else {
     statusLine.innerHTML = "✅ <span style='color:#00ff66;'>भुगतान स्वीकृत (Paid)</span>";
     slipBtn.style.background = "#00ff66";
-    slipBtn.innerText = "📄 डिजिटल एडमिशन कार्ड डाउनलोड करें (PDF)";
+    slipBtn.innerText = "📄 डिजिटल एडमिशन फॉर्म डाउनलोड करें (PDF)";
   }
   document.getElementById("welcomePopupModal").style.display = "flex";
 }
@@ -777,62 +820,112 @@ function closeWelcomeModal() {
   location.reload();
 }
 
-// ADMISSION CARD & PDF PRINTER
+// ==========================================
+// SHUDDH HINDI OFFICIAL ADMISSION FORM (PDF)
+// ==========================================
 function downloadAdmissionCardNow(customMember = null) {
   const m = customMember || activeReceiptMember;
   if (!m) return;
 
-  const printWin = window.open('', '_blank', 'width=650,height=750');
+  const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid');
+  const printWin = window.open('', '_blank', 'width=750,height=900');
+  
   printWin.document.write(`
     <!DOCTYPE html>
-    <html>
+    <html lang="hi">
     <head>
-      <title>5BFC Admission Card - ${m.name}</title>
+      <meta charset="UTF-8">
+      <title>डिजिटल एडमिशन फॉर्म - ${m.name}</title>
       <style>
-        body { font-family: sans-serif; padding: 20px; color: #111; }
-        .card { border: 2.5px solid #222; border-radius: 12px; padding: 18px; max-width: 480px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .head { text-align: center; border-bottom: 2px solid #ffcc00; padding-bottom: 8px; margin-bottom: 12px; }
-        .title { font-size: 20px; font-weight: 900; color: #111; margin: 0; }
-        .sub { font-size: 11px; color: #555; }
-        .badge { background: #ffcc00; color: #000; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 5px; }
-        .row { display: flex; justify-content: space-between; font-size: 12.5px; padding: 5px 0; border-bottom: 1px dashed #ddd; }
-        .row b { color: #333; }
-        .fee-card { background: #f8f8f8; border: 1.5px solid #00aa44; border-radius: 8px; padding: 10px; margin: 12px 0; }
-        .btn-print { background: #222; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 25px; color: #111; line-height: 1.5; background: #fff; }
+        .form-border { border: 2.5px solid #000; padding: 22px; max-width: 650px; margin: 0 auto; border-radius: 8px; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 14px; }
+        .club-name { font-size: 22px; font-weight: 900; margin: 0; color: #000; }
+        .sub-header { font-size: 11.5px; color: #444; margin-top: 3px; }
+        .badge { display: inline-block; background: #000; color: #fff; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 4px; margin-top: 6px; }
+        .grid-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .grid-table td { padding: 7px 10px; border: 1px solid #777; font-size: 12.5px; }
+        .grid-table td.label { font-weight: bold; background: #f2f2f2; width: 35%; }
+        .rules-box { border: 1.5px solid #000; background: #fafafa; padding: 10px; margin-top: 14px; border-radius: 6px; font-size: 11px; }
+        .footer-sig { display: flex; justify-content: space-between; margin-top: 35px; font-size: 11.5px; font-weight: bold; }
+        .btn-print { background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
         @media print { .no-print { display: none; } }
       </style>
     </head>
     <body>
-      <div class="card">
-        <div class="head">
-          <h2 class="title">👑 5 BROTHER'S FITNESS CLUB</h2>
-          <div class="sub">उमराव खेड़ा, अकरमपुर, उन्नाव | मो.: 9140417259</div>
-          <div class="badge">OFFICIAL DIGITAL ADMISSION CARD & RECEIPT</div>
-        </div>
-        <div class="row"><span>कार्ड आईडी:</span> <b>${m.code || m.id}</b></div>
-        <div class="row"><span>सदस्य का नाम:</span> <b>${m.name} (${m.gender || 'M'})</b></div>
-        <div class="row"><span>पिता का नाम:</span> <b>${m.parentName || 'N/A'}</b></div>
-        <div class="row"><span>मोबाइल नंबर:</span> <b>+91 ${m.phone}</b></div>
-        <div class="row"><span>पता / गांव:</span> <b>${m.village || 'Unnao'}</b></div>
-        <div class="row"><span>बैच समय (Slot):</span> <b>${m.slot || '06:00 AM - 07:00 AM'}</b></div>
-        <div class="row"><span>प्रवेश तिथि (Joining):</span> <b>${m.joinDate}</b></div>
-        <div class="row"><span>प्लान समाप्ति (Expiry):</span> <b style="color:#d9534f;">${m.expiryDate || 'N/A'}</b></div>
-
-        <div class="fee-card">
-          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-            <span>प्लान श्रेणी:</span> <b>${m.plan}</b>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:14px; color:#00aa44; font-weight:bold;">
-            <span>भुगतान स्थिति:</span> <span>${m.status === 'Full Paid' ? 'पूर्ण जमा (PAID)' : 'बाकी (DUE: ₹' + m.dueFee + ')'}</span>
-          </div>
+      <div class="form-border">
+        <div class="header">
+          <h1 class="club-name">👑 5 BROTHER'S FITNESS CLUB</h1>
+          <div class="sub-header">उमराव खेड़ा, अकरमपुर, उन्नाव (उत्तर प्रदेश) | संपर्क सूत्र: 9140417259</div>
+          <div class="badge">आधिकारिक डिजिटल प्रवेश पत्र एवं रसीद (OFFICIAL ADMISSION FORM)</div>
         </div>
 
-        <div style="margin-top:20px; display:flex; justify-content:space-between; font-size:10.5px; font-weight:bold;">
-          <span>सदस्य हस्ताक्षर</span>
-          <span>अधिकृत हस्ताक्षर (5 BFC)</span>
+        <table class="grid-table">
+         <tr>
+            <td class="label">पंजीकरण संख्या (Reg ID):</td>
+            <td><b>${m.code || ('5BFC-' + m.id)}</b></td>
+          </tr>
+          <tr>
+            <td class="label">सदस्य का पूरा नाम (Full Name):</td>
+            <td><b>${m.name}</b> (${m.gender === 'F' ? 'महिला' : 'पुरुष'})</td>
+          </tr>
+          <tr>
+            <td class="label">पिता / माता का नाम (Parent Name):</td>
+            <td>${m.parentName || 'लागू नहीं'}</td>
+          </tr>
+          <tr>
+            <td class="label">मोबाइल नंबर (Mobile No):</td>
+            <td><b>+91 ${m.phone}</b></td>
+          </tr>
+          <tr>
+            <td class="label">पूरा पता / गांव (Address):</td>
+            <td>${m.village || 'उन्नाव'}</td>
+          </tr>
+          <tr>
+            <td class="label">बैच समय स्लॉट (Time Slot):</td>
+            <td><b>🕒 ${m.slot || '06:00 AM - 07:00 AM'}</b></td>
+          </tr>
+          <tr>
+            <td class="label">प्रवेश तिथि (Joining Date):</td>
+            <td><b>${m.joinDate}</b></td>
+          </tr>
+          <tr>
+            <td class="label">प्लान वैधता समाप्ति (Valid Till):</td>
+            <td><b style="color:#b30000;">${m.expiryDate || 'N/A'}</b></td>
+          </tr>
+          <tr>
+            <td class="label">सदस्यता योजना (Membership Plan):</td>
+            <td>${m.plan}</td>
+          </tr>
+          <tr>
+            <td class="label">शुल्क एवं भुगतान स्थिति:</td>
+            <td>
+              <b>₹${m.totalFee || 500}</b> 
+              (${isPaid ? '<span style="color:green; font-weight:bold;">पूर्ण भुगतान प्राप्त (PAID)</span>' : '<span style="color:red; font-weight:bold;">बकाया (DUE)</span>'})
+            </td>
+          </tr>
+        </table>
+
+        <div class="rules-box">
+          <b style="text-decoration:underline;">जिम के महत्वपूर्ण नियम एवं घोषणा:</b><br>
+          1. <b>फीस नियम:</b> प्रवेश तिथि के बाद यदि सदस्य 1 दिन भी उपस्थित होता है, तो पूरे माह की फीस देय होगी। किसी भी परिस्थिति में फीस वापस (Non-refundable) नहीं होगी।<br>
+          2. <b>अनुशासन:</b> जिम परिसर में इनडोर जूते और तौलिया लाना अनिवार्य है। मशीनों को नुकसान पहुंचाने पर भरपाई देय होगी।<br>
+          3. <b>विधिक सहमति:</b> मैंने 5 Brother's Fitness Club के सभी नियमों को स्वीकार किया है। बिना अग्रिम शुल्क के कसरत करना अथवा बकाया रखना विधिक नियमों के विरुद्ध होगा।
+        </div>
+
+        <div class="footer-sig">
+          <div>
+            <div>__________________________</div>
+            <div style="margin-top:4px;">सदस्य के डिजिटल हस्ताक्षर</div>
+          </div>
+          <div style="text-align:right;">
+            <div>__________________________</div>
+            <div style="margin-top:4px;">अधिकृत हस्ताक्षर (5 BFC प्रबन्धन)</div>
+          </div>
         </div>
       </div>
-      <div style="text-align:center; margin-top:15px;" class="no-print">
+
+      <div style="text-align:center; margin-top:16px;" class="no-print">
         <button class="btn-print" onclick="window.print()">🖨️ PDF सेव करें / प्रिंट निकालें</button>
       </div>
     </body>
@@ -878,7 +971,7 @@ function renderAdminTable() {
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; flex-wrap:wrap; gap:4px;">
         <span style="color:${m.status === 'Full Paid' ? '#00ff66' : '#ff4444'}; font-weight:bold; font-size:10px;">
-          ${m.status === 'Full Paid' ? 'PAID' : 'DUE: ₹' + m.dueFee}
+          ${m.status === 'Full Paid' ? 'PAID' : 'DUE: ₹' + (m.dueFee || 0)}
         </span>
         <div style="display:flex; gap:4px;">
           <button onclick="adminEditMember('${m.id}')" style="background:#ffcc00; color:#000; font-size:10px; font-weight:bold; padding:4px 7px; border:none; border-radius:4px; cursor:pointer;">✏️ एडिट फॉर्म</button>
@@ -892,7 +985,6 @@ function renderAdminTable() {
   `).join("");
 }
 
-// FULL FORM EDIT LOGIC
 function adminEditMember(memberId) {
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   let m = records.find(r => r.id.toString() === memberId.toString());
@@ -915,7 +1007,6 @@ function adminEditMember(memberId) {
   m.phone = newPhone.trim() || m.phone;
   m.joinDate = newDate.trim() || m.joinDate;
 
-  // Sync edit to all storage keys
   localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
   localStorage.setItem("5bfc_admissions", JSON.stringify(records));
   localStorage.setItem("5bfc_members_v2", JSON.stringify(records));
@@ -925,7 +1016,6 @@ function adminEditMember(memberId) {
   downloadAdmissionCardNow(m);
 }
 
-// REMOVE FROM ATTENDANCE (RETAINS IN ADMISSIONS)
 function adminToggleRemove(memberId) {
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   let m = records.find(r => r.id.toString() === memberId.toString());
@@ -934,7 +1024,6 @@ function adminToggleRemove(memberId) {
   m.activeInGym = !m.activeInGym;
   localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
 
-  // If removed, filter out from attendance lists
   const activeOnly = records.filter(item => item.activeInGym !== false);
   localStorage.setItem("5bfc_admissions", JSON.stringify(activeOnly));
   localStorage.setItem("5bfc_members_v2", JSON.stringify(activeOnly));
