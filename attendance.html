@@ -3,848 +3,804 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club</title>
+<title>5 Brother's Fitness Club - Biometric Attendance</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffcc00">
 <style>
+  :root {
+    --gold: #ffcc00;
+    --gold-glow: rgba(255, 204, 0, 0.3);
+    --bg-dark: #070707;
+    --card-bg: #111111;
+    --border-color: #262626;
+    --green-accent: #00ff66;
+    --red-accent: #ff3333;
+    --text-muted: #888888;
+  }
+
   * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-tap-highlight-color: transparent;
-    user-select: none;
   }
+
   body {
-    background: #0a0a0a;
+    background-color: var(--bg-dark);
     color: #ffffff;
-    padding: 14px 12px 95px 12px;
-    max-width: 600px;
+    padding: 12px 10px 90px 10px;
+    max-width: 540px;
     margin: 0 auto;
+    min-height: 100vh;
   }
-  .header {
-    background: linear-gradient(135deg, #1f1b0c 0%, #121212 100%);
-    border: 2px solid #ffcc00;
-    border-radius: 16px;
-    padding: 16px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(255, 204, 0, 0.15);
-    margin-bottom: 14px;
+
+  .nav-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
   }
-  .header h1 {
-    font-size: 20px;
-    font-weight: 900;
-    color: #ffcc00;
-    letter-spacing: 0.5px;
+
+  .btn-back-home {
+    background: var(--gold); color: #000; text-decoration: none;
+    font-size: 11px; font-weight: 900; padding: 7px 12px; border-radius: 8px;
     text-transform: uppercase;
   }
-  .header p {
-    font-size: 11.5px;
-    color: #aaa;
-    margin-top: 3px;
-  }
-  .header .badge-live {
-    display: inline-block;
-    background: rgba(0, 255, 102, 0.15);
-    border: 1px solid #00ff66;
-    color: #00ff66;
-    font-size: 10px;
-    font-weight: 800;
-    padding: 3px 10px;
-    border-radius: 12px;
-    margin-top: 6px;
-  }
-  .today-date {
-    display: inline-block;
-    background: #1e1e1e;
-    border: 1px solid #ffcc00;
-    color: #ffcc00;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-top: 6px;
+
+  .portal-status-pill {
+    font-size: 10.5px; font-weight: 800; color: var(--gold);
+    background: rgba(255, 204, 0, 0.08); border: 1px solid rgba(255, 204, 0, 0.3);
+    padding: 5px 10px; border-radius: 14px; text-transform: uppercase;
   }
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+  .branding-card {
+    background: radial-gradient(circle at top, #1e1908 0%, #0d0d0d 100%);
+    border: 1.5px solid var(--gold); border-radius: 16px;
+    padding: 16px 14px; text-align: center; margin-bottom: 14px;
+    box-shadow: 0 4px 25px var(--gold-glow);
+  }
+
+  .branding-title {
+    font-size: 19px; font-weight: 900; color: var(--gold); text-transform: uppercase;
+  }
+
+  .badge-live-clock {
+    display: inline-block; background: #181818; border: 1px solid #ffcc00;
+    color: var(--gold); font-size: 11.5px; font-weight: 900;
+    padding: 5px 14px; border-radius: 20px; margin-top: 8px;
+  }
+
+  .stats-overview {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px;
+  }
+
+  .stat-card-item {
+    background: var(--card-bg); border: 1px solid var(--border-color);
+    border-radius: 12px; padding: 10px 4px; text-align: center;
+  }
+
+  .stat-num-val { font-size: 18px; font-weight: 900; }
+  .stat-label-txt { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 3px; }
+
+  .absent-alert-banner {
+    background: #181111; border: 1px solid #4a1f1f; border-radius: 12px;
+    padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 14px;
   }
-  .stat-card {
-    background: #141414;
-    border: 1px solid #262626;
-    border-radius: 12px;
-    padding: 10px 4px;
-    text-align: center;
-  }
-  .stat-val { font-size: 18px; font-weight: 900; }
-  .stat-lbl {
-    font-size: 9px;
-    color: #888;
-    margin-top: 2px;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-  .val-total { color: #ffcc00; }
-  .val-pres { color: #00ff66; }
-  .val-abs { color: #ff4d4d; }
-  .val-pend { color: #ff9900; }
 
-  .search-box {
-    width: 100%;
-    padding: 12px 14px;
-    background: #141414;
-    border: 1px solid #333;
-    border-radius: 12px;
-    color: #fff;
-    font-size: 14px;
-    outline: none;
-    margin-bottom: 10px;
-  }
-  .search-box:focus { border-color: #ffcc00; }
-
-  .filter-section-title {
-    font-size: 11px;
-    font-weight: 800;
-    color: #ffcc00;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
-  }
-  .batch-tabs {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    margin-bottom: 12px;
-    scrollbar-width: none;
-  }
-  .batch-tabs::-webkit-scrollbar { display: none; }
-  .batch-btn {
-    background: #181818;
-    border: 1px solid #333;
-    color: #bbb;
-    padding: 7px 12px;
-    border-radius: 16px;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .batch-btn.active {
-    background: #ffcc00;
-    color: #000;
-    border-color: #ffcc00;
+  .btn-send-alert {
+    background: #ff4d4d; color: #fff; font-size: 10px; font-weight: 900;
+    border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer;
   }
 
-  .member-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  .search-container { margin-bottom: 12px; }
+  .live-search-input {
+    width: 100%; background: var(--card-bg); border: 1.5px solid #383838;
+    border-radius: 10px; padding: 11px 14px; color: #fff; font-size: 13.5px; outline: none;
   }
-  .member-card {
-    background: #141414;
-    border: 1px solid #262626;
-    border-radius: 14px;
-    padding: 13px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .member-card.is-present {
-    border-color: rgba(0, 255, 102, 0.45);
-    background: linear-gradient(135deg, rgba(0, 255, 102, 0.06) 0%, #141414 100%);
-  }
-  .member-card.is-absent {
-    border-color: rgba(255, 77, 77, 0.45);
-    background: linear-gradient(135deg, rgba(255, 77, 77, 0.06) 0%, #141414 100%);
-  }
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-  .m-name {
-    font-size: 15.5px;
-    font-weight: 800;
-    color: #fff;
-  }
-  .m-slot {
-    font-size: 11px;
-    color: #ffcc00;
-    font-weight: 700;
-    margin-top: 2px;
-  }
-  .m-info {
-    font-size: 11px;
-    color: #888;
-    margin-top: 2px;
-  }
-  .badge-plan {
-    display: inline-block;
-    background: #222;
-    color: #ddd;
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 6px;
-    margin-left: 6px;
-  }
-  .badge-fee-paid {
-    background: rgba(0, 255, 102, 0.15);
-    color: #00ff66;
-    border: 1px solid #00ff66;
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 2px 8px;
-    border-radius: 12px;
-  }
-  .badge-fee-pending {
-    background: rgba(255, 77, 77, 0.15);
-    color: #ff4d4d;
-    border: 1px solid #ff4d4d;
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 2px 8px;
-    border-radius: 12px;
+  .live-search-input:focus { border-color: var(--gold); }
+
+  .batch-section-title {
+    font-size: 11px; font-weight: bold; color: var(--gold); margin: 8px 0 6px; display: flex; align-items: center; gap: 4px;
   }
 
-  .photo-proof-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #1c1c1c;
-    border: 1px dashed rgba(0, 255, 102, 0.5);
-    border-radius: 10px;
-    padding: 6px 10px;
+  .batch-chips-row {
+    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px;
   }
-  .proof-thumb {
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 1.5px solid #00ff66;
-  }
-  .proof-details {
-    font-size: 10.5px;
-    color: #bbb;
-    line-height: 1.4;
-  }
-  .proof-details b { color: #00ff66; }
+  .batch-chips-row::-webkit-scrollbar { display: none; }
 
-  .att-actions {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr 42px;
-    gap: 8px;
+  .slot-chip {
+    background: #1a1a1a; border: 1px solid #333; color: #aaa;
+    font-size: 10.5px; font-weight: bold; padding: 6px 10px; border-radius: 16px;
+    white-space: nowrap; cursor: pointer;
   }
-  .btn-att {
-    padding: 10px 8px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 800;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
-  .btn-present {
-    background: #1a271d;
-    color: #49b56f;
-    border: 1px solid #28442f;
-  }
-  .btn-present.selected {
-    background: #00ff66;
-    color: #000;
-    border-color: #00ff66;
-    box-shadow: 0 0 12px rgba(0, 255, 102, 0.35);
-  }
-  .btn-absent {
-    background: #271a1a;
-    color: #b54949;
-    border: 1px solid #442828;
-  }
-  .btn-absent.selected {
-    background: #ff4d4d;
-    color: #fff;
-    border-color: #ff4d4d;
-    box-shadow: 0 0 12px rgba(255, 77, 77, 0.35);
-  }
-  .btn-wa {
-    background: #25d366;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
-    cursor: pointer;
-    text-decoration: none;
+  .slot-chip.active {
+    background: var(--gold); color: #000; border-color: var(--gold);
   }
 
-  .bottom-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(14, 14, 14, 0.96);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid #333;
-    padding: 10px 16px;
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    max-width: 600px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-  }
-  .btn-add-main {
-    flex: 1;
-    background: #ffcc00;
-    color: #000;
-    font-size: 14px;
-    font-weight: 900;
-    padding: 13px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-  }
-  .btn-export {
-    background: #222;
-    color: #ddd;
-    border: 1px solid #444;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 13px 18px;
-    border-radius: 12px;
-    cursor: pointer;
+  .member-list-wrapper { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+
+  /* DEFAULT CARD */
+  .member-record-card {
+    background: var(--card-bg); border: 2px solid var(--border-color);
+    border-radius: 14px; padding: 14px; position: relative; transition: all 0.25s ease;
   }
 
-  .camera-modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.92);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-  .cam-box {
-    background: #161616;
-    border: 2px solid #00ff66;
-    border-radius: 18px;
-    padding: 20px 16px;
-    width: 100%;
-    max-width: 420px;
-    text-align: center;
-  }
-  .cam-title {
-    font-size: 17px;
-    font-weight: 900;
-    color: #00ff66;
-    margin-bottom: 4px;
-  }
-  .cam-sub {
-    font-size: 12px;
-    color: #bbb;
-    margin-bottom: 16px;
-  }
-  .photo-preview-wrap {
-    width: 100%;
-    height: 220px;
-    background: #000;
-    border-radius: 12px;
-    border: 1.5px dashed #444;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 14px;
-  }
-  .photo-preview-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
-  }
-  .photo-placeholder {
-    font-size: 13px;
-    color: #777;
-    padding: 10px;
-  }
-  .file-cam-input { display: none; }
-  .btn-snap {
-    background: #ffcc00;
-    color: #000;
-    font-size: 14px;
-    font-weight: 900;
-    padding: 12px 20px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    display: inline-block;
-    margin-bottom: 10px;
-  }
-  .cam-btns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .btn-cam-cancel {
-    background: #2a2a2a;
-    color: #bbb;
-    border: none;
-    padding: 11px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .btn-cam-confirm {
-    background: #00ff66;
-    color: #000;
-    border: none;
-    padding: 11px;
-    border-radius: 10px;
-    font-weight: 900;
-    cursor: pointer;
-    display: none;
+  /* STRONG BRIGHT GREEN WHEN PRESENT */
+  .member-record-card.status-present {
+    border: 2px solid #00ff66 !important;
+    background: linear-gradient(180deg, #101812 0%, #07130a 100%) !important;
+    box-shadow: 0 0 20px rgba(0, 255, 102, 0.25);
   }
 
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.88);
-    z-index: 999;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
+  /* STRONG BRIGHT RED WHEN ABSENT */
+  .member-record-card.status-absent {
+    border: 2px solid #ff3333 !important;
+    background: linear-gradient(180deg, #181010 0%, #120707 100%) !important;
+    box-shadow: 0 0 16px rgba(255, 51, 51, 0.2);
   }
-  .modal-box {
-    background: #181818;
-    border: 2px solid #ffcc00;
-    border-radius: 18px;
-    padding: 22px 18px;
-    width: 100%;
-    max-width: 440px;
+
+  .record-top-row { display: flex; justify-content: space-between; align-items: flex-start; }
+  .member-fullname { font-size: 15.5px; font-weight: 900; color: #ffffff; }
+
+  .slot-dropdown-field {
+    background: #181818; border: 1px solid #444; color: var(--gold);
+    font-size: 11px; font-weight: bold; padding: 4px 6px; border-radius: 6px;
+    outline: none; margin-top: 4px;
   }
-  .modal-title {
-    font-size: 18px;
-    font-weight: 900;
-    color: #ffcc00;
-    margin-bottom: 14px;
-    text-align: center;
+
+  .countdown-box {
+    background: #161616; border: 1px dashed #444; border-radius: 8px;
+    padding: 7px 10px; margin: 8px 0; font-size: 11px; line-height: 1.45;
   }
-  .input-group { margin-bottom: 12px; }
-  .input-label {
-    font-size: 11px;
-    color: #aaa;
-    margin-bottom: 4px;
-    display: block;
-    font-weight: 700;
+
+  .live-seal-box {
+    display: flex; align-items: center; gap: 10px;
+    background: #000; border: 1.5px dashed var(--green-accent);
+    border-radius: 10px; padding: 8px 10px; margin: 8px 0;
   }
-  .modal-input, .modal-select {
-    width: 100%;
-    padding: 11px 12px;
-    background: #0a0a0a;
-    border: 1px solid #333;
-    border-radius: 10px;
-    color: #fff;
-    font-size: 13.5px;
-    outline: none;
+
+  .live-seal-thumbnail {
+    width: 52px; height: 52px; border-radius: 8px; object-fit: cover;
+    border: 2px solid var(--green-accent);
   }
-  .modal-input:focus, .modal-select:focus { border-color: #ffcc00; }
-  .modal-btns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 18px;
+
+  .controls-row { display: flex; gap: 8px; margin-top: 10px; }
+
+  /* PRESENT BUTTON STYLES */
+  .btn-mark-present {
+    flex: 2; font-size: 11.5px; font-weight: 900; padding: 11px 8px; border-radius: 8px;
+    border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px;
   }
-  .btn-cancel {
-    background: #2a2a2a;
-    color: #bbb;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
+  .btn-mark-present.is-verified {
+    background: #00ff66; color: #000; box-shadow: 0 0 12px rgba(0, 255, 102, 0.4);
   }
-  .btn-save {
-    background: #ffcc00;
-    color: #000;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: 900;
-    cursor: pointer;
+  .btn-mark-present.is-pending {
+    background: #1b2e21; color: #00ff66; border: 1.5px solid #00ff66;
+  }
+
+  /* ABSENT BUTTON STYLES */
+  .btn-mark-absent {
+    flex: 1.1; font-size: 11px; font-weight: 900; padding: 11px 6px; border-radius: 8px; cursor: pointer;
+  }
+  .btn-mark-absent.is-active-absent {
+    background: #ff3333; color: #fff; border: none; box-shadow: 0 0 12px rgba(255, 51, 51, 0.4);
+  }
+  .btn-mark-absent.is-idle-absent {
+    background: #181818; color: #ff6666; border: 1px solid #442222;
+  }
+
+  .btn-chat-wa {
+    background: #25d366; color: #000; border: none; padding: 0 12px;
+    border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: bold;
+  }
+
+  /* FULL SCREEN ATTENDANCE CELEBRATION MODAL */
+  .present-success-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.95); z-index: 999999;
+    align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;
+  }
+  .present-success-modal.show { display: flex; }
+
+  .success-card-content {
+    background: #111; border: 2.5px solid #00ff66; border-radius: 20px;
+    max-width: 420px; width: 100%; padding: 22px 18px; text-align: center;
+    box-shadow: 0 0 40px rgba(0, 255, 102, 0.4); color: #fff;
+  }
+
+  /* Camera Modal */
+  .camera-modal-backdrop {
+    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.95); z-index: 99999;
+    flex-direction: column; align-items: center; justify-content: center; padding: 16px;
+  }
+  .camera-modal-backdrop.active { display: flex; }
+
+  .modal-camera-card {
+    width: 100%; max-width: 420px; background: #111; border: 2px solid var(--gold);
+    border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center;
+  }
+
+  .camera-feed-container {
+    width: 100%; height: 320px; background: #000; border-radius: 14px;
+    position: relative; overflow: hidden; border: 2px solid #333;
+  }
+
+  #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+
+  .scanner-reticle-ring {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 200px; height: 200px; border: 2px dashed var(--green-accent); border-radius: 50%;
   }
 </style>
 </head>
 <body>
 
-  <div class="header">
-    <h1>👑 5 Brother's Fitness Club</h1>
-    <p>Biometric Proof & Live Time-Slot Attendance</p>
-    <div class="badge-live">📸 Mandatory Live Selfie Verification Enabled</div><br>
-    <div class="today-date" id="displayDate">Saturday, 17 Oct 2026</div>
+  <div class="nav-header">
+    <a href="app.html" class="btn-back-home">⬅ Master App</a>
+    <div class="portal-status-pill">Biometric Engine Active</div>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-val val-total" id="statTotal">0</div>
-      <div class="stat-lbl">Members</div>
+  <div class="branding-card">
+    <div class="branding-title">👑 5 BROTHER'S FITNESS CLUB</div>
+    <div style="font-size:11px; color:#aaa; margin-top:2px;">Biometric Proof & Live Time-Slot Attendance Register</div>
+    <div style="display:inline-block; background:rgba(0,255,102,0.1); border:1px solid #00ff66; color:#00ff66; font-size:10px; font-weight:bold; padding:2px 8px; border-radius:12px; margin-top:6px;">
+      🔒 Mandatory Live Selfie Verification Enabled
     </div>
-    <div class="stat-card">
-      <div class="stat-val val-pres" id="statPresent">0</div>
-      <div class="stat-lbl">Present</div>
+    <br>
+    <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
+  </div>
+
+  <div class="stats-overview">
+    <div class="stat-card-item"><div class="stat-num-val" id="metricTotalMembers" style="color: var(--gold);">0</div><div class="stat-label-txt">Members</div></div>
+    <div class="stat-card-item"><div class="stat-num-val" id="metricPresentCount" style="color: var(--green-accent);">0</div><div class="stat-label-txt">Present</div></div>
+    <div class="stat-card-item"><div class="stat-num-val" id="metricAbsentCount" style="color: var(--red-accent);">0</div><div class="stat-label-txt">Absent</div></div>
+    <div class="stat-card-item"><div class="stat-num-val" id="metricDueCount" style="color: #ffaa33;">0</div><div class="stat-label-txt">Fees Due</div></div>
+  </div>
+
+  <div class="absent-alert-banner">
+    <div>
+      <div style="font-size:11px; font-weight:bold; color:#ff6666;">🚨 9:00 AM ABSENT ALERT TRIGGER</div>
+      <div style="font-size:9.5px; color:#aaa; margin-top:2px;">Dispatches formal notice regarding the 26-day 100% renewal benefit rule.</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-val val-abs" id="statAbsent">0</div>
-      <div class="stat-lbl">Absent</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val val-pend" id="statPending">0</div>
-      <div class="stat-lbl">Fees Due</div>
-    </div>
+    <button class="btn-send-alert" onclick="dispatchAbsentAlerts()">SEND ALERT</button>
   </div>
 
-  <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search member name, mobile or slot..." oninput="renderMembers()">
-
-  <div class="filter-section-title">🌅 Morning Batches (5 AM - 9 AM)</div>
-  <div class="batch-tabs">
-    <button class="batch-btn active" onclick="setFilter('All', this)">All Slots</button>
-    <button class="batch-btn" onclick="setFilter('05:00 AM - 06:00 AM', this)">5:00 - 6:00 AM</button>
-    <button class="batch-btn" onclick="setFilter('06:00 AM - 07:00 AM', this)">6:00 - 7:00 AM</button>
-    <button class="batch-btn" onclick="setFilter('07:00 AM - 08:00 AM', this)">7:00 - 8:00 AM</button>
-    <button class="batch-btn" onclick="setFilter('08:00 AM - 09:00 AM', this)">8:00 - 9:00 AM</button>
+  <!-- SEARCH BAR -->
+  <div class="search-container">
+    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="🔍 Search member name, mobile or slot..." oninput="executeFilterEngine()">
   </div>
 
-  <div class="filter-section-title">🌙 Evening Batches (4:30 PM - 10:00 PM)</div>
-  <div class="batch-tabs">
-    <button class="batch-btn" onclick="setFilter('04:30 PM - 05:30 PM', this)">4:30 - 5:30 PM</button>
-    <button class="batch-btn" onclick="setFilter('05:30 PM - 06:30 PM', this)">5:30 - 6:30 PM</button>
-    <button class="batch-btn" onclick="setFilter('06:30 PM - 07:30 PM', this)">6:30 - 7:30 PM</button>
-    <button class="batch-btn" onclick="setFilter('07:30 PM - 08:30 PM', this)">7:30 - 8:30 PM</button>
-    <button class="batch-btn" onclick="setFilter('08:30 PM - 09:30 PM', this)">8:30 - 9:30 PM</button>
-    <button class="batch-btn" onclick="setFilter('09:30 PM - 10:00 PM', this)">9:30 - 10:00 PM</button>
+  <!-- TIME SLOT CHIPS -->
+  <div class="batch-section-title">🌅 MORNING BATCHES (5:00 AM - 9:00 AM)</div>
+  <div class="batch-chips-row">
+    <div class="slot-chip active" onclick="selectSlotFilter('all', this)">All Slots</div>
+    <div class="slot-chip" onclick="selectSlotFilter('05:00 AM - 06:00 AM', this)">5:00 - 6:00 AM</div>
+    <div class="slot-chip" onclick="selectSlotFilter('06:00 AM - 07:00 AM', this)">6:00 - 7:00 AM</div>
+    <div class="slot-chip" onclick="selectSlotFilter('07:00 AM - 08:00 AM', this)">7:00 - 8:00 AM</div>
+    <div class="slot-chip" onclick="selectSlotFilter('08:00 AM - 09:00 AM', this)">8:00 - 9:00 AM</div>
   </div>
 
-  <div class="member-list" id="memberListContainer"></div>
-
-  <div class="bottom-bar">
-    <button class="btn-add-main" onclick="openAddModal()">➕ Naya Member Add Karein</button>
-    <button class="btn-export" onclick="exportExcel()">📥 Excel Export</button>
+  <div class="batch-section-title">🌙 EVENING BATCHES (4:30 PM - 10:00 PM)</div>
+  <div class="batch-chips-row">
+    <div class="slot-chip" onclick="selectSlotFilter('04:30 PM - 05:30 PM', this)">4:30 - 5:30 PM</div>
+    <div class="slot-chip" onclick="selectSlotFilter('05:30 PM - 06:30 PM', this)">5:30 - 6:30 PM</div>
+    <div class="slot-chip" onclick="selectSlotFilter('06:30 PM - 07:30 PM', this)">6:30 - 7:30 PM</div>
+    <div class="slot-chip" onclick="selectSlotFilter('07:30 PM - 08:30 PM', this)">7:30 - 8:30 PM</div>
+    <div class="slot-chip" onclick="selectSlotFilter('08:30 PM - 09:30 PM', this)">8:30 - 9:30 PM</div>
   </div>
 
-  <div class="camera-modal" id="cameraModal">
-    <div class="cam-box">
-      <div class="cam-title">📸 Mandatory Attendance Selfie</div>
-      <div class="cam-sub" id="camMemberNotice">Take a live photo proof to confirm presence.</div>
+  <div class="member-list-wrapper" id="targetRenderContainer"></div>
 
-      <div class="photo-preview-wrap">
-        <div class="photo-placeholder" id="camPlaceholder">Camera se live selfie ya photo click karein</div>
-        <img id="camPreviewImg" class="photo-preview-img" alt="Selfie Preview">
+  <!-- ATTENDANCE SUCCESS SCREEN (CELEBRATION VIEW) -->
+  <div class="present-success-modal" id="attendanceCelebrationModal">
+    <div class="success-card-content">
+      <div style="font-size:46px; margin-bottom:4px;">💪</div>
+      <h3 style="color:#ffcc00; font-size:19px; margin:0 0 4px; font-weight:900;">ATTENDANCE VERIFIED</h3>
+      <div style="color:#00ff66; font-size:14px; font-weight:bold; margin-bottom:14px;" id="celebrateMemberName">MEMBER NAME</div>
+
+      <div style="background:#090909; border:1.5px solid #222; border-radius:12px; padding:14px; text-align:left; font-size:12px; line-height:1.65; margin-bottom:16px;">
+        <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:6px; border-bottom:1px solid #222; padding-bottom:4px;">
+          📊 आपकी उपस्थिति व पैकेज रिपोर्ट:
+        </div>
+        <div>🗓️ <b>कुल उपस्थिति:</b> आप इस पैकेज में <b style="color:#00ff66; font-size:14px;" id="celebrateAttendedDays">0</b> दिन आ चुके हैं।</div>
+        <div>⏳ <b>शेष दिन:</b> आपके पैकेज में अभी <b style="color:#ffcc00; font-size:14px;" id="celebrateRemainingDays">0</b> दिन बचे हैं।</div>
+        <div>📅 <b>महीना / पैकेज समाप्ति तिथि:</b> <b style="color:#ff6666;" id="celebrateExpiryDate">N/A</b></div>
       </div>
 
-      <input type="file" id="cameraFileInput" class="file-cam-input" accept="image/*" capture="user" onchange="onPhotoCaptured(event)">
-
-      <label for="cameraFileInput" class="btn-snap">📷 Open Camera & Click Photo</label>
-
-      <div class="cam-btns">
-        <button class="btn-cam-cancel" onclick="closeCameraModal()">Cancel</button>
-        <button class="btn-cam-confirm" id="btnConfirmAttendance" onclick="confirmPresentWithPhoto()">✔ Confirm Present</button>
-      </div>
+      <button onclick="closeCelebrationModal()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:10px; font-size:13px; cursor:pointer; text-transform:uppercase;">
+        ✔ ठीक है (DONE)
+      </button>
     </div>
   </div>
 
-  <div class="modal" id="addModal">
-    <div class="modal-box">
-      <div class="modal-title">➕ Add Member with Time Slot</div>
-      
-      <div class="input-group">
-        <label class="input-label">Member Full Name (नाम)</label>
-        <input type="text" id="mName" class="modal-input" placeholder="e.g. Rahul Chandel">
+  <!-- CAMERA MODAL -->
+  <div class="camera-modal-backdrop" id="cameraBackdropModal">
+    <div class="modal-camera-card">
+      <div style="text-align:center; margin-bottom:10px;">
+        <div style="font-size:16px; font-weight:900; color:var(--gold);" id="modalCandidateName">Member Name</div>
+        <div style="font-size:11px; color:#888;">सेल्फी अनिवार्य है (Align face inside ring)</div>
       </div>
-
-      <div class="input-group">
-        <label class="input-label">Mobile Number (WhatsApp)</label>
-        <input type="tel" id="mPhone" class="modal-input" placeholder="e.g. 9876543210" maxlength="10">
+      <div class="camera-feed-container">
+        <video id="videoElement" autoplay playsinline></video>
+        <div class="scanner-reticle-ring"></div>
       </div>
-
-      <div class="input-group">
-        <label class="input-label">Time Slot (बैच का समय)</label>
-        <select id="mSlot" class="modal-select">
-          <optgroup label="Morning Batches (सुबह)">
-            <option value="05:00 AM - 06:00 AM">05:00 AM - 06:00 AM</option>
-            <option value="06:00 AM - 07:00 AM">06:00 AM - 07:00 AM</option>
-            <option value="07:00 AM - 08:00 AM">07:00 AM - 08:00 AM</option>
-            <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
-          </optgroup>
-          <optgroup label="Evening Batches (शam)">
-            <option value="04:30 PM - 05:30 PM">04:30 PM - 05:30 PM</option>
-            <option value="05:30 PM - 06:30 PM">05:30 PM - 06:30 PM</option>
-            <option value="06:30 PM - 07:30 PM">06:30 PM - 07:30 PM</option>
-            <option value="07:30 PM - 08:30 PM">07:30 PM - 08:30 PM</option>
-            <option value="08:30 PM - 09:30 PM">08:30 PM - 09:30 PM</option>
-            <option value="09:30 PM - 10:00 PM">09:30 PM - 10:00 PM</option>
-          </optgroup>
-        </select>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">Membership Plan</label>
-        <select id="mPlan" class="modal-select">
-          <option value="1 Month">1 Month Plan</option>
-          <option value="3 Months">3 Months Plan</option>
-          <option value="6 Months">6 Months Plan</option>
-          <option value="1 Year">1 Year Plan</option>
-        </select>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">Fees Status (फीस)</label>
-        <select id="mFees" class="modal-select">
-          <option value="Paid">Paid (जमा है)</option>
-          <option value="Pending">Pending (बाकी है)</option>
-        </select>
-      </div>
-
-      <div class="modal-btns">
-        <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
-        <button class="btn-save" onclick="saveNewMember()">Save Member</button>
+      <div style="display:flex; gap:10px; width:100%; margin-top:14px;">
+        <button onclick="closeCameraModal()" style="flex:1; background:#222; color:#bbb; border:1px solid #444; padding:12px; border-radius:10px; font-weight:bold; cursor:pointer;">रद्द करें</button>
+        <button onclick="captureLiveSelfieProof()" style="flex:2; background:var(--green-accent); color:#000; padding:12px; border-radius:10px; font-weight:bold; border:none; cursor:pointer;">📸 CAPTURE SELFIE</button>
       </div>
     </div>
   </div>
+
+  <canvas id="offscreenCanvas" style="display: none;"></canvas>
 
 <script>
-const DEFAULT_MEMBERS = [
-  { id: 1, name: "Amresh Singh", phone: "9876543210", slot: "06:00 AM - 07:00 AM", plan: "3 Months", fees: "Paid" },
-  { id: 2, name: "Gaurav Diwedi", phone: "9876543211", slot: "05:30 PM - 06:30 PM", plan: "1 Month", fees: "Pending" }
-];
+  let activeMemberRecordForCamera = null;
+  let currentVideoStream = null;
+  let currentDateISO = new Date().toISOString().split("T")[0];
+  let selectedSlotFilter = "all";
 
-let members = JSON.parse(localStorage.getItem("5bfc_members_v2")) || DEFAULT_MEMBERS;
-let attendance = JSON.parse(localStorage.getItem("5bfc_attendance_v2")) || {};
-let activeFilter = "All";
+  const AVAILABLE_SLOTS = [
+    "05:00 AM - 06:00 AM",
+    "06:00 AM - 07:00 AM",
+    "07:00 AM - 08:00 AM",
+    "08:00 AM - 09:00 AM",
+    "04:30 PM - 05:30 PM",
+    "05:30 PM - 06:30 PM",
+    "06:30 PM - 07:30 PM",
+    "07:30 PM - 08:30 PM",
+    "08:30 PM - 09:30 PM"
+  ];
 
-const today = new Date();
-const todayKey = today.toISOString().split("T")[0];
-const dateOpts = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-document.getElementById("displayDate").innerText = today.toLocaleDateString("en-IN", dateOpts);
+  function runLiveSystemClock() {
+    const now = new Date();
+    currentDateISO = now.toISOString().split("T")[0];
+    const dayStr = now.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    const clockElem = document.getElementById("liveSystemClock");
+    if (clockElem) clockElem.innerText = `📅 ${dayStr} | ⏰ ${timeStr}`;
+  }
+  setInterval(runLiveSystemClock, 1000);
+  runLiveSystemClock();
 
-if (!attendance[todayKey]) attendance[todayKey] = {};
+  function selectSlotFilter(slot, elem) {
+    selectedSlotFilter = slot;
+    document.querySelectorAll(".slot-chip").forEach(c => c.classList.remove("active"));
+    if (elem) elem.classList.add("active");
+    executeFilterEngine();
+  }
 
-let pendingMemberId = null;
-let currentPhotoBase64 = null;
-
-function saveState() {
-  localStorage.setItem("5bfc_members_v2", JSON.stringify(members));
-  localStorage.setItem("5bfc_attendance_v2", JSON.stringify(attendance));
-  updateStats();
-}
-
-function updateStats() {
-  const total = members.length;
-  let present = 0, absent = 0, pending = 0;
-  members.forEach(m => {
-    const record = attendance[todayKey][m.id];
-    if (record && record.status === "P") present++;
-    if (record && record.status === "A") absent++;
-    if (m.fees === "Pending") pending++;
-  });
-  document.getElementById("statTotal").innerText = total;
-  document.getElementById("statPresent").innerText = present;
-  document.getElementById("statAbsent").innerText = absent;
-  document.getElementById("statPending").innerText = pending;
-}
-
-function setFilter(slot, btn) {
-  activeFilter = slot;
-  document.querySelectorAll(".batch-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  renderMembers();
-}
-
-function requestPresent(memberId, memberName) {
-  const current = attendance[todayKey][memberId];
-  if (current && current.status === "P") {
-    if (confirm(`${memberName} ki present attendance hatana chahte hain?`)) {
-      delete attendance[todayKey][memberId];
-      saveState();
-      renderMembers();
+  function fetchStoredMembers() {
+    const k1 = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    const k2 = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+    const k3 = JSON.parse(localStorage.getItem("5bfc_members_v2") || "[]");
+    const combined = [...k1, ...k2, ...k3];
+    const unique = [];
+    const map = new Map();
+    for (const item of combined) {
+      const key = item.phone || item.id;
+      if (!map.has(key) && item.activeInGym !== false) {
+        map.set(key, true);
+        unique.push(item);
+      }
     }
-    return;
-  }
-  pendingMemberId = memberId;
-  currentPhotoBase64 = null;
-  document.getElementById("camMemberNotice").innerText = `Live photo proof required for ${memberName}`;
-  document.getElementById("camPlaceholder").style.display = "block";
-  document.getElementById("camPreviewImg").style.display = "none";
-  document.getElementById("btnConfirmAttendance").style.display = "none";
-  document.getElementById("cameraModal").style.display = "flex";
-}
-
-function onPhotoCaptured(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    currentPhotoBase64 = event.target.result;
-    const img = document.getElementById("camPreviewImg");
-    img.src = currentPhotoBase64;
-    img.style.display = "block";
-    document.getElementById("camPlaceholder").style.display = "none";
-    document.getElementById("btnConfirmAttendance").style.display = "block";
-  };
-  reader.readAsDataURL(file);
-}
-
-function confirmPresentWithPhoto() {
-  if (!pendingMemberId || !currentPhotoBase64) return;
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  attendance[todayKey][pendingMemberId] = {
-    status: "P",
-    time: timeStr,
-    photo: currentPhotoBase64
-  };
-  saveState();
-  closeCameraModal();
-  renderMembers();
-}
-
-function closeCameraModal() {
-  document.getElementById("cameraModal").style.display = "none";
-      document.getElementById("cameraFileInput").value = "";
-    pendingMemberId = null;
-    currentPhotoBase64 = null;
+    return unique;
   }
 
-  function markAbsent(memberId) {
-    const current = attendance[todayKey][memberId];
-    if (current && current.status === "A") {
-      delete attendance[todayKey][memberId];
-    } else {
-      attendance[todayKey][memberId] = { status: "A", time: "--", photo: null };
+  function fetchDailyAttendanceMap() {
+    return JSON.parse(localStorage.getItem("5bfc_attendance_" + currentDateISO)) || {};
+  }
+
+  function changeMemberSlot(memberId, newSlot) {
+    let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let target = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (target) {
+      target.slot = newSlot;
+      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(allRecords));
+      localStorage.setItem("5bfc_admissions", JSON.stringify(allRecords));
+      localStorage.setItem("5bfc_members_v2", JSON.stringify(allRecords));
+      executeFilterEngine();
     }
-    saveState();
-    renderMembers();
   }
 
-  function renderMembers() {
-    const container = document.getElementById("memberListContainer");
-    const query = document.getElementById("searchBox").value.trim().toLowerCase();
+  function executeFilterEngine() {
+    const memberDataset = fetchStoredMembers();
+    const attendanceRecords = fetchDailyAttendanceMap();
+    const searchQuery = document.getElementById("memberFilterInput").value.trim().toLowerCase();
+    const renderNode = document.getElementById("targetRenderContainer");
+    renderNode.innerHTML = "";
 
-    const filtered = members.filter(m => {
-      const matchSlot = (activeFilter === "All" || m.slot === activeFilter);
-      const matchSearch = m.name.toLowerCase().includes(query) || m.phone.includes(query) || m.slot.toLowerCase().includes(query);
-      return matchSlot && matchSearch;
-    });
-
-    if (filtered.length === 0) {
-      container.innerHTML = `<div style="text-align:center; padding:40px 10px; color:#666;">Koi member nahi mila.</div>`;
+    if (memberDataset.length === 0) {
+      renderNode.innerHTML = `<div style="text-align:center; padding:30px; color:#888;">कोई एक्टिव सदस्य नहीं मिला।</div>`;
+      syncMetricCards(0, 0, 0, 0);
       return;
     }
 
-    container.innerHTML = filtered.map(m => {
-      const record = attendance[todayKey][m.id];
-      const isP = record && record.status === "P";
-      const isA = record && record.status === "A";
-      const cardClass = isP ? "member-card is-present" : (isA ? "member-card is-absent" : "member-card");
-      const feeBadge = m.fees === "Paid" 
-        ? `<span class="badge-fee-paid">Fees Paid</span>` 
-        : `<span class="badge-fee-pending">Fees Due</span>`;
+    let totalPresentLogged = 0;
+    let totalPendingFees = 0;
 
-      let proofHtml = "";
-      if (isP && record.photo) {
-        proofHtml = `
-          <div class="photo-proof-box">
-            <img src="${record.photo}" class="proof-thumb" alt="Proof">
-            <div class="proof-details">
-              <b>✔ Verified Live Proof</b><br>
-              Time: ${record.time} | 5BFC Seal
+    const matched = memberDataset.filter(c => {
+      const nameMatch = c.name && c.name.toLowerCase().includes(searchQuery);
+      const phoneMatch = c.phone && c.phone.includes(searchQuery);
+      const slotMatch = c.slot && c.slot.toLowerCase().includes(searchQuery);
+      const queryPass = !searchQuery || nameMatch || phoneMatch || slotMatch;
+      const chipPass = (selectedSlotFilter === "all") || (c.slot === selectedSlotFilter);
+      return queryPass && chipPass;
+    });
+
+    memberDataset.forEach(c => {
+      if (attendanceRecords[c.id]) totalPresentLogged++;
+      if (c.fees !== 'Paid' && c.status !== 'Full Paid') totalPendingFees++;
+    });
+
+    matched.forEach(member => {
+      const isPresent = !!attendanceRecords[member.id];
+      const checkinRecord = attendanceRecords[member.id];
+      const attendedCount = member.attendedDaysCount || (isPresent ? 1 : 0);
+      const expiry = member.expiryDate || 'N/A';
+      const currentSlot = member.slot || "06:00 AM - 07:00 AM";
+
+      const recordCard = document.createElement("div");
+      // Distinct Green or Red classes
+      recordCard.className = `member-record-card ${isPresent ? 'status-present' : (member.isMarkedAbsent ? 'status-absent' : '')}`;
+
+      let proofMarkup = "";
+      if (isPresent && checkinRecord) {
+        proofMarkup = `
+          <div class="live-seal-box">
+            <img src="${checkinRecord.photo}" class="live-seal-thumbnail" alt="Proof">
+            <div style="font-size:11px; line-height:1.4;">
+              <span style="color:var(--green-accent); font-weight:900;">✔ VERIFIED BIOMETRIC PROOF</span><br>
+              ${checkinRecord.fullStamp}<br>
+              <span style="color:#ffcc00; font-size:10px;">5BFC Certified Security Seal</span>
             </div>
           </div>
         `;
       }
 
-      let waText = `Namaste ${m.name} ji! 5 Brother's Fitness Club: `;
-      if (isA) waText += `Aap aaj ${m.slot} batch me nahi the. Regular aayein! 💪`;
-      else if (isP) waText += `Aapki aaj ki workout attendance live photo ke sath mark ho chuki hai (${record.time}). Keep it up! 🔥`;
-      else if (m.fees === "Pending") waText += `Aapki gym fees pending hai. Kripya counter par renew karwayein. Dhanyawad! 👑`;
-      const waLink = `https://wa.me/91${m.phone}?text=${encodeURIComponent(waText)}`;
+      const slotOptions = AVAILABLE_SLOTS.map(s => `
+        <option value="${s}" ${s === currentSlot ? 'selected' : ''}>${s}</option>
+      `).join("");
 
-      return `
-        <div class="${cardClass}">
-          <div class="card-top">
-            <div>
-              <span class="m-name">${m.name}</span>
-              <span class="badge-plan">${m.plan}</span>
-              <div class="m-slot">🕒 Slot: ${m.slot}</div>
-              <div class="m-info">📞 ${m.phone}</div>
+      recordCard.innerHTML = `
+        <div class="record-top-row">
+          <div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="member-fullname">${member.name}</span>
+              <span style="background:#222; border:1px solid #444; color:#aaa; font-size:9.5px; padding:1px 5px; border-radius:4px;">${member.plan || 'General'}</span>
             </div>
-            <div>${feeBadge}</div>
+            <div style="font-size:11px; color:#aaa; margin-top:4px;">
+  4px;">
+              🕒 Slot: 
+              <select class="slot-dropdown-field" onchange="changeMemberSlot('${member.id}', this.value)">
+                ${slotOptions}
+              </select>
+            </div>
+            <div style="font-size:10.5px; color:#888; margin-top:2px;">📞 Contact: +91 ${member.phone}</div>
           </div>
+          <span style="font-size:10px; font-weight:900; padding:3px 7px; border-radius:4px; ${member.fees === 'Paid' || member.status === 'Full Paid' ? 'background:rgba(0,255,102,0.15); color:#00ff66; border:1px solid #00ff66;' : 'background:rgba(255,77,77,0.15); color:#ff6666; border:1px solid #ff6666;'}">
+            ${member.fees === 'Paid' || member.status === 'Full Paid' ? 'FEES PAID' : 'FEES DUE'}
+          </span>
+        </div>
 
-          ${proofHtml}
+        <div class="countdown-box">
+          📊 <b>पैकेज स्थिति:</b> आप इस पैकेज में <b>${attendedCount} दिन</b> आ चुके हैं।<br>
+          📅 समाप्ति तिथि: <b style="color:#ffcc00;">${expiry}</b>
+          ${member.feesPromiseDate ? `<br><span style="color:#00ff66;">📅 फीस वादा तारीख: ${member.feesPromiseDate}</span>` : ''}
+        </div>
 
-          <div class="att-actions">
-            <button class="btn-att btn-present ${isP ? 'selected' : ''}" onclick="requestPresent(${m.id}, '${m.name}')">
-              ${isP ? '✔ PRESENT' : '📸 PRESENT'}
-            </button>
-            <button class="btn-att btn-absent ${isA ? 'selected' : ''}" onclick="markAbsent(${m.id})">
-              ✖ ABSENT
-            </button>
-            <a class="btn-wa" href="${waLink}" target="_blank" title="WhatsApp Reminder">
-              💬
-            </a>
-          </div>
+        ${proofMarkup}
+
+        <div class="controls-row">
+          <button class="btn-mark-present ${isPresent ? 'is-verified' : 'is-pending'}" onclick="handleAttendanceClick('${member.id}')">
+            ${isPresent ? '✔ PRESENT (VERIFIED)' : '📸 CAPTURE SELFIE'}
+          </button>
+          <button class="btn-mark-absent ${member.isMarkedAbsent ? 'is-active-absent' : 'is-idle-absent'}" onclick="markMemberAbsent('${member.id}')">
+            ✖ ABSENT
+          </button>
+          <button class="btn-chat-wa" onclick="openWhatsAppChat('${member.phone}', '${member.name}')" title="WhatsApp Message">
+            💬
+          </button>
+          <button onclick="adminBypassAttendance('${member.id}')" style="background:#222; border:1px solid #444; color:#aaa; font-size:10px; padding:0 8px; border-radius:8px; cursor:pointer;" title="Admin Bypass">
+            🔑
+          </button>
         </div>
       `;
-    }).join("");
-
-    updateStats();
-  }
-
-  function openAddModal() { document.getElementById("addModal").style.display = "flex"; }
-  function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
-
-  function saveNewMember() {
-    const name = document.getElementById("mName").value.trim();
-    const phone = document.getElementById("mPhone").value.trim();
-    const slot = document.getElementById("mSlot").value;
-    const plan = document.getElementById("mPlan").value;
-    const fees = document.getElementById("mFees").value;
-    if (!name || !phone) { alert("Naam aur phone zaroor bharein!"); return; }
-    members.unshift({ id: Date.now(), name, phone, slot, plan, fees });
-    saveState();
-    closeAddModal();
-    renderMembers();
-    document.getElementById("mName").value = "";
-    document.getElementById("mPhone").value = "";
-  }
-
-  function exportExcel() {
-    let csv = "ID,Name,Phone,Time_Slot,Plan,Fees,Attendance,Entry_Time\n";
-    members.forEach(m => {
-      const rec = attendance[todayKey][m.id];
-      const att = rec ? (rec.status === "P" ? "Present" : "Absent") : "Not Marked";
-      const time = rec && rec.time ? rec.time : "--";
-      csv += `"${m.id}","${m.name}","${m.phone}","${m.slot}","${m.plan}","${m.fees}","${att}","${time}"\n`;
+      renderNode.appendChild(recordCard);
     });
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `5BFC_Attendance_${todayKey}.csv`;
-    link.click();
+
+    syncMetricCards(memberDataset.length, totalPresentLogged, memberDataset.length - totalPresentLogged, totalPendingFees);
   }
 
-  renderMembers();
+  function syncMetricCards(t, p, a, d) {
+    document.getElementById("metricTotalMembers").innerText = t;
+    document.getElementById("metricPresentCount").innerText = p;
+    document.getElementById("metricAbsentCount").innerText = a;
+    document.getElementById("metricDueCount").innerText = d;
+  }
+
+  function handleAttendanceClick(memberId) {
+    const memberDataset = fetchStoredMembers();
+    const candidate = memberDataset.find(m => m.id.toString() === memberId.toString());
+    if (!candidate) return;
+
+    const today = new Date();
+    const expiry = candidate.expiryDate ? new Date(candidate.expiryDate) : null;
+
+    if (expiry && today >= expiry) {
+      showMembershipExpiredStrictModal(candidate);
+      return;
+    }
+
+    initiateCameraVerification(candidate);
+  }
+
+  function showMembershipExpiredStrictModal(member) {
+    const existing = document.getElementById("strictExpiryModal");
+    if (existing) existing.remove();
+
+    const modal = document.createElement("div");
+    modal.id = "strictExpiryModal";
+    modal.style.cssText = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.95); z-index:99999; display:flex; align-items:center; justify-content:center; padding:15px; box-sizing:border-box;";
+
+    modal.innerHTML = `
+      <div id="modalInnerBox" style="background:#111; border:2.5px solid #ff4d4d; border-radius:18px; max-width:440px; width:100%; padding:20px; text-align:center; box-shadow:0 0 35px rgba(255,77,77,0.4); color:#fff; font-family:sans-serif;">
+        <div style="font-size:42px; margin-bottom:4px;">⚠️</div>
+        <h3 style="color:#ffcc00; margin:0 0 6px; font-size:18px; text-transform:uppercase;">5 BROTHER'S FITNESS CLUB</h3>
+        <div style="color:#ff6666; font-size:12px; font-weight:bold; margin-bottom:12px;">सदस्यता अवधि समाप्ति सूचना</div>
+
+        <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:10px; padding:12px; margin-bottom:14px; text-align:left; font-size:11.5px; line-height:1.55;">
+          प्रिय <b>${member.name}</b>,<br>
+          आपका जिम सदस्यता का महीना पूरा हो चुका है।<br><br>
+          <b style="color:#ffcc00;">सख्त नियम:</b> यदि आप आज के बाद <b>1 दिन भी आते हैं</b>, तो पूरे अगले महीने की फीस देय होगी। अनुपस्थिति या व्यस्तता पर कोई छूट नहीं मिलेगी।
+        </div>
+
+        <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:12px; border-radius:10px; margin-bottom:14px; text-align:left;">
+          <label style="display:block; font-size:11px; color:#00ff66; font-weight:bold; margin-bottom:5px;">
+            📅 आप फीस किस तारीख तक जमा कर देंगे? (Promise Date):
+          </label>
+          <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; box-sizing:border-box;">
+          <button onclick="submitPromiseAndOpenCam('${member.id}')" style="width:100%; margin-top:10px; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; font-size:12px; cursor:pointer;">
+            ✔ तारीख लॉक करें व सेल्फी लें
+          </button>
+        </div>
+
+        <div id="initialActionButtons" style="display:flex; flex-direction:column; gap:8px;">
+          <button onclick="showPromiseDateField()" style="background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
+            ✔ हाँ, मैं सहमत हूँ (फीस तारीख चुनें)
+          </button>
+          <button onclick="handleDisagreeAction('${member.id}')" style="background:#261212; color:#ff6666; font-weight:bold; padding:11px; border:1.5px solid #ff4d4d; border-radius:8px; font-size:12px; cursor:pointer;">
+            ✖ मैं सहमत नहीं हूँ (अस्वीकार करें)
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+  }
+
+  function showPromiseDateField() {
+    document.getElementById("initialActionButtons").style.display = "none";
+    document.getElementById("promiseDateContainer").style.display = "block";
+    const dateInp = document.getElementById("memberPromiseDate");
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 2);
+    dateInp.value = tomorrow.toISOString().split("T")[0];
+  }
+
+  function submitPromiseAndOpenCam(memberId) {
+    const promiseDate = document.getElementById("memberPromiseDate").value;
+    if (!promiseDate) {
+      alert("कृपया अपेक्षित फीस भुगतान तिथि चुनें!");
+      return;
+    }
+
+    let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let target = records.find(r => r.id.toString() === memberId.toString());
+    if (target) {
+      target.feesPromiseDate = promiseDate;
+      target.feesAgreementAccepted = true;
+      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
+      localStorage.setItem("5bfc_admissions", JSON.stringify(records));
+      localStorage.setItem("5bfc_members_v2", JSON.stringify(records));
+    }
+
+    const modal = document.getElementById("strictExpiryModal");
+    if (modal) modal.remove();
+
+    const candidate = fetchStoredMembers().find(m => m.id.toString() === memberId.toString());
+    initiateCameraVerification(candidate);
+  }
+
+  function handleDisagreeAction(memberId) {
+    const member = fetchStoredMembers().find(m => m.id.toString() === memberId.toString());
+    const modalBox = document.getElementById("modalInnerBox");
+
+    const alertMsg = encodeURIComponent(
+      `🚨 *5BFC RULES REJECTED - ENTRY DENIED*\n\n` +
+      `👤 *सदस्य:* ${member.name}\n` +
+      `📞 *मोबाइल:* ${member.phone}\n` +
+      `⚠️ *कारण:* महीने की फीस पॉलिसी से असहमत।\n` +
+      `🚫 *स्थिति:* जिम में प्रवेश रोक दिया गया है और घर वापस जाने को कहा गया है।`
+    );
+
+    modalBox.innerHTML = `
+      <div style="font-size:48px; margin-bottom:8px;">⛔</div>
+      <h2 style="color:#ff4d4d; margin:0 0 8px; font-size:20px; font-weight:900;">प्रवेश वर्जित (ENTRY DENIED)</h2>
+      <div style="background:#2b0f0f; border:2px solid #ff4d4d; border-radius:12px; padding:15px; text-align:center; color:#fff; font-size:13px; line-height:1.6; margin-bottom:15px;">
+        <b>प्रिय ${member.name},</b><br>
+        आप जिम के नियमों से सहमत नहीं हैं।<br><br>
+        <span style="color:#ffcc00; font-size:14px; font-weight:bold;">
+          कृपया आप घर वापस जाएं।<br>बिना फीस जमा किए या नियम सहमति के जिम के अंदर प्रवेश न करें।
+        </span>
+      </div>
+      <div style="font-size:11px; color:#aaa; margin-bottom:14px;">
+        जिम प्रबंधन को कॉल व व्हाट्सएप पर सूचना भेज दी गई है।
+      </div>
+      <button onclick="document.getElementById('strictExpiryModal').remove()" style="background:#333; color:#fff; border:1px solid #555; padding:10px 18px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer;">
+        ✕ बंद करें (Close)
+      </button>
+    `;
+
+    window.open(`https://wa.me/9140417259?text=${alertMsg}`, "_blank");
+
+    setTimeout(() => {
+      window.location.href = "tel:9140417259";
+    }, 1200);
+  }
+
+  function initiateCameraVerification(candidate) {
+    if (!candidate) return;
+
+    activeMemberRecordForCamera = candidate;
+    document.getElementById("modalCandidateName").innerText = candidate.name;
+    document.getElementById("cameraBackdropModal").classList.add("active");
+
+    const videoElem = document.getElementById("videoElement");
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+      .then(stream => {
+        currentVideoStream = stream;
+        videoElem.srcObject = stream;
+      })
+      .catch(err => {
+        alert("कैमरा एक्सेस नहीं मिला! कृपया ब्राउज़र परमिशन चेक करें।");
+        closeCameraModal();
+      });
+  }
+
+  function captureLiveSelfieProof() {
+    if (!currentVideoStream || !activeMemberRecordForCamera) return;
+
+    const videoElem = document.getElementById("videoElement");
+    const canvas = document.getElementById("offscreenCanvas");
+    canvas.width = 320; canvas.height = 320;
+    const ctx = canvas.getContext("2d");
+    ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
+    ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
+
+    const now = new Date();
+    const base64Stamp = canvas.toDataURL("image/jpeg", 0.75);
+    const dayStr = now.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+
+    let attendanceRecords = fetchDailyAttendanceMap();
+    attendanceRecords[activeMemberRecordForCamera.id] = {
+      time: timeStr,
+      fullStamp: `📅 ${dayStr} | ⏰ ${timeStr}`,
+      photo: base64Stamp
+    };
+    localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
+
+    // Update count & remove absent status
+    let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let target = allRecords.find(r => r.id.toString() === activeMemberRecordForCamera.id.toString());
+    let currentAttended = 1;
+    let totalPlanDays = 30;
+    let expiryStr = "N/A";
+
+    if (target) {
+      target.attendedDaysCount = (target.attendedDaysCount || 0) + 1;
+      target.isMarkedAbsent = false;
+      currentAttended = target.attendedDaysCount;
+      totalPlanDays = target.totalPackageDays || 30;
+      expiryStr = target.expiryDate || "N/A";
+      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(allRecords));
+      localStorage.setItem("5bfc_admissions", JSON.stringify(allRecords));
+      localStorage.setItem("5bfc_members_v2", JSON.stringify(allRecords));
+    }
+
+    closeCameraModal();
+    executeFilterEngine();
+
+    // Trigger Success Screen (Next Page Screen)
+    triggerAttendanceCelebration(activeMemberRecordForCamera.name, currentAttended, Math.max(0, totalPlanDays - currentAttended), expiryStr);
+  }
+
+  function triggerAttendanceCelebration(name, attended, remaining, expiry) {
+    document.getElementById("celebrateMemberName").innerText = name.toUpperCase();
+    document.getElementById("celebrateAttendedDays").innerText = attended;
+    document.getElementById("celebrateRemainingDays").innerText = remaining;
+    document.getElementById("celebrateExpiryDate").innerText = expiry;
+    document.getElementById("attendanceCelebrationModal").classList.add("show");
+  }
+
+  function closeCelebrationModal() {
+    document.getElementById("attendanceCelebrationModal").classList.remove("show");
+  }
+
+  function markMemberAbsent(memberId) {
+    let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let target = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (target) {
+      target.isMarkedAbsent = true;
+      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(allRecords));
+    }
+
+    let attendanceRecords = fetchDailyAttendanceMap();
+    if (attendanceRecords[memberId]) {
+      delete attendanceRecords[memberId];
+      localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
+    }
+    executeFilterEngine();
+  }
+
+  function adminBypassAttendance(memberId) {
+    const pin = prompt("🔒 Admin PIN दर्ज करें (सेल्फी बाईपास हेतु):");
+    if (pin === "5555") {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      let attendanceRecords = fetchDailyAttendanceMap();
+      attendanceRecords[memberId] = {
+        time: timeStr,
+        fullStamp: `📅 Admin Bypass Verified | ⏰ ${timeStr}`,
+        photo: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'><rect width='50' height='50' fill='%23222'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffcc00' font-size='10'>ADMIN</text></svg>"
+      };
+      localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
+      
+      let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+      let target = allRecords.find(r => r.id.toString() === memberId.toString());
+      if (target) {
+        target.attendedDaysCount = (target.attendedDaysCount || 0) + 1;
+        target.isMarkedAbsent = false;
+        localStorage.setItem("5BFC_MEMBERS", JSON.stringify(allRecords));
+      }
+      executeFilterEngine();
+    } else if (pin !== null) {
+      alert("❌ गलत पासवर्ड!");
+    }
+  }
+
+  function closeCameraModal() {
+    if (currentVideoStream) {
+      currentVideoStream.getTracks().forEach(track => track.stop());
+      currentVideoStream = null;
+    }
+    document.getElementById("cameraBackdropModal").classList.remove("active");
+  }
+
+  function openWhatsAppChat(phone, name) {
+    const msg = encodeURIComponent(`नमस्ते ${name}, 5 Brother's Fitness Club से संपर्क किया जा रहा है।`);
+    window.open(`https://wa.me/91${phone}?text=${msg}`, "_blank");
+  }
+
+  function dispatchAbsentAlerts() {
+    const memberDataset = fetchStoredMembers();
+    const attendanceRecords = fetchDailyAttendanceMap();
+    const absentMembers = memberDataset.filter(m => !attendanceRecords[m.id]);
+
+    if (absentMembers.length === 0) {
+      alert("आज सभी सदस्य उपस्थित हैं!");
+      return;
+    }
+
+    alert(`📢 कुल ${absentMembers.length} अनुपस्थित सदस्य पाए गए। पहला नोटिस भेजा जा रहा है।`);
+    const first = absentMembers[0];
+    const alertText = encodeURIComponent(
+      `🚨 *5 BROTHER'S FITNESS CLUB - ABSENT ALERT*\n\n` +
+      `प्रिय ${first.name},\n` +
+      `आप आज जिम में अनुपस्थित हैं। कृपया ध्यान दें कि नियमित 26-दिन उपस्थिति पर 100% रिन्यूअल रिबेट पॉलिसी लागू होती है। समय से वर्कआउट सुनिश्चित करें!`
+    );
+    window.open(`https://wa.me/91${first.phone}?text=${alertText}`, "_blank");
+  }
+
+  window.onload = executeFilterEngine;
 </script>
 </body>
 </html>
