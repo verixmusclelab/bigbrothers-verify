@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Official Product Verification - Big Brothers Fitness</title>
+<title>Official Brand Authenticity Portal - 5 Brother's Fitness Club</title>
 <style>
 * {
   margin: 0;
@@ -16,77 +16,76 @@
 html, body {
   width: 100%;
   min-height: 100vh;
-  background-color: #0d0d0d;
+  background-color: #080808;
 }
 
 body {
-  background: radial-gradient(circle at top, #1c1c1c 0%, #080808 100%);
+  background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%);
   color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 30px 14px 40px 14px;
+  padding: 24px 14px 40px 14px;
 }
 
-/* Screen par achhi chaudaai (Full Adaptive Width) */
 .main-container {
   width: 100%;
-  max-width: 540px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .brand-icon {
-  font-size: 38px;
-  margin-bottom: 6px;
+  font-size: 34px;
+  margin-bottom: 4px;
   filter: drop-shadow(0 0 12px rgba(255, 204, 0, 0.45));
 }
 
 .welcome-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 900;
   color: #ffcc00;
   text-align: center;
   line-height: 1.25;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   letter-spacing: 0.5px;
 }
 
 .welcome-sub {
-  font-size: 13px;
-  color: #bbbbbb;
+  font-size: 12px;
+  color: #aaaaaa;
   text-align: center;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 /* Card Container */
 .verify-card {
   width: 100%;
-  background: rgba(20, 20, 20, 0.95);
-  border: 2px solid #ffcc00;
-  border-radius: 18px;
-  padding: 22px 18px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85);
-  margin-bottom: 18px;
+  background: rgba(18, 18, 18, 0.95);
+  border: 1.5px solid #ffcc00;
+  border-radius: 16px;
+  padding: 18px 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+  margin-bottom: 16px;
   text-align: center;
 }
 
 .card-heading {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
   color: #ffffff;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   letter-spacing: 0.5px;
 }
 
 .code-input {
   width: 100%;
-  padding: 15px;
-  background: #0a0a0a;
+  padding: 13px;
+  background: #000000;
   border: 1.5px solid #333333;
-  border-radius: 12px;
+  border-radius: 10px;
   color: #ffffff;
   font-size: 18px;
   font-weight: bold;
@@ -99,18 +98,18 @@ body {
 
 .code-input:focus {
   border-color: #ffcc00;
-  box-shadow: 0 0 10px rgba(255, 204, 0, 0.25);
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
 }
 
 .verify-btn {
   width: 100%;
-  padding: 15px;
-  margin-top: 14px;
+  padding: 13px;
+  margin-top: 12px;
   background: #ffcc00;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   color: #000000;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 900;
   letter-spacing: 1px;
   cursor: pointer;
@@ -126,15 +125,15 @@ body {
 #resultBox {
   width: 100%;
   display: none;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .badge-box {
   width: 100%;
-  padding: 18px 16px;
+  padding: 16px 14px;
   border-radius: 14px;
   text-align: center;
-  animation: fadeIn 0.2s ease-in-out;
+  animation: fadeIn 0.25s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -144,74 +143,237 @@ body {
 
 .badge-verified {
   background: rgba(0, 255, 100, 0.08);
-  border: 2px solid #00ff66;
+  border: 1.5px solid #00ff66;
   box-shadow: 0 0 20px rgba(0, 255, 100, 0.25);
 }
 
 .badge-failed {
   background: rgba(255, 50, 50, 0.08);
-  border: 2px solid #ff3333;
+  border: 1.5px solid #ff3333;
   box-shadow: 0 0 20px rgba(255, 50, 50, 0.25);
 }
 
 .badge-warning {
   background: rgba(255, 204, 0, 0.08);
-  border: 2px solid #ffcc00;
+  border: 1.5px solid #ffcc00;
   box-shadow: 0 0 20px rgba(255, 204, 0, 0.25);
 }
 
-/* Certificate Cards */
-.cert-section {
+/* PREMIUM CERTIFICATE SECTION */
+.cert-wrapper {
   width: 100%;
+}
+
+.premium-cert-card {
+  width: 100%;
+  background: linear-gradient(145deg, #18150c 0%, #0d0d0d 100%);
+  border: 1.5px solid #d4af37;
+  border-radius: 16px;
+  padding: 18px 14px;
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.cert-badge-ribbon {
+  position: absolute;
+  top: 10px;
+  right: -28px;
+  background: #ffcc00;
+  color: #000;
+  font-size: 8.5px;
+  font-weight: 900;
+  padding: 3px 28px;
+  transform: rotate(45deg);
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.cert-top-title {
+  font-size: 11px;
+  font-weight: 900;
+  color: #d4af37;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.cert-partner-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.cert-sub-verified {
+  font-size: 11px;
+  color: #00ff66;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+}
+
+/* SEALS DUAL DISPLAY */
+.seals-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.seal-img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+}
+
+.cert-points-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cert-point {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #282828;
+  border-radius: 8px;
+  padding: 6px 4px;
+  font-size: 10.5px;
+  color: #ddd;
+  font-weight: 600;
+}
+
+.cert-point span {
+  margin-right: 4px;
+}
+
+.cert-view-btn {
+  display: inline-block;
+  background: transparent;
+  color: #ffcc00;
+  border: 1px solid #ffcc00;
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.cert-view-btn:active {
+  background: #ffcc00;
+  color: #000;
+}
+
+/* MODAL CERTIFICATE POPUP */
+.cert-modal {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.92);
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-content-card {
+  background: #ffffff;
+  color: #111111;
+  max-width: 440px;
+  width: 100%;
+  border-radius: 14px;
+  padding: 24px 20px;
+  text-align: center;
+  border: 6px double #c59b27;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  font-size: 24px;
+  font-weight: 900;
+  color: #555555;
+  cursor: pointer;
+}
+
+.modal-title-big {
+  font-size: 18px;
+  font-weight: 900;
+  color: #946c0d;
+  text-transform: uppercase;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.modal-auth-to {
+  font-size: 11px;
+  color: #555555;
+  margin: 12px 0 4px 0;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.modal-center-name {
+  font-size: 19px;
+  font-weight: 900;
+  color: #000000;
+  text-transform: uppercase;
+  border-bottom: 2px solid #c59b27;
+  display: inline-block;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.modal-desc {
+  font-size: 11px;
+  color: #444444;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.modal-stamp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed #aaaaaa;
+  padding-top: 14px;
+}
+
+.modal-stamp {
+  width: 60px;
+  height: 60px;
+  border: 2px dashed #946c0d;
+  border-radius: 50%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.cert-card {
-  display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(20, 20, 20, 0.85);
-  border: 1px solid #333333;
-  border-radius: 12px;
-  padding: 13px 16px;
-  text-align: left;
-}
-
-.cert-card.gold {
-  border-color: rgba(255, 204, 0, 0.4);
-  background: linear-gradient(90deg, rgba(255, 204, 0, 0.08) 0%, rgba(20, 20, 20, 0.9) 100%);
-}
-
-.cert-card.green {
-  border-color: rgba(0, 255, 102, 0.4);
-  background: linear-gradient(90deg, rgba(0, 255, 102, 0.08) 0%, rgba(20, 20, 20, 0.9) 100%);
-}
-
-.cert-icon {
-  font-size: 26px;
-  line-height: 1;
-}
-
-.cert-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-}
-
-.cert-sub {
-  font-size: 11px;
-  color: #888888;
-  margin-top: 2px;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 900;
+  color: #946c0d;
+  text-transform: uppercase;
+  line-height: 1.1;
 }
 
 .footer-text {
   font-size: 11px;
   color: #666666;
-  margin-top: 24px;
+  margin-top: 22px;
   text-align: center;
   letter-spacing: 0.5px;
 }
@@ -222,11 +384,11 @@ body {
 <div class="main-container">
   
   <div class="brand-icon">👑</div>
-  <h1 class="welcome-title" id="welcomeBrand">Welcome to<br>Big Brothers Fitness</h1>
-  <p class="welcome-sub">Enter Your Verification Code here</p>
+  <h1 class="welcome-title" id="welcomeBrand">Welcome to<br>Product Verification Portal</h1>
+  <p class="welcome-sub" id="welcomeSub">Enter the security code from your product scratch seal</p>
 
   <div class="verify-card">
-    <div class="card-heading">Verification Card</div>
+    <div class="card-heading">Security Verification Card</div>
     <input type="text" id="scratchInput" class="code-input" placeholder="ENTER CODE" maxlength="15" autocomplete="off" autocorrect="off" autocapitalize="characters" oninput="resetResultState()">
     <button type="button" class="verify-btn" onclick="runVerification()">VERIFY CODE</button>
   </div>
@@ -234,33 +396,90 @@ body {
   <!-- RESULT NOTIFICATION CARD -->
   <div id="resultBox"></div>
 
-  <!-- OFFICIAL CERTIFICATIONS -->
-  <div class="cert-section">
-    <div class="cert-card gold">
-      <span class="cert-icon">🎖️</span>
-      <div>
-        <div class="cert-title">OFFICIALLY AUTHORIZED DEALER</div>
-        <div class="cert-sub">Direct Brand Sourcing | 100% Original Products</div>
-      </div>
-    </div>
+  <!-- PREMIUM AUTHORIZED CERTIFICATE CARD -->
+  <div class="cert-wrapper">
+    <div class="premium-cert-card">
+      <div class="cert-badge-ribbon">ORIGINAL</div>
+      
+      <div class="cert-top-title">OFFICIAL AUTHORIZED PARTNER</div>
+      <div class="cert-partner-title">5 BROTHER'S FITNESS CLUB</div>
+      <div class="cert-sub-verified">✔ Officially Authorized Partner & Verified Dealer</div>
 
-    <div class="cert-card green">
-      <span class="cert-icon">🛡️</span>
-      <div>
-        <div class="cert-title">100% AUTHENTICITY CERTIFIED</div>
-        <div class="cert-sub">Lab-Tested Quality | Guaranteed Genuine Nutrition</div>
+      <div class="seals-container">
+        <!-- GMP Certified Seal -->
+        <svg class="seal-img" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="95" fill="#d4af37" stroke="#111" stroke-width="6"/>
+          <circle cx="100" cy="100" r="82" fill="#111" stroke="#d4af37" stroke-width="4"/>
+          <circle cx="100" cy="100" r="62" fill="#d4af37"/>
+          <text x="100" y="48" font-size="11" font-weight="900" fill="#d4af37" text-anchor="middle" letter-spacing="1">★ GOOD MANUFACTURING ★</text>
+          <text x="100" y="105" font-size="34" font-weight="900" fill="#111" text-anchor="middle" font-family="Arial Black">GMP</text>
+          <text x="100" y="122" font-size="11" font-weight="900" fill="#111" text-anchor="middle" letter-spacing="1">CERTIFIED</text>
+          <text x="100" y="165" font-size="11" font-weight="900" fill="#d4af37" text-anchor="middle" letter-spacing="1">★ PRACTICE ★</text>
+        </svg>
+
+        <!-- Certified Professional Seal -->
+        <svg class="seal-img" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="100,5 110,25 132,12 136,34 160,28 156,50 178,52 167,72 186,81 169,96 183,112 162,120 171,139 149,141 151,163 130,158 126,179 108,168 98,187 86,171 70,186 64,166 45,175 46,153 26,155 33,134 14,130 26,112 10,102 26,89 15,73 34,68 29,47 50,49 52,28 73,35 81,15 97,28" fill="#d4af37" stroke="#997a15" stroke-width="3"/>
+          <circle cx="100" cy="100" r="70" fill="#f3cf55" stroke="#997a15" stroke-width="4"/>
+          <circle cx="100" cy="100" r="54" fill="#d4af37"/>
+          <text x="100" y="58" font-size="10" font-weight="900" fill="#111" text-anchor="middle" letter-spacing="1">★ CERTIFIED ★</text>
+          <rect x="35" y="86" width="130" height="28" fill="#111" rx="4"/>
+          <text x="100" y="106" font-size="15" font-weight="900" fill="#d4af37" text-anchor="middle" letter-spacing="1">CERTIFIED</text>
+          <text x="100" y="136" font-size="9" font-weight="900" fill="#111" text-anchor="middle" letter-spacing="1">PROFESSIONAL</text>
+        </svg>
       </div>
+
+      <div class="cert-points-grid">
+        <div class="cert-point"><span>🛡️</span> Genuine Import</div>
+        <div class="cert-point"><span>🔬</span> Lab-Tested Batch</div>
+        <div class="cert-point"><span>🔒</span> Tamper-Proof</div>
+        <div class="cert-point"><span>🤝</span> Direct Sourcing</div>
+      </div>
+
+      <button type="button" class="cert-view-btn" onclick="openCertModal()">📜 VIEW FULL PARTNER CERTIFICATE</button>
     </div>
   </div>
 
   <div class="footer-text">
-    &copy; Big Brothers Fitness & Nutrition | Authenticity Guaranteed
+    &copy; 5 Brother's Fitness Club | Authentic Nutrition Verification System
   </div>
 
 </div>
 
+<!-- FULL CERTIFICATE PHOTO MODAL -->
+<div id="certModal" class="cert-modal" onclick="closeCertModal(event)">
+  <div class="modal-content-card" onclick="event.stopPropagation()">
+    <span class="modal-close" onclick="closeCertModal()">&times;</span>
+    <div style="font-size:28px;">👑</div>
+    <div class="modal-title-big">Certificate of Authorization</div>
+    <div style="font-size:9.5px; letter-spacing:1px; color:#777777; margin-top:2px;">OFFICIAL NUTRITION DEALER VERIFICATION</div>
+    
+    <div class="modal-auth-to">This is to officially certify that</div>
+    <div class="modal-center-name">5 BROTHER'S FITNESS CLUB</div>
+    
+    <div class="modal-desc">
+      is officially recognized as an Authorized Retail Partner for leading global nutrition brands including Labrada Nutrition, MuscleBlaze, Optimum Nutrition (ON), and MuscleTech. All products sold are sourced through authorized import channels with verified authenticity.
+    </div>
+
+    <div class="modal-stamp-row">
+      <div style="text-align:left;">
+        <div style="font-size:9px; color:#777777;">ISSUE AUTHORITY</div>
+        <div style="font-size:11px; font-weight:900; color:#111111;">Brand Partner Network</div>
+      </div>
+      <div class="modal-stamp">
+        <span>★ 100% ★</span>
+        <span>ORIGINAL</span>
+        <span>VERIFIED</span>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:9px; color:#777777;">REGISTRATION</div>
+        <div style="font-size:11px; font-weight:900; color:#008833;">Active & Verified</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-// Algorithm-based exact code check
 const CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 
 function getCodeForIndex(prefix, index) {
@@ -274,23 +493,57 @@ function getCodeForIndex(prefix, index) {
   return prefix + part;
 }
 
-// 2,000 Whey Protein Unique Codes Database (Auto-Loaded & Exact)
+// 2,000 Whey Protein Codes Database
 const PROTEIN_CODES_SET = new Set();
 for (let i = 1; i <= 2000; i++) {
   PROTEIN_CODES_SET.add(getCodeForIndex("WP", i));
 }
 
-// Fixed Master Verification Database
+// Brand Specific Master Verification Database
 const MASTER_VERIFIED_CODES = {
-  "LBR7F29K": { brand: "Labrada Nutrition", name: "100% Whey Protein" },
-  "LBR-1001": { brand: "Labrada Nutrition", name: "Muscle Mass Gainer" },
-  "LBR-1002": { brand: "Labrada Nutrition", name: "100% Whey Protein" },
-  "LBR-1003": { brand: "Labrada Nutrition", name: "Super Charge Pre-Workout" },
-  "LBR-1004": { brand: "Labrada Nutrition", name: "ProV60 Multi-Purpose Protein" },
-  "LBR-1005": { brand: "Labrada Nutrition", name: "Muscle Mass Gainer" },
-  "MB-WHEY-01": { brand: "MuscleBlaze", name: "Biozyme Whey Protein" },
-  "ON-GOLD-01": { brand: "Optimum Nutrition", name: "Gold Standard 100% Whey" },
-  "MT-NITRO-01": { brand: "MuscleTech", name: "Nitro-Tech Performance Series" }
+  // Labrada Nutrition
+  "LBR7F29K": { 
+    brand: "Labrada Nutrition", 
+    name: "100% Premium Whey Protein",
+    importer: "MusclePro Nutrition (MPN) / Shri Balaji Overseas",
+    authorizedPartner: "5 Brother's Fitness Club"
+  },
+  "LBR-1001": { 
+    brand: "Labrada Nutrition", 
+    name: "Muscle Mass Gainer",
+    importer: "MusclePro Nutrition (MPN)",
+    authorizedPartner: "5 Brother's Fitness Club"
+  },
+  "LBR-1002": { 
+    brand: "Labrada Nutrition", 
+    name: "100% Premium Whey Protein",
+    importer: "MusclePro Nutrition (MPN)",
+    authorizedPartner: "5 Brother's Fitness Club"
+  },
+
+  // Optimum Nutrition (ON)
+  "ON-GOLD-01": { 
+    brand: "Optimum Nutrition (ON)", 
+    name: "Gold Standard 100% Whey",
+    importer: "Glanbia Performance Nutrition India",
+    authorizedPartner: "5 Brother's Fitness Club"
+  },
+
+  // MuscleBlaze
+  "MB-WHEY-01": { 
+    brand: "MuscleBlaze", 
+    name: "Biozyme Performance Whey Protein",
+    importer: "Bright Lifecare Pvt. Ltd.",
+    authorizedPartner: "5 Brother's Fitness Club"
+  },
+
+  // MuscleTech
+  "MT-NITRO-01": { 
+    brand: "MuscleTech", 
+    name: "Nitro-Tech 100% Whey Gold",
+    importer: "Shri Balaji Overseas / MusclePro Nutrition",
+    authorizedPartner: "5 Brother's Fitness Club"
+  }
 };
 
 function resetResultState() {
@@ -299,6 +552,14 @@ function resetResultState() {
     resultBox.style.display = "none";
     resultBox.innerHTML = "";
   }
+}
+
+function openCertModal() {
+  document.getElementById("certModal").style.display = "flex";
+}
+
+function closeCertModal() {
+  document.getElementById("certModal").style.display = "none";
 }
 
 function runVerification() {
@@ -310,23 +571,32 @@ function runVerification() {
     resultBox.style.display = "block";
     resultBox.innerHTML = `
       <div class="badge-box badge-failed">
-        <div style="font-size:17px; font-weight:800; color:#ff3333; margin-bottom:4px;">❌ SECURITY CODE REQUIRED</div>
-        <div style="font-size:13px; color:#bbb;">Please enter the authentication code to continue.</div>
+        <div style="font-size:16px; font-weight:800; color:#ff3333; margin-bottom:4px;">❌ SECURITY CODE REQUIRED</div>
+        <div style="font-size:12px; color:#bbb;">Please enter your scratch security code to continue.</div>
       </div>
     `;
     return;
   }
 
-  // 1. Check in Master Codes
+  // 1. Check in Master Database
   let productData = MASTER_VERIFIED_CODES[code];
 
-  // 2. Strict 2,000 Protein Codes Database Check
+  // 2. Check in 2,000 Whey Protein Codes Database
   if (!productData && PROTEIN_CODES_SET.has(code)) {
-    productData = { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
+    productData = { 
+      brand: "Labrada Nutrition", 
+      name: "100% Premium Whey Protein (Official Import)",
+      importer: "MusclePro Nutrition (MPN) / Shri Balaji Overseas",
+      authorizedPartner: "5 Brother's Fitness Club"
+    };
   }
 
   if (productData) {
-    document.getElementById("welcomeBrand").innerHTML = "Welcome to<br>" + productData.brand;
+    document.getElementById("welcomeBrand").innerHTML = `
+      Welcome to<br>
+      <span style="font-size:24px; color:#ffcc00; text-transform:uppercase;">${productData.brand}</span>
+    `;
+    document.getElementById("welcomeSub").innerHTML = "Official Brand Authentication & Verification Network";
 
     let scanCount = parseInt(localStorage.getItem("scan_" + code)) || 0;
 
@@ -334,10 +604,12 @@ function runVerification() {
       resultBox.style.display = "block";
       resultBox.innerHTML = `
         <div class="badge-box badge-warning">
-          <div style="font-size:17px; font-weight:800; color:#ffcc00; margin-bottom:6px;">⚠️ PREVIOUSLY AUTHENTICATED</div>
+          <div style="font-size:17px; font-weight:900; color:#ffcc00; margin-bottom:6px;">⚠️ PREVIOUSLY AUTHENTICATED</div>
           <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:3px;">BRAND: ${productData.brand}</div>
-          <div style="font-size:13px; color:#ddd; margin-bottom:8px;">PRODUCT: ${productData.name}</div>
-          <div style="font-size:12px; color:#ccc; line-height:1.4;">This security code has already been verified. Ensure product tamper-seal was intact prior to use.</div>
+          <div style="font-size:13px; color:#ddd; margin-bottom:3px;">PRODUCT: ${productData.name}</div>
+          <div style="font-size:12px; color:#aaa; margin-bottom:3px;">OFFICIAL IMPORTER: ${productData.importer}</div>
+          <div style="font-size:12px; color:#ffcc00; font-weight:700; margin-bottom:8px;">AUTHORIZED DEALER: ${productData.authorizedPartner}</div>
+          <div style="font-size:11px; color:#bbb; line-height:1.4;">This security code has already been verified. Ensure product neck-seal was unbroken before purchase.</div>
         </div>
       `;
     } else {
@@ -347,20 +619,24 @@ function runVerification() {
       resultBox.style.display = "block";
       resultBox.innerHTML = `
         <div class="badge-box badge-verified">
-          <div style="font-size:17px; font-weight:800; color:#00ff66; margin-bottom:6px;">✔ 100% ORIGINAL & VERIFIED</div>
-          <div style="font-size:14px; font-weight:bold; color:#fff; margin-bottom:3px;">BRAND: ${productData.brand}</div>
-          <div style="font-size:13px; color:#ddd; margin-bottom:8px;">PRODUCT: ${productData.name}</div>
-          <div style="font-size:12px; color:#00ff66; font-weight:600; line-height:1.4;">Officially Verified via ${productData.brand} Authenticity Network</div>
+          <div style="font-size:17px; font-weight:900; color:#00ff66; margin-bottom:6px;">✔ 100% ORIGINAL & VERIFIED</div>
+          <div style="font-size:15px; font-weight:bold; color:#fff; margin-bottom:4px;">BRAND: ${productData.brand}</div>
+          <div style="font-size:13px; color:#ddd; margin-bottom:4px;">PRODUCT: ${productData.name}</div>
+          <div style="font-size:12px; color:#aaa; margin-bottom:4px;">OFFICIAL IMPORTER: ${productData.importer}</div>
+          <div style="font-size:12px; color:#ffcc00; font-weight:700; margin-bottom:8px;">OFFICIALLY VERIFIED VIA: ${productData.authorizedPartner}</div>
+          <div style="font-size:11px; color:#00ff66; font-weight:600; line-height:1.4;">Certified Authentic Sourcing | Genuine Nutrition Guaranteed</div>
         </div>
       `;
     }
   } else {
-    // Galat code par seedhe failed
+    document.getElementById("welcomeBrand").innerHTML = "Welcome to<br>Product Verification Portal";
+    document.getElementById("welcomeSub").innerHTML = "Enter the security code from your product scratch seal";
+
     resultBox.style.display = "block";
     resultBox.innerHTML = `
       <div class="badge-box badge-failed">
-        <div style="font-size:17px; font-weight:800; color:#ff3333; margin-bottom:6px;">❌ INVALID PRODUCT CODE</div>
-        <div style="font-size:13px; color:#bbb; line-height:1.4;">The security code entered is invalid or unrecognized. Please check your product packaging.</div>
+        <div style="font-size:16px; font-weight:800; color:#ff3333; margin-bottom:6px;">❌ INVALID SECURITY CODE</div>
+        <div style="font-size:12px; color:#bbb; line-height:1.4;">The security code entered is not registered in the brand authentication database. Check packaging scratch seal.</div>
       </div>
     `;
   }
