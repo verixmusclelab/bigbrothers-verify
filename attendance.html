@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club - Biometric Attendance</title>
+<title>5 Brother's Fitness Club - Attendance Portal</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ffcc00">
 <style>
   :root {
     --gold: #ffcc00;
-    --gold-glow: rgba(255, 204, 0, 0.3);
+    --gold-glow: rgba(255, 204, 0, 0.28);
     --bg-dark: #070707;
     --card-bg: #111111;
-    --border-color: #262626;
+    --border-color: #242424;
     --green-accent: #00ff66;
     --red-accent: #ff3333;
     --text-muted: #888888;
@@ -43,10 +43,10 @@
     text-transform: uppercase;
   }
 
-  .portal-status-pill {
-    font-size: 10.5px; font-weight: 800; color: var(--gold);
-    background: rgba(255, 204, 0, 0.08); border: 1px solid rgba(255, 204, 0, 0.3);
-    padding: 5px 10px; border-radius: 14px; text-transform: uppercase;
+  .btn-add-member {
+    background: #00ff66; color: #000; border: none; font-size: 11px;
+    font-weight: 900; padding: 7px 12px; border-radius: 8px; cursor: pointer;
+    text-transform: uppercase;
   }
 
   .branding-card {
@@ -62,8 +62,8 @@
 
   .badge-live-clock {
     display: inline-block; background: #181818; border: 1px solid #ffcc00;
-    color: var(--gold); font-size: 11.5px; font-weight: 900;
-    padding: 5px 14px; border-radius: 20px; margin-top: 8px;
+    color: var(--gold); font-size: 12px; font-weight: 900;
+    padding: 6px 14px; border-radius: 20px; margin-top: 8px;
   }
 
   .stats-overview {
@@ -77,17 +77,6 @@
 
   .stat-num-val { font-size: 18px; font-weight: 900; }
   .stat-label-txt { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 3px; }
-
-  .absent-alert-banner {
-    background: #181111; border: 1px solid #4a1f1f; border-radius: 12px;
-    padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 14px;
-  }
-
-  .btn-send-alert {
-    background: #ff4d4d; color: #fff; font-size: 10px; font-weight: 900;
-    border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer;
-  }
 
   .search-container { margin-bottom: 12px; }
   .live-search-input {
@@ -116,20 +105,17 @@
 
   .member-list-wrapper { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 
-  /* DEFAULT CARD */
   .member-record-card {
     background: var(--card-bg); border: 2px solid var(--border-color);
     border-radius: 14px; padding: 14px; position: relative; transition: all 0.25s ease;
   }
 
-  /* STRONG BRIGHT GREEN WHEN PRESENT */
   .member-record-card.status-present {
     border: 2px solid #00ff66 !important;
     background: linear-gradient(180deg, #101812 0%, #07130a 100%) !important;
     box-shadow: 0 0 20px rgba(0, 255, 102, 0.25);
   }
 
-  /* STRONG BRIGHT RED WHEN ABSENT */
   .member-record-card.status-absent {
     border: 2px solid #ff3333 !important;
     background: linear-gradient(180deg, #181010 0%, #120707 100%) !important;
@@ -163,7 +149,6 @@
 
   .controls-row { display: flex; gap: 8px; margin-top: 10px; }
 
-  /* PRESENT BUTTON STYLES */
   .btn-mark-present {
     flex: 2; font-size: 11.5px; font-weight: 900; padding: 11px 8px; border-radius: 8px;
     border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px;
@@ -175,7 +160,6 @@
     background: #1b2e21; color: #00ff66; border: 1.5px solid #00ff66;
   }
 
-  /* ABSENT BUTTON STYLES */
   .btn-mark-absent {
     flex: 1.1; font-size: 11px; font-weight: 900; padding: 11px 6px; border-radius: 8px; cursor: pointer;
   }
@@ -191,40 +175,25 @@
     border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: bold;
   }
 
-  /* FULL SCREEN ATTENDANCE CELEBRATION MODAL */
-  .present-success-modal {
+  /* MODALS */
+  .present-success-modal, #addMemberModal, .camera-modal-backdrop {
     display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0, 0, 0, 0.95); z-index: 999999;
-    align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;
+    align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;
   }
-  .present-success-modal.show { display: flex; }
+  .present-success-modal.show, #addMemberModal.show, .camera-modal-backdrop.active { display: flex; }
 
-  .success-card-content {
-    background: #111; border: 2.5px solid #00ff66; border-radius: 20px;
-    max-width: 420px; width: 100%; padding: 22px 18px; text-align: center;
-    box-shadow: 0 0 40px rgba(0, 255, 102, 0.4); color: #fff;
-  }
-
-  /* Camera Modal */
-  .camera-modal-backdrop {
-    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.95); z-index: 99999;
-    flex-direction: column; align-items: center; justify-content: center; padding: 16px;
-  }
-  .camera-modal-backdrop.active { display: flex; }
-
-  .modal-camera-card {
-    width: 100%; max-width: 420px; background: #111; border: 2px solid var(--gold);
-    border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center;
+  .success-card-content, .add-modal-card {
+    background: #111; border: 2px solid var(--gold); border-radius: 18px;
+    max-width: 440px; width: 100%; padding: 20px 16px; text-align: center;
+    box-shadow: 0 0 35px var(--gold-glow); color: #fff;
   }
 
   .camera-feed-container {
     width: 100%; height: 320px; background: #000; border-radius: 14px;
     position: relative; overflow: hidden; border: 2px solid #333;
   }
-
   #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-
   .scanner-reticle-ring {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 200px; height: 200px; border: 2px dashed var(--green-accent); border-radius: 50%;
@@ -235,7 +204,7 @@
 
   <div class="nav-header">
     <a href="app.html" class="btn-back-home">⬅ Master App</a>
-    <div class="portal-status-pill">Biometric Engine Active</div>
+    <button type="button" class="btn-add-member" onclick="openAddMemberModal()">➕ नया सदस्य जोड़ें</button>
   </div>
 
   <div class="branding-card">
@@ -255,20 +224,12 @@
     <div class="stat-card-item"><div class="stat-num-val" id="metricDueCount" style="color: #ffaa33;">0</div><div class="stat-label-txt">Fees Due</div></div>
   </div>
 
-  <div class="absent-alert-banner">
-    <div>
-      <div style="font-size:11px; font-weight:bold; color:#ff6666;">🚨 9:00 AM ABSENT ALERT TRIGGER</div>
-      <div style="font-size:9.5px; color:#aaa; margin-top:2px;">Dispatches formal notice regarding the 26-day 100% renewal benefit rule.</div>
-    </div>
-    <button class="btn-send-alert" onclick="dispatchAbsentAlerts()">SEND ALERT</button>
-  </div>
-
   <!-- SEARCH BAR -->
   <div class="search-container">
-    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="🔍 Search member name, mobile or slot..." oninput="executeFilterEngine()">
+    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="🔍 सदस्य का नाम या 10 अंक मोबाइल खोजें (उदा. Shiva, Raj, 9169)..." oninput="executeFilterEngine()">
   </div>
 
-  <!-- TIME SLOT CHIPS -->
+  <!-- TIME SLOTS -->
   <div class="batch-section-title">🌅 MORNING BATCHES (5:00 AM - 9:00 AM)</div>
   <div class="batch-chips-row">
     <div class="slot-chip active" onclick="selectSlotFilter('all', this)">All Slots</div>
@@ -289,11 +250,66 @@
 
   <div class="member-list-wrapper" id="targetRenderContainer"></div>
 
-  <!-- ATTENDANCE SUCCESS SCREEN (CELEBRATION VIEW) -->
+  <!-- ADD MEMBER MODAL -->
+  <div id="addMemberModal">
+    <div class="add-modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:6px;">
+        <h3 style="color:var(--gold); font-size:14px; margin:0;">➕ नया सदस्य जोड़ें (Instant Sync)</h3>
+        <button type="button" onclick="closeAddMemberModal()" style="background:#ff3333; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="handleQuickAddMember(event)" style="text-align:left; font-size:11px;">
+        <div style="margin-bottom:8px;">
+          <label style="color:#aaa;">पूरा नाम *</label>
+          <input type="text" id="addName" required placeholder="सदस्य का नाम" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; margin-top:2px;">
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="color:#aaa;">पिता का नाम</label>
+          <input type="text" id="addFather" placeholder="पिता का नाम" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; margin-top:2px;">
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="color:#aaa;">मोबाइल नंबर (10 अंक) *</label>
+          <input type="tel" id="addPhone" maxlength="10" required placeholder="WhatsApp नंबर" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; margin-top:2px;">
+        </div>
+        <div style="display:flex; gap:6px; margin-bottom:8px;">
+          <div style="flex:1;">
+            <label style="color:#aaa;">प्लान *</label>
+            <select id="addPlan" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; margin-top:2px;">
+              <option value="1M|500|30">जनरल - ₹500 (1 माह)</option>
+              <option value="1M|300|30">स्टूडेंट - ₹300 (1 माह)</option>
+              <option value="7D|99|7">7 दिन ट्रायल - ₹99</option>
+              <option value="3M|1400|90">3 महीने - ₹1400</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label style="color:#aaa;">बैच समय (Slot) *</label>
+            <select id="addSlot" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#ffcc00; padding:8px; border-radius:6px; margin-top:2px; font-weight:bold;">
+              <option value="06:00 AM - 07:00 AM">06:00 AM - 07:00 AM</option>
+              <option value="05:00 AM - 06:00 AM">05:00 AM - 06:00 AM</option>
+              <option value="07:00 AM - 08:00 AM">07:00 AM - 08:00 AM</option>
+              <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+              <option value="05:30 PM - 06:30 PM">05:30 PM - 06:30 PM</option>
+              <option value="06:30 PM - 07:30 PM">06:30 PM - 07:30 PM</option>
+              <option value="07:30 PM - 08:30 PM">07:30 PM - 08:30 PM</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="color:#aaa;">फीस स्थिति *</label>
+          <select id="addFeeStatus" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; margin-top:2px;">
+            <option value="Paid">✅ Paid (फीस जमा है)</option>
+            <option value="Pending">🔴 Pending (फीस बाकी है)</option>
+          </select>
+        </div>
+        <button type="submit" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; cursor:pointer;">💾 सुरक्षित करें व लिस्ट में जोड़ें</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CELEBRATION MODAL -->
   <div class="present-success-modal" id="attendanceCelebrationModal">
     <div class="success-card-content">
       <div style="font-size:46px; margin-bottom:4px;">💪</div>
-      <h3 style="color:#ffcc00; font-size:19px; margin:0 0 4px; font-weight:900;">ATTENDANCE VERIFIED</h3>
+      <h3 style="color:#ffcc00; font-size:18px; margin:0 0 4px; font-weight:900;">ATTENDANCE VERIFIED</h3>
       <div style="color:#00ff66; font-size:14px; font-weight:bold; margin-bottom:14px;" id="celebrateMemberName">MEMBER NAME</div>
 
       <div style="background:#090909; border:1.5px solid #222; border-radius:12px; padding:14px; text-align:left; font-size:12px; line-height:1.65; margin-bottom:16px;">
@@ -313,7 +329,7 @@
 
   <!-- CAMERA MODAL -->
   <div class="camera-modal-backdrop" id="cameraBackdropModal">
-    <div class="modal-camera-card">
+    <div class="add-modal-card">
       <div style="text-align:center; margin-bottom:10px;">
         <div style="font-size:16px; font-weight:900; color:var(--gold);" id="modalCandidateName">Member Name</div>
         <div style="font-size:11px; color:#888;">सेल्फी अनिवार्य है (Align face inside ring)</div>
@@ -349,6 +365,55 @@
     "08:30 PM - 09:30 PM"
   ];
 
+  // 45 MASTER MEMBERS FROM FEES & RECORD DATA
+  const DEFAULT_MASTER_ROSTER = [
+    { id: 1, name: "अभिषेक शर्मा - मोटोले (Abhishekh Sharma)", father: "Devendra Kumar Sharma", phone: "7068541091", joinDate: "2026-10-02", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-02" },
+    { id: 2, name: "प्रियांशु (Priyanshu)", father: "सुरेश", phone: "8467813176", joinDate: "2026-09-03", plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-03" },
+    { id: 3, name: "विशाल रावत (Vishal Rawat)", father: "Ram Vilash", phone: "8470994110", joinDate: "2026-09-20", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-20" },
+    { id: 4, name: "उदय प्रताप सिंह (Uday Pratap Singh)", father: "Sandip Singh", phone: "9198727555", joinDate: "2026-10-11", plan: "विद्यार्थी (₹300)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-11" },
+    { id: 5, name: "पवन (Pawan)", father: "Sudeep", phone: "9026899048", joinDate: "2026-10-12", plan: "विद्यार्थी (₹300)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-12" },
+    { id: 6, name: "राज राजपूत (Raj Rajput)", father: "Harishchandra", phone: "9169108569", joinDate: "2026-10-13", plan: "विद्यार्थी (₹300)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-13" },
+    { id: 7, name: "ध्रुव (Dhruv)", father: "-", phone: "9000000001", joinDate: "2026-10-10", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-10" },
+    { id: 8, name: "कमल (Kamal)", father: "-", phone: "6306591914", joinDate: "2026-10-06", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-06" },
+    { id: 9, name: "साहिल (Sahil)", father: "-", phone: "7269081026", joinDate: "2026-10-06", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-06" },
+    { id: 10, name: "प्रवीन रावत (Praveen Rawat)", father: "इन्द्रपाल रावत", phone: "7275005052", joinDate: "2026-09-29", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-29" },
+    { id: 11, name: "दीपक चौहान 1 (Deepak Chauhan I)", father: "Prakash Chauhan", phone: "7037945582", joinDate: "2026-10-05", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-05" },
+    { id: 12, name: "दीपक चौहान 2 (Deepak Chauhan II)", father: "Shri Ram Chauhan", phone: "6351295709", joinDate: "2026-10-03", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-03" },
+    { id: 13, name: "हर्ष सैनी (Harsh Saini)", father: "-", phone: "6393944214", joinDate: "2026-09-10", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-10" },
+    { id: 14, name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "8429471919", joinDate: "2022-01-11", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-11" },
+    { id: 15, name: "रितेश रावत (Ritesh Rawat)", father: "Sanna Rawat", phone: "8187974525", joinDate: "2026-06-08", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-08" },
+    { id: 16, name: "तौसीफ (Tauseef)", father: "Mo Shabbir", phone: "7317323893", joinDate: "2026-06-11", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-11" },
+    { id: 17, name: "रवि (Ravi)", father: "रामसनेही", phone: "9936311963", joinDate: "2026-10-01", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-01" },
+    { id: 18, name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", joinDate: "2026-10-01", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-01" },
+    { id: 19, name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", joinDate: "2026-10-01", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-01" },
+    { id: 20, name: "नैतिक (Naitik Gupta)", father: "अशोक गुप्ता", phone: "9795238010", joinDate: "2026-10-01", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-01" },
+    { id: 21, name: "संदीप (Sandip Kashyap)", father: "बबलू कश्यप", phone: "8440812271", joinDate: "2026-10-01", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-01" },
+    { id: 22, name: "सचिन (Sachin Rajput)", father: "राकेश राजपूत", phone: "9235819564", joinDate: "2026-10-01", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-01" },
+    { id: 23, name: "अर्जुन (Arjun)", father: "रामगोपाल", phone: "7388366670", joinDate: "2026-10-07", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-07" },
+    { id: 24, name: "शहनवाज़ (Shahnawaz)", father: "मो० शब्बीर", phone: "9867742095", joinDate: "2026-10-05", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-05" },
+    { id: 25, name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07", plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-07" },
+    { id: 26, name: "अतुल (Atul Vimal)", father: "अनूप", phone: "6306377217", joinDate: "2026-10-08", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-08" },
+    { id: 27, name: "अंशू (Anshu Verma)", father: "कमलेश", phone: "9044680605", joinDate: "2026-10-08", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-08" },
+    { id: 28, name: "देवेन्द्र (Devendra)", father: "विनोद", phone: "7905282515", joinDate: "2026-10-08", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-08" },
+    { id: 29, name: "निरंजन (Niranjan Suryavanshi)", father: "श्रीमती", phone: "8400748946", joinDate: "2026-10-08", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-08" },
+    { id: 30, name: "आकाश विश्वकर्मा (Akash Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "8953133193", joinDate: "2026-09-15", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 31, name: "दिनेश कुमार (Dinesh Kumar)", father: "लल्लन", phone: "7260981026", joinDate: "2026-10-08", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-08" },
+    { id: 32, name: "राकेश कुमार (Rakesh Kumar)", father: "राज कुमार", phone: "6306591914", joinDate: "2026-10-08", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-11-08" },
+    { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 34, name: "दीपक (Deepak)", father: "पप्पू", phone: "7388264067", joinDate: "2026-09-15", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 35, name: "अंकित (Ankit)", father: "श्री राम", phone: "8090416252", joinDate: "2026-09-15", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 36, name: "चंदन (Chandan)", father: "श्री भूरे", phone: "8303504842", joinDate: "2026-09-15", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 37, name: "राजू (Mr Raju Verma)", father: "-", phone: "9219528229", joinDate: "2026-09-15", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 38, name: "राम रतन (Ram Ratan)", father: "श्री सोहन", phone: "7570994547", joinDate: "2026-09-16", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-16" },
+    { id: 39, name: "डॉ ए. के. (Dr A. K Prabhakar)", father: "-", phone: "7268902436", joinDate: "2026-09-15", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 40, name: "आयुष प्रभाकर (Ayush Junior)", father: "डॉ ए. के. प्रभाकर", phone: "7268902436", joinDate: "2026-09-15", plan: "विद्यार्थी (₹300)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 41, name: "इशांत (Ishant Verma)", father: "सुशील कुमार", phone: "8090894105", joinDate: "2026-09-25", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-25" },
+    { id: 42, name: "साहिल वर्मा (Sahil Verma)", father: "शम्मी कपूर", phone: "9336898447", joinDate: "2026-09-15", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" },
+    { id: 43, name: "लाला वर्मा (Lala Verma)", father: "श्याम लाल", phone: "6386232805", joinDate: "2026-09-01", plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-01" },
+    { id: 44, name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-09-07", plan: "जॉब / व्यापार (₹500)", status: "Full Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-07" },
+    { id: 45, name: "अरमान (Armaan)", father: "-", phone: "9000000002", joinDate: "2026-10-15", plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, expiryDate: "2026-10-15" }
+  ];
+
   function runLiveSystemClock() {
     const now = new Date();
     currentDateISO = now.toISOString().split("T")[0];
@@ -367,20 +432,35 @@
     executeFilterEngine();
   }
 
+  // COMPLETE MULTI-STORAGE INTEGRATION ENGINE
   function fetchStoredMembers() {
-    const k1 = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
-    const k2 = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
-    const k3 = JSON.parse(localStorage.getItem("5bfc_members_v2") || "[]");
-    const combined = [...k1, ...k2, ...k3];
-    const unique = [];
-    const map = new Map();
-    for (const item of combined) {
-      const key = item.phone || item.id;
+    let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
+    let bfcMembers = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+    let memV2 = JSON.parse(localStorage.getItem("5bfc_members_v2") || "[]");
+
+    let pool = [...bfcMembers, ...bbfMaster, ...admSync, ...memV2];
+
+    if (pool.length === 0) {
+      pool = [...DEFAULT_MASTER_ROSTER];
+      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(pool));
+      localStorage.setItem("bbf_master_records_v4", JSON.stringify(pool));
+    }
+
+    let unique = [];
+    let map = new Map();
+
+    pool.forEach(item => {
+      let key = (item.phone && item.phone.length > 5) ? item.phone : item.id;
       if (!map.has(key) && item.activeInGym !== false) {
         map.set(key, true);
+        if (!item.slot) item.slot = "06:00 AM - 07:00 AM";
+        if (!item.totalPackageDays) item.totalPackageDays = 30;
+        if (!item.attendedDaysCount) item.attendedDaysCount = 0;
         unique.push(item);
       }
-    }
+    });
+
     return unique;
   }
 
@@ -389,21 +469,80 @@
   }
 
   function changeMemberSlot(memberId, newSlot) {
-    let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let allRecords = fetchStoredMembers();
     let target = allRecords.find(r => r.id.toString() === memberId.toString());
     if (target) {
       target.slot = newSlot;
-      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(allRecords));
-      localStorage.setItem("5bfc_admissions", JSON.stringify(allRecords));
-      localStorage.setItem("5bfc_members_v2", JSON.stringify(allRecords));
+      syncAllStorageKeys(allRecords);
       executeFilterEngine();
     }
   }
 
+  function syncAllStorageKeys(records) {
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
+    localStorage.setItem("5bfc_admissions", JSON.stringify(records));
+    localStorage.setItem("5bfc_members_v2", JSON.stringify(records));
+  }
+
+  // ADD MEMBER MODAL CONTROLLERS
+  function openAddMemberModal() {
+    document.getElementById("addMemberModal").classList.add("show");
+  }
+
+  function closeAddMemberModal() {
+    document.getElementById("addMemberModal").classList.remove("show");
+  }
+
+  function handleQuickAddMember(e) {
+    e.preventDefault();
+    const name = document.getElementById("addName").value.trim();
+    const father = document.getElementById("addFather").value.trim() || "-";
+    const phone = document.getElementById("addPhone").value.trim();
+    const planVal = document.getElementById("addPlan").value;
+    const planText = document.getElementById("addPlan").selectedOptions[0].text;
+    const slot = document.getElementById("addSlot").value;
+    const feeStatus = document.getElementById("addFeeStatus").value;
+
+    const days = parseInt(planVal.split("|")[2]) || 30;
+    const today = new Date();
+    const joinDateStr = today.toISOString().split("T")[0];
+    const expiryObj = new Date(today);
+    expiryObj.setDate(expiryObj.getDate() + days);
+    const expiryDateStr = expiryObj.toISOString().split("T")[0];
+
+    const newMember = {
+      id: Date.now(),
+      code: "5BFC-" + Date.now().toString().slice(-4),
+      name: name,
+      father: father,
+      parentName: father,
+      phone: phone,
+      joinDate: joinDateStr,
+      plan: planText,
+      totalPackageDays: days,
+      expiryDate: expiryDateStr,
+      attendedDaysCount: 0,
+      slot: slot,
+      status: feeStatus === "Paid" ? "Full Paid" : "Pending",
+      fees: feeStatus === "Paid" ? "Paid" : "Due",
+      activeInGym: true
+    };
+
+    let allRecords = fetchStoredMembers();
+    allRecords.unshift(newMember);
+    syncAllStorageKeys(allRecords);
+
+    alert(`✅ सदस्य "${name}" सफलतापूर्वक जोड़ दिया गया! अब यह फीस और अटेंडेंस दोनों में उपलब्ध है।`);
+    closeAddMemberModal();
+    executeFilterEngine();
+  }
+
+  // SEARCH & FILTER ENGINE
   function executeFilterEngine() {
     const memberDataset = fetchStoredMembers();
     const attendanceRecords = fetchDailyAttendanceMap();
-    const searchQuery = document.getElementById("memberFilterInput").value.trim().toLowerCase();
+    const rawSearch = document.getElementById("memberFilterInput").value.trim().toLowerCase();
     const renderNode = document.getElementById("targetRenderContainer");
     renderNode.innerHTML = "";
 
@@ -417,10 +556,11 @@
     let totalPendingFees = 0;
 
     const matched = memberDataset.filter(c => {
-      const nameMatch = c.name && c.name.toLowerCase().includes(searchQuery);
-      const phoneMatch = c.phone && c.phone.includes(searchQuery);
-      const slotMatch = c.slot && c.slot.toLowerCase().includes(searchQuery);
-      const queryPass = !searchQuery || nameMatch || phoneMatch || slotMatch;
+      const nameMatch = c.name && c.name.toLowerCase().includes(rawSearch);
+      const phoneMatch = c.phone && c.phone.includes(rawSearch);
+      const fatherMatch = c.father && c.father.toLowerCase().includes(rawSearch);
+      const slotMatch = c.slot && c.slot.toLowerCase().includes(rawSearch);
+      const queryPass = !rawSearch || nameMatch || phoneMatch || fatherMatch || slotMatch;
       const chipPass = (selectedSlotFilter === "all") || (c.slot === selectedSlotFilter);
       return queryPass && chipPass;
     });
@@ -430,6 +570,12 @@
       if (c.fees !== 'Paid' && c.status !== 'Full Paid') totalPendingFees++;
     });
 
+    if (matched.length === 0) {
+      renderNode.innerHTML = `<div style="text-align:center; padding:30px; color:#ff6666; font-size:12px;">🔍 कोई सदस्य नहीं मिला ("${rawSearch}")</div>`;
+      syncMetricCards(memberDataset.length, totalPresentLogged, memberDataset.length - totalPresentLogged, totalPendingFees);
+      return;
+    }
+
     matched.forEach(member => {
       const isPresent = !!attendanceRecords[member.id];
       const checkinRecord = attendanceRecords[member.id];
@@ -438,7 +584,6 @@
       const currentSlot = member.slot || "06:00 AM - 07:00 AM";
 
       const recordCard = document.createElement("div");
-      // Distinct Green or Red classes
       recordCard.className = `member-record-card ${isPresent ? 'status-present' : (member.isMarkedAbsent ? 'status-absent' : '')}`;
 
       let proofMarkup = "";
@@ -467,7 +612,6 @@
               <span style="background:#222; border:1px solid #444; color:#aaa; font-size:9.5px; padding:1px 5px; border-radius:4px;">${member.plan || 'General'}</span>
             </div>
             <div style="font-size:11px; color:#aaa; margin-top:4px;">
-  4px;">
               🕒 Slot: 
               <select class="slot-dropdown-field" onchange="changeMemberSlot('${member.id}', this.value)">
                 ${slotOptions}
@@ -592,14 +736,12 @@
       return;
     }
 
-    let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let records = fetchStoredMembers();
     let target = records.find(r => r.id.toString() === memberId.toString());
     if (target) {
       target.feesPromiseDate = promiseDate;
       target.feesAgreementAccepted = true;
-      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
-      localStorage.setItem("5bfc_admissions", JSON.stringify(records));
-      localStorage.setItem("5bfc_members_v2", JSON.stringify(records));
+      syncAllStorageKeys(records);
     }
 
     const modal = document.getElementById("strictExpiryModal");
@@ -688,8 +830,7 @@
     };
     localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
 
-    // Update count & remove absent status
-    let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let allRecords = fetchStoredMembers();
     let target = allRecords.find(r => r.id.toString() === activeMemberRecordForCamera.id.toString());
     let currentAttended = 1;
     let totalPlanDays = 30;
@@ -701,15 +842,12 @@
       currentAttended = target.attendedDaysCount;
       totalPlanDays = target.totalPackageDays || 30;
       expiryStr = target.expiryDate || "N/A";
-      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(allRecords));
-      localStorage.setItem("5bfc_admissions", JSON.stringify(allRecords));
-      localStorage.setItem("5bfc_members_v2", JSON.stringify(allRecords));
+      syncAllStorageKeys(allRecords);
     }
 
     closeCameraModal();
     executeFilterEngine();
 
-    // Trigger Success Screen (Next Page Screen)
     triggerAttendanceCelebration(activeMemberRecordForCamera.name, currentAttended, Math.max(0, totalPlanDays - currentAttended), expiryStr);
   }
 
@@ -726,11 +864,11 @@
   }
 
   function markMemberAbsent(memberId) {
-    let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let allRecords = fetchStoredMembers();
     let target = allRecords.find(r => r.id.toString() === memberId.toString());
     if (target) {
       target.isMarkedAbsent = true;
-      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(allRecords));
+      syncAllStorageKeys(allRecords);
     }
 
     let attendanceRecords = fetchDailyAttendanceMap();
@@ -745,7 +883,7 @@
     const pin = prompt("🔒 Admin PIN दर्ज करें (सेल्फी बाईपास हेतु):");
     if (pin === "5555") {
       const now = new Date();
-      const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
       let attendanceRecords = fetchDailyAttendanceMap();
       attendanceRecords[memberId] = {
         time: timeStr,
@@ -754,12 +892,12 @@
       };
       localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
       
-      let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+      let allRecords = fetchStoredMembers();
       let target = allRecords.find(r => r.id.toString() === memberId.toString());
       if (target) {
         target.attendedDaysCount = (target.attendedDaysCount || 0) + 1;
         target.isMarkedAbsent = false;
-        localStorage.setItem("5BFC_MEMBERS", JSON.stringify(allRecords));
+        syncAllStorageKeys(allRecords);
       }
       executeFilterEngine();
     } else if (pin !== null) {
@@ -778,26 +916,6 @@
   function openWhatsAppChat(phone, name) {
     const msg = encodeURIComponent(`नमस्ते ${name}, 5 Brother's Fitness Club से संपर्क किया जा रहा है।`);
     window.open(`https://wa.me/91${phone}?text=${msg}`, "_blank");
-  }
-
-  function dispatchAbsentAlerts() {
-    const memberDataset = fetchStoredMembers();
-    const attendanceRecords = fetchDailyAttendanceMap();
-    const absentMembers = memberDataset.filter(m => !attendanceRecords[m.id]);
-
-    if (absentMembers.length === 0) {
-      alert("आज सभी सदस्य उपस्थित हैं!");
-      return;
-    }
-
-    alert(`📢 कुल ${absentMembers.length} अनुपस्थित सदस्य पाए गए। पहला नोटिस भेजा जा रहा है।`);
-    const first = absentMembers[0];
-    const alertText = encodeURIComponent(
-      `🚨 *5 BROTHER'S FITNESS CLUB - ABSENT ALERT*\n\n` +
-      `प्रिय ${first.name},\n` +
-      `आप आज जिम में अनुपस्थित हैं। कृपया ध्यान दें कि नियमित 26-दिन उपस्थिति पर 100% रिन्यूअल रिबेट पॉलिसी लागू होती है। समय से वर्कआउट सुनिश्चित करें!`
-    );
-    window.open(`https://wa.me/91${first.phone}?text=${alertText}`, "_blank");
   }
 
   window.onload = executeFilterEngine;
