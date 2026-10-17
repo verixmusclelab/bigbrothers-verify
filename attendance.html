@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club - Attendance Portal</title>
+<title>5 Brother's Fitness Club - Attendance Kiosk</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ffcc00">
 <style>
@@ -27,173 +27,158 @@
   body {
     background-color: var(--bg-dark);
     color: #ffffff;
-    padding: 10px 8px 80px 8px;
-    max-width: 540px;
+    padding: 12px 10px 90px 10px;
+    max-width: 500px;
     margin: 0 auto;
     min-height: 100vh;
   }
 
   .nav-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
   }
 
   .btn-back-home {
     background: var(--gold); color: #000; text-decoration: none;
-    font-size: 10.5px; font-weight: 900; padding: 6px 10px; border-radius: 6px;
+    font-size: 11px; font-weight: 900; padding: 7px 12px; border-radius: 8px;
     text-transform: uppercase;
   }
 
   .btn-admin-pill {
     background: #1c1c1c; color: var(--gold); border: 1px solid var(--gold);
-    font-size: 10.5px; font-weight: bold; padding: 5px 10px; border-radius: 6px; cursor: pointer;
+    font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 8px; cursor: pointer;
   }
 
   .branding-card {
     background: radial-gradient(circle at top, #1e1908 0%, #0d0d0d 100%);
-    border: 1.5px solid var(--gold); border-radius: 12px;
-    padding: 10px 8px; text-align: center; margin-bottom: 10px;
+    border: 1.5px solid var(--gold); border-radius: 14px;
+    padding: 14px; text-align: center; margin-bottom: 12px;
     box-shadow: 0 4px 20px var(--gold-glow);
   }
 
   .branding-title {
-    font-size: 16px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px;
+    font-size: 18px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px;
   }
 
   .badge-live-clock {
     display: inline-block; background: #161616; border: 1px solid #ffcc00;
-    color: var(--gold); font-size: 10.5px; font-weight: 800;
-    padding: 3px 10px; border-radius: 12px; margin-top: 5px;
+    color: var(--gold); font-size: 11px; font-weight: 800;
+    padding: 4px 12px; border-radius: 14px; margin-top: 6px;
   }
 
   .time-shift-banner {
-    background: #141414; border: 1px solid #282828; border-radius: 8px;
-    padding: 8px 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    background: #141414; border: 1px solid #282828; border-radius: 10px;
+    padding: 10px 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;
   }
 
   .shift-badge {
-    padding: 3px 8px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 14px; font-size: 10.5px; font-weight: 900; text-transform: uppercase;
   }
   .shift-morning { background: rgba(255, 204, 0, 0.15); color: var(--gold); border: 1px solid var(--gold); }
   .shift-evening { background: rgba(0, 200, 255, 0.15); color: #00c8ff; border: 1px solid #00c8ff; }
 
-  .search-container { margin-bottom: 10px; position: relative; }
+  /* KIOSK MAIN ACTION */
+  .kiosk-hero-box {
+    background: #111; border: 2px dashed #333; border-radius: 14px;
+    padding: 24px 14px; text-align: center; margin-bottom: 14px;
+  }
+
+  .btn-mark-kiosk-trigger {
+    width: 100%; background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%);
+    color: #000; font-size: 15px; font-weight: 900; padding: 16px; border: none;
+    border-radius: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+    box-shadow: 0 4px 20px var(--gold-glow);
+  }
+
+  .search-area-wrapper {
+    display: none; background: #141414; border: 1.5px solid var(--gold);
+    border-radius: 12px; padding: 12px; margin-bottom: 14px;
+  }
+
   .live-search-input {
-    width: 100%; background: var(--card-bg); border: 1.5px solid #333;
-    border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; outline: none;
+    width: 100%; background: #000; border: 1.5px solid #444;
+    border-radius: 8px; padding: 12px 14px; color: #fff; font-size: 14px; outline: none;
   }
   .live-search-input:focus { border-color: var(--gold); }
 
   .search-dropdown-results {
-    display: none; background: #161616; border: 1.5px solid var(--gold);
-    border-radius: 8px; padding: 6px; margin-top: 4px; max-height: 240px; overflow-y: auto;
+    margin-top: 8px; max-height: 220px; overflow-y: auto;
   }
 
-  .search-item-row {
-    background: #202020; border: 1px solid #333; border-radius: 6px;
-    padding: 8px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;
+  .search-result-item {
+    background: #1f1f1f; border: 1px solid #333; border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
     cursor: pointer;
   }
+  .search-result-item:hover { border-color: var(--gold); }
 
-  .slots-filter-row {
-    display: flex; gap: 5px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px;
-  }
-  .slots-filter-row::-webkit-scrollbar { display: none; }
-
-  .slot-btn {
-    background: #181818; border: 1px solid #333; color: #999;
-    font-size: 10px; font-weight: bold; padding: 5px 9px; border-radius: 12px;
-    white-space: nowrap; cursor: pointer;
-  }
-  .slot-btn.active {
-    background: var(--gold); color: #000; border-color: var(--gold);
+  /* SINGLE CLEAN MEMBER CARD */
+  .single-member-container {
+    display: none; margin-bottom: 14px;
   }
 
-  /* 2-COLUMN COMPACT GRID ARCHITECTURE */
-  .member-grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+  .loaded-member-card {
+    background: var(--card-bg); border: 2px solid var(--border-color);
+    border-radius: 14px; padding: 14px; position: relative;
   }
-
-  .compact-member-box {
-    background: var(--card-bg);
-    border: 1.5px solid var(--border-color);
-    border-radius: 10px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 165px;
-    position: relative;
-    transition: all 0.2s ease;
-  }
-
-  .compact-member-box.status-present {
+  .loaded-member-card.status-present {
     border-color: #00ff66 !important;
     background: linear-gradient(180deg, #0d1a10 0%, #07120a 100%) !important;
-    box-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
+    box-shadow: 0 0 16px rgba(0, 255, 102, 0.25);
   }
 
-  .compact-member-box.status-absent {
-    border-color: #ff3333 !important;
-    background: linear-gradient(180deg, #1c0e0e 0%, #110707 100%) !important;
+  .card-top-row {
+    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;
   }
 
-  .box-top-row {
-    display: flex; justify-content: space-between; align-items: flex-start; gap: 4px; margin-bottom: 4px;
-  }
-
-  .box-name {
-    font-size: 12px; font-weight: 900; color: #fff; line-height: 1.25;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  .card-member-name {
+    font-size: 16px; font-weight: 900; color: #fff;
   }
 
   .fee-pill-tag {
-    font-size: 8px; font-weight: 900; padding: 2px 5px; border-radius: 4px; white-space: nowrap;
+    font-size: 9.5px; font-weight: 900; padding: 3px 8px; border-radius: 4px;
   }
   .fee-paid { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
   .fee-due { background: rgba(255, 77, 77, 0.15); color: #ff6666; border: 1px solid #ff6666; }
 
-  .box-meta-info {
-    font-size: 9.5px; color: #aaa; line-height: 1.4; margin-bottom: 4px;
+  .card-details-box {
+    background: #161616; border: 1px solid #282828; border-radius: 8px;
+    padding: 10px; margin-bottom: 10px; font-size: 11px; line-height: 1.6;
   }
 
-  .slot-tag-row {
+  .slot-row-flex {
     display: flex; justify-content: space-between; align-items: center;
-    background: #1a1a1a; border: 1px solid #333; border-radius: 4px;
-    padding: 3px 5px; margin-top: 3px; font-size: 9px;
+    background: #1f1f1f; border: 1px solid #333; border-radius: 6px; padding: 6px 10px; margin-top: 6px;
   }
 
   .btn-slot-gear {
-    background: var(--gold); color: #000; border: none; border-radius: 3px;
-    padding: 1px 4px; font-size: 8.5px; font-weight: bold; cursor: pointer;
+    background: var(--gold); color: #000; border: none; border-radius: 4px;
+    padding: 3px 8px; font-size: 10px; font-weight: 900; cursor: pointer;
   }
 
   .compact-proof-badge {
-    display: flex; align-items: center; gap: 4px;
-    background: #000; border: 1px dashed var(--green-accent);
-    border-radius: 4px; padding: 2px 4px; margin: 4px 0; font-size: 8.5px; color: #00ff66; font-weight: bold;
+    display: flex; align-items: center; gap: 8px;
+    background: #000; border: 1.5px dashed var(--green-accent);
+    border-radius: 8px; padding: 6px 10px; margin: 8px 0; font-size: 10px; color: #00ff66; font-weight: bold;
   }
   .compact-proof-badge img {
-    width: 20px; height: 20px; border-radius: 3px; object-fit: cover;
+    width: 36px; height: 36px; border-radius: 4px; object-fit: cover; border: 1px solid var(--green-accent);
   }
 
-  .box-actions-row {
-    display: flex; gap: 4px; margin-top: 4px;
+  .card-actions-row {
+    display: flex; gap: 8px; margin-top: 10px;
   }
 
-  .btn-action-pres {
-    flex: 2; font-size: 10px; font-weight: 900; padding: 7px 3px; border-radius: 6px;
+  .btn-pres-action {
+    flex: 2; font-size: 12px; font-weight: 900; padding: 12px; border-radius: 8px;
     border: none; cursor: pointer; text-transform: uppercase;
   }
-  .btn-action-pres.is-ver { background: #00ff66; color: #000; }
-  .btn-action-pres.not-ver { background: #132417; color: #00ff66; border: 1.2px solid #00ff66; }
+  .btn-pres-action.is-ver { background: #00ff66; color: #000; }
+  .btn-pres-action.not-ver { background: #132417; color: #00ff66; border: 1.5px solid #00ff66; }
 
-  .btn-action-abs {
-    flex: 1; background: #1c1c1c; color: #ff6666; border: 1px solid #442222;
-    font-size: 9.5px; font-weight: 800; padding: 7px 2px; border-radius: 6px; cursor: pointer;
+  .btn-clear-action {
+    flex: 1; background: #222; color: #bbb; border: 1px solid #444;
+    font-size: 11px; font-weight: bold; padding: 12px; border-radius: 8px; cursor: pointer;
   }
-  .btn-action-abs.is-abs { background: #ff3333; color: #fff; border-color: #ff3333; }
 
   /* MODALS */
   .custom-modal-backdrop {
@@ -205,7 +190,7 @@
 
   .modal-box-card {
     background: #111; border: 2px solid var(--gold); border-radius: 14px;
-    max-width: 420px; width: 100%; padding: 16px 14px; text-align: center;
+    max-width: 430px; width: 100%; padding: 18px 14px; text-align: center;
     box-shadow: 0 0 30px var(--gold-glow); color: #fff;
   }
 
@@ -216,7 +201,12 @@
   #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
   .scanner-reticle-ring {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 170px; height: 170px; border: 2px dashed var(--green-accent); border-radius: 50%;
+    width: 180px; height: 180px; border: 2px dashed var(--green-accent); border-radius: 50%;
+  }
+
+  .slot-chip-btn {
+    background: #1c1c1c; border: 1px solid #333; color: #aaa;
+    font-size: 11px; font-weight: bold; padding: 7px; border-radius: 6px; cursor: pointer;
   }
 </style>
 </head>
@@ -224,36 +214,80 @@
 
   <div class="nav-header">
     <a href="app.html" class="btn-back-home">⬅ Master App</a>
-    <button type="button" class="btn-admin-pill" onclick="unlockAdminControl()">🔒 Admin Mode</button>
+    <button type="button" class="btn-admin-pill" onclick="unlockAdminControl()">🔒 Admin Access</button>
   </div>
 
   <div class="branding-card">
     <div class="branding-title">👑 5 BROTHER'S FITNESS CLUB</div>
-    <div style="font-size:10px; color:#aaa; margin-top:2px;">Biometric Verification & 2x2 Grid Attendance</div>
+    <div style="font-size:11px; color:#aaa; margin-top:2px;">Digital Attendance & Verification Register</div>
     <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
   </div>
 
   <!-- AUTO SHIFT BANNER -->
   <div class="time-shift-banner">
     <div>
-      <div style="font-size:9.5px; color:#888; text-transform:uppercase;">वर्तमान एक्टिव शिफ्ट</div>
-      <b style="font-size:12px;" id="currentShiftText">Loading Shift...</b>
+      <div style="font-size:9.5px; color:#888; text-transform:uppercase;">वर्तमान एक्टिव शिफ्ट (Auto System)</div>
+      <b style="font-size:12.5px;" id="currentShiftText">Detecting Shift...</b>
     </div>
     <span class="shift-badge shift-morning" id="currentShiftBadge">Morning</span>
   </div>
 
-  <!-- SEARCH BAR -->
-  <div class="search-container">
-    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="🔍 सदस्य खोजें (2 अक्षर टाइप करें)..." oninput="handleInstantSearch()">
+  <!-- KIOSK HERO SECTION (CLEAN SCREEN) -->
+  <div class="kiosk-hero-box" id="kioskHeroBox">
+    <div style="font-size:38px; margin-bottom:8px;">🏋️‍♂️</div>
+    <h3 style="font-size:15px; color:#ffcc00; margin-bottom:6px;">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</h3>
+    <div style="font-size:11px; color:#888; margin-bottom:16px;">कृपया अपनी उपस्थिति दर्ज करने हेतु नीचे बटन दबाएं</div>
+    <button type="button" class="btn-mark-kiosk-trigger" onclick="openSearchKiosk()">👉 MARK YOUR ATTENDANCE</button>
+  </div>
+
+  <!-- SEARCH INTERFACE (POPS ON TRIGGER) -->
+  <div class="search-area-wrapper" id="searchAreaWrapper">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <span style="font-size:11px; font-weight:bold; color:var(--gold);" id="searchNoticeShiftTitle">🔍 खोजें (Morning Batch Only)</span>
+      <button type="button" onclick="cancelSearchAndReset()" style="background:#282828; color:#bbb; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✕ बंद करें</button>
+    </div>
+    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="नाम या मोबाइल के 2 अक्षर लिखें..." oninput="executeKioskSearch()">
     <div id="searchDropdownNode" class="search-dropdown-results"></div>
   </div>
 
-  <!-- BATCH SLOTS CHIPS -->
-  <div style="font-size:10.5px; font-weight:bold; color:var(--gold); margin-bottom:5px;" id="slotsHeaderTitle">🌅 Morning Slots:</div>
-  <div class="slots-filter-row" id="slotsFilterContainer"></div>
+  <!-- SINGLE LOADED MEMBER CARD -->
+  <div class="single-member-container" id="singleMemberContainer">
+    <div class="loaded-member-card" id="activeLoadedCard">
+      <div class="card-top-row">
+        <div>
+          <div class="card-member-name" id="cardMemberName">MEMBER NAME</div>
+          <div style="font-size:10.5px; color:#888; margin-top:2px;" id="cardMemberPhone">📞 +91 0000000000</div>
+        </div>
+        <span class="fee-pill-tag fee-paid" id="cardFeeBadge">FEES PAID</span>
+      </div>
 
-  <!-- 2-COLUMN GRID VIEW -->
-  <div class="member-grid-container" id="targetRenderContainer"></div>
+      <div class="card-details-box">
+        <div>📋 <b>प्लान:</b> <span id="cardPlanText">General (1 माह)</span></div>
+        <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">2026-10-01</span> | <b>अंतिम फीस:</b> <span id="cardLastPaid">2026-10-01</span></div>
+        <div>⏳ <b>वैधता समाप्ति:</b> <b style="color:#ffcc00;" id="cardExpiryDate">2026-11-01</b> (<span id="cardDaysRemaining">0</span> दिन शेष)</div>
+        
+        <div class="slot-row-flex">
+          <span>🕒 वर्तमान स्लॉट: <b id="cardSlotDisplay">06:00 AM - 07:00 AM</b></span>
+          <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal()">⚙️ Slot बदलें</button>
+        </div>
+
+        <div id="cardPromiseDateBox" style="display:none; color:#00ff66; margin-top:5px; font-weight:bold;">
+          📅 फीस वादा तारीख: <span id="cardPromiseDateVal">--</span>
+        </div>
+      </div>
+
+      <div id="cardProofContainer"></div>
+
+      <div class="card-actions-row">
+        <button type="button" class="btn-pres-action not-ver" id="btnPresTrigger" onclick="handleAttendanceClick()">
+          📸 PRESENT दर्ज करें
+        </button>
+        <button type="button" class="btn-clear-action" onclick="cancelSearchAndReset()">
+          ✕ CLEAR
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- STRICT FEES EXPIRED / OVERDUE MODAL -->
   <div class="custom-modal-backdrop" id="strictExpiryModal">
@@ -292,24 +326,24 @@
   <!-- SLOT CHANGER MODAL -->
   <div class="custom-modal-backdrop" id="slotChangerModal">
     <div class="modal-box-card" style="border-color:var(--gold);">
-      <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 बैच समय बदलें (Slot Changer)</h3>
+      <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 बैच समय बदलें (Admin Controlled)</h3>
       <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
 
       <div style="text-align:left; font-size:10.5px; font-weight:bold; color:var(--gold); margin-bottom:4px;">🌅 MORNING BATCHES:</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:10px;">
-        <button type="button" class="slot-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM')">05:00 - 06:00 AM</button>
-        <button type="button" class="slot-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM')">06:00 - 07:00 AM</button>
-        <button type="button" class="slot-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM')">07:00 - 08:00 AM</button>
-        <button type="button" class="slot-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM')">08:00 - 09:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM', 'morning')">06:00 - 07:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM', 'morning')">07:00 - 08:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM', 'morning')">08:00 - 09:00 AM</button>
       </div>
 
       <div style="text-align:left; font-size:10.5px; font-weight:bold; color:#00c8ff; margin-bottom:4px;">🌙 EVENING BATCHES:</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:12px;">
-        <button type="button" class="slot-btn" onclick="saveNewMemberSlot('04:30 PM - 05:30 PM')">04:30 - 05:30 PM</button>
-        <button type="button" class="slot-btn" onclick="saveNewMemberSlot('05:30 PM - 06:30 PM')">05:30 - 06:30 PM</button>
-        <button type="button" class="slot-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM')">06:30 - 07:30 PM</button>
-        <button type="button" class="slot-btn" onclick="saveNewMemberSlot('07:30 PM - 08:30 PM')">07:30 - 08:30 PM</button>
-        <button type="button" class="slot-btn" style="grid-column: span 2;" onclick="saveNewMemberSlot('08:30 PM - 09:30 PM')">08:30 - 09:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('04:30 PM - 05:30 PM', 'evening')">04:30 - 05:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:30 PM - 06:30 PM', 'evening')">05:30 - 06:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM', 'evening')">06:30 - 07:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:30 PM - 08:30 PM', 'evening')">07:30 - 08:30 PM</button>
+        <button type="button" class="slot-chip-btn" style="grid-column: span 2;" onclick="saveNewMemberSlot('08:30 PM - 09:30 PM', 'evening')">08:30 - 09:30 PM</button>
       </div>
 
       <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#282828; color:#fff; border:none; padding:7px; border-radius:6px; font-size:11px; cursor:pointer;">रद्द करें (Cancel)</button>
@@ -329,7 +363,7 @@
         <div>📅 <b>पैकेज समाप्ति तिथि:</b> <b style="color:#ff6666;" id="celebrateExpiryDate">N/A</b></div>
       </div>
 
-      <button onclick="closeModal('attendanceCelebrationModal')" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
+      <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
         ✔ ठीक है (DONE)
       </button>
     </div>
@@ -358,31 +392,13 @@
 <script>
   const ADMIN_PIN = "5555";
   let isAdminUnlocked = false;
-  let activeMemberRecordForCamera = null;
-  let activeExpiringMember = null;
-  let targetMemberForSlotChange = null;
+  let currentlyLoadedMember = null;
   let currentVideoStream = null;
   let currentDateISO = new Date().toISOString().split("T")[0];
-  let selectedSlotFilter = "all";
 
-  const MORNING_SLOTS = [
-    "05:00 AM - 06:00 AM",
-    "06:00 AM - 07:00 AM",
-    "07:00 AM - 08:00 AM",
-    "08:00 AM - 09:00 AM"
-  ];
-
-  const EVENING_SLOTS = [
-    "04:30 PM - 05:30 PM",
-    "05:30 PM - 06:30 PM",
-    "06:30 PM - 07:30 PM",
-    "07:30 PM - 08:30 PM",
-    "08:30 PM - 09:30 PM"
-  ];
-
-  // 45 MASTER MEMBERS (12 MORNING + 33 EVENING FIXED)
+  // 45 MASTER MEMBERS (12 MORNING + 33 EVENING)
   const DEFAULT_MASTER_ROSTER = [
-    // 12 MORNING FIXED MEMBERS
+    // 12 MORNING MEMBERS
     { id: 25, name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07", planMonths: 1, plan: "₹500", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-07" },
     { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-15" },
     { id: 30, name: "आकाश विश्वकर्मा (Akash Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "8953133193", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-15" },
@@ -396,7 +412,7 @@
     { id: 16, name: "तौसीफ (Tauseef)", father: "Mo Shabbir", phone: "7317323893", joinDate: "2026-06-11", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-11" },
     { id: 7, name: "ध्रुव (Dhruv)", father: "-", phone: "9000000001", joinDate: "2026-10-10", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-10-10" },
 
-    // 33 EVENING FIXED MEMBERS
+    // 33 EVENING MEMBERS
     { id: 1, name: "अभिषेक शर्मा - मोटोले (Abhishekh Sharma)", father: "Devendra Kumar Sharma", phone: "7068541091", joinDate: "2026-10-02", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-02" },
     { id: 4, name: "उदय प्रताप सिंह (Uday Pratap Singh)", father: "Sandip Singh", phone: "9198727555", joinDate: "2026-10-11", planMonths: 1, plan: "₹300", status: "Paid", fees: "Paid", slot: "05:30 PM - 06:30 PM", batch: "evening", lastPaid: "2026-10-11" },
     { id: 5, name: "पवन (Pawan)", father: "Sudeep", phone: "9026899048", joinDate: "2026-10-12", planMonths: 1, plan: "₹300", status: "Pending", fees: "Due", slot: "05:30 PM - 06:30 PM", batch: "evening", lastPaid: "2026-09-12" },
@@ -443,43 +459,27 @@
     determineAutoDayShift(now.getHours());
   }
 
+  function isCurrentShiftEvening() {
+    return (new Date().getHours() >= 16); // 4:00 PM onwards
+  }
+
   function determineAutoDayShift(hour) {
-    const isEvening = (hour >= 16); // 4:00 PM or later
+    const isEvening = (hour >= 16);
     const badge = document.getElementById("currentShiftBadge");
     const title = document.getElementById("currentShiftText");
-    const slotsTitle = document.getElementById("slotsHeaderTitle");
+    const searchNotice = document.getElementById("searchNoticeShiftTitle");
 
     if (isEvening) {
       badge.className = "shift-badge shift-evening";
       badge.innerText = "Evening Shift (4:00 PM - 10:00 PM)";
       title.innerText = "🌙 शाम का बैच एक्टिव है";
-      slotsTitle.innerText = "🌙 Evening Slots:";
+      if (searchNotice) searchNotice.innerText = "🔍 खोजें (Evening Batch Active)";
     } else {
       badge.className = "shift-badge shift-morning";
       badge.innerText = "Morning Shift (5:00 AM - 12:00 PM)";
       title.innerText = "🌅 सुबह का बैच एक्टिव है";
-      slotsTitle.innerText = "🌅 Morning Slots:";
+      if (searchNotice) searchNotice.innerText = "🔍 खोजें (Morning Batch Active)";
     }
-  }
-
-  function renderShiftSlotsBar() {
-    const now = new Date();
-    const isEvening = (now.getHours() >= 16);
-    const activeSlots = isEvening ? EVENING_SLOTS : MORNING_SLOTS;
-    const container = document.getElementById("slotsFilterContainer");
-    
-    let html = `<div class="slot-btn ${selectedSlotFilter === 'all' ? 'active' : ''}" onclick="filterBySlot('all', this)">All Slots</div>`;
-    activeSlots.forEach(slot => {
-      html += `<div class="slot-btn ${selectedSlotFilter === slot ? 'active' : ''}" onclick="filterBySlot('${slot}', this)">${slot}</div>`;
-    });
-    container.innerHTML = html;
-  }
-
-  function filterBySlot(slot, elem) {
-    selectedSlotFilter = slot;
-    document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("active"));
-    if (elem) elem.classList.add("active");
-    executeFilterEngine();
   }
 
   function fetchStoredMembers() {
@@ -501,6 +501,7 @@
       if (!map.has(key) && item.activeInGym !== false) {
         map.set(key, true);
         if (!item.slot) item.slot = "06:00 AM - 07:00 AM";
+        if (!item.batch) item.batch = "morning";
         if (!item.attendedDaysCount) item.attendedDaysCount = 0;
         unique.push(item);
       }
@@ -512,152 +513,159 @@
     return JSON.parse(localStorage.getItem("5bfc_attendance_" + currentDateISO)) || {};
   }
 
-  function handleInstantSearch() {
+  // KIOSK CONTROLS
+  function openSearchKiosk() {
+    document.getElementById("kioskHeroBox").style.display = "none";
+    document.getElementById("searchAreaWrapper").style.display = "block";
+    document.getElementById("singleMemberContainer").style.display = "none";
+    const inp = document.getElementById("memberFilterInput");
+    inp.value = "";
+    inp.focus();
+    document.getElementById("searchDropdownNode").style.display = "none";
+  }
+
+  function cancelSearchAndReset() {
+    document.getElementById("kioskHeroBox").style.display = "block";
+    document.getElementById("searchAreaWrapper").style.display = "none";
+    document.getElementById("singleMemberContainer").style.display = "none";
+    document.getElementById("memberFilterInput").value = "";
+    document.getElementById("searchDropdownNode").style.display = "none";
+    currentlyLoadedMember = null;
+  }
+
+  function executeKioskSearch() {
     const query = document.getElementById("memberFilterInput").value.trim().toLowerCase();
     const dropdown = document.getElementById("searchDropdownNode");
 
     if (!query || query.length < 2) {
       dropdown.style.display = "none";
-      executeFilterEngine();
       return;
     }
 
-    const list = fetchStoredMembers();
-    const matches = list.filter(m => 
-      (m.name && m.name.toLowerCase().includes(query)) ||
-      (m.phone && m.phone.includes(query))
-    );
+    const currentShiftIsEve = isCurrentShiftEvening();
+    const activeTargetBatch = currentShiftIsEve ? "evening" : "morning";
+    const allMembers = fetchStoredMembers();
+
+    const matches = allMembers.filter(m => {
+      const shiftMatch = isAdminUnlocked ? true : (m.batch === activeTargetBatch);
+      const textMatch = (m.name && m.name.toLowerCase().includes(query)) || (m.phone && m.phone.includes(query));
+      return shiftMatch && textMatch;
+    });
 
     if (matches.length > 0) {
       dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="font-size:9.5px; color:#ffcc00; margin-bottom:4px; font-weight:bold;">मिलते-जुलते सदस्य:</div>`;
-      matches.slice(0, 4).forEach(m => {
+      dropdown.innerHTML = `<div style="font-size:10px; color:#ffcc00; margin-bottom:5px; font-weight:bold;">मिलते-जुलते सदस्य (${activeTargetBatch.toUpperCase()}):</div>`;
+      matches.slice(0, 5).forEach(m => {
         const isPaid = (m.status === 'Paid' || m.fees === 'Paid');
         dropdown.innerHTML += `
-          <div class="search-item-row" onclick="selectMemberFromSearch('${m.id}')">
+          <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
             <div>
-              <b style="color:#fff; font-size:11.5px;">${m.name}</b><br>
-              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'};">${isPaid ? 'PAID' : 'DUE'}</span></small>
+              <b style="color:#fff; font-size:12.5px;">${m.name}</b><br>
+              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPaid ? 'PAID' : 'DUE'}</span> | 🕒 ${m.slot.split(" - ")[0]}</small>
             </div>
-            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:10px;">लोड</button>
+            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:900; font-size:11px;">लोड करें</button>
           </div>
         `;
       });
     } else {
       dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="color:#ff6666; font-size:10px; text-align:center; padding:4px;">कोई सदस्य नहीं मिला।</div>`;
-    }
-    executeFilterEngine();
-  }
-
-  function selectMemberFromSearch(memberId) {
-    const m = fetchStoredMembers().find(x => x.id.toString() === memberId.toString());
-    if (!m) return;
-    document.getElementById("memberFilterInput").value = m.name;
-    document.getElementById("searchDropdownNode").style.display = "none";
-    executeFilterEngine();
-  }
-
-  // 2x2 COMPACT GRID RENDER ENGINE
-  function executeFilterEngine() {
-    const memberDataset = fetchStoredMembers();
-    const attendanceRecords = fetchDailyAttendanceMap();
-    const searchQuery = document.getElementById("memberFilterInput").value.trim().toLowerCase();
-    const renderNode = document.getElementById("targetRenderContainer");
-    renderNode.innerHTML = "";
-
-    const matched = memberDataset.filter(c => {
-      const nameMatch = c.name && c.name.toLowerCase().includes(searchQuery);
-      const phoneMatch = c.phone && c.phone.includes(searchQuery);
-      const queryPass = !searchQuery || nameMatch || phoneMatch;
-      const slotPass = (selectedSlotFilter === "all") || (c.slot === selectedSlotFilter);
-      return queryPass && slotPass;
-    });
-
-    if (matched.length === 0) {
-      renderNode.innerHTML = `<div style="grid-column: span 2; text-align:center; padding:25px; color:#ff6666; font-size:11px;">🔍 कोई सदस्य नहीं मिला</div>`;
-      return;
-    }
-
-    matched.forEach(member => {
-      const isPresent = !!attendanceRecords[member.id];
-      const checkinRecord = attendanceRecords[member.id];
-      const isPaid = (member.status === 'Paid' || member.fees === 'Paid');
-
-      let daysRemaining = 0;
-      if (member.joinDate) {
-        const jDate = new Date(member.joinDate);
-        const expDate = new Date(jDate);
-        expDate.setMonth(expDate.getMonth() + (member.planMonths || 1));
-        const today = new Date();
-        daysRemaining = Math.max(0, Math.ceil((expDate - today) / (1000 * 60 * 60 * 24)));
-      }
-
-      const card = document.createElement("div");
-      card.className = `compact-member-box ${isPresent ? 'status-present' : (member.isMarkedAbsent ? 'status-absent' : '')}`;
-
-      let proofMarkup = "";
-      if (isPresent && checkinRecord) {
-        proofMarkup = `
-          <div class="compact-proof-badge">
-            <img src="${checkinRecord.photo}" alt="Seal">
-            <span>✔ VERIFIED ${checkinRecord.time}</span>
-          </div>
-        `;
-      }
-
-      card.innerHTML = `
-        <div>
-          <div class="box-top-row">
-            <span class="box-name">${member.name}</span>
-            <span class="fee-pill-tag ${isPaid ? 'fee-paid' : 'fee-due'}">${isPaid ? 'PAID' : 'DUE'}</span>
-          </div>
-          <div class="box-meta-info">
-            📞 ${member.phone}<br>
-            ⏳ शेष दिन: <b style="color:#ffcc00;">${daysRemaining} दिन</b>
-          </div>
-          <div class="slot-tag-row">
-            <span>🕒 ${member.slot.split(" - ")[0]}</span>
-            <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal('${member.id}')">⚙️ बदलें</button>
-          </div>
-          ${proofMarkup}
-        </div>
-
-        <div class="box-actions-row">
-          <button class="btn-action-pres ${isPresent ? 'is-ver' : 'not-ver'}" onclick="handleAttendanceClick('${member.id}')">
-            ${isPresent ? '✔ PRESENT' : '📸 PRESENT'}
-          </button>
-          <button class="btn-action-abs ${member.isMarkedAbsent ? 'is-abs' : ''}" onclick="markMemberAbsent('${member.id}')">
-            ✖ ABS
-          </button>
+      dropdown.innerHTML = `
+        <div style="color:#ff6666; font-size:11px; text-align:center; padding:8px;">
+          कोई सदस्य नहीं मिला।<br>
+          <small style="color:#888;">(वर्तमान में केवल ${activeTargetBatch.toUpperCase()} बैच के सदस्य ही सर्च होंगे)</small>
         </div>
       `;
-      renderNode.appendChild(card);
-    });
+    }
   }
 
-  function handleAttendanceClick(memberId) {
+  // SINGLE CARD RENDER
+  function loadSingleMemberKioskCard(memberId) {
     const list = fetchStoredMembers();
-    const candidate = list.find(m => m.id.toString() === memberId.toString());
-    if (!candidate) return;
+    const m = list.find(x => x.id.toString() === memberId.toString());
+    if (!m) return;
 
-    const isFeesDue = (candidate.status !== 'Paid' && candidate.fees !== 'Paid');
+    currentlyLoadedMember = m;
+    const attMap = fetchDailyAttendanceMap();
+    const isPresent = !!attMap[m.id];
+    const checkin = attMap[m.id];
+    const isPaid = (m.status === 'Paid' || m.fees === 'Paid');
+
+    const joinStr = m.joinDate || "N/A";
+    let expStr = "N/A";
+    let daysRem = 0;
+    if (m.joinDate) {
+      const jD = new Date(m.joinDate);
+      const expD = new Date(jD);
+      expD.setMonth(expD.getMonth() + (m.planMonths || 1));
+      expStr = expD.toISOString().split("T")[0];
+      daysRem = Math.max(0, Math.ceil((expD - new Date()) / (1000 * 60 * 60 * 24)));
+    }
+
+    document.getElementById("cardMemberName").innerText = m.name;
+    document.getElementById("cardMemberPhone").innerText = `📞 +91 ${m.phone}`;
+    
+    const feeBadge = document.getElementById("cardFeeBadge");
+    feeBadge.className = `fee-pill-tag ${isPaid ? 'fee-paid' : 'fee-due'}`;
+    feeBadge.innerText = isPaid ? 'FEES PAID' : 'FEES DUE';
+
+    document.getElementById("cardPlanText").innerText = `${m.plan || '₹500'} (${m.planMonths || 1} माह)`;
+    document.getElementById("cardJoinDate").innerText = joinStr;
+    document.getElementById("cardLastPaid").innerText = m.lastPaid || joinStr;
+    document.getElementById("cardExpiryDate").innerText = expStr;
+    document.getElementById("cardDaysRemaining").innerText = daysRem;
+    document.getElementById("cardSlotDisplay").innerText = m.slot || "06:00 AM - 07:00 AM";
+
+    if (m.feesPromiseDate) {
+      document.getElementById("cardPromiseDateBox").style.display = "block";
+      document.getElementById("cardPromiseDateVal").innerText = m.feesPromiseDate;
+    } else {
+      document.getElementById("cardPromiseDateBox").style.display = "none";
+    }
+
+    const proofBox = document.getElementById("cardProofContainer");
+    if (isPresent && checkin) {
+      proofBox.innerHTML = `
+        <div class="compact-proof-badge">
+          <img src="${checkin.photo}" alt="Seal">
+          <span>✔ VERIFIED BIOMETRIC SEAL | ${checkin.time}</span>
+        </div>
+      `;
+    } else {
+      proofBox.innerHTML = "";
+    }
+
+    const btnPres = document.getElementById("btnPresTrigger");
+    btnPres.className = `btn-pres-action ${isPresent ? 'is-ver' : 'not-ver'}`;
+    btnPres.innerText = isPresent ? '✔ ATTENDANCE VERIFIED' : '📸 PRESENT दर्ज करें';
+
+    const card = document.getElementById("activeLoadedCard");
+    card.className = `loaded-member-card ${isPresent ? 'status-present' : ''}`;
+
+    document.getElementById("searchAreaWrapper").style.display = "none";
+    document.getElementById("singleMemberContainer").style.display = "block";
+  }
+
+  // ATTENDANCE & WARNING CHECK
+  function handleAttendanceClick() {
+    if (!currentlyLoadedMember) return;
+    const m = currentlyLoadedMember;
+
+    const isFeesDue = (m.status !== 'Paid' && m.fees !== 'Paid');
     let isMonthExpired = false;
-    if (candidate.joinDate) {
-      const joinD = new Date(candidate.joinDate);
+    if (m.joinDate) {
+      const joinD = new Date(m.joinDate);
       const expD = new Date(joinD);
-      expD.setMonth(expD.getMonth() + (candidate.planMonths || 1));
+      expD.setMonth(expD.getMonth() + (m.planMonths || 1));
       if (new Date() >= expD) isMonthExpired = true;
     }
 
     if (isFeesDue || isMonthExpired) {
-      activeExpiringMember = candidate;
-      document.getElementById("expiringMemberName").innerText = candidate.name;
+      document.getElementById("expiringMemberName").innerText = m.name;
       document.getElementById("strictExpiryModal").classList.add("show");
       return;
     }
 
-    initiateCameraVerification(candidate);
+    initiateCameraVerification(m);
   }
 
   function showPromiseDateField() {
@@ -666,29 +674,12 @@
     const dateInp = document.getElementById("memberPromiseDate");
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 2);
-    dateInp.value = tomorrow.toISOString().split("T")[0];
-  }
-
-  function submitPromiseAndOpenCam() {
-    const promiseDate = document.getElementById("memberPromiseDate").value;
-    if (!promiseDate) {
-      alert("कृपया अपेक्षित फीस भुगतान तिथि चुनें!");
-      return;
-    }
-
-    let records = fetchStoredMembers();
-    let target = records.find(r => r.id.toString() === activeExpiringMember.id.toString());
-    if (target) {
-      target.feesPromiseDate = promiseDate;
-      syncAllStorage(records);
-    }
-
     document.getElementById("strictExpiryModal").classList.remove("show");
-    initiateCameraVerification(activeExpiringMember);
+    initiateCameraVerification(currentlyLoadedMember);
   }
 
   function handleDisagreeLegalNotice() {
-    const member = activeExpiringMember;
+    const member = currentlyLoadedMember;
     const modalBox = document.getElementById("strictModalInnerBox");
 
     const alertMsg = encodeURIComponent(
@@ -715,7 +706,7 @@
         कृपया काउंटर पर शुल्क का निस्तारण करें अथवा परिसर से प्रस्थान करें।
       </div>
 
-      <button onclick="document.getElementById('strictExpiryModal').classList.remove('show')" style="background:#222; color:#fff; border:1px solid #444; padding:8px 16px; border-radius:6px; font-size:10.5px; font-weight:bold; cursor:pointer;">
+      <button onclick="closeModal('strictExpiryModal'); cancelSearchAndReset();" style="background:#222; color:#fff; border:1px solid #444; padding:8px 16px; border-radius:6px; font-size:10.5px; font-weight:bold; cursor:pointer;">
         ✕ बंद करें (Close)
       </button>
     `;
@@ -724,37 +715,8 @@
     setTimeout(() => { window.location.href = "tel:9140417259"; }, 1200);
   }
 
-  function openSlotChangerModal(memberId) {
-    let pin = prompt("🔒 Admin PIN दर्ज करें (स्लॉट बदलने हेतु):");
-    if (pin !== ADMIN_PIN) {
-      alert("❌ गलत PIN! स्लॉट बदलने की अनुमति केवल Admin को है।");
-      return;
-    }
-    const list = fetchStoredMembers();
-    const candidate = list.find(m => m.id.toString() === memberId.toString());
-    if (!candidate) return;
-
-    targetMemberForSlotChange = candidate;
-    document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${candidate.name} (वर्तमान: ${candidate.slot})`;
-    document.getElementById("slotChangerModal").classList.add("show");
-  }
-
-  function saveNewMemberSlot(newSlot) {
-    if (!targetMemberForSlotChange) return;
-
-    let records = fetchStoredMembers();
-    let target = records.find(r => r.id.toString() === targetMemberForSlotChange.id.toString());
-    if (target) {
-      target.slot = newSlot;
-      syncAllStorage(records);
-      alert(`✅ ${target.name} का स्लॉट बदलकर "${newSlot}" कर दिया गया।`);
-      closeModal('slotChangerModal');
-      executeFilterEngine();
-    }
-  }
-
+  // CAMERA & BIOMETRICS
   function initiateCameraVerification(candidate) {
-    activeMemberRecordForCamera = candidate;
     document.getElementById("modalCandidateName").innerText = candidate.name;
     document.getElementById("cameraBackdropModal").classList.add("show");
 
@@ -771,7 +733,7 @@
   }
 
   function captureLiveSelfieProof() {
-    if (!currentVideoStream || !activeMemberRecordForCamera) return;
+    if (!currentVideoStream || !currentlyLoadedMember) return;
 
     const videoElem = document.getElementById("videoElement");
     const canvas = document.getElementById("offscreenCanvas");
@@ -786,7 +748,7 @@
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 
     let attendanceRecords = fetchDailyAttendanceMap();
-    attendanceRecords[activeMemberRecordForCamera.id] = {
+    attendanceRecords[currentlyLoadedMember.id] = {
       time: timeStr,
       fullStamp: `📅 ${dayStr} | ⏰ ${timeStr}`,
       photo: base64Stamp
@@ -794,7 +756,7 @@
     localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
 
     let allRecords = fetchStoredMembers();
-    let target = allRecords.find(r => r.id.toString() === activeMemberRecordForCamera.id.toString());
+    let target = allRecords.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
     let currentAttended = 1;
     let daysRemaining = 30;
     let expiryStr = "N/A";
@@ -806,7 +768,7 @@
 
       if (target.joinDate) {
         const jD = new Date(target.joinDate);
-        const expD = new Date(jD);
+        const expD = new Date(joinD);
         expD.setMonth(expD.getMonth() + (target.planMonths || 1));
         expiryStr = expD.toISOString().split("T")[0];
         daysRemaining = Math.max(0, Math.ceil((expD - now) / (1000 * 60 * 60 * 24)));
@@ -815,40 +777,55 @@
     }
 
     closeCameraModal();
-    executeFilterEngine();
 
-    document.getElementById("celebrateMemberName").innerText = activeMemberRecordForCamera.name.toUpperCase();
+    // Celebration Report
+    document.getElementById("celebrateMemberName").innerText = currentlyLoadedMember.name.toUpperCase();
     document.getElementById("celebrateAttendedDays").innerText = currentAttended;
     document.getElementById("celebrateRemainingDays").innerText = daysRemaining;
     document.getElementById("celebrateExpiryDate").innerText = expiryStr;
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
 
+  function completeAttendanceAndResetKiosk() {
+    closeModal('attendanceCelebrationModal');
+    cancelSearchAndReset();
+  }
+
+  // SLOT CHANGER (ADMIN PIN PROTECTED)
+  function openSlotChangerModal() {
+    let pin = prompt("🔒 Admin PIN दर्ज करें (स्लॉट बदलने हेतु):");
+    if (pin !== ADMIN_PIN) {
+      alert("❌ गलत PIN! स्लॉट बदलने की अनुमति केवल Admin को है।");
+      return;
+    }
+    document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
+    document.getElementById("slotChangerModal").classList.add("show");
+  }
+
+  function saveNewMemberSlot(newSlot, batchType) {
+    if (!currentlyLoadedMember) return;
+
+    let records = fetchStoredMembers();
+    let target = records.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
+    if (target) {
+      target.slot = newSlot;
+      target.batch = batchType;
+      syncAllStorage(records);
+      currentlyLoadedMember = target;
+      alert(`✅ ${target.name} का स्लॉट बदलकर "${newSlot}" (${batchType.toUpperCase()}) कर दिया गया।`);
+      closeModal('slotChangerModal');
+      loadSingleMemberKioskCard(target.id);
+    }
+  }
+
   function unlockAdminControl() {
     let pin = prompt("🔒 Admin PIN दर्ज करें:");
     if (pin === ADMIN_PIN) {
       isAdminUnlocked = true;
-      alert("✅ Admin Access अनलॉक हो गया!");
-      executeFilterEngine();
+      alert("✅ Admin Access अनलॉक हो गया! अब आप किसी भी समय सभी बैच सर्च कर सकते हैं।");
     } else if (pin !== null) {
       alert("❌ गलत पासवर्ड!");
     }
-  }
-
-  function markMemberAbsent(memberId) {
-    let allRecords = fetchStoredMembers();
-    let target = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (target) {
-      target.isMarkedAbsent = true;
-      syncAllStorage(allRecords);
-    }
-
-    let attendanceRecords = fetchDailyAttendanceMap();
-    if (attendanceRecords[memberId]) {
-      delete attendanceRecords[memberId];
-      localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
-    }
-    executeFilterEngine();
   }
 
   function syncAllStorage(records) {
@@ -872,8 +849,6 @@
   window.onload = () => {
     runLiveSystemClock();
     setInterval(runLiveSystemClock, 1000);
-    renderShiftSlotsBar();
-    executeFilterEngine();
   };
 </script>
 </body>
