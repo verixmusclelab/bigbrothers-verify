@@ -8,13 +8,39 @@
 <body style="background:#050505; color:#fff; font-family:sans-serif; margin:0; padding:12px;">
 
 <!-- ========================================== -->
-<!-- TOP BACK NAVIGATION BAR -->
+<!-- TOP BACK NAVIGATION BAR                    -->
 <!-- ========================================== -->
 <div style="max-width:520px; margin:10px auto; display:flex; justify-content:space-between; align-items:center; background:#111; border:1px solid #ffcc00; padding:10px 14px; border-radius:8px;">
   <a href="app.html" style="background:#ffcc00; color:#000; text-decoration:none; font-weight:bold; font-size:12px; padding:6px 12px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
     ⬅️ मुख्य मेन्यू (Home)
   </a>
   <span style="color:#ffcc00; font-size:12px; font-weight:bold;">5 BROTHER'S FITNESS</span>
+</div>
+
+<!-- ========================================== -->
+<!-- QUICK ADMISSION CARD DOWNLOAD SEARCH BAR   -->
+<!-- ========================================== -->
+<div style="max-width:520px; margin:0 auto 12px; background:#121212; border:1.5px solid #ffcc00; border-radius:12px; padding:12px; box-sizing:border-box;">
+  <div style="font-size:12px; font-weight:bold; color:#ffcc00; margin-bottom:6px;">
+    🔍 अपना डिजिटल एडमिशन कार्ड / रसीद डाउनलोड करें:
+  </div>
+  <div style="display:flex; gap:6px;">
+    <input 
+      type="text" 
+      id="quickSearchInput" 
+      placeholder="नाम या मोबाइल के 4 अंक दर्ज करें..." 
+      style="flex:1; background:#000; border:1px solid #444; color:#fff; padding:8px 10px; border-radius:6px; font-size:11.5px; outline:none; box-sizing:border-box;"
+      onkeypress="if(event.key==='Enter') searchAndDownloadAdmissionCard()"
+    >
+    <button 
+      type="button" 
+      onclick="searchAndDownloadAdmissionCard()" 
+      style="background:#ffcc00; color:#000; font-weight:bold; border:none; padding:8px 12px; border-radius:6px; font-size:11px; cursor:pointer;"
+    >
+      कार्ड खोजें ➔
+    </button>
+  </div>
+  <div id="quickSearchResults" style="margin-top:8px;"></div>
 </div>
   
 <div id="admissionAppContainer" style="max-width:520px; margin:0 auto; background:#0e0e0e; border:1.5px solid #ffcc00; border-radius:14px; padding:16px; box-sizing:border-box; box-shadow:0 0 25px rgba(255,204,0,0.15);">
@@ -59,7 +85,7 @@
         <option value="student">विद्यार्थी (Student Offer - ₹300/माह)</option>
         <option value="general">सामान्य (General Fitness - ₹500/माह)</option>
         <option value="cardio">युवा / गैर-नौकरीपेशा (Job Seeker / Unemployed - ₹400/माह)</option>
-       </select>
+      </select>
     </div>
 
     <div style="margin-bottom:12px;">
@@ -257,13 +283,12 @@
     </div>
   </div>
 
-  <!-- STEP 5: PAYMENT SELECTION & ALL ONLINE OPTIONS (FIXED & FULLY WORKING) -->
+  <!-- STEP 5: PAYMENT SELECTION & ALL ONLINE OPTIONS -->
   <div id="stepBox5" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
       5. भुगतान माध्यम (Payment Mode)
     </div>
 
-    <!-- Mode Selector Buttons -->
     <div style="display:flex; gap:10px; margin-bottom:14px;">
       <button 
         type="button" 
@@ -283,13 +308,12 @@
       </button>
     </div>
 
-    <!-- COMPLETE ONLINE APPS & CARDS TRAY -->
+    <!-- ONLINE APPS & CARDS TRAY -->
     <div id="onlinePaymentTray" style="display:none; background:#121212; border:1.5px solid #00ff66; padding:14px; border-radius:12px; margin-bottom:14px;">
       <div style="font-size:11.5px; color:#ffcc00; margin-bottom:10px; text-align:center; font-weight:bold;">
         सीधे ऐप से भुगतान के लिए क्लिक करें:
       </div>
 
-      <!-- Quick UPI App Launchers -->
       <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom:12px;">
         <button type="button" onclick="triggerUPIApp('gpay')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px 6px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">
           🟢 Google Pay
@@ -305,7 +329,6 @@
         </button>
       </div>
 
-      <!-- Card / Netbanking Option -->
       <div style="background:#1a1a1a; border:1px dashed #555; border-radius:8px; padding:10px; margin-bottom:12px; text-align:center;">
         <div style="font-size:11px; font-weight:bold; color:#ffcc00; margin-bottom:4px;">💳 Debit / Credit Card / NetBanking</div>
         <button type="button" onclick="openCardPayment()" style="background:#ffcc00; color:#000; border:none; padding:7px 14px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">
@@ -313,7 +336,6 @@
         </button>
       </div>
 
-      <!-- Toggle QR Code option for 2nd phone scan -->
       <div style="text-align:center; border-top:1px solid #222; padding-top:10px;">
         <button type="button" onclick="toggleQrView()" style="background:transparent; border:none; color:#00ff66; font-size:11px; text-decoration:underline; cursor:pointer; font-weight:bold;">
           📷 दूसरे फोन से स्कैन करने के लिए QR कोड दिखाएं
@@ -376,7 +398,7 @@
 
     <div style="display:flex; flex-direction:column; gap:8px;">
       <button type="button" id="btnDownloadSlip" onclick="downloadAdmissionCardNow()" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:11px; border:none; border-radius:8px; cursor:pointer; font-size:13px;">
-        📄 एडमिशन कार्ड व पक्की रसीद (PDF) डाउनलोड करें
+        📄 डिजिटल एडमिशन कार्ड डाउनलोड करें (PDF)
       </button>
       <button type="button" onclick="closeWelcomeModal()" style="width:100%; background:#222; color:#aaa; font-weight:bold; padding:9px; border:1px solid #444; border-radius:8px; cursor:pointer; font-size:11px;">
         बंद करें (CLOSE)
@@ -430,6 +452,42 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   renderAdminTable();
 });
+
+// QUICK SEARCH FOR ADMISSION CARD (4-Digit Phone or Name)
+function searchAndDownloadAdmissionCard() {
+  const query = document.getElementById("quickSearchInput").value.trim().toLowerCase();
+  const resultsBox = document.getElementById("quickSearchResults");
+  resultsBox.innerHTML = "";
+
+  if (!query) {
+    alert("कृपया नाम या मोबाइल नंबर के 4 अंक दर्ज करें!");
+    return;
+  }
+
+  const allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  const matched = allRecords.filter(m => 
+    (m.name && m.name.toLowerCase().includes(query)) || 
+    (m.phone && m.phone.includes(query)) ||
+    (m.code && m.code.toLowerCase().includes(query))
+  );
+
+  if (matched.length === 0) {
+    resultsBox.innerHTML = `<div style="font-size:11px; color:#ff6666; padding:6px; text-align:center;">कोई रिकॉर्ड नहीं मिला।</div>`;
+    return;
+  }
+
+  resultsBox.innerHTML = matched.map(m => `
+    <div style="background:#1c1c1c; border:1px solid #333; border-radius:6px; padding:8px 10px; margin-top:6px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:11px; text-align:left;">
+        <b style="color:#ffcc00;">${m.name}</b> (${m.phone})<br>
+        <span style="color:#888;">प्रवेश: ${m.joinDate} | ${m.plan}</span>
+      </div>
+      <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)})' style="background:#00ff66; color:#000; font-size:10.5px; font-weight:bold; padding:6px 10px; border:none; border-radius:5px; cursor:pointer;">
+        📥 डाउनलोड कार्ड
+      </button>
+    </div>
+  `).join("");
+}
 
 // 1. Category & Plan Calculation
 function updatePlanDurations() {
@@ -582,7 +640,7 @@ function goToStep(step) {
   });
 }
 
-// FIXED PAYMENT MODE SELECTOR
+// Payment Mode Selector
 function selectPaymentMode(mode) {
   selectedPaymentMode = mode;
   const btnCash = document.getElementById("payBtnCash");
@@ -607,7 +665,7 @@ function selectPaymentMode(mode) {
   }
 }
 
-// DIRECT APP LAUNCHERS
+// Direct App Launchers
 function triggerUPIApp(app) {
   const feeText = document.getElementById("admFeeDisplay").innerText.replace(/[^0-9]/g, '');
   const amount = parseInt(feeText) || 0;
@@ -705,11 +763,11 @@ function triggerWelcomeModal(m) {
   if (m.status === "Pending") {
     statusLine.innerHTML = "⏳ <span style='color:#ffcc00;'>कैश वेरिफिकेशन पेंडिंग (Admin Approval प्रतीक्षित)</span>";
     slipBtn.style.background = "#ffcc00";
-    slipBtn.innerText = "📄 एडमिशन स्लिप (पेंडिंग रसीद) देखें";
+    slipBtn.innerText = "📄 डिजिटल एडमिशन फॉर्म / स्लिप (PDF)";
   } else {
     statusLine.innerHTML = "✅ <span style='color:#00ff66;'>भुगतान स्वीकृत (Paid)</span>";
     slipBtn.style.background = "#00ff66";
-    slipBtn.innerText = "📄 एडमिशन कार्ड व पक्की रसीद (PDF) देखें";
+    slipBtn.innerText = "📄 डिजिटल एडमिशन कार्ड डाउनलोड करें (PDF)";
   }
   document.getElementById("welcomePopupModal").style.display = "flex";
 }
@@ -749,7 +807,7 @@ function downloadAdmissionCardNow(customMember = null) {
         <div class="head">
           <h2 class="title">👑 5 BROTHER'S FITNESS CLUB</h2>
           <div class="sub">उमराव खेड़ा, अकरमपुर, उन्नाव | मो.: 9140417259</div>
-          <div class="badge">OFFICIAL ADMISSION CARD & RECEIPT</div>
+          <div class="badge">OFFICIAL DIGITAL ADMISSION CARD & RECEIPT</div>
         </div>
         <div class="row"><span>कार्ड आईडी:</span> <b>${m.code || m.id}</b></div>
         <div class="row"><span>सदस्य का नाम:</span> <b>${m.name} (${m.gender || 'M'})</b></div>
