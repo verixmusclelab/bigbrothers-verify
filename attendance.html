@@ -676,7 +676,7 @@
     initiateCameraVerification(candidate);
   }
 
-  function showMembershipExpiredStrictModal(member) {
+function showMembershipExpiredStrictModal(member) {
     const existing = document.getElementById("strictExpiryModal");
     if (existing) existing.remove();
 
@@ -751,32 +751,36 @@
     initiateCameraVerification(candidate);
   }
 
+  // PROFESSIONAL LEGAL RESTRICTION NOTICE
   function handleDisagreeAction(memberId) {
     const member = fetchStoredMembers().find(m => m.id.toString() === memberId.toString());
     const modalBox = document.getElementById("modalInnerBox");
 
     const alertMsg = encodeURIComponent(
-      `🚨 *5BFC RULES REJECTED - ENTRY DENIED*\n\n` +
+      `🚨 *5BFC RULES REJECTED - ENTRY RESTRICTED*\n\n` +
       `👤 *सदस्य:* ${member.name}\n` +
       `📞 *मोबाइल:* ${member.phone}\n` +
-      `⚠️ *कारण:* महीने की फीस पॉलिसी से असहमत।\n` +
-      `🚫 *स्थिति:* जिम में प्रवेश रोक दिया गया है और घर वापस जाने को कहा गया है।`
+      `⚠️ *स्थिति:* सदस्यता समाप्ति के बाद फीस नियमों से असहमति।\n` +
+      `⚖️ *नोटिस:* परिसर में प्रवेश रोक दिया गया है तथा विधिक कार्यवाही की सूचना दी गई है।`
     );
 
     modalBox.innerHTML = `
-      <div style="font-size:48px; margin-bottom:8px;">⛔</div>
-      <h2 style="color:#ff4d4d; margin:0 0 8px; font-size:20px; font-weight:900;">प्रवेश वर्जित (ENTRY DENIED)</h2>
-      <div style="background:#2b0f0f; border:2px solid #ff4d4d; border-radius:12px; padding:15px; text-align:center; color:#fff; font-size:13px; line-height:1.6; margin-bottom:15px;">
+      <div style="font-size:44px; margin-bottom:6px;">⛔</div>
+      <h2 style="color:#ff3333; margin:0 0 6px; font-size:18px; font-weight:900; letter-spacing:0.5px;">प्रवेश अस्वीकृत (ENTRY RESTRICTED)</h2>
+      <div style="color:#ffcc00; font-size:12px; font-weight:bold; margin-bottom:12px;">5 BROTHER'S FITNESS CLUB</div>
+      
+      <div style="background:#1a0f0f; border:1.5px solid #ff3333; border-radius:10px; padding:12px; text-align:left; color:#eee; font-size:11.5px; line-height:1.6; margin-bottom:14px;">
         <b>प्रिय ${member.name},</b><br>
-        आप जिम के नियमों से सहमत नहीं हैं।<br><br>
-        <span style="color:#ffcc00; font-size:14px; font-weight:bold;">
-          कृपया आप घर वापस जाएं।<br>बिना फीस जमा किए या नियम सहमति के जिम के अंदर प्रवेश न करें।
-        </span>
+        आपकी सदस्यता अवधि समाप्त हो चुकी है। नियमानुसार बिना अग्रिम शुल्क जमा किए जिम परिसर में प्रवेश पूर्णतः वर्जित है।<br><br>
+        <span style="color:#ff6666; font-weight:bold;">विधिक चेतावनी:</span><br>
+        डिजिटल एवं लिखित नियमों की पूर्व जानकारी के उपरांत भी यदि आप बिना शुल्क भुगतान किए कसरत करते हैं या बकाया छोड़ते हैं, तो 1 दिन की उपस्थिति पर भी पूरे माह का शुल्क देय होगा। भुगतान न करने की स्थिति में जिम प्रबंधन आपके विरुद्ध विधिक एवं कानूनी कार्यवाही (Legal Action) हेतु पूर्णतः स्वतंत्र है।
       </div>
-      <div style="font-size:11px; color:#aaa; margin-bottom:14px;">
-        जिम प्रबंधन को कॉल व व्हाट्सएप पर सूचना भेज दी गई है।
+
+      <div style="font-size:11px; color:#aaa; margin-bottom:12px;">
+        कृपया काउंटर पर शुल्क का निस्तारण करें अथवा परिसर से प्रस्थान करें।
       </div>
-      <button onclick="document.getElementById('strictExpiryModal').remove()" style="background:#333; color:#fff; border:1px solid #555; padding:10px 18px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer;">
+
+      <button onclick="document.getElementById('strictExpiryModal').remove()" style="background:#222; color:#fff; border:1px solid #444; padding:9px 18px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">
         ✕ बंद करें (Close)
       </button>
     `;
