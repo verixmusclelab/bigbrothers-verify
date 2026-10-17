@@ -287,7 +287,14 @@ const MASTER_VERIFIED_CODES = {
   "ON-GOLD-01": { brand: "Optimum Nutrition", name: "Gold Standard 100% Whey" },
   "MT-NITRO-01": { brand: "MuscleTech", name: "Nitro-Tech Performance Series" }
 };
-
+const PROTEIN_CODES_DB = [
+  "WPPNHCF","WP4QC8Q","WPHR74Z","WPWS2Y9","WPBUVTJ","WPQVQPT","WP5XKK4","WPJYEFD","WPXZ9BN","WPC357X",
+  "WPR4Y28","WP66TWG","WPK7NSR","WPY8HN2","WPDACJB","WPSB7EL","WP7D2AV","WPLEV56","WPZFQZE","WPEZEER",
+  "WPT2AA2","WP8456B","WPM5YZK","WP27TVU","WPF8NR5","WPU9HME","WP9BCHP","WPNC7DY","WP3E299","WPGFV4J",
+  "WPVGQYS","WPAJKU3","WPPKEQC","WP4M9LM","WPHN4GW","WPWPXB7","WPBRS7G","WPQSM3R","WP5UGXZ","WPJVBTA",
+  "WPXW6PK","WPCYZJU","WPRZUE5","WP63QAE","WPKLEPQ","WPYM9KZ","WPDP4FA","WPSQXAK","WP7SS6U","WPLTM25"
+  // Baki saare codes jo txt file me diye hain
+];  
 // Jaise hi user input me kuch naya likhega ya erase karega, purana box gayab ho jayega
 function resetResultState() {
   const resultBox = document.getElementById("resultBox");
@@ -312,26 +319,14 @@ function runVerification() {
     `;
     return;
   }
-
-  // Exact Match Check (Aadha-adhura code reject hoga)
-  let productData = MASTER_VERIFIED_CODES[code];
-
-  // Agar master codes me nahi hai, toh Prefix + Exact Length Check (WP, MG, CR, MV ke algorithmic codes)
+  
+  // Direct Stored Codes Database Check
   if (!productData) {
-    const prefixes = ["WP", "MG", "CR", "MV", "MSW", "MGG", "ACT", "KNG", "ANX"];
-    for (let p of prefixes) {
-      if (code.startsWith(p) && code.length >= (p.length + 5)) {
-        // Sirf tab pass hoga jab poora code generate hua ho (kam se kam 7-8 akshar)
-        if (p === "WP") productData = { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
-        else if (p === "MG") productData = { brand: "Big Brothers Fitness", name: "100% Genuine Mass Gainer" };
-        else if (p === "CR") productData = { brand: "Big Brothers Fitness", name: "100% Genuine Creatine" };
-        else if (p === "MV") productData = { brand: "Big Brothers Fitness", name: "100% Genuine Multivitamin" };
-        else if (p === "MSW") productData = { brand: "Muscle Size Nutrition", name: "100% Whey Protein" };
-        else if (p === "MGG") productData = { brand: "Muscul Gold Nutrition", name: "Pro Series Mass Gainer" };
-        break;
-      }
+    if (PROTEIN_CODES_DB.includes(code)) {
+      productData = { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
     }
   }
+  
 
   if (productData) {
     document.getElementById("welcomeBrand").innerHTML = "Welcome to<br>" + productData.brand;
