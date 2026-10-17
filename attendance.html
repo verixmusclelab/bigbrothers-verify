@@ -11,7 +11,7 @@
     --gold: #ffcc00;
     --gold-glow: rgba(255, 204, 0, 0.28);
     --bg-dark: #070707;
-    --card-bg: #111111;
+    --card-bg: #121212;
     --border-color: #242424;
     --green-accent: #00ff66;
     --red-accent: #ff3333;
@@ -27,166 +27,196 @@
   body {
     background-color: var(--bg-dark);
     color: #ffffff;
-    padding: 12px 10px 90px 10px;
+    padding: 10px 8px 80px 8px;
     max-width: 540px;
     margin: 0 auto;
     min-height: 100vh;
   }
 
   .nav-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
   }
 
   .btn-back-home {
     background: var(--gold); color: #000; text-decoration: none;
-    font-size: 11px; font-weight: 900; padding: 7px 12px; border-radius: 8px;
+    font-size: 10.5px; font-weight: 900; padding: 6px 10px; border-radius: 6px;
     text-transform: uppercase;
   }
 
   .btn-admin-pill {
-    background: #1f1f1f; color: var(--gold); border: 1px solid var(--gold);
-    font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+    background: #1c1c1c; color: var(--gold); border: 1px solid var(--gold);
+    font-size: 10.5px; font-weight: bold; padding: 5px 10px; border-radius: 6px; cursor: pointer;
   }
 
   .branding-card {
     background: radial-gradient(circle at top, #1e1908 0%, #0d0d0d 100%);
-    border: 1.5px solid var(--gold); border-radius: 16px;
-    padding: 16px 14px; text-align: center; margin-bottom: 14px;
-    box-shadow: 0 4px 25px var(--gold-glow);
+    border: 1.5px solid var(--gold); border-radius: 12px;
+    padding: 10px 8px; text-align: center; margin-bottom: 10px;
+    box-shadow: 0 4px 20px var(--gold-glow);
   }
 
   .branding-title {
-    font-size: 19px; font-weight: 900; color: var(--gold); text-transform: uppercase;
+    font-size: 16px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px;
   }
 
   .badge-live-clock {
-    display: inline-block; background: #181818; border: 1px solid #ffcc00;
-    color: var(--gold); font-size: 12px; font-weight: 900;
-    padding: 6px 14px; border-radius: 20px; margin-top: 8px;
+    display: inline-block; background: #161616; border: 1px solid #ffcc00;
+    color: var(--gold); font-size: 10.5px; font-weight: 800;
+    padding: 3px 10px; border-radius: 12px; margin-top: 5px;
   }
 
   .time-shift-banner {
-    background: #181818; border: 1.5px solid #333; border-radius: 10px;
-    padding: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+    background: #141414; border: 1px solid #282828; border-radius: 8px;
+    padding: 8px 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
   }
 
   .shift-badge {
-    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 900; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase;
   }
   .shift-morning { background: rgba(255, 204, 0, 0.15); color: var(--gold); border: 1px solid var(--gold); }
   .shift-evening { background: rgba(0, 200, 255, 0.15); color: #00c8ff; border: 1px solid #00c8ff; }
 
-  .search-container { margin-bottom: 12px; position: relative; }
+  .search-container { margin-bottom: 10px; position: relative; }
   .live-search-input {
-    width: 100%; background: var(--card-bg); border: 1.5px solid #383838;
-    border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 14px; outline: none;
+    width: 100%; background: var(--card-bg); border: 1.5px solid #333;
+    border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; outline: none;
   }
   .live-search-input:focus { border-color: var(--gold); }
 
   .search-dropdown-results {
     display: none; background: #161616; border: 1.5px solid var(--gold);
-    border-radius: 10px; padding: 8px; margin-top: 6px; max-height: 280px; overflow-y: auto;
+    border-radius: 8px; padding: 6px; margin-top: 4px; max-height: 240px; overflow-y: auto;
   }
 
   .search-item-row {
-    background: #222; border: 1px solid #333; border-radius: 8px;
-    padding: 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
+    background: #202020; border: 1px solid #333; border-radius: 6px;
+    padding: 8px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;
     cursor: pointer;
   }
-  .search-item-row:hover { border-color: var(--gold); }
 
   .slots-filter-row {
-    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px;
+    display: flex; gap: 5px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px;
   }
   .slots-filter-row::-webkit-scrollbar { display: none; }
 
   .slot-btn {
-    background: #1c1c1c; border: 1px solid #333; color: #aaa;
-    font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 14px;
+    background: #181818; border: 1px solid #333; color: #999;
+    font-size: 10px; font-weight: bold; padding: 5px 9px; border-radius: 12px;
     white-space: nowrap; cursor: pointer;
   }
   .slot-btn.active {
     background: var(--gold); color: #000; border-color: var(--gold);
   }
 
-  .member-list-wrapper { display: flex; flex-direction: column; gap: 12px; }
-
-  .member-record-card {
-    background: var(--card-bg); border: 2px solid var(--border-color);
-    border-radius: 14px; padding: 14px; position: relative;
+  /* 2-COLUMN COMPACT GRID ARCHITECTURE */
+  .member-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
-  .member-record-card.status-present {
+
+  .compact-member-box {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 165px;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .compact-member-box.status-present {
     border-color: #00ff66 !important;
-    background: linear-gradient(180deg, #101812 0%, #07130a 100%) !important;
-    box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+    background: linear-gradient(180deg, #0d1a10 0%, #07120a 100%) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
   }
-  .member-record-card.status-absent {
+
+  .compact-member-box.status-absent {
     border-color: #ff3333 !important;
-    background: linear-gradient(180deg, #181010 0%, #120707 100%) !important;
+    background: linear-gradient(180deg, #1c0e0e 0%, #110707 100%) !important;
   }
 
-  .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
-  .member-fullname { font-size: 16px; font-weight: 900; color: #fff; }
-
-  .detail-panel {
-    background: #161616; border: 1px solid #282828; border-radius: 8px;
-    padding: 8px 10px; margin: 8px 0; font-size: 11px; line-height: 1.55;
+  .box-top-row {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 4px; margin-bottom: 4px;
   }
 
-  .slot-row-flex {
+  .box-name {
+    font-size: 12px; font-weight: 900; color: #fff; line-height: 1.25;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .fee-pill-tag {
+    font-size: 8px; font-weight: 900; padding: 2px 5px; border-radius: 4px; white-space: nowrap;
+  }
+  .fee-paid { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
+  .fee-due { background: rgba(255, 77, 77, 0.15); color: #ff6666; border: 1px solid #ff6666; }
+
+  .box-meta-info {
+    font-size: 9.5px; color: #aaa; line-height: 1.4; margin-bottom: 4px;
+  }
+
+  .slot-tag-row {
     display: flex; justify-content: space-between; align-items: center;
-    background: #1e1e1e; border: 1px solid #333; border-radius: 6px; padding: 6px 8px; margin-top: 6px;
+    background: #1a1a1a; border: 1px solid #333; border-radius: 4px;
+    padding: 3px 5px; margin-top: 3px; font-size: 9px;
   }
 
-  .btn-change-slot-action {
-    background: var(--gold); color: #000; border: none; padding: 3px 8px;
-    border-radius: 4px; font-size: 10px; font-weight: 900; cursor: pointer;
+  .btn-slot-gear {
+    background: var(--gold); color: #000; border: none; border-radius: 3px;
+    padding: 1px 4px; font-size: 8.5px; font-weight: bold; cursor: pointer;
   }
 
-  .controls-row { display: flex; gap: 8px; margin-top: 10px; }
+  .compact-proof-badge {
+    display: flex; align-items: center; gap: 4px;
+    background: #000; border: 1px dashed var(--green-accent);
+    border-radius: 4px; padding: 2px 4px; margin: 4px 0; font-size: 8.5px; color: #00ff66; font-weight: bold;
+  }
+  .compact-proof-badge img {
+    width: 20px; height: 20px; border-radius: 3px; object-fit: cover;
+  }
 
-  .btn-mark-present {
-    flex: 2; font-size: 12px; font-weight: 900; padding: 11px; border-radius: 8px;
+  .box-actions-row {
+    display: flex; gap: 4px; margin-top: 4px;
+  }
+
+  .btn-action-pres {
+    flex: 2; font-size: 10px; font-weight: 900; padding: 7px 3px; border-radius: 6px;
     border: none; cursor: pointer; text-transform: uppercase;
   }
-  .btn-mark-present.verified { background: #00ff66; color: #000; }
-  .btn-mark-present.unverified { background: #16291b; color: #00ff66; border: 1.5px solid #00ff66; }
+  .btn-action-pres.is-ver { background: #00ff66; color: #000; }
+  .btn-action-pres.not-ver { background: #132417; color: #00ff66; border: 1.2px solid #00ff66; }
 
-  .btn-mark-absent {
-    flex: 1; background: #1a1a1a; color: #ff6666; border: 1px solid #442222;
-    font-size: 11px; font-weight: 800; padding: 11px; border-radius: 8px; cursor: pointer;
+  .btn-action-abs {
+    flex: 1; background: #1c1c1c; color: #ff6666; border: 1px solid #442222;
+    font-size: 9.5px; font-weight: 800; padding: 7px 2px; border-radius: 6px; cursor: pointer;
   }
-  .btn-mark-absent.active { background: #ff3333; color: #fff; border-color: #ff3333; }
-
-  .live-seal-box {
-    display: flex; align-items: center; gap: 10px;
-    background: #000; border: 1.5px dashed var(--green-accent);
-    border-radius: 8px; padding: 8px 10px; margin: 8px 0;
-  }
-  .live-seal-thumbnail { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; border: 1.5px solid var(--green-accent); }
+  .btn-action-abs.is-abs { background: #ff3333; color: #fff; border-color: #ff3333; }
 
   /* MODALS */
   .custom-modal-backdrop {
     display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0, 0, 0, 0.95); z-index: 999999;
-    align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;
+    align-items: center; justify-content: center; padding: 14px; box-sizing: border-box;
   }
   .custom-modal-backdrop.show { display: flex; }
 
   .modal-box-card {
-    background: #111; border: 2px solid var(--gold); border-radius: 18px;
-    max-width: 440px; width: 100%; padding: 20px 16px; text-align: center;
-    box-shadow: 0 0 35px var(--gold-glow); color: #fff;
+    background: #111; border: 2px solid var(--gold); border-radius: 14px;
+    max-width: 420px; width: 100%; padding: 16px 14px; text-align: center;
+    box-shadow: 0 0 30px var(--gold-glow); color: #fff;
   }
 
   .camera-feed-container {
-    width: 100%; height: 300px; background: #000; border-radius: 12px;
+    width: 100%; height: 280px; background: #000; border-radius: 10px;
     position: relative; overflow: hidden; border: 2px solid #333;
   }
   #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
   .scanner-reticle-ring {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 180px; height: 180px; border: 2px dashed var(--green-accent); border-radius: 50%;
+    width: 170px; height: 170px; border: 2px dashed var(--green-accent); border-radius: 50%;
   }
 </style>
 </head>
@@ -199,82 +229,82 @@
 
   <div class="branding-card">
     <div class="branding-title">👑 5 BROTHER'S FITNESS CLUB</div>
-    <div style="font-size:11px; color:#aaa; margin-top:2px;">Biometric Verification & Time-Slot Attendance</div>
+    <div style="font-size:10px; color:#aaa; margin-top:2px;">Biometric Verification & 2x2 Grid Attendance</div>
     <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
   </div>
 
   <!-- AUTO SHIFT BANNER -->
   <div class="time-shift-banner">
     <div>
-      <div style="font-size:10px; color:#aaa; text-transform:uppercase;">वर्तमान एक्टिव शिफ्ट (Auto System)</div>
-      <b style="font-size:13px;" id="currentShiftText">Loading Shift...</b>
+      <div style="font-size:9.5px; color:#888; text-transform:uppercase;">वर्तमान एक्टिव शिफ्ट</div>
+      <b style="font-size:12px;" id="currentShiftText">Loading Shift...</b>
     </div>
     <span class="shift-badge shift-morning" id="currentShiftBadge">Morning</span>
   </div>
 
   <!-- SEARCH BAR -->
   <div class="search-container">
-    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="🔍 सदस्य खोजें (नाम या मोबाइल 2 अक्षर टाइप करें)..." oninput="handleInstantSearch()">
+    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="🔍 सदस्य खोजें (2 अक्षर टाइप करें)..." oninput="handleInstantSearch()">
     <div id="searchDropdownNode" class="search-dropdown-results"></div>
   </div>
 
   <!-- BATCH SLOTS CHIPS -->
-  <div style="font-size:11px; font-weight:bold; color:var(--gold); margin-bottom:6px;" id="slotsHeaderTitle">🌅 Morning Batch Slots:</div>
+  <div style="font-size:10.5px; font-weight:bold; color:var(--gold); margin-bottom:5px;" id="slotsHeaderTitle">🌅 Morning Slots:</div>
   <div class="slots-filter-row" id="slotsFilterContainer"></div>
 
-  <!-- MEMBER LIST -->
-  <div class="member-list-wrapper" id="targetRenderContainer"></div>
+  <!-- 2-COLUMN GRID VIEW -->
+  <div class="member-grid-container" id="targetRenderContainer"></div>
 
   <!-- STRICT FEES EXPIRED / OVERDUE MODAL -->
   <div class="custom-modal-backdrop" id="strictExpiryModal">
     <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
-      <div style="font-size:42px; margin-bottom:4px;">⚠️</div>
-      <h3 style="color:#ffcc00; margin:0 0 6px; font-size:17px; text-transform:uppercase;">5 BROTHER'S FITNESS CLUB</h3>
-      <div style="color:#ff6666; font-size:12px; font-weight:bold; margin-bottom:12px;">सदस्यता अवधि व फीस समाप्ति सूचना</div>
+      <div style="font-size:38px; margin-bottom:2px;">⚠️</div>
+      <h3 style="color:#ffcc00; margin:0 0 4px; font-size:16px; text-transform:uppercase;">5 BROTHER'S FITNESS CLUB</h3>
+      <div style="color:#ff6666; font-size:11.5px; font-weight:bold; margin-bottom:10px;">सदस्यता अवधि व फीस समाप्ति सूचना</div>
 
-      <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:10px; padding:12px; margin-bottom:14px; text-align:left; font-size:11.5px; line-height:1.55;">
+      <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:8px; padding:10px; margin-bottom:12px; text-align:left; font-size:11px; line-height:1.5;">
         प्रिय <b id="expiringMemberName">सदस्य</b>,<br>
         आपकी सदस्यता अवधि (1 महीना) पूरी हो चुकी है और आपकी फीस <b>Pending (बकाया)</b> है।<br><br>
         <b style="color:#ffcc00;">सख्त नियम:</b> यदि आप आज के बाद <b>1 दिन भी आते हैं</b>, तो पूरे अगले महीने की फीस देय होगी। बिना अग्रिम फीस जमा किए जिम परिसर में प्रवेश नहीं मिलेगा।
       </div>
 
-      <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:12px; border-radius:10px; margin-bottom:14px; text-align:left;">
-        <label style="display:block; font-size:11px; color:#00ff66; font-weight:bold; margin-bottom:5px;">
+      <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:12px; text-align:left;">
+        <label style="display:block; font-size:10.5px; color:#00ff66; font-weight:bold; margin-bottom:4px;">
           📅 आप फीस किस तारीख तक जमा कर देंगे? (Promise Date):
         </label>
-        <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; box-sizing:border-box;">
-        <button onclick="submitPromiseAndOpenCam()" style="width:100%; margin-top:10px; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; font-size:12px; cursor:pointer;">
+        <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box;">
+        <button onclick="submitPromiseAndOpenCam()" style="width:100%; margin-top:8px; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
           ✔ तारीख लॉक करें व सेल्फी लें
         </button>
       </div>
 
-      <div id="initialActionButtons" style="display:flex; flex-direction:column; gap:8px;">
-        <button onclick="showPromiseDateField()" style="background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
+      <div id="initialActionButtons" style="display:flex; flex-direction:column; gap:6px;">
+        <button onclick="showPromiseDateField()" style="background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
           ✔ हाँ, मैं सहमत हूँ (फीस तारीख चुनें)
         </button>
-        <button onclick="handleDisagreeLegalNotice()" style="background:#261212; color:#ff6666; font-weight:bold; padding:11px; border:1.5px solid #ff4d4d; border-radius:8px; font-size:12px; cursor:pointer;">
+        <button onclick="handleDisagreeLegalNotice()" style="background:#261212; color:#ff6666; font-weight:bold; padding:9px; border:1.5px solid #ff4d4d; border-radius:6px; font-size:11.5px; cursor:pointer;">
           ✖ मैं सहमत नहीं हूँ (अस्वीकार करें)
         </button>
       </div>
     </div>
   </div>
 
-  <!-- SLOT CHANGER MODAL (ADMIN CONTROL) -->
+  <!-- SLOT CHANGER MODAL -->
   <div class="custom-modal-backdrop" id="slotChangerModal">
     <div class="modal-box-card" style="border-color:var(--gold);">
-      <h3 style="color:var(--gold); font-size:16px; margin-bottom:6px;">🕒 बैच समय बदलें (Slot Changer)</h3>
-      <div style="font-size:12px; color:#ccc; margin-bottom:12px;" id="slotChangerMemberName">सदस्य: --</div>
+      <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 बैच समय बदलें (Slot Changer)</h3>
+      <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
 
-      <div style="text-align:left; font-size:11px; font-weight:bold; color:var(--gold); margin-bottom:6px;">🌅 MORNING BATCHES:</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:12px;">
+      <div style="text-align:left; font-size:10.5px; font-weight:bold; color:var(--gold); margin-bottom:4px;">🌅 MORNING BATCHES:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:10px;">
         <button type="button" class="slot-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM')">05:00 - 06:00 AM</button>
         <button type="button" class="slot-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM')">06:00 - 07:00 AM</button>
         <button type="button" class="slot-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM')">07:00 - 08:00 AM</button>
         <button type="button" class="slot-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM')">08:00 - 09:00 AM</button>
       </div>
 
-      <div style="text-align:left; font-size:11px; font-weight:bold; color:#00c8ff; margin-bottom:6px;">🌙 EVENING BATCHES:</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:14px;">
+      <div style="text-align:left; font-size:10.5px; font-weight:bold; color:#00c8ff; margin-bottom:4px;">🌙 EVENING BATCHES:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:12px;">
         <button type="button" class="slot-btn" onclick="saveNewMemberSlot('04:30 PM - 05:30 PM')">04:30 - 05:30 PM</button>
         <button type="button" class="slot-btn" onclick="saveNewMemberSlot('05:30 PM - 06:30 PM')">05:30 - 06:30 PM</button>
         <button type="button" class="slot-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM')">06:30 - 07:30 PM</button>
@@ -282,27 +312,24 @@
         <button type="button" class="slot-btn" style="grid-column: span 2;" onclick="saveNewMemberSlot('08:30 PM - 09:30 PM')">08:30 - 09:30 PM</button>
       </div>
 
-      <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#333; color:#fff; border:none; padding:8px; border-radius:6px; font-size:11px; cursor:pointer;">रद्द करें (Cancel)</button>
+      <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#282828; color:#fff; border:none; padding:7px; border-radius:6px; font-size:11px; cursor:pointer;">रद्द करें (Cancel)</button>
     </div>
   </div>
 
-  <!-- ATTENDANCE CELEBRATION MODAL -->
+  <!-- CELEBRATION MODAL -->
   <div class="custom-modal-backdrop" id="attendanceCelebrationModal">
-    <div class="modal-box-card" style="border-color:#00ff66; box-shadow:0 0 35px rgba(0,255,102,0.3);">
-      <div style="font-size:46px; margin-bottom:4px;">💪</div>
-      <h3 style="color:#ffcc00; font-size:18px; margin:0 0 4px; font-weight:900;">ATTENDANCE VERIFIED</h3>
-      <div style="color:#00ff66; font-size:14px; font-weight:bold; margin-bottom:14px;" id="celebrateMemberName">MEMBER NAME</div>
+    <div class="modal-box-card" style="border-color:#00ff66; box-shadow:0 0 30px rgba(0,255,102,0.3);">
+      <div style="font-size:42px; margin-bottom:3px;">💪</div>
+      <h3 style="color:#ffcc00; font-size:16px; margin:0 0 2px; font-weight:900;">ATTENDANCE VERIFIED</h3>
+      <div style="color:#00ff66; font-size:13px; font-weight:bold; margin-bottom:10px;" id="celebrateMemberName">MEMBER NAME</div>
 
-      <div style="background:#090909; border:1.5px solid #222; border-radius:12px; padding:14px; text-align:left; font-size:12px; line-height:1.65; margin-bottom:16px;">
-        <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:6px; border-bottom:1px solid #222; padding-bottom:4px;">
-          📊 आपकी उपस्थिति व पैकेज रिपोर्ट:
-        </div>
-        <div>🗓️ <b>कुल उपस्थिति:</b> आप इस पैकेज में <b style="color:#00ff66; font-size:14px;" id="celebrateAttendedDays">0</b> दिन आ चुके हैं।</div>
-        <div>⏳ <b>शेष दिन:</b> आपके पैकेज में अभी <b style="color:#ffcc00; font-size:14px;" id="celebrateRemainingDays">0</b> दिन बचे हैं।</div>
-        <div>📅 <b>महीना / पैकेज समाप्ति तिथि:</b> <b style="color:#ff6666;" id="celebrateExpiryDate">N/A</b></div>
+      <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:10px; text-align:left; font-size:11px; line-height:1.6; margin-bottom:12px;">
+        <div>🗓️ <b>कुल उपस्थिति:</b> <b style="color:#00ff66;" id="celebrateAttendedDays">0</b> दिन</div>
+        <div>⏳ <b>शेष दिन:</b> <b style="color:#ffcc00;" id="celebrateRemainingDays">0</b> दिन बचे हैं</div>
+        <div>📅 <b>पैकेज समाप्ति तिथि:</b> <b style="color:#ff6666;" id="celebrateExpiryDate">N/A</b></div>
       </div>
 
-      <button onclick="closeModal('attendanceCelebrationModal')" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:10px; font-size:13px; cursor:pointer;">
+      <button onclick="closeModal('attendanceCelebrationModal')" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
         ✔ ठीक है (DONE)
       </button>
     </div>
@@ -311,17 +338,17 @@
   <!-- CAMERA MODAL -->
   <div class="custom-modal-backdrop" id="cameraBackdropModal">
     <div class="modal-box-card">
-      <div style="text-align:center; margin-bottom:10px;">
-        <div style="font-size:16px; font-weight:900; color:var(--gold);" id="modalCandidateName">Member Name</div>
-        <div style="font-size:11px; color:#888;">सेल्फी अनिवार्य है (Align face inside ring)</div>
+      <div style="text-align:center; margin-bottom:8px;">
+        <div style="font-size:14px; font-weight:900; color:var(--gold);" id="modalCandidateName">Member Name</div>
+        <div style="font-size:10px; color:#888;">सेल्फी अनिवार्य है (Face inside ring)</div>
       </div>
       <div class="camera-feed-container">
         <video id="videoElement" autoplay playsinline></video>
         <div class="scanner-reticle-ring"></div>
       </div>
-      <div style="display:flex; gap:10px; width:100%; margin-top:14px;">
-        <button onclick="closeCameraModal()" style="flex:1; background:#222; color:#bbb; border:1px solid #444; padding:12px; border-radius:10px; font-weight:bold; cursor:pointer;">रद्द करें</button>
-        <button onclick="captureLiveSelfieProof()" style="flex:2; background:var(--green-accent); color:#000; padding:12px; border-radius:10px; font-weight:bold; border:none; cursor:pointer;">📸 CAPTURE SELFIE</button>
+      <div style="display:flex; gap:8px; width:100%; margin-top:10px;">
+        <button onclick="closeCameraModal()" style="flex:1; background:#222; color:#bbb; border:1px solid #444; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">रद्द करें</button>
+        <button onclick="captureLiveSelfieProof()" style="flex:2; background:var(--green-accent); color:#000; padding:10px; border-radius:8px; font-weight:bold; border:none; cursor:pointer;">📸 CAPTURE</button>
       </div>
     </div>
   </div>
@@ -353,52 +380,56 @@
     "08:30 PM - 09:30 PM"
   ];
 
+  // 45 MASTER MEMBERS (12 MORNING + 33 EVENING FIXED)
   const DEFAULT_MASTER_ROSTER = [
-    { id: 1, name: "अभिषेक शर्मा - मोटोले (Abhishekh Sharma)", father: "Devendra Kumar Sharma", phone: "7068541091", joinDate: "2026-10-02", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-02" },
-    { id: 2, name: "प्रियांशु (Priyanshu)", father: "सुरेश", phone: "8467813176", joinDate: "2026-09-03", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-03" },
-    { id: 3, name: "विशाल रावत (Vishal Rawat)", father: "Ram Vilash", phone: "8470994110", joinDate: "2026-09-20", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-20" },
-    { id: 4, name: "उदय प्रताप सिंह (Uday Pratap Singh)", father: "Sandip Singh", phone: "9198727555", joinDate: "2026-10-11", planMonths: 1, plan: "विद्यार्थी (₹300)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-11" },
-    { id: 5, name: "पवन (Pawan)", father: "Sudeep", phone: "9026899048", joinDate: "2026-10-12", planMonths: 1, plan: "विद्यार्थी (₹300)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-12" },
-    { id: 6, name: "राज राजपूत (Raj Rajput)", father: "Harishchandra", phone: "9169108569", joinDate: "2026-10-13", planMonths: 1, plan: "विद्यार्थी (₹300)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-13" },
-    { id: 7, name: "ध्रुव (Dhruv)", father: "-", phone: "9000000001", joinDate: "2026-10-10", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-10" },
-    { id: 8, name: "कमल (Kamal)", father: "-", phone: "6306591914", joinDate: "2026-10-06", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-06" },
-    { id: 9, name: "साहिल (Sahil)", father: "-", phone: "7269081026", joinDate: "2026-10-06", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-06" },
-    { id: 10, name: "प्रवीन रावत (Praveen Rawat)", father: "इन्द्रपाल रावत", phone: "7275005052", joinDate: "2026-09-29", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-29" },
-    { id: 11, name: "दीपक चौहान 1 (Deepak Chauhan I)", father: "Prakash Chauhan", phone: "7037945582", joinDate: "2026-10-05", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-05" },
-    { id: 12, name: "दीपक चौहान 2 (Deepak Chauhan II)", father: "Shri Ram Chauhan", phone: "6351295709", joinDate: "2026-10-03", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-03" },
-    { id: 13, name: "हर्ष सैनी (Harsh Saini)", father: "-", phone: "6393944214", joinDate: "2026-09-10", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-10" },
-    { id: 14, name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "8429471919", joinDate: "2022-01-11", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-11" },
-    { id: 15, name: "रितेश रावत (Ritesh Rawat)", father: "Sanna Rawat", phone: "8187974525", joinDate: "2026-06-08", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-08" },
-    { id: 16, name: "तौसीफ (Tauseef)", father: "Mo Shabbir", phone: "7317323893", joinDate: "2026-06-11", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-11" },
-    { id: 17, name: "रवि (Ravi)", father: "रामसनेही", phone: "9936311963", joinDate: "2026-10-01", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-01" },
-    { id: 18, name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", joinDate: "2026-10-01", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-01" },
-    { id: 19, name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", joinDate: "2026-10-01", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-01" },
-    { id: 20, name: "नैतिक (Naitik Gupta)", father: "अशोक गुप्ता", phone: "9795238010", joinDate: "2026-10-01", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-11-01" },
-    { id: 21, name: "संदीप (Sandip Kashyap)", father: "बबलू कश्यप", phone: "8440812271", joinDate: "2026-10-01", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-01" },
-    { id: 22, name: "सचिन (Sachin Rajput)", father: "राकेश राजपूत", phone: "9235819564", joinDate: "2026-10-01", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-01" },
-    { id: 23, name: "अर्जुन (Arjun)", father: "रामगोपाल", phone: "7388366670", joinDate: "2026-10-07", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-07" },
-    { id: 24, name: "शहनवाज़ (Shahnawaz)", father: "मो० शब्बीर", phone: "9867742095", joinDate: "2026-10-05", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-05" },
-    { id: 25, name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-07" },
-    { id: 26, name: "अतुल (Atul Vimal)", father: "अनूप", phone: "6306377217", joinDate: "2026-10-08", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-08" },
-    { id: 27, name: "अंशू (Anshu Verma)", father: "कमलेश", phone: "9044680605", joinDate: "2026-10-08", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-08" },
-    { id: 28, name: "देवेन्द्र (Devendra)", father: "विनोद", phone: "7905282515", joinDate: "2026-10-08", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-08" },
-    { id: 29, name: "निरंजन (Niranjan Suryavanshi)", father: "श्रीमती", phone: "8400748946", joinDate: "2026-10-08", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-08" },
-    { id: 30, name: "आकाश विश्वकर्मा (Akash Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "8953133193", joinDate: "2026-09-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-15" },
-    { id: 31, name: "दिनेश कुमार (Dinesh Kumar)", father: "लल्लन", phone: "7260981026", joinDate: "2026-10-08", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-08" },
-    { id: 32, name: "राकेश कुमार (Rakesh Kumar)", father: "राज कुमार", phone: "6306591914", joinDate: "2026-10-08", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-08" },
-    { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-15" },
-    { id: 34, name: "दीपक (Deepak)", father: "पप्पू", phone: "7388264067", joinDate: "2026-09-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-15" },
-    { id: 35, name: "अंकित (Ankit)", father: "श्री राम", phone: "8090416252", joinDate: "2026-09-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-15" },
-    { id: 36, name: "चंदन (Chandan)", father: "श्री भूरे", phone: "8303504842", joinDate: "2026-09-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-15" },
-    { id: 37, name: "राजू (Mr Raju Verma)", father: "-", phone: "9219528229", joinDate: "2026-09-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-15" },
-    { id: 38, name: "राम रतन (Ram Ratan)", father: "श्री सोहन", phone: "7570994547", joinDate: "2026-09-16", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-16" },
-    { id: 39, name: "डॉ ए. के. (Dr A. K Prabhakar)", father: "-", phone: "7268902436", joinDate: "2026-09-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-15" },
-    { id: 40, name: "आयुष प्रभाकर (Ayush Junior)", father: "डॉ ए. के. प्रभाकर", phone: "7268902436", joinDate: "2026-09-15", planMonths: 1, plan: "विद्यार्थी (₹300)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-15" },
-    { id: 41, name: "इशांत (Ishant Verma)", father: "सुशील कुमार", phone: "8090894105", joinDate: "2026-09-25", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-25" },
-    { id: 42, name: "साहिल वर्मा (Sahil Verma)", father: "शम्मी कपूर", phone: "9336898447", joinDate: "2026-09-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-15" },
-    { id: 43, name: "लाला वर्मा (Lala Verma)", father: "श्याम लाल", phone: "6386232805", joinDate: "2026-09-01", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-01" },
-    { id: 44, name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-09-07", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-10-07" },
-    { id: 45, name: "अरमान (Armaan)", father: "-", phone: "9000000002", joinDate: "2026-10-15", planMonths: 1, plan: "जॉब / व्यापार (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", totalPackageDays: 30, lastPaid: "2026-09-15" }
+    // 12 MORNING FIXED MEMBERS
+    { id: 25, name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07", planMonths: 1, plan: "₹500", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-07" },
+    { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-15" },
+    { id: 30, name: "आकाश विश्वकर्मा (Akash Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "8953133193", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-15" },
+    { id: 18, name: "आयुष (Ayush Yadav)", father: "अच्छे लाल यादव", phone: "9554576369", joinDate: "2026-10-01", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-10-01" },
+    { id: 3, name: "विशाल रावत (Vishal Rawat)", father: "Ram Vilash", phone: "8470994110", joinDate: "2026-09-20", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-20" },
+    { id: 19, name: "आर्यन (Aryan Tiwari)", father: "भूपेश कुमार तिवारी", phone: "9451432141", joinDate: "2026-10-01", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-10-01" },
+    { id: 17, name: "रवि (Ravi)", father: "रामसनेही", phone: "9936311963", joinDate: "2026-10-01", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-10-01" },
+    { id: 2, name: "प्रियांशु (Priyanshu)", father: "सुरेश", phone: "8467813176", joinDate: "2026-09-03", planMonths: 1, plan: "₹500", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-03" },
+    { id: 10, name: "प्रवीन रावत (Praveen Rawat)", father: "इन्द्रपाल रावत", phone: "7275005052", joinDate: "2026-09-29", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-29" },
+    { id: 6, name: "राज राजपूत (Raj Rajput)", father: "Harishchandra", phone: "9169108569", joinDate: "2026-10-13", planMonths: 1, plan: "₹300", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-10-13" },
+    { id: 16, name: "तौसीफ (Tauseef)", father: "Mo Shabbir", phone: "7317323893", joinDate: "2026-06-11", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-11" },
+    { id: 7, name: "ध्रुव (Dhruv)", father: "-", phone: "9000000001", joinDate: "2026-10-10", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-10-10" },
+
+    // 33 EVENING FIXED MEMBERS
+    { id: 1, name: "अभिषेक शर्मा - मोटोले (Abhishekh Sharma)", father: "Devendra Kumar Sharma", phone: "7068541091", joinDate: "2026-10-02", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-02" },
+    { id: 4, name: "उदय प्रताप सिंह (Uday Pratap Singh)", father: "Sandip Singh", phone: "9198727555", joinDate: "2026-10-11", planMonths: 1, plan: "₹300", status: "Paid", fees: "Paid", slot: "05:30 PM - 06:30 PM", batch: "evening", lastPaid: "2026-10-11" },
+    { id: 5, name: "पवन (Pawan)", father: "Sudeep", phone: "9026899048", joinDate: "2026-10-12", planMonths: 1, plan: "₹300", status: "Pending", fees: "Due", slot: "05:30 PM - 06:30 PM", batch: "evening", lastPaid: "2026-09-12" },
+    { id: 8, name: "कमल (Kamal)", father: "-", phone: "6306591914", joinDate: "2026-10-06", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-06" },
+    { id: 9, name: "साहिल (Sahil)", father: "-", phone: "7269081026", joinDate: "2026-10-06", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-06" },
+    { id: 11, name: "दीपक चौहान 1 (Deepak Chauhan I)", father: "Prakash Chauhan", phone: "7037945582", joinDate: "2026-10-05", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-05" },
+    { id: 12, name: "दीपक चौहान 2 (Deepak Chauhan II)", father: "Shri Ram Chauhan", phone: "6351295709", joinDate: "2026-10-03", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-03" },
+    { id: 13, name: "हर्ष सैनी (Harsh Saini)", father: "-", phone: "6393944214", joinDate: "2026-09-10", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-10" },
+    { id: 14, name: "आशीष द्विवेदी (Ashish Diwedi)", father: "-", phone: "8429471919", joinDate: "2022-01-11", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-11" },
+    { id: 15, name: "रितेश रावत (Ritesh Rawat)", father: "Sanna Rawat", phone: "8187974525", joinDate: "2026-06-08", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-08" },
+    { id: 20, name: "नैतिक (Naitik Gupta)", father: "अशोक गुप्ता", phone: "9795238010", joinDate: "2026-10-01", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "05:30 PM - 06:30 PM", batch: "evening", lastPaid: "2026-10-01" },
+    { id: 21, name: "संदीप (Sandip Kashyap)", father: "बबलू कश्यप", phone: "8440812271", joinDate: "2026-10-01", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-01" },
+    { id: 22, name: "सचिन (Sachin Rajput)", father: "राकेश राजपूत", phone: "9235819564", joinDate: "2026-10-01", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-01" },
+    { id: 23, name: "अर्जुन (Arjun)", father: "रामगोपाल", phone: "7388366670", joinDate: "2026-10-07", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-07" },
+    { id: 24, name: "शहनवाज़ (Shahnawaz)", father: "मो० शब्बीर", phone: "9867742095", joinDate: "2026-10-05", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-05" },
+    { id: 26, name: "अतुल (Atul Vimal)", father: "अनूप", phone: "6306377217", joinDate: "2026-10-08", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-08" },
+    { id: 27, name: "अंशू (Anshu Verma)", father: "कमलेश", phone: "9044680605", joinDate: "2026-10-08", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-08" },
+    { id: 28, name: "देवेन्द्र (Devendra)", father: "विनोद", phone: "7905282515", joinDate: "2026-10-08", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-08" },
+    { id: 29, name: "निरंजन (Niranjan Suryavanshi)", father: "श्रीमती", phone: "8400748946", joinDate: "2026-10-08", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-08" },
+    { id: 31, name: "दिनेश कुमार (Dinesh Kumar)", father: "लल्लन", phone: "7260981026", joinDate: "2026-10-08", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-08" },
+    { id: 32, name: "राकेश कुमार (Rakesh Kumar)", father: "राज कुमार", phone: "6306591914", joinDate: "2026-10-08", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-08" },
+    { id: 34, name: "दीपक (Deepak)", father: "पप्पू", phone: "7388264067", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-15" },
+    { id: 35, name: "अंकित (Ankit)", father: "श्री राम", phone: "8090416252", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-15" },
+    { id: 36, name: "चंदन (Chandan)", father: "श्री भूरे", phone: "8303504842", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-15" },
+    { id: 37, name: "राजू (Mr Raju Verma)", father: "-", phone: "9219528229", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-15" },
+    { id: 38, name: "राम रतन (Ram Ratan)", father: "श्री सोहन", phone: "7570994547", joinDate: "2026-09-16", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-16" },
+    { id: 39, name: "डॉ ए. के. (Dr A. K Prabhakar)", father: "-", phone: "7268902436", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-15" },
+    { id: 40, name: "आयुष प्रभाकर (Ayush Junior)", father: "डॉ ए. के. प्रभाकर", phone: "7268902436", joinDate: "2026-09-15", planMonths: 1, plan: "₹300", status: "Paid", fees: "Paid", slot: "05:30 PM - 06:30 PM", batch: "evening", lastPaid: "2026-10-15" },
+    { id: 41, name: "इशांत (Ishant Verma)", father: "सुशील कुमार", phone: "8090894105", joinDate: "2026-09-25", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-25" },
+    { id: 42, name: "साहिल वर्मा (Sahil Verma)", father: "शम्मी कपूर", phone: "9336898447", joinDate: "2026-09-15", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-15" },
+    { id: 43, name: "लाला वर्मा (Lala Verma)", father: "श्याम लाल", phone: "6386232805", joinDate: "2026-09-01", planMonths: 1, plan: "₹500", status: "Pending", fees: "Due", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-01" },
+    { id: 44, name: "सोनू (Sonu)", father: "-", phone: "9198597057", joinDate: "2026-09-07", planMonths: 1, plan: "₹500", status: "Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-10-07" },
+    { id: 45, name: "अरमान (Armaan)", father: "-", phone: "9000000002", joinDate: "2026-10-15", planMonths: 1, plan: "₹500", status: "Pending", fees: "Due", slot: "06:30 PM - 07:30 PM", batch: "evening", lastPaid: "2026-09-15" }
   ];
 
   function runLiveSystemClock() {
@@ -422,12 +453,12 @@
       badge.className = "shift-badge shift-evening";
       badge.innerText = "Evening Shift (4:00 PM - 10:00 PM)";
       title.innerText = "🌙 शाम का बैच एक्टिव है";
-      slotsTitle.innerText = "🌙 Evening Batch Time-Slots:";
+      slotsTitle.innerText = "🌙 Evening Slots:";
     } else {
       badge.className = "shift-badge shift-morning";
       badge.innerText = "Morning Shift (5:00 AM - 12:00 PM)";
       title.innerText = "🌅 सुबह का बैच एक्टिव है";
-      slotsTitle.innerText = "🌅 Morning Batch Time-Slots:";
+      slotsTitle.innerText = "🌅 Morning Slots:";
     }
   }
 
@@ -494,28 +525,27 @@
     const list = fetchStoredMembers();
     const matches = list.filter(m => 
       (m.name && m.name.toLowerCase().includes(query)) ||
-      (m.phone && m.phone.includes(query)) ||
-      (m.father && m.father.toLowerCase().includes(query))
+      (m.phone && m.phone.includes(query))
     );
 
     if (matches.length > 0) {
       dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="font-size:10px; color:#ffcc00; margin-bottom:6px; font-weight:bold;">मिलते-जुलते सदस्य (${matches.length}):</div>`;
-      matches.slice(0, 5).forEach(m => {
+      dropdown.innerHTML = `<div style="font-size:9.5px; color:#ffcc00; margin-bottom:4px; font-weight:bold;">मिलते-जुलते सदस्य:</div>`;
+      matches.slice(0, 4).forEach(m => {
         const isPaid = (m.status === 'Paid' || m.fees === 'Paid');
         dropdown.innerHTML += `
           <div class="search-item-row" onclick="selectMemberFromSearch('${m.id}')">
             <div>
-              <b style="color:#fff; font-size:13px;">${m.name}</b><br>
-              <small style="color:#888;">Ph: ${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPaid ? 'PAID' : 'DUE'}</span></small>
+              <b style="color:#fff; font-size:11.5px;">${m.name}</b><br>
+              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'};">${isPaid ? 'PAID' : 'DUE'}</span></small>
             </div>
-            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">लोड करें</button>
+            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:10px;">लोड</button>
           </div>
         `;
       });
     } else {
       dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="color:#ff6666; font-size:11px; text-align:center; padding:6px;">कोई सदस्य नहीं मिला।</div>`;
+      dropdown.innerHTML = `<div style="color:#ff6666; font-size:10px; text-align:center; padding:4px;">कोई सदस्य नहीं मिला।</div>`;
     }
     executeFilterEngine();
   }
@@ -528,6 +558,7 @@
     executeFilterEngine();
   }
 
+  // 2x2 COMPACT GRID RENDER ENGINE
   function executeFilterEngine() {
     const memberDataset = fetchStoredMembers();
     const attendanceRecords = fetchDailyAttendanceMap();
@@ -544,7 +575,7 @@
     });
 
     if (matched.length === 0) {
-      renderNode.innerHTML = `<div style="text-align:center; padding:30px; color:#ff6666; font-size:12px;">🔍 कोई सदस्य नहीं मिला ("${searchQuery}")</div>`;
+      renderNode.innerHTML = `<div style="grid-column: span 2; text-align:center; padding:25px; color:#ff6666; font-size:11px;">🔍 कोई सदस्य नहीं मिला</div>`;
       return;
     }
 
@@ -552,78 +583,56 @@
       const isPresent = !!attendanceRecords[member.id];
       const checkinRecord = attendanceRecords[member.id];
       const isPaid = (member.status === 'Paid' || member.fees === 'Paid');
-      const attendedCount = member.attendedDaysCount || (isPresent ? 1 : 0);
-      const currentSlot = member.slot || "06:00 AM - 07:00 AM";
 
-      const joinDateStr = member.joinDate || "N/A";
-      let expiryDateStr = "N/A";
       let daysRemaining = 0;
-
       if (member.joinDate) {
         const jDate = new Date(member.joinDate);
         const expDate = new Date(jDate);
         expDate.setMonth(expDate.getMonth() + (member.planMonths || 1));
-        expiryDateStr = expDate.toISOString().split("T")[0];
-
         const today = new Date();
-        const diffTime = expDate - today;
-        daysRemaining = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+        daysRemaining = Math.max(0, Math.ceil((expDate - today) / (1000 * 60 * 60 * 24)));
       }
 
-      const recordCard = document.createElement("div");
-      recordCard.className = `member-record-card ${isPresent ? 'status-present' : (member.isMarkedAbsent ? 'status-absent' : '')}`;
+      const card = document.createElement("div");
+      card.className = `compact-member-box ${isPresent ? 'status-present' : (member.isMarkedAbsent ? 'status-absent' : '')}`;
 
       let proofMarkup = "";
       if (isPresent && checkinRecord) {
         proofMarkup = `
-          <div class="live-seal-box">
-            <img src="${checkinRecord.photo}" class="live-seal-thumbnail" alt="Proof">
-            <div style="font-size:11px; line-height:1.4;">
-              <span style="color:var(--green-accent); font-weight:900;">✔ VERIFIED BIOMETRIC PROOF</span><br>
-              ${checkinRecord.fullStamp}<br>
-              <span style="color:#ffcc00; font-size:10px;">5BFC Certified Security Seal</span>
-            </div>
+          <div class="compact-proof-badge">
+            <img src="${checkinRecord.photo}" alt="Seal">
+            <span>✔ VERIFIED ${checkinRecord.time}</span>
           </div>
         `;
       }
 
-      recordCard.innerHTML = `
-        <div class="card-top">
-          <div>
-            <div class="member-fullname">${member.name}</div>
-            <div style="font-size:11px; color:#aaa; margin-top:2px;">📞 Contact: +91 ${member.phone}</div>
+      card.innerHTML = `
+        <div>
+          <div class="box-top-row">
+            <span class="box-name">${member.name}</span>
+            <span class="fee-pill-tag ${isPaid ? 'fee-paid' : 'fee-due'}">${isPaid ? 'PAID' : 'DUE'}</span>
           </div>
-          <span style="font-size:10px; font-weight:900; padding:3px 8px; border-radius:4px; ${isPaid ? 'background:rgba(0,255,102,0.15); color:#00ff66; border:1px solid #00ff66;' : 'background:rgba(255,77,77,0.15); color:#ff6666; border:1px solid #ff6666;'}">
-            ${isPaid ? 'FEES PAID' : 'FEES DUE'}
-          </span>
+          <div class="box-meta-info">
+            📞 ${member.phone}<br>
+            ⏳ शेष दिन: <b style="color:#ffcc00;">${daysRemaining} दिन</b>
+          </div>
+          <div class="slot-tag-row">
+            <span>🕒 ${member.slot.split(" - ")[0]}</span>
+            <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal('${member.id}')">⚙️ बदलें</button>
+          </div>
+          ${proofMarkup}
         </div>
 
-        <div class="detail-panel">
-          <div>📋 <b>प्लान:</b> ${member.plan || '1 महीना - ₹500'} (${member.planMonths || 1} माह)</div>
-          <div>📅 <b>जॉइनिंग तिथि:</b> ${joinDateStr} | <b>अंतिम फीस:</b> ${member.lastPaid || joinDateStr}</div>
-          <div>⏳ <b>वैधता समाप्ति:</b> <b style="color:#ffcc00;">${expiryDateStr}</b> (${daysRemaining} दिन शेष)</div>
-          
-          <div class="slot-row-flex">
-            <span>🕒 Slot: <b>${currentSlot}</b></span>
-            <button type="button" class="btn-change-slot-action" onclick="openSlotChangerModal('${member.id}')">⚙️ Slot बदलें</button>
-          </div>
-
-          ${member.feesPromiseDate ? `<div style="color:#00ff66; margin-top:5px;">📅 फीस वादा तारीख: <b>${member.feesPromiseDate}</b></div>` : ''}
-        </div>
-
-        ${proofMarkup}
-
-        <div class="controls-row">
-          <button class="btn-mark-present ${isPresent ? 'verified' : 'unverified'}" onclick="handleAttendanceClick('${member.id}')">
-            ${isPresent ? '✔ PRESENT (VERIFIED)' : '📸 CAPTURE SELFIE'}
+        <div class="box-actions-row">
+          <button class="btn-action-pres ${isPresent ? 'is-ver' : 'not-ver'}" onclick="handleAttendanceClick('${member.id}')">
+            ${isPresent ? '✔ PRESENT' : '📸 PRESENT'}
           </button>
-          <button class="btn-mark-absent ${member.isMarkedAbsent ? 'active' : ''}" onclick="markMemberAbsent('${member.id}')">
-            ✖ ABSENT
+          <button class="btn-action-abs ${member.isMarkedAbsent ? 'is-abs' : ''}" onclick="markMemberAbsent('${member.id}')">
+            ✖ ABS
           </button>
-          ${isAdminUnlocked ? `<button onclick="adminBypassAttendance('${member.id}')" style="background:#222; border:1px solid #ffcc00; color:#ffcc00; font-size:11px; padding:0 10px; border-radius:8px; cursor:pointer;" title="Admin Bypass">🔑 बाईपास</button>` : ''}
         </div>
       `;
-      renderNode.appendChild(recordCard);
+      renderNode.appendChild(card);
     });
   }
 
@@ -633,7 +642,6 @@
     if (!candidate) return;
 
     const isFeesDue = (candidate.status !== 'Paid' && candidate.fees !== 'Paid');
-
     let isMonthExpired = false;
     if (candidate.joinDate) {
       const joinD = new Date(candidate.joinDate);
@@ -652,7 +660,7 @@
     initiateCameraVerification(candidate);
   }
 
-function showPromiseDateField() {
+  function showPromiseDateField() {
     document.getElementById("initialActionButtons").style.display = "none";
     document.getElementById("promiseDateContainer").style.display = "block";
     const dateInp = document.getElementById("memberPromiseDate");
@@ -692,22 +700,22 @@ function showPromiseDateField() {
     );
 
     modalBox.innerHTML = `
-      <div style="font-size:44px; margin-bottom:6px;">⛔</div>
-      <h2 style="color:#ff3333; margin:0 0 6px; font-size:18px; font-weight:900;">प्रवेश अस्वीकृत (ENTRY RESTRICTED)</h2>
-      <div style="color:#ffcc00; font-size:12px; font-weight:bold; margin-bottom:12px;">5 BROTHER'S FITNESS CLUB</div>
+      <div style="font-size:40px; margin-bottom:4px;">⛔</div>
+      <h2 style="color:#ff3333; margin:0 0 4px; font-size:16px; font-weight:900;">प्रवेश अस्वीकृत (ENTRY RESTRICTED)</h2>
+      <div style="color:#ffcc00; font-size:11px; font-weight:bold; margin-bottom:10px;">5 BROTHER'S FITNESS CLUB</div>
       
-      <div style="background:#1a0f0f; border:1.5px solid #ff3333; border-radius:10px; padding:12px; text-align:left; color:#eee; font-size:11.5px; line-height:1.6; margin-bottom:14px;">
+      <div style="background:#1a0f0f; border:1.5px solid #ff3333; border-radius:8px; padding:10px; text-align:left; color:#eee; font-size:11px; line-height:1.5; margin-bottom:12px;">
         <b>प्रिय ${member.name},</b><br>
         आपकी सदस्यता अवधि समाप्त हो चुकी है। नियमानुसार बिना अग्रिम शुल्क जमा किए जिम परिसर में प्रवेश पूर्णतः वर्जित है।<br><br>
         <span style="color:#ff6666; font-weight:bold;">विधिक चेतावनी:</span><br>
         डिजिटल एवं लिखित नियमों की पूर्व जानकारी के उपरांत भी यदि आप बिना शुल्क भुगतान किए कसरत करते हैं या बकाया छोड़ते हैं, तो 1 दिन की उपस्थिति पर भी पूरे माह का शुल्क देय होगा। भुगतान न करने की स्थिति में जिम प्रबंधन आपके विरुद्ध विधिक एवं कानूनी कार्यवाही (Legal Action) हेतु पूर्णतः स्वतंत्र है।
       </div>
 
-      <div style="font-size:11px; color:#aaa; margin-bottom:12px;">
+      <div style="font-size:10px; color:#aaa; margin-bottom:10px;">
         कृपया काउंटर पर शुल्क का निस्तारण करें अथवा परिसर से प्रस्थान करें।
       </div>
 
-      <button onclick="document.getElementById('strictExpiryModal').classList.remove('show')" style="background:#222; color:#fff; border:1px solid #444; padding:9px 18px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">
+      <button onclick="document.getElementById('strictExpiryModal').classList.remove('show')" style="background:#222; color:#fff; border:1px solid #444; padding:8px 16px; border-radius:6px; font-size:10.5px; font-weight:bold; cursor:pointer;">
         ✕ बंद करें (Close)
       </button>
     `;
@@ -739,7 +747,7 @@ function showPromiseDateField() {
     if (target) {
       target.slot = newSlot;
       syncAllStorage(records);
-      alert(`✅ ${target.name} का स्लॉट सफलतापूर्वक बदलकर "${newSlot}" कर दिया गया।`);
+      alert(`✅ ${target.name} का स्लॉट बदलकर "${newSlot}" कर दिया गया।`);
       closeModal('slotChangerModal');
       executeFilterEngine();
     }
@@ -825,27 +833,6 @@ function showPromiseDateField() {
     } else if (pin !== null) {
       alert("❌ गलत पासवर्ड!");
     }
-  }
-
-  function adminBypassAttendance(memberId) {
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-    let attendanceRecords = fetchDailyAttendanceMap();
-    attendanceRecords[memberId] = {
-      time: timeStr,
-      fullStamp: `📅 Admin Bypass Verified | ⏰ ${timeStr}`,
-      photo: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'><rect width='50' height='50' fill='%23222'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffcc00' font-size='10'>ADMIN</text></svg>"
-    };
-    localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
-    
-    let allRecords = fetchStoredMembers();
-    let target = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (target) {
-      target.attendedDaysCount = (target.attendedDaysCount || 0) + 1;
-      target.isMarkedAbsent = false;
-      syncAllStorage(allRecords);
-    }
-    executeFilterEngine();
   }
 
   function markMemberAbsent(memberId) {
