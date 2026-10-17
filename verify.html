@@ -227,7 +227,6 @@ body {
 
   <div class="verify-card">
     <div class="card-heading">Verification Card</div>
-    <!-- oninput lagaya hai taaki koi naya akshar likhe toh purana result turant gayab/reset ho jaye -->
     <input type="text" id="scratchInput" class="code-input" placeholder="ENTER CODE" maxlength="15" autocomplete="off" autocorrect="off" autocapitalize="characters" oninput="resetResultState()">
     <button type="button" class="verify-btn" onclick="runVerification()">VERIFY CODE</button>
   </div>
@@ -275,7 +274,13 @@ function getCodeForIndex(prefix, index) {
   return prefix + part;
 }
 
-// Fixed Master Verification Database (Exact full codes match honge, aadha code nahi chalega)
+// 2,000 Whey Protein Unique Codes Database (Auto-Loaded & Exact)
+const PROTEIN_CODES_SET = new Set();
+for (let i = 1; i <= 2000; i++) {
+  PROTEIN_CODES_SET.add(getCodeForIndex("WP", i));
+}
+
+// Fixed Master Verification Database
 const MASTER_VERIFIED_CODES = {
   "LBR7F29K": { brand: "Labrada Nutrition", name: "100% Whey Protein" },
   "LBR-1001": { brand: "Labrada Nutrition", name: "Muscle Mass Gainer" },
@@ -287,15 +292,7 @@ const MASTER_VERIFIED_CODES = {
   "ON-GOLD-01": { brand: "Optimum Nutrition", name: "Gold Standard 100% Whey" },
   "MT-NITRO-01": { brand: "MuscleTech", name: "Nitro-Tech Performance Series" }
 };
-const PROTEIN_CODES_DB = [
-  "WPPNHCF","WP4QC8Q","WPHR74Z","WPWS2Y9","WPBUVTJ","WPQVQPT","WP5XKK4","WPJYEFD","WPXZ9BN","WPC357X",
-  "WPR4Y28","WP66TWG","WPK7NSR","WPY8HN2","WPDACJB","WPSB7EL","WP7D2AV","WPLEV56","WPZFQZE","WPEZEER",
-  "WPT2AA2","WP8456B","WPM5YZK","WP27TVU","WPF8NR5","WPU9HME","WP9BCHP","WPNC7DY","WP3E299","WPGFV4J",
-  "WPVGQYS","WPAJKU3","WPPKEQC","WP4M9LM","WPHN4GW","WPWPXB7","WPBRS7G","WPQSM3R","WP5UGXZ","WPJVBTA",
-  "WPXW6PK","WPCYZJU","WPRZUE5","WP63QAE","WPKLEPQ","WPYM9KZ","WPDP4FA","WPSQXAK","WP7SS6U","WPLTM25"
-  // Baki saare codes jo txt file me diye hain
-];  
-// Jaise hi user input me kuch naya likhega ya erase karega, purana box gayab ho jayega
+
 function resetResultState() {
   const resultBox = document.getElementById("resultBox");
   if (resultBox.style.display !== "none") {
@@ -319,14 +316,14 @@ function runVerification() {
     `;
     return;
   }
-  
-  // Direct Stored Codes Database Check
-  if (!productData) {
-    if (PROTEIN_CODES_DB.includes(code)) {
-      productData = { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
-    }
+
+  // 1. Check in Master Codes
+  let productData = MASTER_VERIFIED_CODES[code];
+
+  // 2. Strict 2,000 Protein Codes Database Check
+  if (!productData && PROTEIN_CODES_SET.has(code)) {
+    productData = { brand: "Big Brothers Fitness", name: "100% Genuine Whey Protein" };
   }
-  
 
   if (productData) {
     document.getElementById("welcomeBrand").innerHTML = "Welcome to<br>" + productData.brand;
@@ -334,7 +331,6 @@ function runVerification() {
     let scanCount = parseInt(localStorage.getItem("scan_" + code)) || 0;
 
     if (scanCount >= 1) {
-      // Repeat scan alert
       resultBox.style.display = "block";
       resultBox.innerHTML = `
         <div class="badge-box badge-warning">
@@ -345,7 +341,6 @@ function runVerification() {
         </div>
       `;
     } else {
-      // Fresh verification
       scanCount++;
       localStorage.setItem("scan_" + code, scanCount);
 
