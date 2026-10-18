@@ -332,7 +332,7 @@
       <!-- ADMIN MANUAL CALENDAR & PACKAGE CHANGER TRIGGER -->
       <div style="margin-top:8px; text-align:right;">
         <button type="button" onclick="openAdminMemberManager(currentlyLoadedMember.id)" style="background:transparent; border:1px dashed var(--gold); color:var(--gold); font-size:10px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">
-          ⚙️ एडमिन कंट्रोल (कैレンダー, अंतिम फीस बदलाव & फीस स्टेटस)
+          ⚙️ एडमिन कंट्रोल (कैレンダー, डिलीट, बैच & फीस स्टेटस)
         </button>
       </div>
     </div>
@@ -408,7 +408,7 @@
       <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Instant Slot Changer)</h3>
       <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
 
-      <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
+      <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS (05:00 AM - 10:00 AM):</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
@@ -417,9 +417,9 @@
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM', 'morning')">08:00 - 09:00 AM</button>
       </div>
 
-      <div style="text-align:left; font-size:11px; font-weight:bold; color:#00c8ff; margin-bottom:4px;">🌙 EVENING SLOTS (4:30 PM Onwards):</div>
+      <div style="text-align:left; font-size:11px; font-weight:bold; color:#00c8ff; margin-bottom:4px;">🌙 EVENING SLOTS (04:00 PM - 10:30 PM):</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:14px;">
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('04:30 PM - 05:30 PM', 'evening')">04:30 - 05:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('04:00 PM - 05:00 PM', 'evening')">04:00 - 05:00 PM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:30 PM - 06:30 PM', 'evening')">05:30 - 06:30 PM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM', 'evening')">06:30 - 07:30 PM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:30 PM - 08:30 PM', 'evening')">07:30 - 08:30 PM</button>
@@ -430,17 +430,17 @@
     </div>
   </div>
 
-  <!-- CELEBRATION MODAL -->
+  <!-- CELEBRATION / STATUS MODAL -->
   <div class="custom-modal-backdrop" id="attendanceCelebrationModal">
-    <div class="modal-box-card" style="border-color:#00ff66; box-shadow:0 0 30px rgba(0,255,102,0.3);">
-      <div style="font-size:42px; margin-bottom:3px;">💪</div>
-      <h3 style="color:#ffcc00; font-size:16px; margin:0 0 2px; font-weight:900;">ATTENDANCE VERIFIED</h3>
+    <div class="modal-box-card" id="celebrateModalCard" style="border-color:#00ff66; box-shadow:0 0 30px rgba(0,255,102,0.3);">
+      <div style="font-size:42px; margin-bottom:3px;" id="celebrateEmoji">💪</div>
+      <h3 style="color:#ffcc00; font-size:16px; margin:0 0 2px; font-weight:900;" id="celebrateHeaderTitle">ATTENDANCE VERIFIED</h3>
       <div style="color:#00ff66; font-size:13px; font-weight:bold; margin-bottom:10px;" id="celebrateMemberName">MEMBER NAME</div>
 
       <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:12px; text-align:left; font-size:12px; line-height:1.6; margin-bottom:14px;">
-        <div style="color:#ffcc00; font-weight:bold; margin-bottom:4px;">Thank So Much To Verify Your Attendance!</div>
-        <div style="color:#00ff66; font-size:11.5px; margin-bottom:6px;">आपकी उपस्थिति आज की दर्ज कर ली गई है।</div>
-        <div>🗓️ <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span></div>
+        <div style="color:#ffcc00; font-weight:bold; margin-bottom:4px;" id="celebrateSubTitle">Thank So Much To Verify Your Attendance!</div>
+        <div style="color:#00ff66; font-size:11.5px; margin-bottom:6px;" id="celebrateMainMsg">आपकी उपस्थिति आज की दर्ज कर ली गई है।</div>
+        <div id="celebrateDaysRow">🗓️ <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span></div>
       </div>
 
       <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
@@ -524,7 +524,7 @@
     let bfcMembers = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
     let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
 
-    let pool = [...bfcMembers, ...bbfMaster, ...admSync];
+    let pool = [...bfcMembers, ...bfcMembers, ...admSync];
     if (pool.length === 0) {
       pool = [...DEFAULT_MASTER_ROSTER];
       localStorage.setItem("5BFC_MEMBERS", JSON.stringify(pool));
@@ -733,7 +733,7 @@
       proofBox.innerHTML = `
         <div class="compact-proof-badge">
           <img src="${checkin.photo}" alt="Seal">
-          <span>✔ ALREADY VERIFIED / LATEST SEAL | ${checkin.time}</span>
+          <span>✔ ${checkin.statusMsg || 'ALREADY VERIFIED'} | ${checkin.time}</span>
         </div>
       `;
     } else {
@@ -799,12 +799,6 @@
       return;
     }
 
-    const attMap = fetchDailyAttendanceMap();
-    if (attMap[m.id]) {
-      let confirmUpdate = confirm("⚠️ इस सदस्य की आज की अटेंडेंस पहले ही दर्ज हो चुकी है। क्या आप फिर भी नई सेल्फी लेकर इसे अपडेट करना चाहते हैं?");
-      if (!confirmUpdate) return;
-    }
-
     initiateCameraVerification(m);
   }
 
@@ -840,7 +834,7 @@
       <h2 style="color:#ff3333; margin:0 0 4px; font-size:15px; font-weight:900;">सदस्यता रद्द (MEMBERSHIP CANCELLED)</h2>
       <div style="background:#1a0f0f; border:1.5px solid #ff3333; border-radius:8px; padding:10px; text-align:left; color:#eee; font-size:11px; line-height:1.5; margin-bottom:12px;">
         <b>प्रिय ${member.name},</b><br>
-        आपका महीना पूरा हो चुका है और आप जिम के  के नियमों से सहमत नहीं हैं। इसलिए आपकी सदस्यता तुरंत रद्द की जाती है और आपको सूचित किया जाता है कि आप तुरंत जिम छोड़ दें।
+        आपका महीना पूरा हो चुका है और आप जिम के नियमों से सहमत नहीं हैं। इसलिए आपकी सदस्यता तुरंत रद्द की जाती है और आपको सूचित किया जाता है कि आप तुरंत जिम छोड़ दें।
       </div>
       <button onclick="closeModal('strictExpiryModal'); cancelSearchAndReset();" style="width:100%; background:#222; color:#fff; border:1px solid #444; padding:9px; border-radius:6px; font-weight:bold; cursor:pointer;">
         ⬅ Back / बंद करें
@@ -881,12 +875,51 @@
     ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
 
     const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinutes = now.getMinutes();
+    const timeInMinutes = currentHour * 60 + currentMinutes;
+
     const base64Stamp = canvas.toDataURL("image/jpeg", 0.8);
     const dayStr = `${now.getDate() < 10 ? '0'+now.getDate() : now.getDate()}-${(now.getMonth()+1) < 10 ? '0'+(now.getMonth()+1) : (now.getMonth()+1)}-${now.getFullYear()}`;
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
 
+    let isMorningTime = (timeInMinutes >= 300 && timeInMinutes <= 600);
+    let isEveningTime = (timeInMinutes >= 960 && timeInMinutes <= 1350);
+
+    let memberBatch = currentlyLoadedMember.batch || 'morning';
+    let attendanceStatusMsg = "";
+    let isRealAttendance = true;
+
     let attendanceRecords = fetchDailyAttendanceMap();
-    attendanceRecords[currentlyLoadedMember.id] = { time: timeStr, fullStamp: `📅 ${dayStr} | ⏰ ${timeStr}`, photo: base64Stamp };
+    let existingEntry = attendanceRecords[currentlyLoadedMember.id];
+
+    if (existingEntry && existingEntry.isReal) {
+      closeCameraModal();
+      showStatusPopup("⚠️ ALREADY VERIFIED", "Already Attendance Verified!", `इस सदस्य की आज की अटेंडेंस पहले ही दर्ज हो चुकी है।`, "#ffcc00");
+      return;
+    }
+
+    if (!isMorningTime && !isEveningTime) {
+      attendanceStatusMsg = "FAKE / DUMMY ATTENDANCE (Outside Gym Hours)";
+      isRealAttendance = false;
+    } else if (memberBatch === 'morning' && isEveningTime) {
+      attendanceStatusMsg = "WRONG SLOT (Morning Member in Evening Window)";
+      isRealAttendance = false;
+    } else if (memberBatch === 'evening' && isMorningTime) {
+      attendanceStatusMsg = "WRONG SLOT (Evening Member in Morning Window)";
+      isRealAttendance = false;
+    } else {
+      attendanceStatusMsg = "VERIFIED BIOMETRIC SEAL";
+      isRealAttendance = true;
+    }
+
+    attendanceRecords[currentlyLoadedMember.id] = { 
+      time: timeStr, 
+      fullStamp: `📅 ${dayStr} | ⏰ ${timeStr}`, 
+      photo: base64Stamp, 
+      statusMsg: attendanceStatusMsg,
+      isReal: isRealAttendance
+    };
     localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
 
     let allRecords = fetchStoredMembers();
@@ -900,22 +933,37 @@
     while(curr <= todayDate) {
       let isoStr = curr.toISOString().split("T")[0];
       let dayAttMap = JSON.parse(localStorage.getItem("5bfc_attendance_" + isoStr) || "{}");
-      if(curr.getDay() === 0 || dayAttMap[target.id]) {
+      if(curr.getDay() === 0 || (dayAttMap[target.id] && dayAttMap[target.id].isReal)) {
         totalAttendedInCycle++;
       }
       curr.setDate(curr.getDate() + 1);
     }
 
-    if (target) {
+    if (target && isRealAttendance) {
       target.attendedDaysCount = totalAttendedInCycle;
       syncAllStorage(allRecords);
     }
 
     closeCameraModal();
 
-    document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
-    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
+    if (!isRealAttendance) {
+      showStatusPopup("🚨 FAKE / DUMMY ATTENDANCE", "अमान्य समय या गलत स्लॉट!", `कारण: ${attendanceStatusMsg}<br>यह उपस्थिति मुख्य अटेंडेंस में नहीं जोड़ी जाएगी।`, "#ff3333");
+    } else {
+      document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
+      document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
+      document.getElementById("attendanceCelebrationModal").classList.add("show");
+    }
+  }
 
+  function showStatusPopup(emoji, title, msg, borderColor) {
+    const card = document.getElementById("celebrateModalCard");
+    card.style.borderColor = borderColor;
+    document.getElementById("celebrateEmoji").innerText = emoji;
+    document.getElementById("celebrateHeaderTitle").innerText = title;
+    document.getElementById("celebrateMemberName").innerText = currentlyLoadedMember.name.toUpperCase();
+    document.getElementById("celebrateSubTitle").innerText = "समय एवं स्लॉट जाँच सूचना:";
+    document.getElementById("celebrateMainMsg").innerHTML = msg;
+    document.getElementById("celebrateDaysRow").style.display = "none";
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
 
@@ -964,7 +1012,7 @@
       let dayDisplay = `${d < 10 ? '0'+d : d}-${(currentMonth+1) < 10 ? '0'+(currentMonth+1) : (currentMonth+1)}-${currentYear}`;
       let dayMap = JSON.parse(localStorage.getItem("5bfc_attendance_" + dayISO) || "{}");
       
-      let isPresent = isSunday ? true : (dayMap[m.id] ? true : false);
+      let isPresent = isSunday ? true : (dayMap[m.id] && dayMap[m.id].isReal ? true : false);
 
       calendarHTML += `
         <label style="background:#181818; border:1px solid ${isPresent ? '#00ff66' : '#444'}; padding:8px 10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12px; cursor:pointer;">
@@ -984,6 +1032,11 @@
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
           <h3 style="color:#ffcc00; margin:0; font-size:16px;">⚙️ एडमिन कंट्रोल: ${m.name}</h3>
           <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
+        </div>
+
+        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">🗑️ सदस्य हटाएं (Delete Member):</div>
+          <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">🚨 इस सदस्य को हमेशा के लिए डिलीट करें</button>
         </div>
 
         <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
@@ -1021,6 +1074,17 @@
     modal.style.display = "flex";
   }
 
+  function deleteMemberPermanently(memberId) {
+    if (!confirm("⚠️ क्या आप वाकई इस सदस्य को हमेशा के लिए डिलीट करना चाहते हैं?")) return;
+    let records = fetchStoredMembers();
+    let filtered = records.filter(r => r.id.toString() !== memberId.toString());
+    syncAllStorage(filtered);
+    alert("✅ सदस्य को सफलतापूर्वक डिलीट कर दिया गया है!");
+    document.getElementById('adminMemberManagerModal').style.display = 'none';
+    cancelSearchAndReset();
+    location.reload();
+  }
+
   function saveAdminLastPaidDate(memberId) {
     let newDate = document.getElementById("adminEditableLastPaid").value;
     if (!newDate) return;
@@ -1045,7 +1109,7 @@
       let dateISO = chk.value;
       let dayMap = JSON.parse(localStorage.getItem("5bfc_attendance_" + dateISO) || "{}");
       if (makePresent) {
-        dayMap[memberId] = { time: "07:00 AM (Admin)", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "" };
+        dayMap[memberId] = { time: "07:00 AM (Admin)", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
       } else {
         delete dayMap[memberId];
       }
@@ -1062,7 +1126,7 @@
     if (!m) return;
     let newStatus = document.getElementById("adminFeeStatusSelect").value;
     m.manualStatus = newStatus;
-    syncAllStorage(allRecords);
+    syncAllStorage(records);
     alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
     document.getElementById('adminMemberManagerModal').style.display = 'none';
     loadSingleMemberKioskCard(m.id);
