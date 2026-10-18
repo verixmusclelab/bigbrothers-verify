@@ -258,9 +258,12 @@
     <div style="font-size:10.5px; color:#888; margin-bottom:12px;" id="selectedBatchSubTitle">वर्तमान चयन: Morning Batch</div>
     <button type="button" class="btn-mark-kiosk-trigger" onclick="openSearchKiosk()">👉 MARK YOUR ATTENDANCE</button>
     
-    <div style="margin-top:10px;">
+    <div style="margin-top:10px; display:flex; justify-content:space-around; align-items:center;">
       <button type="button" onclick="toggleBatchDirectList()" style="background:transparent; border:none; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; text-decoration:underline;">
         📋 इस बैच के सभी सदस्यों की सूची देखें
+      </button>
+      <button type="button" onclick="openAddMemberModal()" style="background:rgba(255,204,0,0.15); border:1px solid var(--gold); color:var(--gold); font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px; cursor:pointer;">
+        ➕ नया सदस्य जोड़ें
       </button>
     </div>
   </div>
@@ -297,8 +300,9 @@
 
       <div class="card-details-box">
         <div>📋 <b>प्लान:</b> <span id="cardPlanText">General (1 माह)</span></div>
-        <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <b>अंतिम फीस:</b> <span id="cardLastPaid">DD-MM-YYYY</span></div>
-        <div>⏳ <b>वैधता समाप्ति:</b> <b style="color:#ffcc00;" id="cardExpiryDate">DD-MM-YYYY</b> (<span id="cardDaysRemaining">0</span> दिन शेष)</div>
+        <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <span id="cardLastPaidContainer"><b>अंतिम फीस:</b> <span id="cardLastPaid">DD-MM-YYYY</span></span></div>
+        <div>⏳ <b>अगले महीने फीस जमा करने की तारीख:</b> <b style="color:#ffcc00;" id="cardExpiryDate">DD-MM-YYYY</b> (<span id="cardDaysRemaining">0 दिन शेष</span>)</div>
+        <div id="cardPenaltyWarningBox" style="display:none; background:#201010; border:1px solid #ff4444; color:#ff6666; padding:6px; border-radius:6px; margin-top:6px; font-size:10.5px;"></div>
         
         <div class="slot-row-flex">
           <span>🕒 वर्तमान स्लॉट: <b id="cardSlotDisplay">06:00 AM - 07:00 AM</b></span>
@@ -335,6 +339,29 @@
     </div>
   </div>
 
+  <!-- ADD NEW MEMBER MODAL -->
+  <div class="custom-modal-backdrop" id="addMemberModal">
+    <div class="modal-box-card" style="border-color:var(--gold); text-align:left;">
+      <h3 style="color:var(--gold); font-size:15px; margin-bottom:8px; text-align:center;">➕ नया सदस्य जोड़ें (Add Member)</h3>
+      <div style="font-size:11px; margin-bottom:6px;">सदस्य का नाम:</div>
+      <input type="text" id="newMemberNameInput" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+      
+      <div style="font-size:11px; margin-bottom:6px;">मोबाइल नंबर (10 अंक):</div>
+      <input type="tel" id="newMemberPhoneInput" maxlength="10" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+      
+      <div style="font-size:11px; margin-bottom:6px;">बैच चुनें:</div>
+      <select id="newMemberBatchSelect" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:12px;">
+        <option value="morning">Morning Batch</option>
+        <option value="evening">Evening Batch</option>
+      </select>
+
+      <div style="display:flex; gap:8px;">
+        <button type="button" onclick="closeModal('addMemberModal')" style="flex:1; background:#222; color:#bbb; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;">रद्द करें</button>
+        <button type="button" onclick="saveNewMemberData()" style="flex:2; background:var(--gold); color:#000; border:none; padding:8px; border-radius:6px; font-weight:900; cursor:pointer;">✔ सेव करें</button>
+      </div>
+    </div>
+  </div>
+
   <!-- STRICT FEES EXPIRED / OVERDUE MODAL -->
   <div class="custom-modal-backdrop" id="strictExpiryModal">
     <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
@@ -354,7 +381,7 @@
         </label>
         <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box; margin-bottom:6px;">
         <div style="font-size:9.5px; color:#ffcc00; font-weight:bold; margin-bottom:8px;">
-          ⚠️ चेतावनी: वादा तारीख के बाद पेमेंट न करने पर प्रति दिन ₹10 पेनल्टी (Penalty) जोड़ी जाएगी और बकाया बिना फीस दिए या सप्लिमेंट का पैसे दिया जिम आना बंद कर देते तो उस स्थिति में होने पर फ्रेंड्स/फैमिली को कॉल/मैसेज किया जाएगा!
+          ⚠️ चेतावनी: वादा तारीख के बाद पेमेंट न करने पर प्रति दिन ₹10 पेनल्टी जोड़ी जाएगी और फ्रेंड्स/फैमिली को कॉल/मैसेज किया जाएगा!
         </div>
         <button onclick="submitPromiseAndOpenCam()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
           ✔ तारीख लॉक करें व सेल्फी लें
@@ -408,17 +435,15 @@
 
       <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:10px; text-align:left; font-size:11px; line-height:1.6; margin-bottom:12px;">
         <div>🗓️ <span id="celebrateAttendedDays">0 दिन उपस्थिति</span></div>
-        <div>⏳ <b>पैकेज समाप्ति तिथि:</b> <b style="color:#ffcc00;" id="celebrateExpiryDate">DD-MM-YYYY</b></div>
+        <div>⏳ <b>अगले महीने फीस जमा करने की तारीख:</b> <b style="color:#ffcc00;" id="celebrateExpiryDate">DD-MM-YYYY</b></div>
         <div id="dynamicOfferProgressBox" style="margin-top:8px; font-size:11px; background:#181818; border:1.5px dashed #00ff66; padding:8px; border-radius:6px; color:#00ff66;"></div>
       </div>
 
-       function completeAttendanceAndResetKiosk() {
-     const modal = document.getElementById('attendanceCelebrationModal');
-     if (modal) modal.classList.remove('show');
-     cancelSearchAndReset();
-     window.location.reload();
-  }
-      
+      <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
+        ✔ ठीक है (DONE)
+      </button>
+    </div>
+  </div>
 
   <!-- CAMERA MODAL -->
   <div class="custom-modal-backdrop" id="cameraBackdropModal">
@@ -609,7 +634,49 @@
     }
   }
 
-    function loadSingleMemberKioskCard(memberId) {
+  function openAddMemberModal() {
+    document.getElementById("newMemberNameInput").value = "";
+    document.getElementById("newMemberPhoneInput").value = "";
+    document.getElementById("addMemberModal").classList.add("show");
+  }
+
+  function saveNewMemberData() {
+    const name = document.getElementById("newMemberNameInput").value.trim();
+    const phone = document.getElementById("newMemberPhoneInput").value.trim();
+    const batch = document.getElementById("newMemberBatchSelect").value;
+
+    if (!name || phone.length < 10) {
+      alert("⚠️ कृपया सही नाम और 10 अंकों का मोबाइल नंबर दर्ज करें!");
+      return;
+    }
+
+    let records = fetchStoredMembers();
+    const newId = Date.now();
+    const todayStr = new Date().toISOString().split("T")[0];
+
+    const newMember = {
+      id: newId,
+      name: name,
+      phone: phone,
+      batch: batch,
+      slot: batch === 'morning' ? "06:00 AM - 07:00 AM" : "05:30 PM - 06:30 PM",
+      joinDate: todayStr,
+      lastPaid: todayStr,
+      planMonths: 1,
+      plan: "सामान्य (General Fitness - ₹500/माह)",
+      status: "Paid",
+      fees: "Paid",
+      attendedDaysCount: 0
+    };
+
+    records.push(newMember);
+    syncAllStorage(records);
+    closeModal('addMemberModal');
+    alert(`✅ ${name} को सफलतापूर्वक नया सदस्य जोड़ दिया गया है!`);
+    toggleBatchDirectList();
+  }
+
+  function loadSingleMemberKioskCard(memberId) {
     const list = fetchStoredMembers();
     const m = list.find(x => x.id.toString() === memberId.toString());
     if (!m) return;
@@ -713,7 +780,7 @@
       loadSingleMemberKioskCard(target.id);
     }
   }
-  
+
   function assignMemberBatch(batchType) {
     if (!currentlyLoadedMember) return;
     let records = fetchStoredMembers();
@@ -779,7 +846,7 @@
     modalBox.innerHTML = `
       <div style="font-size:38px; margin-bottom:4px;">⛔</div>
       <h2 style="color:#ff3333; margin:0 0 4px; font-size:15px; font-weight:900;">सदस्यता रद्द (MEMBERSHIP CANCELLED)</h2>
-      <div style="background:#1a0f0f; border:1.5px solid #ff3333; border-radius:8px; padding:10px; text-align:left; color:#eee; font-size:11px; line-height:1.5; margin-bottom:12px;">
+      a0f0f; border:1.5px solid #ff3333; border-radius:8px; padding:10px; text-align:left; color:#eee; font-size:11px; line-height:1.5; margin-bottom:12px;">
         <b>प्रिय ${member.name},</b><br>
         आपका महीना पूरा हो चुका है और आप जिम के नियमों से सहमत नहीं हैं। इसलिए आपकी सदस्यता तुरंत रद्द की जाती है और आपको सूचित किया जाता है कि आप तुरंत जिम छोड़ दें।
       </div>
@@ -875,6 +942,13 @@
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
 
+  function completeAttendanceAndResetKiosk() {
+    const modal = document.getElementById('attendanceCelebrationModal');
+    if (modal) modal.classList.remove('show');
+    cancelSearchAndReset();
+    window.location.reload();
+  }
+
   function openAdminMemberManager(memberId) {
     let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
     if (pin !== ADMIN_PIN) {
@@ -900,7 +974,7 @@
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const monthName = now.toLocaleString('hi-IN', { month: 'long' });
 
-      let calendarHTML = '';
+    let calendarHTML = '';
     for (let d = 1; d <= daysInMonth; d++) {
       let dayISO = `${year}-${(month+1) < 10 ? '0'+(month+1) : (month+1)}-${d < 10 ? '0'+d : d}`;
       let dayDisplay = `${d < 10 ? '0'+d : d}-${(month+1) < 10 ? '0'+(month+1) : (month+1)}-${year}`;
@@ -1004,7 +1078,7 @@
     let newStatus = document.getElementById("adminFeeStatusSelect").value;
     m.status = newStatus === 'Paid' ? 'Paid' : 'Pending';
     m.fees = newStatus;
-    syncAllStorage(allRecords);
+    syncAllStorage(records);
     alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
     document.getElementById('adminMemberManagerModal').style.display = 'none';
     loadSingleMemberKioskCard(m.id);
