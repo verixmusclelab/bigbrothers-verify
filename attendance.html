@@ -609,7 +609,7 @@
     }
   }
 
-  function loadSingleMemberKioskCard(memberId) {
+    function loadSingleMemberKioskCard(memberId) {
     const list = fetchStoredMembers();
     const m = list.find(x => x.id.toString() === memberId.toString());
     if (!m) return;
@@ -622,12 +622,24 @@
 
     let expStr = "N/A";
     let daysRem = 0;
-    if (m.joinDate) {
-      const jD = new Date(m.joinDate);
+    let overdueDays = 0;
+    let penaltyAmount = 0;
+
+    const baseLastPaid = m.lastPaid || m.joinDate;
+    if (baseLastPaid) {
+      const jD = new Date(baseLastPaid);
       const expD = new Date(jD);
       expD.setMonth(expD.getMonth() + (m.planMonths || 1));
       expStr = formatDateToDDMMYYYY(expD.toISOString().split("T")[0]);
-      daysRem = Math.max(0, Math.ceil((expD - new Date()) / (1000 * 60 * 60 * 24)));
+      
+      const today = new Date();
+      const diffTime = today - expD;
+      daysRem = Math.ceil((expD - today) / (1000 * 60 * 60 * 24));
+      
+      if (diffTime > 0) {
+        overdueDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        penaltyAmount = overdueDays * 10;
+      }
     }
 
     document.getElementById("cardMemberName").innerText = m.name;
@@ -639,9 +651,33 @@
 
     document.getElementById("cardPlanText").innerText = `${m.plan || 'सामान्य (General Fitness - ₹500/माह)'}`;
     document.getElementById("cardJoinDate").innerText = formatDateToDDMMYYYY(m.joinDate);
-    document.getElementById("cardLastPaid").innerText = formatDateToDDMMYYYY(m.lastPaid || m.joinDate);
-    document.getElementById("cardExpiryDate").innerText = expStr;
-    document.getElementById("cardDaysRemaining").innerText = daysRem;
+    
+    const lastPaidContainer = document.getElementById("cardLastPaidContainer");
+    if(lastPaidContainer) {
+      lastPaidContainer.innerHTML = `
+        <b>अंतिम फीस:</b> 
+        <input type="date" id="editableLastPaidInput" value="${baseLastPaid || ''}" onchange="updateMemberLastPaid('${m.id}', this.value)" style="background:#000; color:#ffcc00; border:1px solid #444; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">
+      `;
+    }
+
+    const expNode = document.getElementById("cardExpiryDate");
+    if(expNode) expNode.innerText = expStr;
+
+    const daysRemNode = document.getElementById("cardDaysRemaining");
+    if(daysRemNode) {
+      daysRemNode.innerText = daysRem >= 0 ? `${daysRem} दिन शेष` : `⚠️ ${Math.abs(daysRem)} दिन ऊपर हो चुके हैं`;
+    }
+
+    const penaltyBoxNode = document.getElementById("cardPenaltyWarningBox");
+    if (penaltyBoxNode) {
+      if (overdueDays > 0 && !isPaid) {
+        penaltyBoxNode.style.display = "block";
+        penaltyBoxNode.innerHTML = `⚠️ <b>फीस बकाया चेतावनी:</b> ${overdueDays} दिन से फीस पेंडिंग है! (₹10/दिन के हिसाब से <b>₹${penaltyAmount} पेनल्टी</b> जोड़ी जाएगी)`;
+      } else {
+        penaltyBoxNode.style.display = "none";
+      }
+    }
+
     document.getElementById("cardSlotDisplay").innerText = m.slot || "06:00 AM - 07:00 AM";
 
     const proofBox = document.getElementById("cardProofContainer");
@@ -666,6 +702,18 @@
     document.getElementById("singleMemberContainer").style.display = "block";
   }
 
+  function updateMemberLastPaid(memberId, newDateVal) {
+    if (!newDateVal) return;
+    let records = fetchStoredMembers();
+    let target = records.find(r => r.id.toString() === memberId.toString());
+    if (target) {
+      target.lastPaid = newDateVal;
+      syncAllStorage(records);
+      alert(`✅ अंतिम फीस की तारीख बदलकर ${formatDateToDDMMYYYY(newDateVal)} कर दी गई है!`);
+      loadSingleMemberKioskCard(target.id);
+    }
+  }
+  
   function assignMemberBatch(batchType) {
     if (!currentlyLoadedMember) return;
     let records = fetchStoredMembers();
