@@ -423,9 +423,7 @@
     const isEvening = (hour >= 16);
     const badge = document.getElementById("currentShiftBadge");
     const title = document.getElementById("currentShiftText");
-    const searchNotice = document.getElementById("
-
-                                                 ShiftTitle");
+    const searchNotice = document.getElementById("searchNoticeShiftTitle");
 
     if (isEvening) {
       badge.className = "shift-badge shift-evening";
@@ -439,7 +437,8 @@
       if (searchNotice) searchNotice.innerText = "🔍 खोजें (Morning Batch Active)";
     }
   }
-    function fetchStoredMembers() {
+
+  function fetchStoredMembers() {
     let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
     let bfcMembers = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
     let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
