@@ -411,7 +411,7 @@
       <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
+      <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM', 'morning')">06:00 - 07:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM', 'morning')">07:00 - 08:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM', 'morning')">08:00 - 09:00 AM</button>
@@ -581,7 +581,7 @@
     container.innerHTML = "";
 
     if (filtered.length === 0) {
-      container.innerHTML = `<div style="color:#aaa; font-size:12px; text-align:center; padding:10px;">इस बैच में कोई सदस्य नहीं है।</div>`;
+      container.innerHTML = `<div style="color:#aaa; font-size:11px; text-align:center; padding:8px;">इस बैच में कोई सदस्य नहीं है।</div>`;
     } else {
       filtered.forEach(m => {
         const mStatus = m.manualStatus || 'Paid';
@@ -589,10 +589,10 @@
         container.innerHTML += `
           <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
             <div>
-              <b style="color:#fff; font-size:13px;">${m.name}</b><br>
-              <small style="color:#888; font-size:11px;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${mStatus.toUpperCase()}</span></small>
+              <b style="color:#fff; font-size:12px;">${m.name}</b><br>
+              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${mStatus.toUpperCase()}</span></small>
             </div>
-            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; font-size:11px;">चुनें</button>
+            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:10px;">चुनें</button>
           </div>
         `;
       });
@@ -618,23 +618,23 @@
 
     if (matches.length > 0) {
       dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="font-size:11px; color:#ffcc00; margin-bottom:6px; font-weight:bold;">मिलते-जुलते सदस्य (${activeSelectedBatch.toUpperCase()}):</div>`;
+      dropdown.innerHTML = `<div style="font-size:10px; color:#ffcc00; margin-bottom:5px; font-weight:bold;">मिलते-जुलते सदस्य (${activeSelectedBatch.toUpperCase()}):</div>`;
       matches.slice(0, 5).forEach(m => {
         const mStatus = m.manualStatus || 'Paid';
         const isPaid = (mStatus === 'Paid');
         dropdown.innerHTML += `
           <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
             <div>
-              <b style="color:#fff; font-size:13px;">${m.name}</b><br>
-              <small style="color:#888; font-size:11px;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${mStatus.toUpperCase()}</span></small>
+              <b style="color:#fff; font-size:12.5px;">${m.name}</b><br>
+              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${mStatus.toUpperCase()}</span></small>
             </div>
-            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:6px 10px; border-radius:6px; font-weight:900; font-size:11px;">लोड करें</button>
+            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:900; font-size:11px;">लोड करें</button>
           </div>
         `;
       });
     } else {
       dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="color:#ff6666; font-size:12px; text-align:center; padding:10px;">कोई सदस्य नहीं मिला।</div>`;
+      dropdown.innerHTML = `<div style="color:#ff6666; font-size:11px; text-align:center; padding:8px;">कोई सदस्य नहीं मिला।</div>`;
     }
   }
 
@@ -740,7 +740,7 @@
 
     const btnPres = document.getElementById("btnPresTrigger");
     btnPres.className = `btn-pres-action ${isPresent ? 'is-ver' : 'not-ver'}`;
-    btnPres.innerText = isPresent ? '✔ ATTENDANCE VERIFIED' : '📸 PRESENT दर्ज करें (सेल्फी के साथ)';
+    btnPres.innerText = isPresent ? '✔ ATTENDANCE VERIFIED (फिर से सेल्फी लें)' : '📸 PRESENT दर्ज करें (सेल्फी के साथ)';
 
     document.getElementById("activeLoadedCard").className = `loaded-member-card ${isPresent ? 'status-present' : ''}`;
     document.getElementById("searchAreaWrapper").style.display = "none";
@@ -822,8 +822,7 @@
     closeModal('strictExpiryModal');
     initiateCameraVerification(currentlyLoadedMember);
   }
-
-  function handleDisagreeLegalNotice() {
+function handleDisagreeLegalNotice() {
     const member = currentlyLoadedMember;
     const modalBox = document.getElementById("strictModalInnerBox");
 
