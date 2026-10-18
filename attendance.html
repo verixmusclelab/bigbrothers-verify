@@ -17,50 +17,209 @@
     --red-accent: #ff3333;
     --text-muted: #888888;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background-color: var(--bg-dark); color: #ffffff; padding: 12px 10px 90px 10px; max-width: 500px; margin: 0 auto; min-height: 100vh; }
-  .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .btn-back-home { background: var(--gold); color: #000; text-decoration: none; font-size: 11px; font-weight: 900; padding: 7px 12px; border-radius: 8px; text-transform: uppercase; }
-  .btn-admin-pill { background: #1c1c1c; color: var(--gold); border: 1px solid var(--gold); font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
-  .branding-card { background: radial-gradient(circle at top, #1e1908 0%, #0d0d0d 100%); border: 1.5px solid var(--gold); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 12px; box-shadow: 0 4px 20px var(--gold-glow); }
-  .branding-title { font-size: 18px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px; }
-  .badge-live-clock { display: inline-block; background: #161616; border: 1px solid #ffcc00; color: var(--gold); font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 14px; margin-top: 6px; }
-  .time-shift-banner { background: #141414; border: 1px solid #282828; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
-  .shift-badge { padding: 4px 10px; border-radius: 14px; font-size: 10.5px; font-weight: 900; text-transform: uppercase; }
-  .shift-morning { background: rgba(255, 204, 0, 0.15); color: var(--gold); border: 1px solid var(--gold); }
-  .shift-evening { background: rgba(0, 200, 255, 0.15); color: #00c8ff; border: 1px solid #00c8ff; }
-  .kiosk-hero-box { background: #111; border: 2px dashed #333; border-radius: 14px; padding: 24px 14px; text-align: center; margin-bottom: 14px; }
-  .btn-mark-kiosk-trigger { width: 100%; background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%); color: #000; font-size: 15px; font-weight: 900; padding: 16px; border: none; border-radius: 12px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 20px var(--gold-glow); }
-  .search-area-wrapper { display: none; background: #141414; border: 1.5px solid var(--gold); border-radius: 12px; padding: 12px; margin-bottom: 14px; }
-  .live-search-input { width: 100%; background: #000; border: 1.5px solid #444; border-radius: 8px; padding: 12px 14px; color: #fff; font-size: 14px; outline: none; }
+
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: #ffffff;
+    padding: 12px 10px 90px 10px;
+    max-width: 500px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  .nav-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+  }
+
+  .btn-back-home {
+    background: var(--gold); color: #000; text-decoration: none;
+    font-size: 11px; font-weight: 900; padding: 7px 12px; border-radius: 8px;
+    text-transform: uppercase;
+  }
+
+  .btn-admin-pill {
+    background: #1c1c1c; color: var(--gold); border: 1px solid var(--gold);
+    font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  }
+
+  .branding-card {
+    background: radial-gradient(circle at top, #1e1908 0%, #0d0d0d 100%);
+    border: 1.5px solid var(--gold); border-radius: 14px;
+    padding: 14px; text-align: center; margin-bottom: 12px;
+    box-shadow: 0 4px 20px var(--gold-glow);
+  }
+
+  .branding-title {
+    font-size: 18px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .badge-live-clock {
+    display: inline-block; background: #161616; border: 1px solid #ffcc00;
+    color: var(--gold); font-size: 11px; font-weight: 800;
+    padding: 4px 12px; border-radius: 14px; margin-top: 6px;
+  }
+
+  /* CATEGORY SELECTOR TABS */
+  .category-tabs-container {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+  }
+  .btn-category-tab {
+    background: #151515; border: 1.5px solid #333; color: #aaa;
+    font-size: 12px; font-weight: 900; padding: 12px; border-radius: 10px;
+    cursor: pointer; text-transform: uppercase; text-align: center; transition: all 0.2s;
+  }
+  .btn-category-tab.active-morning {
+    background: rgba(255, 204, 0, 0.15); border-color: var(--gold); color: var(--gold);
+    box-shadow: 0 0 12px var(--gold-glow);
+  }
+  .btn-category-tab.active-evening {
+    background: rgba(0, 200, 255, 0.15); border-color: #00c8ff; color: #00c8ff;
+    box-shadow: 0 0 12px rgba(0, 200, 255, 0.25);
+  }
+
+  /* KIOSK MAIN ACTION */
+  .kiosk-hero-box {
+    background: #111; border: 2px dashed #333; border-radius: 14px;
+    padding: 20px 14px; text-align: center; margin-bottom: 14px;
+  }
+
+  .btn-mark-kiosk-trigger {
+    width: 100%; background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%);
+    color: #000; font-size: 14px; font-weight: 900; padding: 14px; border: none;
+    border-radius: 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+    box-shadow: 0 4px 20px var(--gold-glow);
+  }
+
+  .search-area-wrapper {
+    display: none; background: #141414; border: 1.5px solid var(--gold);
+    border-radius: 12px; padding: 12px; margin-bottom: 14px;
+  }
+
+  .live-search-input {
+    width: 100%; background: #000; border: 1.5px solid #444;
+    border-radius: 8px; padding: 12px 14px; color: #fff; font-size: 14px; outline: none;
+  }
   .live-search-input:focus { border-color: var(--gold); }
-  .search-dropdown-results { margin-top: 8px; max-height: 220px; overflow-y: auto; }
-  .search-result-item { background: #1f1f1f; border: 1px solid #333; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-  .single-member-container { display: none; margin-bottom: 14px; }
-  .loaded-member-card { background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 14px; padding: 14px; position: relative; }
-  .loaded-member-card.status-present { border-color: #00ff66 !important; background: linear-gradient(180deg, #0d1a10 0%, #07120a 100%) !important; box-shadow: 0 0 16px rgba(0, 255, 102, 0.25); }
-  .card-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-  .card-member-name { font-size: 16px; font-weight: 900; color: #fff; }
-  .fee-pill-tag { font-size: 9.5px; font-weight: 900; padding: 3px 8px; border-radius: 4px; }
+
+  .search-dropdown-results {
+    margin-top: 8px; max-height: 220px; overflow-y: auto;
+  }
+
+  .search-result-item {
+    background: #1f1f1f; border: 1px solid #333; border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+  }
+  .search-result-item:hover { border-color: var(--gold); }
+
+  /* BATCH DIRECT LIST CONTAINER */
+  .batch-direct-list-box {
+    display: none; background: #111; border: 1.5px solid #333; border-radius: 12px; padding: 12px; margin-bottom: 14px;
+  }
+
+  /* SINGLE CLEAN MEMBER CARD */
+  .single-member-container {
+    display: none; margin-bottom: 14px;
+  }
+
+  .loaded-member-card {
+    background: var(--card-bg); border: 2px solid var(--border-color);
+    border-radius: 14px; padding: 14px; position: relative;
+  }
+  .loaded-member-card.status-present {
+    border-color: #00ff66 !important;
+    background: linear-gradient(180deg, #0d1a10 0%, #07120a 100%) !important;
+    box-shadow: 0 0 16px rgba(0, 255, 102, 0.25);
+  }
+
+  .card-top-row {
+    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;
+  }
+
+  .card-member-name {
+    font-size: 16px; font-weight: 900; color: #fff;
+  }
+
+  .fee-pill-tag {
+    font-size: 9.5px; font-weight: 900; padding: 3px 8px; border-radius: 4px;
+  }
   .fee-paid { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
   .fee-due { background: rgba(255, 77, 77, 0.15); color: #ff6666; border: 1px solid #ff6666; }
-  .card-details-box { background: #161616; border: 1px solid #282828; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 11px; line-height: 1.6; }
-  .slot-row-flex { display: flex; justify-content: space-between; align-items: center; background: #1f1f1f; border: 1px solid #333; border-radius: 6px; padding: 6px 10px; margin-top: 6px; }
-  .btn-slot-gear { background: var(--gold); color: #000; border: none; border-radius: 4px; padding: 3px 8px; font-size: 10px; font-weight: 900; cursor: pointer; }
-  .compact-proof-badge { display: flex; align-items: center; gap: 8px; background: #000; border: 1.5px dashed var(--green-accent); border-radius: 8px; padding: 6px 10px; margin: 8px 0; font-size: 10px; color: #00ff66; font-weight: bold; }
-  .compact-proof-badge img { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; border: 1px solid var(--green-accent); }
-  .card-actions-row { display: flex; gap: 8px; margin-top: 10px; }
-  .btn-pres-action { flex: 2; font-size: 12px; font-weight: 900; padding: 12px; border-radius: 8px; border: none; cursor: pointer; text-transform: uppercase; }
+
+  .card-details-box {
+    background: #161616; border: 1px solid #282828; border-radius: 8px;
+    padding: 10px; margin-bottom: 10px; font-size: 11px; line-height: 1.6;
+  }
+
+  .slot-row-flex {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #1f1f1f; border: 1px solid #333; border-radius: 6px; padding: 6px 10px; margin-top: 6px;
+  }
+
+  .btn-slot-gear {
+    background: var(--gold); color: #000; border: none; border-radius: 4px;
+    padding: 3px 8px; font-size: 10px; font-weight: 900; cursor: pointer;
+  }
+
+  .compact-proof-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: #000; border: 1.5px dashed var(--green-accent);
+    border-radius: 8px; padding: 6px 10px; margin: 8px 0; font-size: 10px; color: #00ff66; font-weight: bold;
+  }
+  .compact-proof-badge img {
+    width: 36px; height: 36px; border-radius: 4px; object-fit: cover; border: 1px solid var(--green-accent);
+  }
+
+  .card-actions-row {
+    display: flex; gap: 8px; margin-top: 10px;
+  }
+
+  .btn-pres-action {
+    flex: 2; font-size: 12px; font-weight: 900; padding: 12px; border-radius: 8px;
+    border: none; cursor: pointer; text-transform: uppercase;
+  }
   .btn-pres-action.is-ver { background: #00ff66; color: #000; }
   .btn-pres-action.not-ver { background: #132417; color: #00ff66; border: 1.5px solid #00ff66; }
-  .btn-clear-action { flex: 1; background: #222; color: #bbb; border: 1px solid #444; font-size: 11px; font-weight: bold; padding: 12px; border-radius: 8px; cursor: pointer; }
-  .custom-modal-backdrop { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.95); z-index: 999999; align-items: center; justify-content: center; padding: 14px; box-sizing: border-box; }
+
+  .btn-clear-action {
+    flex: 1; background: #222; color: #bbb; border: 1px solid #444;
+    font-size: 11px; font-weight: bold; padding: 12px; border-radius: 8px; cursor: pointer;
+  }
+
+  /* MODALS */
+  .custom-modal-backdrop {
+    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.95); z-index: 999999;
+    align-items: center; justify-content: center; padding: 14px; box-sizing: border-box;
+  }
   .custom-modal-backdrop.show { display: flex; }
-  .modal-box-card { background: #111; border: 2px solid var(--gold); border-radius: 14px; max-width: 430px; width: 100%; padding: 18px 14px; text-align: center; box-shadow: 0 0 30px var(--gold-glow); color: #fff; }
-  .camera-feed-container { width: 100%; height: 280px; background: #000; border-radius: 10px; position: relative; overflow: hidden; border: 2px solid #333; }
+
+  .modal-box-card {
+    background: #111; border: 2px solid var(--gold); border-radius: 14px;
+    max-width: 430px; width: 100%; padding: 18px 14px; text-align: center;
+    box-shadow: 0 0 30px var(--gold-glow); color: #fff;
+  }
+
+  .camera-feed-container {
+    width: 100%; height: 280px; background: #000; border-radius: 10px;
+    position: relative; overflow: hidden; border: 2px solid #333;
+  }
   #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-  .scanner-reticle-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: 180px; border: 2px dashed var(--green-accent); border-radius: 50%; }
-  .slot-chip-btn { background: #1c1c1c; border: 1px solid #333; color: #aaa; font-size: 11px; font-weight: bold; padding: 7px; border-radius: 6px; cursor: pointer; }
+  .scanner-reticle-ring {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 180px; height: 180px; border: 2px dashed var(--green-accent); border-radius: 50%;
+  }
+
+  .slot-chip-btn {
+    background: #1c1c1c; border: 1px solid #333; color: #aaa;
+    font-size: 11px; font-weight: bold; padding: 7px; border-radius: 6px; cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -76,26 +235,43 @@
     <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
   </div>
 
-  <div class="time-shift-banner">
-    <div>
-      <div style="font-size:9.5px; color:#888; text-transform:uppercase;">वर्तमान एक्टिव शिफ्ट (Auto System)</div>
-      <b style="font-size:12.5px;" id="currentShiftText">Detecting Shift...</b>
-    </div>
-    <span class="shift-badge shift-morning" id="currentShiftBadge">Morning</span>
+  <!-- CATEGORY SELECTION TABS (MORNING / EVENING) -->
+  <div class="category-tabs-container">
+    <button type="button" class="btn-category-tab active-morning" id="tabMorningBtn" onclick="switchActiveCategory('morning')">
+      🌅 Morning Batch
+    </button>
+    <button type="button" class="btn-category-tab" id="tabEveningBtn" onclick="switchActiveCategory('evening')">
+      🌙 Evening Batch
+    </button>
   </div>
 
   <!-- KIOSK HERO SECTION -->
   <div class="kiosk-hero-box" id="kioskHeroBox">
-    <div style="font-size:38px; margin-bottom:8px;">🏋️‍♂️</div>
-    <h3 style="font-size:15px; color:#ffcc00; margin-bottom:6px;">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</h3>
-    <div style="font-size:11px; color:#888; margin-bottom:16px;">कृपया अपनी उपस्थिति दर्ज करने हेतु नीचे बटन दबाएं</div>
+    <div style="font-size:34px; margin-bottom:6px;">🏋️‍♂️</div>
+    <h3 style="font-size:14px; color:#ffcc00; margin-bottom:4px;">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</h3>
+    <div style="font-size:10.5px; color:#888; margin-bottom:12px;" id="selectedBatchSubTitle">वर्तमान चयन: Morning Batch</div>
     <button type="button" class="btn-mark-kiosk-trigger" onclick="openSearchKiosk()">👉 MARK YOUR ATTENDANCE</button>
+    
+    <div style="margin-top:10px;">
+      <button type="button" onclick="toggleBatchDirectList()" style="background:transparent; border:none; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; text-decoration:underline;">
+        📋 इस बैच के सभी सदस्यों की सूची देखें
+      </button>
+    </div>
+  </div>
+
+  <!-- DIRECT BATCH MEMBER LIST -->
+  <div class="batch-direct-list-box" id="batchDirectListBox">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <b style="font-size:12px; color:var(--gold);" id="directListTitle">Morning Batch Members</b>
+      <button onclick="document.getElementById('batchDirectListBox').style.display='none'" style="background:#222; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✕ बंद करें</button>
+    </div>
+    <div id="directListContainerNode" style="max-height:200px; overflow-y:auto;"></div>
   </div>
 
   <!-- SEARCH INTERFACE -->
   <div class="search-area-wrapper" id="searchAreaWrapper">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <span style="font-size:11px; font-weight:bold; color:var(--gold);" id="searchNoticeShiftTitle">🔍 खोजें (Morning Batch Only)</span>
+      <span style="font-size:11px; font-weight:bold; color:var(--gold);" id="searchNoticeShiftTitle">🔍 खोजें (Auto Search Active)</span>
       <button type="button" onclick="cancelSearchAndReset()" style="background:#282828; color:#bbb; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✕ बंद करें</button>
     </div>
     <input type="text" id="memberFilterInput" class="live-search-input" placeholder="नाम या मोबाइल के 2 अक्षर लिखें..." oninput="executeKioskSearch()">
@@ -116,11 +292,15 @@
       <div class="card-details-box">
         <div>📋 <b>प्लान:</b> <span id="cardPlanText">General (1 माह)</span></div>
         <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <b>अंतिम फीस:</b> <span id="cardLastPaid">DD-MM-YYYY</span></div>
-        <div>⏳ <b>वैधता समाप्ति:</b> <b style="color:#ffcc00;" id="cardExpiryDate">DD-MM-YYYY</b> (<span id="cardDaysRemaining" style="font-size:14px; color:#00ff66;">0</span> दिन शेष)</div>
+        <div>⏳ <b>वैधता समाप्ति:</b> <b style="color:#ffcc00;" id="cardExpiryDate">DD-MM-YYYY</b> (<span id="cardDaysRemaining">0</span> दिन शेष)</div>
         
         <div class="slot-row-flex">
           <span>🕒 वर्तमान स्लॉट: <b id="cardSlotDisplay">06:00 AM - 07:00 AM</b></span>
           <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal()">⚙️ Slot बदलें</button>
+        </div>
+
+        <div id="cardPromiseDateBox" style="display:none; color:#00ff66; margin-top:5px; font-weight:bold;">
+          📅 फीस वादा तारीख: <span id="cardPromiseDateVal">--</span>
         </div>
       </div>
 
@@ -138,29 +318,73 @@
       <!-- ADMIN MANUAL CALENDAR & PACKAGE CHANGER TRIGGER -->
       <div style="margin-top:8px; text-align:right;">
         <button type="button" onclick="openAdminMemberManager(currentlyLoadedMember.id)" style="background:transparent; border:1px dashed var(--gold); color:var(--gold); font-size:10px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">
-          ⚙️ एडमिन कैलेंडर & पैकेज बदलें (Manual)
+          ⚙️ एडमिन कंट्रोल (कैレンダー & फीस स्टेटस)
         </button>
       </div>
     </div>
   </div>
 
-  <!-- CELEBRATION MODAL WITH HUGE DAYS REMAINING -->
+  <!-- STRICT FEES EXPIRED / OVERDUE MODAL -->
+  <div class="custom-modal-backdrop" id="strictExpiryModal">
+    <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
+      <div style="font-size:38px; margin-bottom:2px;">⚠️</div>
+      <h3 style="color:#ffcc00; margin:0 0 4px; font-size:16px; text-transform:uppercase;">5 BROTHER'S FITNESS CLUB</h3>
+      <div style="color:#ff6666; font-size:11.5px; font-weight:bold; margin-bottom:10px;">सदस्यता अवधि व फीस समाप्ति सूचना</div>
+
+      <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:8px; padding:10px; margin-bottom:12px; text-align:left; font-size:11px; line-height:1.5;">
+        प्रिय <b id="expiringMemberName">सदस्य</b>,<br>
+        आपकी सदस्यता अवधि पूरी हो चुकी है और आपकी फीस <b>Pending (बकाया)</b> है।<br><br>
+        <b style="color:#ffcc00;">सख्त नियम:</b> यदि आप आज के बाद <b>1 दिन भी आते हैं</b>, तो पूरे अगले महीने की फीस देय होगी।
+      </div>
+
+      <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:12px; text-align:left;">
+        <label style="display:block; font-size:10.5px; color:#00ff66; font-weight:bold; margin-bottom:4px;">
+          📅 आप फीस किस तारीख तक जमा कर देंगे?:
+        </label>
+        <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box;">
+        <button onclick="submitPromiseAndOpenCam()" style="width:100%; margin-top:8px; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✔ तारीख लॉक करें व सेल्फी लें
+        </button>
+      </div>
+
+      <div id="initialActionButtons" style="display:flex; flex-direction:column; gap:6px;">
+        <button onclick="showPromiseDateField()" style="background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✔ हाँ, मैं सहमत हूँ (फीस तारीख चुनें)
+        </button>
+        <button onclick="handleDisagreeLegalNotice()" style="background:#261212; color:#ff6666; font-weight:bold; padding:9px; border:1.5px solid #ff4d4d; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✖ मैं सहमत नहीं हूँ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLOT CHANGER MODAL -->
+  <div class="custom-modal-backdrop" id="slotChangerModal">
+    <div class="modal-box-card" style="border-color:var(--gold);">
+      <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 बैच समय बदलें (Admin Controlled)</h3>
+      <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:12px;">
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM', 'morning')">06:00 - 07:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM', 'evening')">06:30 - 07:30 PM</button>
+      </div>
+      <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#282828; color:#fff; border:none; padding:7px; border-radius:6px; font-size:11px; cursor:pointer;">रद्द करें</button>
+    </div>
+  </div>
+
+  <!-- CELEBRATION MODAL -->
   <div class="custom-modal-backdrop" id="attendanceCelebrationModal">
     <div class="modal-box-card" style="border-color:#00ff66; box-shadow:0 0 30px rgba(0,255,102,0.3);">
       <div style="font-size:42px; margin-bottom:3px;">💪</div>
       <h3 style="color:#ffcc00; font-size:16px; margin:0 0 2px; font-weight:900;">ATTENDANCE VERIFIED</h3>
-      <div style="color:#00ff66; font-size:14px; font-weight:bold; margin-bottom:10px;" id="celebrateMemberName">MEMBER NAME</div>
+      <div style="color:#00ff66; font-size:13px; font-weight:bold; margin-bottom:10px;" id="celebrateMemberName">MEMBER NAME</div>
 
-      <div style="background:#090909; border:1px solid #222; border-radius:10px; padding:14px; text-align:center; font-size:12px; line-height:1.8; margin-bottom:14px;">
-        <div style="font-size:13px; color:#ffcc00; margin-bottom:4px;" id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</div>
-        <div style="font-size:18px; font-weight:900; color:#00ff66; background:#112211; border:1px solid #00ff66; padding:8px; border-radius:8px; margin:6px 0;" id="celebrateRemainingDaysBig">
-          ⏳ महीना पूरा होने में 0 दिन शेष हैं!
-        </div>
-        <div style="font-size:11px; color:#aaa;" id="celebrateExpiryDateBox">पैकेज समाप्ति: DD-MM-YYYY</div>
-        <div id="dynamicOfferProgressBox" style="margin-top:8px; font-size:11.5px; background:#181818; border:1.5px dashed #00ff66; padding:8px; border-radius:6px; color:#00ff66;"></div>
+      <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:10px; text-align:left; font-size:11px; line-height:1.6; margin-bottom:12px;">
+        <div>🗓️ <span id="celebrateAttendedDays">0 दिन उपस्थिति</span></div>
+        <div>⏳ <b>पैकेज समाप्ति तिथि:</b> <b style="color:#ffcc00;" id="celebrateExpiryDate">DD-MM-YYYY</b></div>
+        <div id="dynamicOfferProgressBox" style="margin-top:8px; font-size:11px; background:#181818; border:1.5px dashed #00ff66; padding:8px; border-radius:6px; color:#00ff66;"></div>
       </div>
 
-      <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
+      <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
         ✔ ठीक है (DONE)
       </button>
     </div>
@@ -192,10 +416,11 @@
   let currentlyLoadedMember = null;
   let currentVideoStream = null;
   let currentDateISO = new Date().toISOString().split("T")[0];
+  let activeSelectedBatch = "morning"; // Default Morning Category
 
   const DEFAULT_MASTER_ROSTER = [
     { id: 25, name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07", planMonths: 1, plan: "सामान्य (General Fitness - ₹500/माह)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-07" },
-    { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15", planMonths: 1, plan: "सामान्य (General Fitness - ₹500/माह)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-15" }
+  { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15", planMonths: 1, plan: "सामान्य (General Fitness - ₹500/माह)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-15" }
   ];
 
   function formatDateToDDMMYYYY(dateString) {
@@ -215,30 +440,24 @@
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
     const clockElem = document.getElementById("liveSystemClock");
     if (clockElem) clockElem.innerText = `📅 ${dayStr} | ⏰ ${timeStr}`;
-    determineAutoDayShift(now.getHours());
   }
 
-  function isCurrentShiftEvening() {
-    return (new Date().getHours() >= 16);
-  }
+  function switchActiveCategory(batchType) {
+    activeSelectedBatch = batchType;
+    const morningBtn = document.getElementById("tabMorningBtn");
+    const eveningBtn = document.getElementById("tabEveningBtn");
+    const subTitle = document.getElementById("selectedBatchSubTitle");
 
-  function determineAutoDayShift(hour) {
-    const isEvening = (hour >= 16);
-    const badge = document.getElementById("currentShiftBadge");
-    const title = document.getElementById("currentShiftText");
-    const searchNotice = document.getElementById("searchNoticeShiftTitle");
-
-    if (isEvening) {
-      badge.className = "shift-badge shift-evening";
-      badge.innerText = "Evening Shift (4:00 PM - 10:00 PM)";
-      title.innerText = "🌙 शाम का बैच एक्टिव है";
-      if (searchNotice) searchNotice.innerText = "🔍 खोजें (Evening Batch Active)";
+    if (batchType === 'morning') {
+      morningBtn.className = "btn-category-tab active-morning";
+      eveningBtn.className = "btn-category-tab";
+      subTitle.innerText = "वर्तमान चयन: Morning Batch";
     } else {
-      badge.className = "shift-badge shift-morning";
-      badge.innerText = "Morning Shift (5:00 AM - 12:00 PM)";
-      title.innerText = "🌅 सुबह का बैच एक्टिव है";
-      if (searchNotice) searchNotice.innerText = "🔍 खोजें (Morning Batch Active)";
+      eveningBtn.className = "btn-category-tab active-evening";
+      morningBtn.className = "btn-category-tab";
+      subTitle.innerText = "वर्तमान चयन: Evening Batch";
     }
+    cancelSearchAndReset();
   }
 
   function fetchStoredMembers() {
@@ -252,19 +471,17 @@
       localStorage.setItem("5BFC_MEMBERS", JSON.stringify(pool));
     }
 
-    let unique = [];
-    let map = new Map();
+    let uniqueMap = new Map();
     pool.forEach(item => {
-      let key = (item.phone && item.phone.length > 5) ? item.phone : item.id;
-      if (!map.has(key) && item.activeInGym !== false) {
-        map.set(key, true);
+      let key = (item.phone && item.phone.length > 5) ? item.phone.trim() : item.id;
+      if (item.activeInGym !== false && !uniqueMap.has(key)) {
         if (!item.slot) item.slot = "06:00 AM - 07:00 AM";
         if (!item.batch) item.batch = "morning";
         if (!item.attendedDaysCount) item.attendedDaysCount = 0;
-        unique.push(item);
+        uniqueMap.set(key, item);
       }
     });
-    return unique;
+    return Array.from(uniqueMap.values());
   }
 
   function fetchDailyAttendanceMap() {
@@ -275,6 +492,7 @@
     document.getElementById("kioskHeroBox").style.display = "none";
     document.getElementById("searchAreaWrapper").style.display = "block";
     document.getElementById("singleMemberContainer").style.display = "none";
+    document.getElementById("batchDirectListBox").style.display = "none";
     const inp = document.getElementById("memberFilterInput");
     inp.value = "";
     inp.focus();
@@ -285,9 +503,43 @@
     document.getElementById("kioskHeroBox").style.display = "block";
     document.getElementById("searchAreaWrapper").style.display = "none";
     document.getElementById("singleMemberContainer").style.display = "none";
+    document.getElementById("batchDirectListBox").style.display = "none";
     document.getElementById("memberFilterInput").value = "";
     document.getElementById("searchDropdownNode").style.display = "none";
     currentlyLoadedMember = null;
+  }
+
+  function toggleBatchDirectList() {
+    const box = document.getElementById("batchDirectListBox");
+    if (box.style.display === "block") {
+      box.style.display = "none";
+      return;
+    }
+
+    const allMembers = fetchStoredMembers();
+    const filtered = allMembers.filter(m => isAdminUnlocked || (m.batch || 'morning') === activeSelectedBatch);
+    
+    document.getElementById("directListTitle").innerText = `${activeSelectedBatch.toUpperCase()} BATCH MEMBERS (${filtered.length})`;
+    const container = document.getElementById("directListContainerNode");
+    container.innerHTML = "";
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="color:#aaa; font-size:11px; text-align:center; padding:8px;">इस बैच में कोई सदस्य नहीं है।</div>`;
+    } else {
+      filtered.forEach(m => {
+        const isPaid = (m.status === 'Paid' || m.fees === 'Paid');
+        container.innerHTML += `
+          <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
+            <div>
+              <b style="color:#fff; font-size:12px;">${m.name}</b><br>
+              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPaid ? 'PAID' : 'DUE'}</span></small>
+            </div>
+            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:10px;">चुनें</button>
+          </div>
+        `;
+      });
+    }
+    box.style.display = "block";
   }
 
   function executeKioskSearch() {
@@ -299,21 +551,18 @@
       return;
     }
 
-    const currentShiftIsEve = isCurrentShiftEvening();
-    const activeTargetBatch = currentShiftIsEve ? "evening" : "morning";
     const allMembers = fetchStoredMembers();
-
     const matches = allMembers.filter(m => {
-      const shiftMatch = isAdminUnlocked ? true : (m.batch === activeTargetBatch);
+      const batchMatch = isAdminUnlocked ? true : ((m.batch || 'morning') === activeSelectedBatch);
       const textMatch = (m.name && m.name.toLowerCase().includes(query)) || (m.phone && m.phone.includes(query));
-      return shiftMatch && textMatch;
+      return batchMatch && textMatch;
     });
 
     if (matches.length > 0) {
       dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="font-size:10px; color:#ffcc00; margin-bottom:5px; font-weight:bold;">मिलते-जुलते सदस्य:</div>`;
+      dropdown.innerHTML = `<div style="font-size:10px; color:#ffcc00; margin-bottom:5px; font-weight:bold;">मिलते-जुलते सदस्य (${activeSelectedBatch.toUpperCase()}):</div>`;
       matches.slice(0, 5).forEach(m => {
-        const isPaid = (m.status === 'Paid' || m.fees === 'Paid');
+        const isPaid = (m.status === 'Paid' || m.fees === 'Paid' || m.status === 'Full Paid');
         dropdown.innerHTML += `
           <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
             <div>
@@ -339,7 +588,7 @@
     const attMap = fetchDailyAttendanceMap();
     const isPresent = !!attMap[m.id];
     const checkin = attMap[m.id];
-    const isPaid = (m.status === 'Paid' || m.fees === 'Paid');
+    const isPaid = (m.status === 'Paid' || m.fees === 'Paid' || m.status === 'Full Paid');
 
     let expStr = "N/A";
     let daysRem = 0;
@@ -383,6 +632,7 @@
 
     document.getElementById("activeLoadedCard").className = `loaded-member-card ${isPresent ? 'status-present' : ''}`;
     document.getElementById("searchAreaWrapper").style.display = "none";
+    document.getElementById("batchDirectListBox").style.display = "none";
     document.getElementById("singleMemberContainer").style.display = "block";
   }
 
@@ -476,7 +726,6 @@
     cancelSearchAndReset();
   }
 
-  // MULTIPLE DATE SELECTION ADMIN CALENDAR (PIN Protected Only Here)
   function openAdminMemberManager(memberId) {
     let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें (अटेंडेंस और पैकेज बदलने हेतु):");
     if (pin !== ADMIN_PIN) {
@@ -520,6 +769,8 @@
       `;
     }
 
+    const isCurrentPaid = (m.status === 'Paid' || m.fees === 'Paid' || m.status === 'Full Paid');
+
     modal.innerHTML = `
       <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:16px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:10px;">
@@ -527,8 +778,8 @@
           <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">✕</button>
         </div>
 
-        <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📦 पैकेज व प्लान बदलें (5 Plans):</div>
+        <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:10px;">
+          <div style="font-size:11.5px; color:#ffcc00; font-weight:bold; margin-bottom:5px;">📦 पैकेज व प्लान बदलें (5 Plans):</div>
           <select id="adminNewPlanSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:7px; border-radius:6px; font-size:11px; margin-bottom:6px;">
             <option value="🔥 7 दिन का ट्रायल (7 Days Trial - ₹99)">🔥 7 दिन का ट्रायल (7 Days Trial - ₹99)</option>
             <option value="विद्यार्थी (Student Offer - ₹300/माह)">विद्यार्थी (Student Offer - ₹300/माह)</option>
@@ -539,17 +790,26 @@
           <button onclick="saveAdminMemberPlan('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">💾 प्लान अपडेट करें</button>
         </div>
 
-        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 ${monthName} ${year} - मल्टीपल डेट्स चुनें और नीचे बटन दबाएं:</div>
-        <div style="max-height:180px; overflow-y:auto; border:1px solid #333; padding:6px; border-radius:6px; margin-bottom:10px;">
+        <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:10px;">
+          <div style="font-size:11.5px; color:#ffcc00; font-weight:bold; margin-bottom:5px;">💰 फीस स्थिति (Fee Status Control):</div>
+          <select id="adminFeeStatusSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:7px; border-radius:6px; font-size:11px; margin-bottom:6px;">
+            <option value="Paid" ${isCurrentPaid ? 'selected' : ''}>✅ Paid (फीस जमा है)</option>
+            <option value="Due" ${!isCurrentPaid ? 'selected' : ''}>❌ Due (फीस बकाया है)</option>
+          </select>
+          <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">💾 फीस स्टेटस अपडेट करें</button>
+        </div>
+
+        <div style="font-size:11.5px; color:#ffcc00; font-weight:bold; margin-bottom:5px;">📅 ${monthName} ${year} - मल्टीपल डेट्स चुनें:</div>
+        <div style="max-height:150px; overflow-y:auto; border:1px solid #333; padding:6px; border-radius:6px; margin-bottom:10px;">
           ${calendarHTML}
         </div>
 
         <div style="display:flex; gap:8px; margin-bottom:10px;">
-          <button onclick="applyBatchAttendance('${m.id}', true)" style="flex:1; background:#00ff66; color:#000; font-weight:bold; padding:9px; border:none; border-radius:6px; cursor:pointer; font-size:11px;">✅ सिलेक्टेड को Present करें</button>
-          <button onclick="applyBatchAttendance('${m.id}', false)" style="flex:1; background:#ff4444; color:#fff; font-weight:bold; padding:9px; border:none; border-radius:6px; cursor:pointer; font-size:11px;">❌ सिलेक्टेड को Absent करें</button>
+          <button onclick="applyBatchAttendance('${m.id}', true)" style="flex:1; background:#00ff66; color:#000; font-weight:bold; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:10.5px;">✅ सिलेक्टेड को Present करें</button>
+          <button onclick="applyBatchAttendance('${m.id}', false)" style="flex:1; background:#ff4444; color:#fff; font-weight:bold; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:10.5px;">❌ सिलेक्टेड को Absent करें</button>
         </div>
 
-        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#333; color:#fff; font-weight:bold; padding:9px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें (DONE)</button>
+    <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#333; color:#fff; font-weight:bold; padding:9px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें (DONE)</button>
       </div>
     `;
     modal.style.display = "flex";
@@ -586,6 +846,19 @@
     alert("✅ पैकेज सफलतापूर्वक अपडेट कर दिया गया है!");
     document.getElementById('adminMemberManagerModal').style.display = 'none';
     location.reload();
+  }
+
+  function saveAdminFeeStatus(memberId) {
+    let allRecords = fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (!m) return;
+    let newStatus = document.getElementById("adminFeeStatusSelect").value;
+    m.status = newStatus === 'Paid' ? 'Paid' : 'Pending';
+    m.fees = newStatus;
+    syncAllStorage(allRecords);
+    alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
+    document.getElementById('adminMemberManagerModal').style.display = 'none';
+    loadSingleMemberKioskCard(m.id);
   }
 
   function openSlotChangerModal() {
