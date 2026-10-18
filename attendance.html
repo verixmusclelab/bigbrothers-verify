@@ -732,18 +732,23 @@
       });
   }
 
-  function captureLiveSelfieProof() {
-    if (!currentVideoStream || !currentlyLoadedMember) return;
-
+    function captureLiveSelfieProof() {
     const videoElem = document.getElementById("videoElement");
     const canvas = document.getElementById("offscreenCanvas");
-    canvas.width = 320; canvas.height = 320;
+    
+    if (!videoElem || videoElem.readyState !== videoElem.HAVE_ENOUGH_DATA) {
+      alert("कैमरा लोड हो रहा है, कृपया एक सेकंड रुककर फिर से 'CAPTURE' दबाएं!");
+      return;
+    }
+
+    canvas.width = videoElem.videoWidth || 320;
+    canvas.height = videoElem.videoHeight || 320;
     const ctx = canvas.getContext("2d");
     ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
     ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
 
     const now = new Date();
-    const base64Stamp = canvas.toDataURL("image/jpeg", 0.75);
+    const base64Stamp = canvas.toDataURL("image/jpeg", 0.8);
     const dayStr = now.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 
@@ -768,7 +773,7 @@
 
       if (target.joinDate) {
         const jD = new Date(target.joinDate);
-        const expD = new Date(joinD);
+        const expD = new Date(jD);
         expD.setMonth(expD.getMonth() + (target.planMonths || 1));
         expiryStr = expD.toISOString().split("T")[0];
         daysRemaining = Math.max(0, Math.ceil((expD - now) / (1000 * 60 * 60 * 24)));
@@ -778,13 +783,36 @@
 
     closeCameraModal();
 
-    // Celebration Report
-    document.getElementById("celebrateMemberName").innerText = currentlyLoadedMember.name.toUpperCase();
-    document.getElementById("celebrateAttendedDays").innerText = currentAttended;
+    // Working Day & ₹100 Offer Progress Calculation (Total Working Days = 26)
+    const totalWorkingDaysThisMonth = 26; 
+    let daysLeftForOffer = Math.max(0, totalWorkingDaysThisMonth - currentAttended);
+    
+    let offerMessageHTML = "";
+    if (daysLeftForOffer === 0) {
+      offerMessageHTML = `<b style="color:#00ff66;">🔥 बधाई हो! आपने इस महीने बिना छुट्टी के सारे वर्किंग डे पूरे कर लिए हैं। आपको अगली फीस में ₹100 की छूट (OFF) मिलेगी! 🎉</b>`;
+    } else {
+      offerMessageHTML = `<span style="color:#ffcc00;">💡 ऑफर अपडेट: आप इस महीने ${currentAttended} दिन आ चुके हैं। बिना छुट्टी के लगातार आने पर ₹100 छूट के लिए अभी ${daysLeftForOffer} दिन और आना बाकी है!</span>`;
+    }
+
+    // Success Popup UI Update
+    document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()} TO MARK YOUR ATTENDANCE!`;
+    document.getElementById("celebrateAttendedDays").innerHTML = `${currentAttended} दिन (कुल वर्किंग डे: ${totalWorkingDaysThisMonth} में से)`;
     document.getElementById("celebrateRemainingDays").innerText = daysRemaining;
     document.getElementById("celebrateExpiryDate").innerText = expiryStr;
+    
+    let extraMsgBox = document.getElementById("dynamicOfferProgressBox");
+    if (!extraMsgBox) {
+      extraMsgBox = document.createElement("div");
+      extraMsgBox.id = "dynamicOfferProgressBox";
+      extraMsgBox.style.cssText = "margin-top:8px; font-size:10.5px; background:#181818; border:1px dashed #ffcc00; padding:8px; border-radius:6px; text-align:left;";
+      document.querySelector("#attendanceCelebrationModal .modal-box-card div[style*='text-align:left']").appendChild(extraMsgBox);
+    }
+    extraMsgBox.innerHTML = offerMessageHTML;
+
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
+  
+  
 
   function completeAttendanceAndResetKiosk() {
     closeModal('attendanceCelebrationModal');
