@@ -291,7 +291,7 @@
       <!-- ADMIN MANUAL CALENDAR & PACKAGE CHANGER TRIGGER -->
       <div style="margin-top:8px; text-align:right;">
         <button type="button" onclick="openAdminMemberManager(currentlyLoadedMember.id)" style="background:transparent; border:1px dashed var(--gold); color:var(--gold); font-size:10px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">
-          ⚙️ एडमिन कंट्रोल (डिलीट, कैलेंडर & फीस स्टेटस)
+          ⚙️ एडमिन कंट्रोल (कैレンダー, अंतिम फीस, डिलीट & स्टेटस)
         </button>
       </div>
     </div>
@@ -314,10 +314,48 @@
     </div>
   </div>
 
+  <!-- STRICT FEES EXPIRED / OVERDUE MODAL -->
+  <div class="custom-modal-backdrop" id="strictExpiryModal">
+    <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
+      <div style="font-size:38px; margin-bottom:2px;">⚠️</div>
+      <h3 style="color:#ffcc00; margin:0 0 4px; font-size:16px; text-transform:uppercase;">5 BROTHER'S FITNESS CLUB</h3>
+      <div style="color:#ff6666; font-size:11.5px; font-weight:bold; margin-bottom:10px;">सदस्यता अवधि व फीस समाप्ति सूचना</div>
+
+      <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:8px; padding:10px; margin-bottom:12px; text-align:left; font-size:11px; line-height:1.5;">
+        प्रिय <b id="expiringMemberName">सदस्य</b>,<br>
+        आपकी जिम मेंबरशिप एक्सपायर हो चुकी है या फीस बकाया है।<br>
+        <b style="color:#ffcc00;">सख्त नियम:</b> कृपया अपनी फीस जमा करें या एडमिन से संपर्क करें।
+      </div>
+
+      <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:12px; text-align:left;">
+        <label style="display:block; font-size:10.5px; color:#00ff66; font-weight:bold; margin-bottom:4px;">
+          📅 आप फीस किस तारीख तक जमा कर देंगे? (Promise Date):
+        </label>
+        <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box; margin-bottom:6px;">
+        <button onclick="submitPromiseAndOpenCam()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✔ तारीख लॉक करें व सेल्फी लें
+        </button>
+      </div>
+
+      <div id="initialActionButtons" style="display:flex; flex-direction:column; gap:6px;">
+        <button onclick="showPromiseDateField()" style="background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✔ हाँ, मैं सहमत हूँ (फीस तारीख चुनें)
+        </button>
+        <button onclick="handleDisagreeLegalNotice()" style="background:#261212; color:#ff6666; font-weight:bold; padding:9px; border:1.5px solid #ff4d4d; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✖ मैं सहमत नहीं हूँ
+        </button>
+      </div>
+
+      <div style="margin-top:10px;">
+        <button onclick="closeModal('strictExpiryModal')" style="background:#333; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; width:100%;">⬅ Back</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SLOT CHANGER MODAL -->
   <div class="custom-modal-backdrop" id="slotChangerModal">
     <div class="modal-box-card" style="border-color:var(--gold);">
-      <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Instant Slot Changer)</h3>
+      <h3 style="color:#ffcc00; font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Slot Changer)</h3>
       <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
 
       <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
@@ -351,7 +389,7 @@
       <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:12px; text-align:left; font-size:12px; line-height:1.6; margin-bottom:14px;">
         <div style="color:#ffcc00; font-weight:bold; margin-bottom:4px;" id="celebrateSubTitle">Thank So Much To Verify Your Attendance!</div>
         <div style="color:#00ff66; font-size:11.5px; margin-bottom:6px;" id="celebrateMainMsg">आपकी उपस्थिति आज की दर्ज कर ली गई है।</div>
-        <div id="celebrateDaysRow">🗓️ <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span></div>
+        <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span></div>
       </div>
 
       <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
@@ -385,11 +423,18 @@
   let isAdminUnlocked = false;
   let currentlyLoadedMember = null;
   let currentVideoStream = null;
-  let currentDateISO = new Date().toISOString().split("T")[0];
+
+  function getLocalDateISO(date = new Date()) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+  let currentDateISO = getLocalDateISO();
 
   function runLiveSystemClock() {
     const now = new Date();
-    currentDateISO = now.toISOString().split("T")[0];
+    currentDateISO = getLocalDateISO(now);
     const dayStr = `${now.getDate() < 10 ? '0'+now.getDate() : now.getDate()}-${(now.getMonth()+1) < 10 ? '0'+(now.getMonth()+1) : (now.getMonth()+1)}-${now.getFullYear()}`;
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
     const clockElem = document.getElementById("liveSystemClock");
@@ -401,7 +446,7 @@
     let bfcMembers = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
     let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
 
-    let pool = [...bfcMembers, ...bfcMembers, ...admSync];
+    let pool = [...bfcMembers, ...bbfMaster, ...admSync];
     let uniqueMap = new Map();
     pool.forEach(item => {
       let key = (item.phone && item.phone.length > 5) ? item.phone.trim() : item.id;
@@ -415,7 +460,13 @@
   }
 
   function fetchAttendanceMapForDate(dateStr) {
-    return JSON.parse(localStorage.getItem("5bfc_attendance_" + dateStr)) || {};
+    try {
+      const raw = localStorage.getItem("5bfc_attendance_" + dateStr);
+      return raw ? (JSON.parse(raw) || {}) : {};
+    } catch (err) {
+      console.error("Could not read attendance records:", err);
+      return {};
+    }
   }
 
   function openSearchKiosk() {
@@ -524,7 +575,7 @@
 
     let records = fetchStoredMembers();
     const newId = Date.now();
-    const todayStr = new Date().toISOString().split("T")[0];
+    const todayStr = getLocalDateISO();
 
     const newMember = {
       id: newId,
@@ -575,6 +626,15 @@
     document.getElementById("cardJoinDate").innerText = formatDateToDDMMYYYY(m.joinDate);
     document.getElementById("cardLastPaidDisplay").innerText = formatDateToDDMMYYYY(baseLastPaid);
 
+    const promiseBox = document.getElementById("cardPromiseDateBox");
+    const promiseValSpan = document.getElementById("cardPromiseDateVal");
+    if (m.feesPromiseDate) {
+      promiseBox.style.display = "block";
+      promiseValSpan.innerText = formatDateToDDMMYYYY(m.feesPromiseDate);
+    } else {
+      promiseBox.style.display = "none";
+    }
+
     document.getElementById("cardSlotDisplay").innerText = m.slot || "06:00 AM - 07:00 AM";
 
     const proofBox = document.getElementById("cardProofContainer");
@@ -614,63 +674,174 @@
     }
   }
 
+  function showAlreadyMarkedWarning() {
+    alert("Your Attendance Already Marked!\nआपकी आज की उपस्थिति पहले ही दर्ज की जा चुकी है।");
+  }
+
   function handleAttendanceClick() {
     if (!currentlyLoadedMember) return;
-    initiateCameraVerification(currentlyLoadedMember);
-  }
+    const m = currentlyLoadedMember;
 
-  function initiateCameraVerification(candidate) {
-    document.getElementById("modalCandidateName").innerText = candidate.name;
-    document.getElementById("cameraBackdropModal").classList.add("show");
-
-    const videoElem = document.getElementById("videoElement");
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
-      .then(stream => {
-        currentVideoStream = stream;
-        videoElem.srcObject = stream;
-      })
-      .catch(err => {
-        alert("कैमरा परमिशन नहीं मिली!");
-        closeCameraModal();
-      });
-  }
-
-  function captureLiveSelfieProof() {
-    const videoElem = document.getElementById("videoElement");
-    const canvas = document.getElementById("offscreenCanvas");
+    const manualStat = m.manualStatus || 'Paid';
+    let isMonthExpired = false;
     
-    if (!videoElem || videoElem.readyState !== videoElem.HAVE_ENOUGH_DATA) {
-      alert("कैमरा लोड हो रहा है, कृपया प्रतीक्षा करें!");
+    const baseRefDate = m.lastPaid || m.joinDate;
+    if (baseRefDate) {
+      const joinD = new Date(baseRefDate);
+      const expD = new Date(joinD);
+      expD.setMonth(expD.getMonth() + (m.planMonths || 1));
+      if (new Date() >= expD) isMonthExpired = true;
+    }
+
+    if ((manualStat !== 'Paid' || isMonthExpired) && !m.feesPromiseDate) {
+      document.getElementById("expiringMemberName").innerText = m.name;
+      document.getElementById("strictExpiryModal").classList.add("show");
       return;
     }
 
-    canvas.width = videoElem.videoWidth || 320;
-    canvas.height = videoElem.videoHeight || 320;
-    const ctx = canvas.getContext("2d");
-    ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
-    ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
-
     const now = new Date();
-    const base64Stamp = canvas.toDataURL("image/jpeg", 0.8);
-    const dayStr = `${now.getDate() < 10 ? '0'+now.getDate() : now.getDate()}-${(now.getMonth()+1) < 10 ? '0'+(now.getMonth()+1) : (now.getMonth()+1)}-${now.getFullYear()}`;
-    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+    const todayISO = getLocalDateISO(now);
+    const todayMap = fetchAttendanceMapForDate(todayISO);
+    if (todayMap[String(m.id)]) {
+      showAlreadyMarkedWarning();
+      loadSingleMemberKioskCard(m.id);
+      return;
+    }
 
-    let attendanceRecords = fetchAttendanceMapForDate(currentDateISO);
-    attendanceRecords[currentlyLoadedMember.id] = { 
-      time: timeStr, 
-      fullStamp: `📅 ${dayStr} | ⏰ ${timeStr}`, 
-      photo: base64Stamp, 
-      statusMsg: "VERIFIED BIOMETRIC SEAL",
+    initiateCameraVerification(m);
+  }
+
+  function showPromiseDateField() {
+    document.getElementById("initialActionButtons").style.display = "none";
+    document.getElementById("promiseDateContainer").style.display = "block";
+  }
+
+  function submitPromiseAndOpenCam() {
+    const promiseVal = document.getElementById("memberPromiseDate").value;
+    if (!promiseVal) {
+      alert("⚠️ कृपया वादा तारीख चुनें!");
+      return;
+    }
+    currentlyLoadedMember.feesPromiseDate = promiseVal;
+    let records = fetchStoredMembers();
+    let target = records.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
+    if (target) {
+      target.feesPromiseDate = promiseVal;
+      syncAllStorage(records);
+    }
+    closeModal('strictExpiryModal');
+    initiateCameraVerification(currentlyLoadedMember);
+  }
+
+  function handleDisagreeLegalNotice() {
+    alert("सदस्यता अवधि समाप्त हो चुकी है।");
+    closeModal('strictExpiryModal');
+    cancelSearchAndReset();
+  }
+
+  async function initiateCameraVerification(candidate) {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert("कैमरा उपलब्ध नहीं है। कृपया पेज को HTTPS या localhost पर खोलें।");
+      return;
+    }
+
+    document.getElementById("modalCandidateName").innerText = candidate.name;
+    document.getElementById("cameraBackdropModal").classList.add("show");
+    const videoElem = document.getElementById("videoElement");
+    videoElem.srcObject = null;
+    try {
+      currentVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+      videoElem.srcObject = currentVideoStream;
+      await videoElem.play();
+    } catch (err) {
+      console.error("Camera error:", err);
+      alert("कैमरा शुरू नहीं हो पाया। Camera permission दें।");
+      closeCameraModal();
+    }
+  }
+
+  function captureLiveSelfieProof() {
+    if (!currentlyLoadedMember) {
+      alert("पहले सदस्य चुनें।");
+      closeCameraModal();
+      return;
+    }
+    const now = new Date();
+    const todayISO = getLocalDateISO(now);
+    const videoElem = document.getElementById("videoElement");
+    const canvas = document.getElementById("offscreenCanvas");
+
+    const attendanceRecords = fetchAttendanceMapForDate(todayISO);
+    if (attendanceRecords[String(currentlyLoadedMember.id)]) {
+      closeCameraModal();
+      showAlreadyMarkedWarning();
+      loadSingleMemberKioskCard(currentlyLoadedMember.id);
+      return;
+    }
+
+    if (!videoElem || videoElem.readyState < HTMLMediaElement.HAVE_CURRENT_DATA || !videoElem.videoWidth || !videoElem.videoHeight) {
+      alert("कैमरा अभी तैयार नहीं है। कृपया थोड़ा प्रतीक्षा करें।");
+      return;
+    }
+
+    const sourceWidth = videoElem.videoWidth;
+    const sourceHeight = videoElem.videoHeight;
+    const maxSide = 720;
+    const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
+    canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+    canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      alert("सेल्फी कैप्चर नहीं हो पाई। कृपया दोबारा कोशिश करें।");
+      return;
+    }
+    ctx.save();
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
+    ctx.restore();
+
+    const base64Stamp = canvas.toDataURL("image/jpeg", 0.65);
+    const dayStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth()+1).padStart(2, '0')}-${now.getFullYear()}`;
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+    
+    attendanceRecords[String(currentlyLoadedMember.id)] = {
+      time: timeStr,
+      fullStamp: `📅 ${dayStr} | ⏰ ${timeStr}`,
+      photo: base64Stamp,
+      statusMsg: "VERIFIED LIVE SELFIE",
       isReal: true,
       name: currentlyLoadedMember.name,
-      phone: currentlyLoadedMember.phone
+      phone: currentlyLoadedMember.phone,
+      slot: currentlyLoadedMember.slot || ""
     };
-    localStorage.setItem("5bfc_attendance_" + currentDateISO, JSON.stringify(attendanceRecords));
+    
+    try {
+      localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
+    } catch (storageError) {
+      console.error("Attendance save failed:", storageError);
+      alert("अटेंडेंस सेव नहीं हो पाई। स्टोरेज फुल हो सकती है।");
+      return;
+    }
+    currentDateISO = todayISO;
+
+    let target = currentlyLoadedMember;
+    let cycleStart = new Date(target.lastPaid || target.joinDate || '2026-09-01');
+    let totalAttendedInCycle = 0;
+    let curr = new Date(cycleStart);
+    let todayDate = new Date();
+    while(curr <= todayDate) {
+      let isoStr = getLocalDateISO(curr);
+      let dayAttMap = fetchAttendanceMapForDate(isoStr);
+      if(curr.getDay() === 0 || (dayAttMap[target.id] && dayAttMap[target.id].isReal)) {
+        totalAttendedInCycle++;
+      }
+      curr.setDate(curr.getDate() + 1);
+    }
 
     closeCameraModal();
-
     document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
-    document.getElementById("celebrateAttendedDays").innerText = `आज की उपस्थिति और सेल्फी सुरक्षित दर्ज हो गई है।`;
+    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
 
@@ -700,14 +871,123 @@
       document.body.appendChild(modal);
     }
 
+    const baseRefStr = m.lastPaid || m.joinDate || '2026-09-01';
+    let startDate = new Date(baseRefStr);
+    const now = new Date();
+    
+    let currentMonthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    let currentMonth = now.getMonth();
+    let currentYear = now.getFullYear();
+    let cycleStartDay = (startDate.getMonth() === currentMonth && startDate.getFullYear() === currentYear) ? startDate.getDate() : 1;
+
+    let calendarHTML = '';
+    for (let d = cycleStartDay; d <= currentMonthDays; d++) {
+      let dayISO = `${currentYear}-${(currentMonth+1) < 10 ? '0'+(currentMonth+1) : (currentMonth+1)}-${d < 10 ? '0'+d : d}`;
+      let dateObj = new Date(dayISO);
+      let isSunday = (dateObj.getDay() === 0);
+
+  let dayDisplay = `${d < 10 ? '0'+d : d}-${(currentMonth+1) < 10 ? '0'+(currentMonth+1) : (currentMonth+1)}-${currentYear}`;
+      let dayMap = fetchAttendanceMapForDate(dayISO);
+      let isPresent = isSunday ? true : (dayMap[m.id] && dayMap[m.id].isReal ? true : false);
+
+      calendarHTML += `
+        <label style="background:#181818; border:1px solid ${isPresent ? '#00ff66' : '#444'}; padding:8px 10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12px; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" class="admin-date-checkbox" value="${dayISO}" style="width:16px; height:16px; cursor:pointer;" ${isSunday ? 'checked disabled' : ''}>
+            📅 <b>${dayDisplay} ${isSunday ? '(Sunday - Holiday)' : ''}</b>
+          </span>
+          <span style="color:${isPresent ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPresent ? '✅ Present' : '❌ Absent'}</span>
+        </label>
+      `;
+    }
+
+    const currentStat = m.manualStatus || 'Paid';
+
     modal.innerHTML = `
-      <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:430px; width:100%; padding:18px; color:#fff; text-align:center;">
-        <h3 style="color:#ffcc00; margin-bottom:12px;">⚙️ एडमिन कंट्रोल: ${m.name}</h3>
-        <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; margin-bottom:10px;">🗑️ इस सदस्य को हमेशा के लिए डिलीट करें</button>
-        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:10px; border-radius:6px; cursor:pointer; width:100%;">⬅ Back / बंद करें</button>
+      <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:18px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
+          <h3 style="color:#ffcc00; margin:0; font-size:16px;">⚙️ एडमिन कंट्रोल: ${m.name}</h3>
+          <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
+        </div>
+
+        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें (Admin Edit):</div>
+          <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+          <button onclick="saveAdminLastPaidDate('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 अंतिम फीस अपडेट करें</button>
+        </div>
+
+        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">💰 फीस स्थिति (Fee Status Control):</div>
+          <select id="adminFeeStatusSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+            <option value="Paid" ${currentStat === 'Paid' ? 'selected' : ''}>✅ Paid (फीस जमा है)</option>
+            <option value="Pending" ${currentStat === 'Pending' ? 'selected' : ''}>❌ Pending (फीस बकाया है)</option>
+          </select>
+          <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 फीस स्टेटस अपडेट करें</button>
+        </div>
+
+        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 साइकिल तारीख (${formatDateToDDMMYYYY(baseRefStr)}) से आज तक की अटेंडेंस:</div>
+        <div style="max-height:160px; overflow-y:auto; border:1px solid #333; padding:8px; border-radius:6px; margin-bottom:12px;">
+          ${calendarHTML}
+        </div>
+
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <button onclick="applyBatchAttendance('${m.id}', true)" style="flex:1; background:#00ff66; color:#000; font-weight:bold; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:11px;">✅ Present करें</button>
+          <button onclick="applyBatchAttendance('${m.id}', false)" style="flex:1; background:#ff4444; color:#fff; font-weight:bold; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:11px;">❌ Absent करें</button>
+        </div>
+
+        <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
+          <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">🗑️ इस सदस्य को हमेशा के लिए डिलीट करें</button>
+        </div>
+
+        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें</button>
       </div>
     `;
     modal.style.display = "flex";
+  }
+
+  function saveAdminLastPaidDate(memberId) {
+    let newDate = document.getElementById("adminEditableLastPaid").value;
+    if (!newDate) return;
+    let allRecords = fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (m) {
+      m.lastPaid = newDate;
+      syncAllStorage(allRecords);
+      alert("✅ अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
+      openAdminMemberManager(m.id);
+    }
+  }
+
+  function saveAdminFeeStatus(memberId) {
+    let allRecords = fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (!m) return;
+    let newStatus = document.getElementById("adminFeeStatusSelect").value;
+    m.manualStatus = newStatus;
+    syncAllStorage(allRecords);
+    alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
+    document.getElementById('adminMemberManagerModal').style.display = 'none';
+    loadSingleMemberKioskCard(m.id);
+  }
+
+  function applyBatchAttendance(memberId, makePresent) {
+    const checkboxes = document.querySelectorAll(".admin-date-checkbox:checked:not(:disabled)");
+    if (checkboxes.length === 0) {
+      alert("⚠️ कृपया कम से कम एक तारीख (Date) टिक करें!");
+      return;
+    }
+    checkboxes.forEach(chk => {
+      let dateISO = chk.value;
+      let dayMap = fetchAttendanceMapForDate(dateISO);
+      if (makePresent) {
+        dayMap[memberId] = { time: "07:00 AM (Admin)", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
+      } else {
+        delete dayMap[memberId];
+      }
+      localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
+    });
+    alert(`✅ सफलतापूर्वक अटेंडेंस अपडेट कर दी गई है!`);
+    openAdminMemberManager(memberId);
   }
 
   function openAdminPhotoVault() {
@@ -782,7 +1062,7 @@
   function saveNewMemberSlot(newSlot) {
     if (!currentlyLoadedMember) return;
     let records = fetchStoredMembers();
-    let target = records.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
+    let target = records.find(r => r.id.toString() === memberId.toString()); // fixed fallback
     if (target) {
       target.slot = newSlot;
       syncAllStorage(records);
