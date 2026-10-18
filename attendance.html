@@ -83,7 +83,7 @@
     box-shadow: 0 0 12px rgba(0, 200, 255, 0.25);
   }
 
-  /* KIOSK HERO SECTION */
+  /* KIOSK MAIN ACTION */
   .kiosk-hero-box {
     background: #111; border: 2px dashed #333; border-radius: 14px;
     padding: 20px 14px; text-align: center; margin-bottom: 14px;
@@ -302,8 +302,7 @@
 
       <div class="card-details-box">
         <div>📋 <b>प्लान:</b> <span id="cardPlanText">General (1 माह)</span></div>
-        <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <b>अंतिम फीस:</b> <span id="cardLastPaid">DD-MM-YYYY</span></div>
-        <div>⏳ <b>अगले महीने फीस जमा करने की तारीख:</b> <b style="color:#ffcc00;" id="cardExpiryDate">DD-MM-YYYY</b> (<span id="cardDaysRemaining">0 दिन शेष</span>)</div>
+        <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <b>अंतिम फीस:</b> <span id="cardLastPaidContainer"><input type="date" id="editableLastPaidInput" style="background:#000; color:#ffcc00; border:1px solid #444; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;"></span></div>
         
         <div id="cardPromiseDateBox" style="display:none; color:#00ff66; margin-top:5px; font-weight:bold; font-size:11px;">
           📅 फीस वादा तारीख (Promise Date): <span id="cardPromiseDateVal">--</span>
@@ -363,7 +362,7 @@
     </div>
   </div>
 
-  <!-- STRICT FEES EXPIRED / OVERDUE MODAL (First time or until promise date is set) -->
+  <!-- STRICT FEES EXPIRED / OVERDUE MODAL -->
   <div class="custom-modal-backdrop" id="strictExpiryModal">
     <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
       <div style="font-size:38px; margin-bottom:2px;">⚠️</div>
@@ -412,7 +411,11 @@
 
       <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
-      <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM', 'morning')">07:00 - 08:00 AM</button>
+      <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM', 'morning')">06:00 - 07:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM', 'morning')">07:00 - 08:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM', 'morning')">08:00 - 09:00 AM</button>
       </div>
 
@@ -437,9 +440,7 @@
       <div style="color:#00ff66; font-size:13px; font-weight:bold; margin-bottom:10px;" id="celebrateMemberName">MEMBER NAME</div>
 
       <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:10px; text-align:left; font-size:11px; line-height:1.6; margin-bottom:12px;">
-        <div>🗓️ <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span>[span_0](start_span)[span_0](end_span)</div>
-        <div>⏳ <b>अगले महीने फीस जमा करने की तारीख:</b> <b style="color:#00ff66;" id="celebrateExpiryDate">DD-MM-YYYY</b></div>
-        <div id="dynamicOfferProgressBox" style="margin-top:8px; font-size:11px; background:#181818; border:1.5px dashed #00ff66; padding:8px; border-radius:6px; color:#00ff66;"></div>
+        <div>🗓️ <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span></div>
       </div>
 
       <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
@@ -691,19 +692,7 @@
     const checkin = attMap[m.id];
     
     const manualStat = m.manualStatus || 'Paid';
-    let expStr = "N/A";
-    let daysRem = 0;
-
-    const baseJoin = m.joinDate || '2026-09-01';
-    if (baseJoin) {
-      const jD = new Date(baseJoin);
-      const expD = new Date(jD);
-      expD.setMonth(expD.getMonth() + (m.planMonths || 1));
-      expStr = formatDateToDDMMYYYY(expD.toISOString().split("T")[0]);
-      
-      const today = new Date();
-      daysRem = Math.ceil((expD - today) / (1000 * 60 * 60 * 24));
-    }
+    const baseLastPaid = m.lastPaid || m.joinDate;
 
     document.getElementById("cardMemberName").innerText = m.name;
     document.getElementById("cardMemberPhone").innerText = `📞 +91 ${m.phone}`;
@@ -722,10 +711,13 @@
 
     document.getElementById("cardPlanText").innerText = `${m.plan || 'सामान्य (General Fitness - ₹500/माह)'}`;
     document.getElementById("cardJoinDate").innerText = formatDateToDDMMYYYY(m.joinDate);
-    document.getElementById("cardLastPaid").innerText = formatDateToDDMMYYYY(m.joinDate);
-
-    document.getElementById("cardExpiryDate").innerText = expStr;
-    document.getElementById("cardDaysRemaining").innerText = daysRem >= 0 ? `${daysRem} दिन शेष` : `⚠️ ${Math.abs(daysRem)} दिन ऊपर हो चुके हैं`;
+    
+    const lastPaidContainer = document.getElementById("cardLastPaidContainer");
+    if(lastPaidContainer) {
+      lastPaidContainer.innerHTML = `
+        <input type="date" id="editableLastPaidInput" value="${baseLastPaid || ''}" onchange="updateMemberLastPaid('${m.id}', this.value)" style="background:#000; color:#ffcc00; border:1px solid #444; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">
+      `;
+    }
 
     const promiseBox = document.getElementById("cardPromiseDateBox");
     const promiseValSpan = document.getElementById("cardPromiseDateVal");
@@ -758,6 +750,18 @@
     document.getElementById("searchAreaWrapper").style.display = "none";
     document.getElementById("batchDirectListBox").style.display = "none";
     document.getElementById("singleMemberContainer").style.display = "block";
+  }
+
+  function updateMemberLastPaid(memberId, newDateVal) {
+    if (!newDateVal) return;
+    let records = fetchStoredMembers();
+    let target = records.find(r => r.id.toString() === memberId.toString());
+    if (target) {
+      target.lastPaid = newDateVal;
+      syncAllStorage(records);
+      alert(`✅ अंतिम फीस की तारीख बदलकर ${formatDateToDDMMYYYY(newDateVal)} कर दी गई है!`);
+      loadSingleMemberKioskCard(target.id);
+    }
   }
 
   function toggleManualFeeStatus() {
@@ -795,8 +799,9 @@
     const manualStat = m.manualStatus || 'Paid';
     let isMonthExpired = false;
     
-    if (m.joinDate) {
-      const joinD = new Date(m.joinDate);
+    const baseRefDate = m.lastPaid || m.joinDate;
+    if (baseRefDate) {
+      const joinD = new Date(baseRefDate);
       const expD = new Date(joinD);
       expD.setMonth(expD.getMonth() + (m.planMonths || 1));
       if (new Date() >= expD) isMonthExpired = true;
@@ -840,12 +845,11 @@
 
     modalBox.innerHTML = `
       <div style="font-size:38px; margin-bottom:4px;">⛔</div>
+<div style="font-size:38px; margin-bottom:4px;">⛔</div>
       <h2 style="color:#ff3333; margin:0 0 4px; font-size:15px; font-weight:900;">सदस्यता रद्द (MEMBERSHIP CANCELLED)</h2>
       <div style="background:#1a0f0f; border:1.5px solid #ff3333; border-radius:8px; padding:10px; text-align:left; color:#eee; font-size:11px; line-height:1.5; margin-bottom:12px;">
         <b>प्रिय ${member.name},</b><br>
         आपका महीना पूरा हो चुका है और आप जिम के नियमों से सहमत नहीं हैं। इसलिए आपकी सदस्यता तुरंत रद्द की जाती है और आपको सूचित किया जाता है कि आप तुरंत जिम छोड़ दें।
-      </div>
-       नियमों से सहमत नहीं हैं। इसलिए आपकी सदस्यता तुरंत रद्द की जाती है और आपको सूचित किया जाता है कि आप तुरंत जिम छोड़ दें।
       </div>
       <button onclick="closeModal('strictExpiryModal'); cancelSearchAndReset();" style="width:100%; background:#222; color:#fff; border:1px solid #444; padding:9px; border-radius:6px; font-weight:bold; cursor:pointer;">
         ⬅ Back / बंद करें
@@ -869,14 +873,6 @@
         closeCameraModal();
       });
   }
-
-  const athleteQuotes = [
-    "आप इस जिम के सबसे परफॉर्मिंग और अनुशासित एथलीट हैं! 🔥",
-    "लोहे को आकार देने वाला असली जिद्दी खिलाड़ी यही है! 💪",
-    "पसीना बहाना ही आपकी सबसे बड़ी ताकत है, लगे रहो भाई! ⚡",
-    "जिसकी मेहनत बोलती है, उसका रिकॉर्ड हमेशा टॉप पर रहता है! 🌟",
-    "तोर फोड़ जारी रखो, फिटनेस का असली राजा यही है! 🚀"
-  ];
 
   function captureLiveSelfieProof() {
     const videoElem = document.getElementById("videoElement");
@@ -905,36 +901,17 @@
     let allRecords = fetchStoredMembers();
     let target = allRecords.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
     let currentAttended = 1;
-    let daysRem = 0;
-    let expiryStr = "N/A";
 
     if (target) {
       target.attendedDaysCount = (target.attendedDaysCount || 0) + 1;
       currentAttended = target.attendedDaysCount;
-
-      if (target.joinDate) {
-        const jD = new Date(target.joinDate);
-        const expD = new Date(jD);
-        expD.setMonth(expD.getMonth() + (target.planMonths || 1));
-        expiryStr = formatDateToDDMMYYYY(expD.toISOString().split("T")[0]);
-        daysRem = Math.max(0, Math.ceil((expD - now) / (1000 * 60 * 60 * 24)));
-      }
       syncAllStorage(allRecords);
     }
 
     closeCameraModal();
 
-    const randomQuote = athleteQuotes[Math.floor(Math.random() * athleteQuotes.length)];
     document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
-    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${currentAttended} दिन आ चुके हैं`;[span_1](start_span)[span_1](end_span)
-    
-    const expBox = document.getElementById("celebrateExpiryDate");
-    if(expBox) expBox.innerText = expiryStr;
-
-    const dynBox = document.getElementById("dynamicOfferProgressBox");
-    if(dynBox) {
-      dynBox.innerHTML = `⏳ महीना पूरा होने में <b>${daysRem} दिन</b> शेष हैं!<br>🔥 <b>एथलीट स्टेटस:</b> "${randomQuote}"`;
-    }
+    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${currentAttended} दिन आ चुके हैं`;
 
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
