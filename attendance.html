@@ -412,11 +412,13 @@
         <div id="dynamicOfferProgressBox" style="margin-top:8px; font-size:11px; background:#181818; border:1.5px dashed #00ff66; padding:8px; border-radius:6px; color:#00ff66;"></div>
       </div>
 
-      <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
-        ✔ ठीक है (DONE)
-      </button>
-    </div>
-  </div>
+       function completeAttendanceAndResetKiosk() {
+     const modal = document.getElementById('attendanceCelebrationModal');
+     if (modal) modal.classList.remove('show');
+     cancelSearchAndReset();
+     window.location.reload();
+  }
+      
 
   <!-- CAMERA MODAL -->
   <div class="custom-modal-backdrop" id="cameraBackdropModal">
