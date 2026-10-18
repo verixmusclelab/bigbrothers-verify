@@ -118,7 +118,6 @@
   }
   .search-result-item:hover { border-color: var(--gold); }
 
-  /* BATCH DIRECT LIST CONTAINER */
   .batch-direct-list-box {
     display: none; background: #111; border: 1.5px solid #333; border-radius: 12px; padding: 12px; margin-bottom: 14px;
   }
@@ -165,6 +164,13 @@
   .btn-slot-gear {
     background: var(--gold); color: #000; border: none; border-radius: 4px;
     padding: 3px 8px; font-size: 10px; font-weight: 900; cursor: pointer;
+  }
+
+  .batch-assign-row {
+    display: flex; gap: 6px; margin-top: 8px;
+  }
+  .btn-assign-batch {
+    flex: 1; font-size: 10px; font-weight: bold; padding: 6px; border-radius: 6px; border: 1px dashed var(--gold); background: #1c1c1c; color: var(--gold); cursor: pointer; text-align: center;
   }
 
   .compact-proof-badge {
@@ -235,7 +241,7 @@
     <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
   </div>
 
-  <!-- CATEGORY SELECTION TABS (MORNING / EVENING) -->
+  <!-- CATEGORY SELECTION TABS -->
   <div class="category-tabs-container">
     <button type="button" class="btn-category-tab active-morning" id="tabMorningBtn" onclick="switchActiveCategory('morning')">
       🌅 Morning Batch
@@ -299,6 +305,11 @@
           <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal()">⚙️ Slot बदलें</button>
         </div>
 
+        <div class="batch-assign-row">
+          <button type="button" class="btn-assign-batch" onclick="assignMemberBatch('morning')">🌅 Morning Batch में जोड़ें</button>
+          <button type="button" class="btn-assign-batch" onclick="assignMemberBatch('evening')">🌙 Evening Batch में जोड़ें</button>
+        </div>
+
         <div id="cardPromiseDateBox" style="display:none; color:#00ff66; margin-top:5px; font-weight:bold;">
           📅 फीस वादा तारीख: <span id="cardPromiseDateVal">--</span>
         </div>
@@ -333,16 +344,19 @@
 
       <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:8px; padding:10px; margin-bottom:12px; text-align:left; font-size:11px; line-height:1.5;">
         प्रिय <b id="expiringMemberName">सदस्य</b>,<br>
-        आपकी सदस्यता अवधि पूरी हो चुकी है और आपकी फीस <b>Pending (बकाया)</b> है।<br><br>
-        <b style="color:#ffcc00;">सख्त नियम:</b> यदि आप आज के बाद <b>1 दिन भी आते हैं</b>, तो पूरे अगले महीने की फीस देय होगी।
+        आपकी जिम मेंबरशिप एक्सपायर हो चुकी है।<br>
+        <b style="color:#ffcc00;">सख्त नियम:</b> यदि आप आज के बाद 1 दिन भी आते हैं, तो पूरे अगले महीने की फीस देय होगी।
       </div>
 
       <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:12px; text-align:left;">
         <label style="display:block; font-size:10.5px; color:#00ff66; font-weight:bold; margin-bottom:4px;">
-          📅 आप फीस किस तारीख तक जमा कर देंगे?:
+          📅 आप फीस किस तारीख तक जमा कर देंगे? (Promise Date):
         </label>
-        <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box;">
-        <button onclick="submitPromiseAndOpenCam()" style="width:100%; margin-top:8px; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
+        <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box; margin-bottom:6px;">
+        <div style="font-size:9.5px; color:#ffcc00; font-weight:bold; margin-bottom:8px;">
+          ⚠️ चेतावनी: वादा तारीख के बाद पेमेंट न करने पर प्रति दिन ₹10 पेनल्टी (Penalty) जोड़ी जाएगी और बकाया होने पर फ्रेंड्स/फैमिली को कॉल/मैसेज किया जाएगा!
+        </div>
+        <button onclick="submitPromiseAndOpenCam()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
           ✔ तारीख लॉक करें व सेल्फी लें
         </button>
       </div>
@@ -358,15 +372,29 @@
     </div>
   </div>
 
-  <!-- SLOT CHANGER MODAL -->
+  <!-- SLOT CHANGER MODAL (EASY NO PASSWORD) -->
   <div class="custom-modal-backdrop" id="slotChangerModal">
     <div class="modal-box-card" style="border-color:var(--gold);">
-      <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 बैच समय बदलें (Admin Controlled)</h3>
+      <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Instant Slot Changer)</h3>
       <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:12px;">
+
+      <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM', 'morning')">06:00 - 07:00 AM</button>
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM', 'evening')">06:30 - 07:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM', 'morning')">07:00 - 08:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM', 'morning')">08:00 - 09:00 AM</button>
       </div>
+
+      <div style="text-align:left; font-size:10px; font-weight:bold; color:#00c8ff; margin-bottom:3px;">🌙 EVENING SLOTS (4:30 PM Onwards):</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:12px;">
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('04:30 PM - 05:30 PM', 'evening')">04:30 - 05:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:30 PM - 06:30 PM', 'evening')">05:30 - 06:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM', 'evening')">06:30 - 07:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:30 PM - 08:30 PM', 'evening')">07:30 - 08:30 PM</button>
+        <button type="button" class="slot-chip-btn" style="grid-column: span 2;" onclick="saveNewMemberSlot('08:30 PM - 09:30 PM', 'evening')">08:30 - 09:30 PM</button>
+      </div>
+
       <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#282828; color:#fff; border:none; padding:7px; border-radius:6px; font-size:11px; cursor:pointer;">रद्द करें</button>
     </div>
   </div>
@@ -382,7 +410,7 @@
         <div>🗓️ <span id="celebrateAttendedDays">0 दिन उपस्थिति</span></div>
         <div>⏳ <b>पैकेज समाप्ति तिथि:</b> <b style="color:#ffcc00;" id="celebrateExpiryDate">DD-MM-YYYY</b></div>
         <div id="dynamicOfferProgressBox" style="margin-top:8px; font-size:11px; background:#181818; border:1.5px dashed #00ff66; padding:8px; border-radius:6px; color:#00ff66;"></div>
-      </div>
+         </div>
 
       <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
         ✔ ठीक है (DONE)
@@ -416,11 +444,11 @@
   let currentlyLoadedMember = null;
   let currentVideoStream = null;
   let currentDateISO = new Date().toISOString().split("T")[0];
-  let activeSelectedBatch = "morning"; // Default Morning Category
+  let activeSelectedBatch = "morning";
 
   const DEFAULT_MASTER_ROSTER = [
     { id: 25, name: "शिवा (Shiva Vishwakarma)", father: "रमेश विश्वकर्मा", phone: "7007950135", joinDate: "2026-09-07", planMonths: 1, plan: "सामान्य (General Fitness - ₹500/माह)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-07" },
-  { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15", planMonths: 1, plan: "सामान्य (General Fitness - ₹500/माह)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-15" }
+    { id: 33, name: "ऋषभ (Rishabh Sharma)", father: "सुनील शर्मा", phone: "9236515951", joinDate: "2026-09-15", planMonths: 1, plan: "सामान्य (General Fitness - ₹500/माह)", status: "Paid", fees: "Paid", slot: "06:00 AM - 07:00 AM", batch: "morning", lastPaid: "2026-09-15" }
   ];
 
   function formatDateToDDMMYYYY(dateString) {
@@ -636,9 +664,80 @@
     document.getElementById("singleMemberContainer").style.display = "block";
   }
 
+  function assignMemberBatch(batchType) {
+    if (!currentlyLoadedMember) return;
+    let records = fetchStoredMembers();
+    let target = records.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
+    if (target) {
+      target.batch = batchType;
+      syncAllStorage(records);
+      currentlyLoadedMember = target;
+      alert(`✅ ${target.name} को सफलतापूर्वक ${batchType.toUpperCase()} Batch में जोड़ दिया गया है!`);
+      loadSingleMemberKioskCard(target.id);
+    }
+  }
+
   function handleAttendanceClick() {
     if (!currentlyLoadedMember) return;
+    const m = currentlyLoadedMember;
+
+    const isFeesDue = (m.status !== 'Paid' && m.fees !== 'Paid');
+    let isMonthExpired = false;
+    if (m.joinDate) {
+      const joinD = new Date(m.joinDate);
+      const expD = new Date(joinD);
+      expD.setMonth(expD.getMonth() + (m.planMonths || 1));
+      if (new Date() >= expD) isMonthExpired = true;
+    }
+
+    if (isFeesDue || isMonthExpired) {
+      document.getElementById("expiringMemberName").innerText = m.name;
+      document.getElementById("strictExpiryModal").classList.add("show");
+      return;
+    }
+
+    initiateCameraVerification(m);
+  }
+
+  function showPromiseDateField() {
+    document.getElementById("initialActionButtons").style.display = "none";
+    document.getElementById("promiseDateContainer").style.display = "block";
+    document.getElementById("strictExpiryModal").classList.add("show");
+  }
+
+  function submitPromiseAndOpenCam() {
+    const promiseVal = document.getElementById("memberPromiseDate").value;
+    if (!promiseVal) {
+      alert("⚠️ कृपया वादा तारीख (Promise Date) चुनें!");
+      return;
+    }
+    currentlyLoadedMember.feesPromiseDate = promiseVal;
+    let records = fetchStoredMembers();
+    let target = records.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
+    if (target) {
+      target.feesPromiseDate = promiseVal;
+      syncAllStorage(records);
+    }
+    closeModal('strictExpiryModal');
     initiateCameraVerification(currentlyLoadedMember);
+  }
+
+  function handleDisagreeLegalNotice() {
+    const member = currentlyLoadedMember;
+    const modalBox = document.getElementById("strictModalInnerBox");
+
+    modalBox.innerHTML = `
+      <div style="font-size:38px; margin-bottom:4px;">⛔</div>
+      <h2 style="color:#ff3333; margin:0 0 4px; font-size:15px; font-weight:900;">सदस्यता रद्द (MEMBERSHIP CANCELLED)</h2>
+      <div style="background:#1a0f0f; border:1.5px solid #ff3333; border-radius:8px; padding:10px; text-align:left; color:#eee; font-size:11px; line-height:1.5; margin-bottom:12px;">
+        <b>प्रिय ${member.name},</b><br>
+        आपका महीना पूरा हो चुका है और आप जिम के नियमों से सहमत नहीं हैं। इसलिए आपकी सदस्यता तुरंत रद्द की जाती है और आपको सूचित किया जाता है कि आप तुरंत जिम छोड़ दें।
+      </div>
+      <button onclick="closeModal('strictExpiryModal'); cancelSearchAndReset();" style="width:100%; background:#222; color:#fff; border:1px solid #444; padding:9px; border-radius:6px; font-weight:bold; cursor:pointer;">
+        ✕ बंद करें
+      </button>
+    `;
+    window.open(`https://wa.me/9140417259?text=🚨%20Member%20Rejected%20Rules:%20${member.name}%20(${member.phone})`, "_blank");
   }
 
   function initiateCameraVerification(candidate) {
@@ -727,7 +826,7 @@
   }
 
   function openAdminMemberManager(memberId) {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें (अटेंडेंस और पैकेज बदलने हेतु):");
+    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
     if (pin !== ADMIN_PIN) {
       if(pin !== null) alert("❌ गलत पिन!");
       return;
@@ -809,7 +908,7 @@
           <button onclick="applyBatchAttendance('${m.id}', false)" style="flex:1; background:#ff4444; color:#fff; font-weight:bold; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:10.5px;">❌ सिलेक्टेड को Absent करें</button>
         </div>
 
-    <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#333; color:#fff; font-weight:bold; padding:9px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें (DONE)</button>
+        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#333; color:#fff; font-weight:bold; padding:9px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें (DONE)</button>
       </div>
     `;
     modal.style.display = "flex";
@@ -862,12 +961,7 @@
   }
 
   function openSlotChangerModal() {
-    let pin = prompt("🔒 Admin PIN दर्ज करें:");
-    if (pin !== ADMIN_PIN) {
-      alert("❌ गलत PIN!");
-      return;
-    }
-    document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name}`;
+    document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
     document.getElementById("slotChangerModal").classList.add("show");
   }
 
@@ -880,7 +974,7 @@
       target.batch = batchType;
       syncAllStorage(records);
       currentlyLoadedMember = target;
-      alert(`✅ स्लॉट अपडेट हो गया!`);
+      alert(`✅ स्लॉट बदलकर "${newSlot}" कर दिया गया!`);
       closeModal('slotChangerModal');
       loadSingleMemberKioskCard(target.id);
     }
