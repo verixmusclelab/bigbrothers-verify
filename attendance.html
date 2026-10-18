@@ -732,7 +732,16 @@
       });
   }
 
-    function captureLiveSelfieProof() {
+  // शानदार और अलग-अलग मोटिवेशनल कोट्स (ऑटोमैटिक एथलीट लाइंस)
+  const athleteQuotes = [
+    "आप इस जिम के सबसे परफॉर्मिंग और अनुशासित एथलीट हैं! 🔥",
+    "लोहे को आकार देने वाला असली जिद्दी खिलाड़ी यही है! 💪",
+    "पसीना बहाना ही आपकी सबसे बड़ी ताकत है, लगे रहो भाई! ⚡",
+    "जिसकी मेहनत बोलती है, उसका रिकॉर्ड हमेशा टॉप पर रहता है! 🌟",
+    "तोर फोड़ जारी रखो, फिटनेस का असली राजा यही है! 🚀"
+  ];
+
+  function captureLiveSelfieProof() {
     const videoElem = document.getElementById("videoElement");
     const canvas = document.getElementById("offscreenCanvas");
     
@@ -763,7 +772,7 @@
     let allRecords = fetchStoredMembers();
     let target = allRecords.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
     let currentAttended = 1;
-    let daysRemaining = 30;
+    let daysSinceJoining = 1;
     let expiryStr = "N/A";
 
     if (target) {
@@ -776,44 +785,36 @@
         const expD = new Date(jD);
         expD.setMonth(expD.getMonth() + (target.planMonths || 1));
         expiryStr = expD.toISOString().split("T")[0];
-        daysRemaining = Math.max(0, Math.ceil((expD - now) / (1000 * 60 * 60 * 24)));
+        
+        // Joining date se lekar aaj tak ke total din (Date-range count)
+        const diffTime = Math.abs(now - jD);
+        daysSinceJoining = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
       }
       syncAllStorage(allRecords);
     }
 
     closeCameraModal();
 
-    // Working Day & ₹100 Offer Progress Calculation (Total Working Days = 26)
-    const totalWorkingDaysThisMonth = 26; 
-    let daysLeftForOffer = Math.max(0, totalWorkingDaysThisMonth - currentAttended);
-    
-    let offerMessageHTML = "";
-    if (daysLeftForOffer === 0) {
-      offerMessageHTML = `<b style="color:#00ff66;">🔥 बधाई हो! आपने इस महीने बिना छुट्टी के सारे वर्किंग डे पूरे कर लिए हैं। आपको अगली फीस में ₹100 की छूट (OFF) मिलेगी! 🎉</b>`;
-    } else {
-      offerMessageHTML = `<span style="color:#ffcc00;">💡 ऑफर अपडेट: आप इस महीने ${currentAttended} दिन आ चुके हैं। बिना छुट्टी के लगातार आने पर ₹100 छूट के लिए अभी ${daysLeftForOffer} दिन और आना बाकी है!</span>`;
-    }
+    // Random Dynamic Athlete Quote
+    const randomQuote = athleteQuotes[Math.floor(Math.random() * athleteQuotes.length)];
 
-    // Success Popup UI Update
-    document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()} TO MARK YOUR ATTENDANCE!`;
-    document.getElementById("celebrateAttendedDays").innerHTML = `${currentAttended} दिन (कुल वर्किंग डे: ${totalWorkingDaysThisMonth} में से)`;
-    document.getElementById("celebrateRemainingDays").innerText = daysRemaining;
-    document.getElementById("celebrateExpiryDate").innerText = expiryStr;
+    // UI Update with correct date-range tracking
+    document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
+    document.getElementById("celebrateAttendedDays").innerHTML = `${currentAttended} दिन उपस्थिति (Joining से कुल ${daysSinceJoining} दिन बीते)`;
+    document.getElementById("celebrateRemainingDays").innerText = expiryStr;
     
     let extraMsgBox = document.getElementById("dynamicOfferProgressBox");
     if (!extraMsgBox) {
       extraMsgBox = document.createElement("div");
       extraMsgBox.id = "dynamicOfferProgressBox";
-      extraMsgBox.style.cssText = "margin-top:8px; font-size:10.5px; background:#181818; border:1px dashed #ffcc00; padding:8px; border-radius:6px; text-align:left;";
+      extraMsgBox.style.cssText = "margin-top:8px; font-size:11px; background:#181818; border:1.5px dashed #00ff66; padding:8px; border-radius:6px; text-align:left; color:#00ff66;";
       document.querySelector("#attendanceCelebrationModal .modal-box-card div[style*='text-align:left']").appendChild(extraMsgBox);
     }
-    extraMsgBox.innerHTML = offerMessageHTML;
+        extraMsgBox.innerHTML = `🔥 <b>एथलीट स्टेटस:</b> "${randomQuote}"`;
 
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
   
-  
-
   function completeAttendanceAndResetKiosk() {
     closeModal('attendanceCelebrationModal');
     cancelSearchAndReset();
