@@ -763,7 +763,6 @@
     "जिसकी मेहनत बोलती है, उसका रिकॉर्ड हमेशा टॉप पर रहता है! 🌟",
     "तोर फोड़ जारी रखो, फिटनेस का असली राजा यही है! 🚀"
   ];
-
   function captureLiveSelfieProof() {
     const videoElem = document.getElementById("videoElement");
     const canvas = document.getElementById("offscreenCanvas");
@@ -813,37 +812,18 @@
     const randomQuote = athleteQuotes[Math.floor(Math.random() * athleteQuotes.length)];
     document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
     document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${currentAttended} दिन आ चुके हैं`;
-    document.getElementById("celebrateRemainingDaysBig").innerText = `⏳ महीना पूरा होने में ${daysRem} दिन शेष हैं!`;
-    document.getElementById("celebrateExpiryDateBox").innerText = `पैकेज समाप्ति तिथि: ${expiryStr}`;
-    document.getElementById("dynamicOfferProgressBox").innerHTML = `🔥 <b>एथलीट स्टेटस:</b> "${randomQuote}"`;
+    
+    const expBox = document.getElementById("celebrateExpiryDate");
+    if(expBox) expBox.innerText = expiryStr;
+
+    const dynBox = document.getElementById("dynamicOfferProgressBox");
+    if(dynBox) {
+      dynBox.innerHTML = `⏳ महीना पूरा होने में <b>${daysRem} दिन</b> शेष हैं!<br>🔥 <b>एथलीट स्टेटस:</b> "${randomQuote}"`;
+    }
 
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
-
-  function completeAttendanceAndResetKiosk() {
-    closeModal('attendanceCelebrationModal');
-    cancelSearchAndReset();
-  }
-
-  function openAdminMemberManager(memberId) {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
-    if (pin !== ADMIN_PIN) {
-      if(pin !== null) alert("❌ गलत पिन!");
-      return;
-    }
-
-    let allRecords = fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (!m) { alert("सदस्य नहीं मिला!"); return; }
-
-    let modal = document.getElementById("adminMemberManagerModal");
-    if (!modal) {
-      modal = document.createElement("div");
-      modal.id = "adminMemberManagerModal";
-      modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
-      document.body.appendChild(modal);
-    }
-
+  
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
