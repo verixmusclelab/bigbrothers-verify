@@ -411,7 +411,7 @@
       <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
-      <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM', 'morning')">05:00 - 06:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM', 'morning')">06:00 - 07:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM', 'morning')">07:00 - 08:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM', 'morning')">08:00 - 09:00 AM</button>
@@ -438,6 +438,8 @@
       <div style="color:#00ff66; font-size:13px; font-weight:bold; margin-bottom:10px;" id="celebrateMemberName">MEMBER NAME</div>
 
       <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:12px; text-align:left; font-size:12px; line-height:1.6; margin-bottom:14px;">
+        <div style="color:#ffcc00; font-weight:bold; margin-bottom:4px;">Thank So Much To Verify Your Attendance!</div>
+        <div style="color:#00ff66; font-size:11.5px; margin-bottom:6px;">आपकी उपस्थिति आज की दर्ज कर ली गई है।</div>
         <div>🗓️ <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span></div>
       </div>
 
@@ -452,7 +454,7 @@
     <div class="modal-box-card">
       <div style="text-align:center; margin-bottom:8px;">
         <div style="font-size:15px; font-weight:900; color:var(--gold);" id="modalCandidateName">Member Name</div>
-        <div style="font-size:11px; color:#888;">सेल्फी अनिवार्य है</div>
+        <div style="font-size:11px; color:#888;">सेल्फी अनिवार्य है (तस्वीर हर बार सेव होगी)</div>
       </div>
       <div class="camera-feed-container">
         <video id="videoElement" autoplay playsinline></video>
@@ -634,7 +636,7 @@
       });
     } else {
       dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="color:#ff6666; font-size:11px; text-align:center; padding:8px;">कोई सदस्य नहीं मिला।</div>`;
+      dropdown.innerHTML = `<div style="color:#ff4444; font-size:11px; text-align:center; padding:8px;">कोई सदस्य नहीं मिला।</div>`;
     }
   }
 
@@ -731,7 +733,7 @@
       proofBox.innerHTML = `
         <div class="compact-proof-badge">
           <img src="${checkin.photo}" alt="Seal">
-          <span>✔ VERIFIED BIOMETRIC SEAL | ${checkin.time}</span>
+          <span>✔ ALREADY VERIFIED / LATEST SEAL | ${checkin.time}</span>
         </div>
       `;
     } else {
@@ -740,7 +742,7 @@
 
     const btnPres = document.getElementById("btnPresTrigger");
     btnPres.className = `btn-pres-action ${isPresent ? 'is-ver' : 'not-ver'}`;
-    btnPres.innerText = isPresent ? '✔ ATTENDANCE VERIFIED (फिर से सेल्फी लें)' : '📸 PRESENT दर्ज करें (सेल्फी के साथ)';
+    btnPres.innerText = isPresent ? '📸 फिर से सेल्फी लें (Update Selfie)' : '📸 PRESENT दर्ज करें (सेल्फी के साथ)';
 
     document.getElementById("activeLoadedCard").className = `loaded-member-card ${isPresent ? 'status-present' : ''}`;
     document.getElementById("searchAreaWrapper").style.display = "none";
@@ -797,6 +799,12 @@
       return;
     }
 
+    const attMap = fetchDailyAttendanceMap();
+    if (attMap[m.id]) {
+      let confirmUpdate = confirm("⚠️ इस सदस्य की आज की अटेंडेंस पहले ही दर्ज हो चुकी है। क्या आप फिर भी नई सेल्फी लेकर इसे अपडेट करना चाहते हैं?");
+      if (!confirmUpdate) return;
+    }
+
     initiateCameraVerification(m);
   }
 
@@ -822,7 +830,8 @@
     closeModal('strictExpiryModal');
     initiateCameraVerification(currentlyLoadedMember);
   }
-function handleDisagreeLegalNotice() {
+
+  function handleDisagreeLegalNotice() {
     const member = currentlyLoadedMember;
     const modalBox = document.getElementById("strictModalInnerBox");
 
@@ -831,7 +840,7 @@ function handleDisagreeLegalNotice() {
       <h2 style="color:#ff3333; margin:0 0 4px; font-size:15px; font-weight:900;">सदस्यता रद्द (MEMBERSHIP CANCELLED)</h2>
       <div style="background:#1a0f0f; border:1.5px solid #ff3333; border-radius:8px; padding:10px; text-align:left; color:#eee; font-size:11px; line-height:1.5; margin-bottom:12px;">
         <b>प्रिय ${member.name},</b><br>
-        आपका महीना पूरा हो चुका है और आप जिम के नियमों से सहमत नहीं हैं। इसलिए आपकी सदस्यता तुरंत रद्द की जाती है और आपको सूचित किया जाता है कि आप तुरंत जिम छोड़ दें।
+        आपका महीना पूरा हो चुका है और आप जिम के  के नियमों से सहमत नहीं हैं। इसलिए आपकी सदस्यता तुरंत रद्द की जाती है और आपको सूचित किया जाता है कि आप तुरंत जिम छोड़ दें।
       </div>
       <button onclick="closeModal('strictExpiryModal'); cancelSearchAndReset();" style="width:100%; background:#222; color:#fff; border:1px solid #444; padding:9px; border-radius:6px; font-weight:bold; cursor:pointer;">
         ⬅ Back / बंद करें
@@ -882,18 +891,30 @@ function handleDisagreeLegalNotice() {
 
     let allRecords = fetchStoredMembers();
     let target = allRecords.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
-    let currentAttended = 1;
+    
+    let cycleStart = new Date(target.lastPaid || target.joinDate || '2026-09-01');
+    let totalAttendedInCycle = 0;
+
+    let curr = new Date(cycleStart);
+    let todayDate = new Date();
+    while(curr <= todayDate) {
+      let isoStr = curr.toISOString().split("T")[0];
+      let dayAttMap = JSON.parse(localStorage.getItem("5bfc_attendance_" + isoStr) || "{}");
+      if(curr.getDay() === 0 || dayAttMap[target.id]) {
+        totalAttendedInCycle++;
+      }
+      curr.setDate(curr.getDate() + 1);
+    }
 
     if (target) {
-      target.attendedDaysCount = (target.attendedDaysCount || 0) + 1;
-      currentAttended = target.attendedDaysCount;
+      target.attendedDaysCount = totalAttendedInCycle;
       syncAllStorage(allRecords);
     }
 
     closeCameraModal();
 
     document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
-    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${currentAttended} दिन आ चुके हैं`;
+    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
 
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
@@ -924,7 +945,7 @@ function handleDisagreeLegalNotice() {
       document.body.appendChild(modal);
     }
 
-    const baseRefStr = m.joinDate || '2026-09-01';
+    const baseRefStr = m.lastPaid || m.joinDate || '2026-09-01';
     let startDate = new Date(baseRefStr);
     const now = new Date();
     
