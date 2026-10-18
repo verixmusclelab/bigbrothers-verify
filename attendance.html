@@ -354,7 +354,7 @@
         </label>
         <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box; margin-bottom:6px;">
         <div style="font-size:9.5px; color:#ffcc00; font-weight:bold; margin-bottom:8px;">
-          ⚠️ चेतावनी: वादा तारीख के बाद पेमेंट न करने पर प्रति दिन ₹10 पेनल्टी (Penalty) जोड़ी जाएगी और बकाया होने पर फ्रेंड्स/फैमिली को कॉल/मैसेज किया जाएगा!
+          ⚠️ चेतावनी: वादा तारीख के बाद पेमेंट न करने पर प्रति दिन ₹10 पेनल्टी (Penalty) जोड़ी जाएगी और बकाया बिना फीस दिए या सप्लिमेंट का पैसे दिया जिम आना बंद कर देते तो उस स्थिति में होने पर फ्रेंड्स/फैमिली को कॉल/मैसेज किया जाएगा!
         </div>
         <button onclick="submitPromiseAndOpenCam()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
           ✔ तारीख लॉक करें व सेल्फी लें
@@ -372,7 +372,7 @@
     </div>
   </div>
 
-  <!-- SLOT CHANGER MODAL (EASY NO PASSWORD) -->
+  <!-- SLOT CHANGER MODAL -->
   <div class="custom-modal-backdrop" id="slotChangerModal">
     <div class="modal-box-card" style="border-color:var(--gold);">
       <h3 style="color:var(--gold); font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Instant Slot Changer)</h3>
@@ -410,7 +410,7 @@
         <div>🗓️ <span id="celebrateAttendedDays">0 दिन उपस्थिति</span></div>
         <div>⏳ <b>पैकेज समाप्ति तिथि:</b> <b style="color:#ffcc00;" id="celebrateExpiryDate">DD-MM-YYYY</b></div>
         <div id="dynamicOfferProgressBox" style="margin-top:8px; font-size:11px; background:#181818; border:1.5px dashed #00ff66; padding:8px; border-radius:6px; color:#00ff66;"></div>
-         </div>
+      </div>
 
       <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:8px; font-size:12px; cursor:pointer;">
         ✔ ठीक है (DONE)
@@ -763,6 +763,7 @@
     "जिसकी मेहनत बोलती है, उसका रिकॉर्ड हमेशा टॉप पर रहता है! 🌟",
     "तोर फोड़ जारी रखो, फिटनेस का असली राजा यही है! 🚀"
   ];
+
   function captureLiveSelfieProof() {
     const videoElem = document.getElementById("videoElement");
     const canvas = document.getElementById("offscreenCanvas");
@@ -807,7 +808,7 @@
       syncAllStorage(allRecords);
     }
 
-      closeCameraModal();
+    closeCameraModal();
 
     const randomQuote = athleteQuotes[Math.floor(Math.random() * athleteQuotes.length)];
     document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
@@ -823,14 +824,33 @@
 
     document.getElementById("attendanceCelebrationModal").classList.add("show");
   }
-  
+
+  function openAdminMemberManager(memberId) {
+    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
+    if (pin !== ADMIN_PIN) {
+      if(pin !== null) alert("❌ गलत पिन!");
+      return;
+    }
+
+    let allRecords = fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (!m) { alert("सदस्य नहीं मिला!"); return; }
+
+    let modal = document.getElementById("adminMemberManagerModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "adminMemberManagerModal";
+      modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
+      document.body.appendChild(modal);
+    }
+
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const monthName = now.toLocaleString('hi-IN', { month: 'long' });
 
-    let calendarHTML = '';
+      let calendarHTML = '';
     for (let d = 1; d <= daysInMonth; d++) {
       let dayISO = `${year}-${(month+1) < 10 ? '0'+(month+1) : (month+1)}-${d < 10 ? '0'+d : d}`;
       let dayDisplay = `${d < 10 ? '0'+d : d}-${(month+1) < 10 ? '0'+(month+1) : (month+1)}-${year}`;
