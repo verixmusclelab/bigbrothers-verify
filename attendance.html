@@ -84,7 +84,6 @@
     <span class="shift-badge shift-morning" id="currentShiftBadge">Morning</span>
   </div>
 
-  <!-- KIOSK HERO SECTION -->
   <div class="kiosk-hero-box" id="kioskHeroBox">
     <div style="font-size:38px; margin-bottom:8px;">🏋️‍♂️</div>
     <h3 style="font-size:15px; color:#ffcc00; margin-bottom:6px;">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</h3>
@@ -92,17 +91,15 @@
     <button type="button" class="btn-mark-kiosk-trigger" onclick="openSearchKiosk()">👉 MARK YOUR ATTENDANCE</button>
   </div>
 
-  <!-- SEARCH INTERFACE -->
   <div class="search-area-wrapper" id="searchAreaWrapper">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <span style="font-size:11px; font-weight:bold; color:var(--gold);" id="searchNoticeShiftTitle">🔍 खोजें (Morning Batch Only)</span>
+      <span style="font-size:11px; font-weight:bold; color:var(--gold);" id="searchNoticeShiftTitle">🔍 खोजें</span>
       <button type="button" onclick="cancelSearchAndReset()" style="background:#282828; color:#bbb; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✕ बंद करें</button>
     </div>
     <input type="text" id="memberFilterInput" class="live-search-input" placeholder="नाम या मोबाइल के 2 अक्षर लिखें..." oninput="executeKioskSearch()">
     <div id="searchDropdownNode" class="search-dropdown-results"></div>
   </div>
 
-  <!-- SINGLE LOADED MEMBER CARD -->
   <div class="single-member-container" id="singleMemberContainer">
     <div class="loaded-member-card" id="activeLoadedCard">
       <div class="card-top-row">
@@ -135,7 +132,6 @@
         </button>
       </div>
 
-      <!-- ADMIN MANUAL CALENDAR & PACKAGE CHANGER TRIGGER -->
       <div style="margin-top:8px; text-align:right;">
         <button type="button" onclick="openAdminMemberManager(currentlyLoadedMember.id)" style="background:transparent; border:1px dashed var(--gold); color:var(--gold); font-size:10px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">
           ⚙️ एडमिन कैलेंडर & पैकेज बदलें (Manual)
@@ -144,7 +140,6 @@
     </div>
   </div>
 
-  <!-- CELEBRATION MODAL WITH HUGE DAYS REMAINING -->
   <div class="custom-modal-backdrop" id="attendanceCelebrationModal">
     <div class="modal-box-card" style="border-color:#00ff66; box-shadow:0 0 30px rgba(0,255,102,0.3);">
       <div style="font-size:42px; margin-bottom:3px;">💪</div>
@@ -166,7 +161,6 @@
     </div>
   </div>
 
-  <!-- CAMERA MODAL -->
   <div class="custom-modal-backdrop" id="cameraBackdropModal">
     <div class="modal-box-card">
       <div style="text-align:center; margin-bottom:8px;">
@@ -246,7 +240,7 @@
     let bfcMembers = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
     let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
 
-    let pool = [...bfcMembers, ...bfcMembers, ...admSync];
+    let pool = [...bfcMembers, ...bbfMaster, ...admSync];
     if (pool.length === 0) {
       pool = [...DEFAULT_MASTER_ROSTER];
       localStorage.setItem("5BFC_MEMBERS", JSON.stringify(pool));
@@ -318,9 +312,10 @@
           <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
             <div>
               <b style="color:#fff; font-size:12.5px;">${m.name}</b><br>
-                  <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPaid ? 'PAID' : 'DUE'}</span></small>
+              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPaid ? 'PAID' : 'DUE'}</span></small>
             </div>
             <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:900; font-size:11px;">लोड करें</button>
+  <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:900; font-size:11px;">लोड करें</button>
           </div>
         `;
       });
@@ -645,4 +640,3 @@
 </script>
 </body>
 </html>
- 
