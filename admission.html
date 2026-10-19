@@ -721,7 +721,7 @@ function renderAdminTable() {
   }).join("");
 }
 
-function approveMemberPayment(id) {
+  function approveMemberPayment(id) {
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   let idx = records.findIndex(r => r.id === id);
   if (idx !== -1) {
@@ -740,10 +740,10 @@ function approveMemberPayment(id) {
   }
 }
 
-function editMemberRecord(id) {
+  function editMemberRecord(id) {
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
-  let m = records.find(r => r.id === id);
-  if (!m) return;
+  let m = records.find(r => String(r.id) === String(id));
+  if (!m) { alert("❌ रिकॉर्ड नहीं मिला!"); return; }
 
   document.getElementById("editMemberId").value = m.id;
   document.getElementById("admFullName").value = m.name || "";
@@ -768,12 +768,14 @@ function editMemberRecord(id) {
 function deleteMemberRecord(id) {
   if (confirm("⚠️ क्या आप वाकई इस सदस्य के फॉर्म और रिकॉर्ड को हमेशा के लिए डिलीट करना चाहते हैं?")) {
     let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
-    records = records.filter(r => r.id !== id);
-    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
-    localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
+    let updatedRecords = records.filter(r => String(r.id) !== String(id));
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(updatedRecords));
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(updatedRecords));
     renderAdminTable();
     alert("🗑️ रिकॉर्ड सफलतापूर्वक डिलीट कर दिया गया है!");
   }
+}
+  
 }
 
 function exportAdmissionsToCSV() {
