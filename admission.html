@@ -138,7 +138,7 @@
     </button>
   </div>
 
-  <!-- STEP 2: PERSONAL DETAILS -->
+  <!-- STEP 2: PERSONAL DETAILS & LIVE PHOTO/SIGN UPLOAD -->
   <div id="stepBox2" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
       2. व्यक्तिगत विवरण एवं फोटो/साइन (Personal Details)
@@ -198,7 +198,7 @@
       </div>
     </div>
 
-    <!-- PHOTO & SIGN UPLOAD -->
+    <!-- LIVE CAMERA & GALLERY PHOTO / SIGN UPLOAD -->
     <div style="background:#161616; border:1px solid #444; border-radius:8px; padding:10px; margin-bottom:10px;">
       <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📸 सदस्य फोटो और हस्ताक्षर (Live Camera / Gallery)</div>
       
@@ -305,8 +305,9 @@
 
   <!-- STEP 5: PAYMENT SELECTION -->
   <div id="stepBox5" style="display:none; margin-top:10px;">
+    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid="stepBox5" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
-      5. भुगतान  माध्यम (Payment Mode)
+      5. भुगतान माध्यम (Payment Mode)
     </div>
 
     <div style="display:flex; gap:10px; margin-bottom:14px;">
@@ -582,7 +583,6 @@ function submitAdmissionForm() {
       window.open(`https://wa.me/919140417259?text=${waMsg}`, '_blank');
     }
 
-    // INSTANTLY OPEN THE DOWNLOAD RECEIPT WINDOW
     downloadAdmissionCardNow(memberData, 'hi');
     renderAdminTable();
   };
@@ -604,12 +604,12 @@ function submitAdmissionForm() {
     };
     reader.readAsDataURL(photoInput.files[0]);
   } else if (signInput && signInput.files && signInput.files[0]) {
-    const signReaderInstance = new FileReader();
-    signReaderInstance.onload = function(sev) {
+    const signReader = new FileReader();
+    signReader.onload = function(sev) {
       signDataUrl = sev.target.result;
       proceedSaving();
     };
-    signReaderInstance.readAsDataURL(signInput.files[0]);
+    signReader.readAsDataURL(signInput.files[0]);
   } else {
     proceedSaving();
   }
@@ -709,7 +709,7 @@ function deleteMemberRecord(id) {
 function exportAdmissionsToCSV() {
   const records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   let csv = "ID,Name,Phone,Plan,Fee,Status\n";
-  records.forEach(r => { csv += `"${r.code \vert{}\vert{} r.id}","${r.name}","${r.phone}","${r.plan}","${r.totalFee}","${r.status}"\n`; });
+  records.forEach(r => { csv += `"${r.code || r.id}","${r.name}","${r.phone}","${r.plan}","${r.totalFee}","${r.status}"\n`; });
   const blob = new Blob([csv], { type: "text/csv" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -881,8 +881,7 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
           </ul>
         </div>
 
-        <div style="border: 1px solid #000; padding: 5px; margin-top: 6px
-   style="border: 1px solid #000; padding: 5px; margin-top: 6px; background: #fafafa; font-size: 10px;">
+        <div style="border: 1px solid #000; padding: 5px; margin-top: 6px; background: #fafafa; font-size: 10px;">
           <b>कानूनी चेतावनी एवं घोषणा (Legal Declaration & Warning):</b><br>
           <i>"मैंने 5 Brother's Fitness Club के सभी नियमों, फीस पॉलिसी और सख्त कानूनी चेतावनी को भली-भांति पढ़ व समझ लिया है। यदि मैं फीस या बकाया छोड़कर भागता हूँ, तो प्रबंधन को मेरे विरुद्ध कानूनी कार्रवाई करने की पूर्ण अनुमति है।"</i>
           <div style="margin-top: 5px;">
