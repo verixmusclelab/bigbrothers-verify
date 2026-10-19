@@ -405,23 +405,56 @@ function searchAndDownloadAdmissionCard() {
   const query = document.getElementById("quickSearchInput").value.trim().toLowerCase();
   const resultsBox = document.getElementById("quickSearchResults");
   resultsBox.innerHTML = "";
-  if (!query || query.length < 2) return;
+  if (!query || query.length < 1) return;
 
   let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
-  const matched = allRecords.filter(m => (m.name && m.name.toLowerCase().includes(query)) || (m.phone && m.phone.includes(query)));
+  
+    const matched = allRecords.filter(m => {
+    const nameMatch = m.name && m.name.toLowerCase().includes(query);
+    const phoneMatch = m.phone && m.phone.includes(query);
+    const codeMatch = m.code && m.code.toLowerCase().includes(query);
+    return nameMatch || phoneMatch || codeMatch;
+  });
 
   if (matched.length === 0) {
-    resultsBox.innerHTML = `<div style="font-size:11px; color:#ff6666; padding:6px; text-align:center;">कोई सदस्य नहीं मिला</div>`;
+    resultsBox.innerHTML = `<div style="font-size:11px; color:#ff6666; padding:6px; text-align:center;">❌ कोई सदस्य नहीं मिला! नया फॉर्म भरें।</div>`;
     return;
   }
 
-  resultsBox.innerHTML = matched.slice(0, 5).map(m => `
-    <div style="background:#1c1c1c; border:1px solid #333; border-left:3px solid #ffcc00; border-radius:6px; padding:8px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
-      <div style="font-size:11px;"><b style="color:#ffcc00;">${m.name}</b> (${m.phone})</div>
-      <button type="button" onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:10px; font-weight:bold; padding:6px 10px; border:none; border-radius:5px; cursor:pointer;">📥 फॉर्म डाउनलोड</button>
+    resultsBox.innerHTML = matched.map(m => `
+    <div style="background:#1c1c1c; border:1px solid #00ff66; border-radius:6px; padding:8px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:11px;">
+        <b style="color:#ffcc00;">${m.name}</b> (${m.phone})<br>
+        <span style="color:#aaa; font-size:9.5px;">प्लान: ${m.plan || 'General'} | ID: ${m.code || 'N/A'}</span>
+      </div>
+      <div style="display:flex; gap:4px;">
+        <button type="button" onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:10px; font-weight:bold; padding:6px 10px; border:none; border-radius:5px; cursor:pointer;">📥 रसीद डाउनलोड</button>
+        <button type="button" onclick='autofillMemberForm(${JSON.stringify(m)})' style="background:#ffcc00; color:#000; font-size:10px; font-weight:bold; padding:6px 8px; border:none; border-radius:5px; cursor:pointer;" title="डेटा फॉर्म में भरें">✏️ भरें</button>
+      </div>
     </div>
   `).join("");
 }
+
+function autofillMemberForm(m) {
+  document.getElementById("editMemberId").value = m.id;
+  document.getElementById("admFullName").value = m.name || "";
+  document.getElementById("admParentName").value = m.parentName || "";
+  document.getElementById("admDobInput").value = m.dob !== "N/A" ? m.dob : "";
+  document.getElementById("admAge").value = m.age || "";
+  document.getElementById("admPhone").value = m.phone || "";
+  document.getElementById("admOccupation").value = m.occupation || "";
+  document.getElementById("unnaoAreaInput").value = m.village || "";
+  document.getElementById("admEmergName").value = m.emergName || "";
+  document.getElementById("admEmergRelation").value = m.emergRelation || "";
+  document.getElementById("admEmergPhone").value = m.emergPhone || "";
+  document.getElementById("admHeight").value = m.height || "";
+  document.getElementById("admWeight").value = m.weight || "";
+  document.getElementById("admBloodGroup").value = m.bloodGroup || "";
+  
+  goToStep(2);
+  alert("✅ पुराने सदस्य का डेटा फॉर्म में भर दिया गया है!");
+}
+  
 
 function updatePlanDurations() {
   const cat = document.getElementById("admCategorySelect").value;
