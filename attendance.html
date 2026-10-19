@@ -815,12 +815,12 @@
       phone: currentlyLoadedMember.phone,
       slot: currentlyLoadedMember.slot || ""
     };
-        try {
+
+    try {
       localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
     } catch (storageError) {
       console.error("Storage full, clearing old logs:", storageError);
       try {
-        // अगर स्टोरेज फुल हो, तो आज को छोड़कर बाकी सारे पुराने दिनों की अटेंडेंस तुरंत हटा देगा
         Object.keys(localStorage).forEach(k => {
           if (k.startsWith("5bfc_attendance_") && k !== "5bfc_attendance_" + todayISO) {
             localStorage.removeItem(k);
@@ -828,33 +828,16 @@
         });
         localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
       } catch (err2) {
-        // अगर फिर भी जगह न बचे, तो फोटो हटाकर सिर्फ टेक्स्ट सेव कर लेगा ताकि अटेंडेंस कभी फेल न हो
         Object.keys(attendanceRecords).forEach(id => {
           attendanceRecords[id].photo = ""; 
         });
         localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
       }
     }
+
     currentDateISO = todayISO;
 
     let target = currentlyLoadedMember;
-    // जॉइनिंग तारीख से सटीक गिनती
-    let cycleStart = new Date(target.joinDate || '2026-09-01');
-    let totalAttendedInCycle = 0;
-    let curr = new Date(cycleStart);
-    let todayDate = new Date();
-    while(curr <= todayDate) {
-      let isoStr = getLocalDateISO(curr);
-      let dayAttMap = fetchAttendanceMapForDate(isoStr);
-      if(dayAttMap[target.id] && dayAttMap[target.id].isReal) {
-        totalAttendedInCycle++;
-      }
-      curr.setDate(curr.getDate() + 1);
-    }
-      currentDateISO = todayISO;
-      
-    let target = currentlyLoadedMember;
-    // अब यहाँ जॉइनिंग तिथि (joinDate) से ही गिनती शुरू होगी
     let cycleStart = new Date(target.joinDate || '2026-09-01');
     let totalAttendedInCycle = 0;
     let curr = new Date(cycleStart);
@@ -872,7 +855,8 @@
     document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
     document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
     document.getElementById("attendanceCelebrationModal").classList.add("show");
-   }
+  }
+    
   
   function completeAttendanceAndResetKiosk() {
     const modal = document.getElementById('attendanceCelebrationModal');
