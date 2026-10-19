@@ -677,6 +677,7 @@
   function showAlreadyMarkedWarning() {
     alert("Your Attendance Already Marked!\nआपकी आज की उपस्थिति पहले ही दर्ज की जा चुकी है।");
   }
+
 function handleAttendanceClick() {
     if (!currentlyLoadedMember) return;
     const m = currentlyLoadedMember;
@@ -719,7 +720,7 @@ function handleAttendanceClick() {
                 return;
             }
 
-            // --- Purana Original Logic Yahan Se Chalu Hoga ---
+            // --- Original Logic ---
             const manualStat = m.manualStatus || 'Paid';
             let isMonthExpired = false;
 
@@ -755,8 +756,6 @@ function handleAttendanceClick() {
     );
 }
   
-  }
-
   function showPromiseDateField() {
     document.getElementById("initialActionButtons").style.display = "none";
     document.getElementById("promiseDateContainer").style.display = "block";
