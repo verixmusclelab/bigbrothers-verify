@@ -300,8 +300,11 @@
     </div>
 
     <div style="display:flex; gap:8px;">
-      <div style="display:flex; gap:8px;">
-      <button type="button" onclick="goToStep(3)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
+            <button type="button" onclick="goToStep(3)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
+      <button type="button" onclick="goToStep(5)" style="flex:2; background:#ffcc00; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">भुगतान पर जाएं (NEXT ➔)</button>
+    </div>
+  </div>
+        <button type="button" onclick="goToStep(3)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
       <button type="button" onclick="goToStep(5)" style="flex:2; background:#ffcc00; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">भुगतान पर जाएं (NEXT ➔)</button>
     </div>
   </div>
@@ -354,6 +357,7 @@
       <div><b>📅 प्रवेश तिथि:</b> <span id="welcomeAdmDate" style="color:#ffcc00;"></span></div>
       <div><b>📍 पता:</b> <span id="welcomeArea" style="color:#fff;"></span></div>
       <div><b>💳 भुगतान:</b> <span id="welcomePayMode" style="color:#00ff66; font-weight:bold;"></span></div>
+      <div style="color:#00ff66; margin-top:4px;">✔ फीस, मास्टर लिस्ट और अटेंडेंस रजिस्टर में स्वतः दर्ज हो गया है!</div>
     </div>
 
     <div style="display:flex; flex-direction:column; gap:8px;">
@@ -542,18 +546,28 @@ function submitAdmissionForm() {
   const expObj = new Date(joinDateStr);
   expObj.setDate(expObj.getDate() + totalDays);
 
+  const memberId = Date.now();
   const memberData = {
-    id: Date.now(),
-    code: "5BFC-" + Date.now().toString().slice(-6),
+    id: memberId,
+    code: "5BFC-" + memberId.toString().slice(-6),
     name: document.getElementById("admFullName").value.trim(),
     parentName: document.getElementById("admParentName").value.trim(),
     dob: document.getElementById("admDobInput").value || "N/A",
     age: document.getElementById("admAge").value.trim(),
     gender: document.getElementById("admGender").value,
     phone: document.getElementById("admPhone").value.trim(),
+    occupation: document.getElementById("admOccupation").value.trim() || "N/A",
     village: document.getElementById("unnaoAreaInput").value.trim(),
+    emergName: document.getElementById("admEmergName").value.trim() || "N/A",
+    emergRelation: document.getElementById("admEmergRelation").value.trim() || "N/A",
+    emergPhone: document.getElementById("admEmergPhone").value.trim() || "N/A",
+    height: document.getElementById("admHeight").value.trim() || "N/A",
+    weight: document.getElementById("admWeight").value.trim() || "N/A",
+    bloodGroup: document.getElementById("admBloodGroup").value.trim() || "N/A",
     joinDate: joinDateStr,
     expiryDate: expObj.toISOString().split("T")[0],
+    lastPaid: joinDateStr,
+    planMonths: totalDays >= 365 ? 12 : (totalDays >= 180 ? 6 : (totalDays >= 90 ? 3 : 1)),
     plan: document.getElementById("admCategorySelect").selectedOptions[0].text,
     slot: document.getElementById("admSlotSelect").value,
     totalFee: totalNum,
@@ -562,13 +576,26 @@ function submitAdmissionForm() {
     payMode: selectedPaymentMode,
     fees: selectedPaymentMode === "Online" ? "Paid" : "Due",
     status: selectedPaymentMode === "Online" ? "Full Paid" : "Pending",
+    manualStatus: selectedPaymentMode === "Online" ? "Paid" : "Pending",
     activeInGym: true
   };
 
   activeReceiptMember = memberData;
+
+  // 1. Save to 5BFC_MEMBERS (Master Roster & Fee System)
   let bfcRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   bfcRecords.unshift(memberData);
   localStorage.setItem("5BFC_MEMBERS", JSON.stringify(bfcRecords));
+
+  // 2. Also Sync to bbf_master_records_v4 so Attendance & Kiosk recognises instantly without reloading issues
+  let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
+  bbfMaster.unshift(memberData);
+  localStorage.setItem("bbf_master_records_v4", JSON.stringify(bbfMaster));
+
+  // 3. Also Sync to 5bfc_admissions
+  let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+  admSync.unshift(memberData);
+  localStorage.setItem("5bfc_admissions", JSON.stringify(admSync));
 
   document.getElementById("stepBox5").style.display = "none";
   document.getElementById("welcomeUserName").innerText = memberData.name.toUpperCase();
@@ -611,7 +638,7 @@ function renderAdminTable() {
       <div style="display:flex; justify-content:space-between;"><b style="color:#ffcc00;">${m.name}</b><span style="font-size:9.5px; color:#aaa;">${m.joinDate}</span></div>
       <div style="font-size:10px; color:#ccc;">📞 ${m.phone} | 📦 ${m.plan}</div>
       <div style="margin-top:4px; display:flex; gap:4px;">
-        <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:9px; font-weight:bold; padding:3px 6px; border:none; border-radius:3px; cursor:pointer;">📄 डाउनलोड फॉर्म</button>
+      <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:9px; font-weight:bold; padding:3px 6px; border:none; border-radius:3px; cursor:pointer;">📄 डाउनलोड फॉर्म</button>
       </div>
     </div>
   `).join("");
@@ -628,12 +655,12 @@ function exportAdmissionsToCSV() {
   a.click();
 }
 
-// DUAL LANGUAGE ADMISSION FORM DOWNLOAD
+// FULL PHYSICAL-STYLE ADMISSION FORM & RECEIPT DOWNLOAD
 function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
   const m = customMember || activeReceiptMember;
   if (!m) return;
-  const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid');
-  const printWin = window.open('', '_blank', 'width=750,height=950');
+  const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid' || m.manualStatus === 'Paid');
+  const printWin = window.open('', '_blank', 'width=800,height=1000');
   const isHindi = (lang === 'hi');
 
   printWin.document.write(`
@@ -641,20 +668,23 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
     <html lang="${isHindi ? 'hi' : 'en'}">
     <head>
       <meta charset="UTF-8">
-      <title>5BFC - ${isHindi ? 'डिजिटल एडमिशन फॉर्म' : 'Digital Admission Form'}</title>
+      <title>5BFC - ${isHindi ? 'सदस्यता पंजीकरण फॉर्म (Membership Form)' : 'Membership Admission Form'}</title>
       <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 20px; color: #111; line-height: 1.45; background: #fff; }
-        in: 0 auto; border-radius: 6px; }
-        .header { text-align: center; border-bottom: 2.5px solid #000; padding-bottom: 8px; margin-bottom: 10px; }
-        .club-name { font-size: 20px; font-weight: 900; margin: 0; color: #000; }
-        .sub-header { font-size: 11px; color: #444; margin-top: 2px; }
-        .badge { display: inline-block; background: #000; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 4px; margin-top: 5px; }
-        .section-title { font-size: 12px; font-weight: bold; background: #e6e6e6; padding: 4px 8px; margin-top: 10px; border: 1px solid #999; }
-        .grid-table { width: 100%; border-collapse: collapse; }
-        .grid-table td { padding: 5px 8px; border: 1px solid #777; font-size: 11.5px; }
-        .grid-table td.label { font-weight: bold; background: #f9f9f9; width: 38%; }
-        .rules-box { border: 1px solid #000; background: #fafafa; padding: 8px; margin-top: 10px; border-radius: 4px; font-size: 10px; line-height: 1.4; }
-        .footer-sig { display: flex; justify-content: space-between; margin-top: 25px; font-size: 11px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 15px; color: #000; line-height: 1.35; background: #fff; font-size: 11.5px; }
+        .form-container { max-width: 720px; margin: 0 auto; border: 2px solid #000; padding: 15px; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 8px; }
+        .club-name { font-size: 18px; font-weight: 900; margin: 0; color: #000; letter-spacing: 0.5px; }
+        .sub-header { font-size: 10.5px; color: #333; margin-top: 2px; }
+        .badge { display: inline-block; background: #000; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 10px; border-radius: 3px; margin-top: 4px; }
+        
+        .section-title { font-size: 11px; font-weight: bold; background: #ddd; color: #000; padding: 3px 6px; margin-top: 8px; border: 1px solid #000; }
+        .grid-table { width: 100%; border-collapse: collapse; margin-top: 3px; }
+        .grid-table td { padding: 4px 6px; border: 1px solid #000; font-size: 11px; }
+        .grid-table td.label { font-weight: bold; background: #f2f2f2; width: 35%; }
+        
+        .photo-box { float: right; width: 95px; height: 115px; border: 1.5px solid #000; text-align: center; font-size: 9.5px; padding-top: 35px; background: #f9f9f9; box-sizing: border-box; margin-left: 8px; }
+        .rules-box { border: 1px solid #000; background: #fafafa; padding: 6px 8px; margin-top: 8px; font-size: 9.5px; line-height: 1.35; }
+        .footer-sig { display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px; font-weight: bold; }
         .btn-print { background: #000; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
         .lang-switch { margin-bottom: 10px; text-align: center; }
         @media print { .no-print { display: none; } }
@@ -662,49 +692,61 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
     </head>
     <body>
       <div class="lang-switch no-print">
-        <button onclick="window.opener.downloadAdmissionCardNow(${JSON.stringify(m)}, 'hi')" style="background:${isHindi ? '#000':'#ccc'}; color:${isHindi ? '#fff':'#000'}; padding:6px 12px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">शुद्ध हिंदी फॉर्म</button>
-        <button onclick="window.opener.downloadAdmissionCardNow(${JSON.stringify(m)}, 'en')" style="background:${!isHindi ? '#000':'#ccc'}; color:${!isHindi ? '#fff':'#000'}; padding:6px 12px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; margin-left:5px;">English Form</button>
+        <button onclick="window.opener.downloadAdmissionCardNow(${JSON.stringify(m)}, 'hi')" style="background:${isHindi ? '#000':'#ccc'}; color:${isHindi ? '#fff':'#000'}; padding:5px 10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">शुद्ध हिंदी फॉर्म</button>
+        <button onclick="window.opener.downloadAdmissionCardNow(${JSON.stringify(m)}, 'en')" style="background:${!isHindi ? '#000':'#ccc'}; color:${!isHindi ? '#fff':'#000'}; padding:5px 10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; margin-left:5px;">English Form</button>
       </div>
 
-      <div class="form-border">
+      <div class="form-container">
         <div class="header">
           <h1 class="club-name">👑 5 BROTHER'S FITNESS CLUB</h1>
-          <div class="sub-header">Umrao Khera, Akrampur, Unnao (UP) | Contact: 9140417259</div>
-          <div class="badge">${isHindi ? 'आधिकारिक डिजिटल प्रवेश फॉर्म एवं सदस्यता अनुबंध' : 'OFFICIAL MEMBERSHIP ADMISSION FORM'}</div>
+          <div class="sub-header">उमराव खेड़ा, अकरमपुर, उन्नाव (UP) | Contact: 9140417259</div>
+          <div class="badge">सदस्य पंजीकरण एवं स्वास्थ्य विवरण (Membership Registration Form)</div>
         </div>
 
-        <div class="section-title">1. ${isHindi ? 'व्यक्तिगत विवरण (Personal Information)' : 'Personal Information'}</div>
-        <table class="grid-table">
-          <tr><td class="label">Reg ID:</td><td><b>${m.code || ('5BFC-' + m.id)}</b></td></tr>
-          <tr><td class="label">${isHindi ? 'पूरा नाम (Name):' : 'Full Name:'}</td><td><b>${m.name}</b> (${m.gender})</td></tr>
-          <tr><td class="label">${isHindi ? 'पिता/माता (Parent):' : 'Parent Name:'}</td><td>${m.parentName || 'N/A'}</td></tr>
-          <tr><td class="label">${isHindi ? 'मोबाइल (Mobile):' : 'Mobile No:'}</td><td><b>+91 ${m.phone}</b></td></tr>
-          <tr><td class="label">${isHindi ? 'पता (Address):' : 'Address:'}</td><td>${m.village || 'Unnao'}</td></tr>
+        <div class="photo-box">Passport Size<br>Photo</div>
+
+        <div class="section-title">1. व्यक्तिगत विवरण (Personal Details)</div>
+        <table class="grid-table" style="width: calc(100% - 105px);">
+          <tr><td class="label">Member ID:</td><td><b>${m.code || ('5BFC-' + m.id)}</b></td></tr>
+          <tr><td class="label">Joining Date:</td><td><b>${m.joinDate}</b></td></tr>
+          <tr><td class="label">Valid Till:</td><td><b style="color:#b30000;">${m.expiryDate || 'N/A'}</b></td></tr>
+          <tr><td class="label">Plan / Slot:</td><td><b>${m.plan}</b> (${m.slot || '06:00 AM'})</td></tr>
+          <tr><td class="label">Total Fee / Paid:</td><td>₹${m.totalFee || 500} | <b style="color:${isPaid?'green':'red'};">${isPaid ? 'PAID' : 'DUE (₹'+(m.dueFee||500)+')'}</b></td></tr>
+        </table>
+        <div style="clear: both;"></div>
+
+        <table class="grid-table" style="margin-top: 5px;">
+          <tr><td class="label">पूरा नाम (Full Name):</td><td><b>${m.name}</b></td></tr>
+          <tr><td class="label">पिता / माता का नाम:</td><td>${m.parentName || 'N/A'}</td></tr>
+          <tr><td class="label">जन्म तिथि / आयु / लिंग:</td><td>${m.dob} / ${m.age || '--'} yrs / ${m.gender}</td></tr>
+          <tr><td class="label">व्यवसाय / मोबाइल नंबर:</td><td>${m.occupation || 'N/A'} | <b>+91 ${m.phone}</b></td></tr>
+          <tr><td class="label">पूरा पता (Address):</td><td>${m.village || 'Unnao'}</td></tr>
         </table>
 
-        <div class="section-title">2. ${isHindi ? 'प्लान एवं भुगतान स्थिति' : 'Plan & Fee Status'}</div>
+        <div style="background:#eee; border:1px solid #000; padding:4px 6px; margin-top:5px; font-size:10px;">
+          🚨 <b>आपातकालीन संपर्क (Emergency Contact):</b> ${m.emergName || '--'} (${m.emergRelation || 'रिश्तेदार'}) - <b>📞 ${m.emergPhone || '--'}</b>
+        </div>
+
+        <div class="section-title">2. स्वास्थ्य एवं फिटनेस विवरण (Health Details)</div>
         <table class="grid-table">
-          <tr><td class="label">${isHindi ? 'समय स्लॉट:' : 'Time Slot:'}</td><td><b>🕒 ${m.slot || '06:00 AM - 07:00 AM'}</b></td></tr>
-          <tr><td class="label">${isHindi ? 'प्रवेश तिथि:' : 'Joining Date:'}</td><td><b>${m.joinDate}</b></td></tr>
-          <tr><td class="label">${isHindi ? 'वैधता समाप्ति:' : 'Valid Till:'}</td><td><b style="color:#b30000;">${m.expiryDate || 'N/A'}</b></td></tr>
-          <tr><td class="label">${isHindi ? 'प्लान:' : 'Plan:'}</td><td>${m.plan}</td></tr>
-          <tr><td class="label">${isHindi ? 'शुल्क स्थिति:' : 'Fee Status:'}</td><td><b>₹${m.totalFee || 500}</b> (${isPaid ? 'PAID' : 'DUE'})</td></tr>
+          <tr><td class="label">ऊंचाई / वजन / ब्लड ग्रुप:</td><td><b>${m.height || '--'} सेमी</b> | <b>${m.weight || '--'} किग्रा</b> | <b> ब्लड ग्रुप: ${m.bloodGroup || 'N/A'}</b></td></tr>
+          <tr><td class="label">स्वास्थ्य स्थिति (Medical Check):</td><td>कोई गंभीर बीमारी नहीं / सामान्य (Fit)</td></tr>
         </table>
 
         <div class="rules-box">
-          <b style="text-decoration:underline;">${isHindi ? 'जिम नियम एवं परिवार वसूली सहमति (Recovery Consent):' : 'Gym Rules & Recovery Consent:'}</b><br>
-          1. ${isHindi ? 'फीस गैर-वापसी योग्य है। 1 दिन आने पर भी पूरे माह की फीस देय होगी।' : 'Fee is non-refundable.'}<br>
-          2. ${isHindi ? '<b>बकाया वसूली सहमति:</b> यदि सदस्य द्वारा समय पर शुल्क या बकाया नहीं चुकाया जाता है, तो 5 BFC प्रबंधन को यह पूर्ण विधिक अधिकार होगा कि वह सदस्य के माता-पिता, परिवार या मित्रों को कॉल/मैसेज करके बकाया राशि की मांग कर सके।' : '<b>Recovery Consent:</b> Management holds full authority to contact family members or friends for due recovery.'}
+          <b style="text-decoration:underline;">नियम, शर्ते एवं वसूली सहमति (Terms & Recovery Consent):</b><br>
+          1. <b>फीस पॉलिसी:</b> 1 दिन भी आने पर 1 महीने की पूरी फीस देय होगी। फीस गैर-वापसी योग्य (Non-Refundable) है।<br>
+          2. <b>बकाया वसूली सहमति:</b> यदि सदस्य समय पर बकाया शुल्क नहीं चुकाता है, तो 5 BFC प्रबंधन को उसके माता-पिता, परिवार या मित्रों को कॉल/मैसेज करके बकाया राशि की मांग करने का पूर्ण विधिक अधिकार होगा।
         </div>
 
         <div class="footer-sig">
-          <div><div>__________________________</div><div>${isHindi ? 'सदस्य हस्ताक्षर' : 'Member Signature'}</div></div>
-          <div style="text-align:right;"><div>__________________________</div><div>${isHindi ? 'प्रबंधक (5 BFC)' : 'Manager Signature'}</div></div>
+          <div><div>__________________________</div><div>सदस्य के हस्ताक्षर (Member Signature)</div></div>
+          <div style="text-align:right;"><div>__________________________</div><div>दिनांक: ${m.joinDate}</div></div>
         </div>
       </div>
 
-      <div style="text-align:center; margin-top:14px;" class="no-print">
-        <button class="btn-print" onclick="window.print()">${isHindi ? '🖨️ प्रिंट निकालें / PDF सेव करें' : '🖨️ Print / Save as PDF'}</button>
+      <div style="text-align:center; margin-top:12px;" class="no-print">
+        <button class="btn-print" onclick="window.print()">🖨️ प्रिंट निकालें / PDF सेव करें</button>
       </div>
     </body>
     </html>
