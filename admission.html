@@ -287,13 +287,13 @@
       <b style="color:#ffcc00;">1. फीस एवं उपस्थिति नियम (FEES POLICY):</b> 1 दिन भी आने पर 1 महीने की पूरी फीस देय होगी। फीस गैर-वापसी योग्य (Non-Refundable) है।<br><br>
       <b style="color:#ffcc00;">2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि जिम छोड़ना है, तो महीना पूरा होते ही तुरंत बताएं। बकाया रखने पर प्रबंधन सख्त कदम उठाएगा।<br><br>
       <b style="color:#ffcc00; font-size:11px; text-decoration:underline; color:#ff4444;">3. सख्त कानूनी चेतावनी एवं वसूली सहमति (Strict Legal Warning & Recovery):</b><br>
-      <span style="color:#fff; font-weight:bold;">"यदि आप ये फॉर्म सबमिट करते हैं—जो कि आपने पहले अच्छे से पढ़कर, साइन और फोटो अपलोड की है—और यदि आप जिम की फीस या अन्य कोई बकाया (Due) छोड़कर भाग जाते हैं, जिम आना बंद कर देते हैं, तो आप 5 Brother's Fitness Club प्रबंधन को अपने ऊपर कानूनी कार्रवाई करने की पूर्ण अनुमति और अधिकार देते हैं। भविष्य में आप यह नहीं कह सकते कि आपको इसकी जानकारी नहीं थी।"</span>
+      <span style="color:#fff; font-weight:bold;">"यदि आप ये फॉर्म सबमिट करते हैं—जो कि आपने पहले अच्छे से पढ़कर, साइन और फोटो अपलोड की है—और यदि आप जिम की फीस या अन्य कोई बकाया (Due) छोड़कर भाग जाते हैं, Ya जिम आना बंद कर देते हैं, तो आप 5 Brother's Fitness Club प्रबंधन को अपने ऊपर कानूनी कार्रवाई करने की पूर्ण अनुमति और अधिकार देते हैं। भविष्य में आप यह नहीं कह सकते कि आपको इसकी जानकारी नहीं थी।"</span>
     </div>
 
     <div style="background:#1f1f1f; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:14px;">
       <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; color:#fff; font-size:11px; font-weight:bold;">
         <input type="checkbox" id="rulesAgreedCheck">
-        <span>"मैंने 5 BFC के सभी नियम, फीस पॉलिसी और सख्त कानूनी चेतावनी को पढ़कर फॉर्म सबमिट कर रहा हूँ।" *</span>
+        <span>"मैंने 5 Brothers Fitness Club के सभी नियम, फीस पॉलिसी और सख्त कानूनी चेतावनी को पढ़कर फॉर्म सबमिट कर रहा हूँ।" *</span>
       </label>
     </div>
 
@@ -319,6 +319,10 @@
         <button type="button" onclick="triggerUPIApp('gpay')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟢 Google Pay</button>
         <button type="button" onclick="triggerUPIApp('phonepe')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟣 PhonePe</button>
       </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-size:11px; color:#ffcc00; margin-bottom:3px;">🔗 UTR / UPI Reference Number दर्ज करें:</label>
+        <input type="text" id="upiUtrInput" placeholder="उदा. 427192837465" style="width:100%; background:#000; border:1px solid #00ff66; color:#fff; padding:8px; border-radius:6px; font-size:11.5px; box-sizing:border-box;">
+      </div>
       <div style="text-align:center;">
         <button type="button" onclick="toggleQrView()" style="background:transparent; border:none; color:#00ff66; font-size:11px; text-decoration:underline; cursor:pointer; font-weight:bold;">📷 QR कोड देखें</button>
         <div id="onlineQrBox" style="display:none; text-align:center; background:#fff; padding:12px; border-radius:10px; margin-top:10px;">
@@ -340,6 +344,17 @@
 
 </div>
 
+<!-- SUCCESS / CONFIRMATION MODAL -->
+<div id="successModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;">
+  <div style="background:#121212; border:2px solid #00ff66; border-radius:14px; max-width:400px; width:100%; padding:20px; text-align:center; color:#fff;">
+    <div style="font-size:36px; margin-bottom:6px;">🎉</div>
+    <h3 style="color:#00ff66; margin:0 0 8px; font-size:18px;">फॉर्म सफलतापूर्वक जमा हो गया है!</h3>
+    <p style="font-size:12px; color:#ccc; margin-bottom:15px;">आपका एडमिशन फॉर्म 5 Brother's Fitness Club में दर्ज हो गया है। नीचे दिए गए बटन से अपनी रसीद/फॉर्म तुरंत डाउनलोड करें।</p>
+    <button type="button" onclick="downloadReceiptAndClose()" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:11px; border:none; border-radius:8px; cursor:pointer; font-size:12px; margin-bottom:8px;">📄 रसीद / फॉर्म डाउनलोड करें (PDF)</button>
+    <button type="button" onclick="location.reload()" style="width:100%; background:#333; color:#fff; font-size:11px; padding:8px; border:none; border-radius:6px; cursor:pointer;">नया फॉर्म भरें</button>
+  </div>
+</div>
+
 <!-- ADMIN DESK -->
 <div style="text-align:center; margin:30px auto 10px;">
   <button type="button" onclick="openAdminDeskWithPassword()" style="background:transparent; border:none; color:#444; font-size:11px; cursor:pointer; text-decoration:underline;">
@@ -355,7 +370,19 @@
       <button type="button" onclick="closeAdminDesk()" style="background:#333; color:#aaa; font-size:10px; padding:5px 8px; border:1px solid #555; border-radius:5px; cursor:pointer;">✕ बंद</button>
     </div>
   </div>
-  <div id="admissionsTableList" style="max-height:400px; overflow-y:auto; font-size:11px;"></div>
+
+  <!-- ADMIN AUTO SEARCH BAR -->
+  <div style="margin-bottom:10px;">
+    <input 
+      type="text" 
+      id="adminSearchInput" 
+      placeholder="🔍 नाम या मोबाइल नंबर से खोजें..." 
+      oninput="renderAdminTable()"
+      style="width:100%; background:#000; border:1px solid #ffcc00; color:#fff; padding:8px; border-radius:6px; font-size:11px; box-sizing:border-box;"
+    >
+  </div>
+
+  <div id="admissionsTableList" style="max-height:380px; overflow-y:auto; font-size:11px;"></div>
 </div>
 
 <script>
@@ -514,6 +541,7 @@ function submitAdmissionForm() {
 
   const existingId = document.getElementById("editMemberId").value;
   const memberId = existingId ? parseInt(existingId) : Date.now();
+  const utrRef = document.getElementById("upiUtrInput") ? document.getElementById("upiUtrInput").value.trim() : "";
   
   let medList = [];
   document.querySelectorAll(".medCond:checked").forEach(cb => medList.push(cb.value));
@@ -561,6 +589,7 @@ function submitAdmissionForm() {
       paidFee: selectedPaymentMode === "Online" ? totalNum : 0,
       dueFee: selectedPaymentMode === "Online" ? 0 : totalNum,
       payMode: selectedPaymentMode,
+      utrRef: utrRef || "N/A",
       fees: selectedPaymentMode === "Online" ? "Paid" : "Due",
       status: selectedPaymentMode === "Online" ? "Full Paid" : "Pending",
       manualStatus: selectedPaymentMode === "Online" ? "Paid" : "Pending",
@@ -582,7 +611,8 @@ function submitAdmissionForm() {
       window.open(`https://wa.me/919140417259?text=${waMsg}`, '_blank');
     }
 
-    downloadAdmissionCardNow(memberData, 'hi');
+    // SHOW SUCCESS MODAL
+    document.getElementById("successModal").style.display = "flex";
     renderAdminTable();
   };
 
@@ -614,6 +644,13 @@ function submitAdmissionForm() {
   }
 }
 
+function downloadReceiptAndClose() {
+  document.getElementById("successModal").style.display = "none";
+  if (activeReceiptMember) {
+    downloadAdmissionCardNow(activeReceiptMember, 'hi');
+  }
+}
+
 function openAdminDeskWithPassword() {
   const pin = prompt("🔒 5 BFC Admin Security PIN दर्ज करें:");
   if (pin === ADMIN_SECURITY_PIN) {
@@ -631,17 +668,26 @@ function closeAdminDesk() {
 function renderAdminTable() {
   const container = document.getElementById("admissionsTableList");
   if (!container) return;
-  const records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  const searchTxt = document.getElementById("adminSearchInput") ? document.getElementById("
+ = document.getElementById("adminSearchInput") ? document.getElementById("adminSearchInput").value.trim().toLowerCase() : "";
+  let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+
+  if (searchTxt) {
+    records = records.filter(m => (m.name && m.name.toLowerCase().includes(searchTxt)) || (m.phone && m.phone.includes(searchTxt)));
+  }
+
   if (records.length === 0) {
-    container.innerHTML = '<div style="color:#666; text-align:center; padding:10px;">कोई रिकॉर्ड नहीं</div>';
+    container.innerHTML = '<div style="color:#666; text-align:center; padding:10px;">कोई रिकॉर्ड नहीं मिला</div>';
     return;
   }
+
   container.innerHTML = records.map(m => {
     const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid');
     return `
       <div style="background:#1f1f1f; border:1px solid ${isPaid ? '#00ff66' : '#ff9900'}; border-radius:6px; padding:8px; margin-bottom:8px;">
         <div style="display:flex; justify-content:space-between;"><b style="color:#ffcc00;">${m.name}</b><span style="font-size:9.5px; color:#aaa;">${m.joinDate}</span></div>
         <div style="font-size:10px; color:#ccc;">📞 ${m.phone} | 📦 ${m.plan} | Status: <b style="color:${isPaid ? '#00ff66' : '#ff9900'};">${m.status || 'Pending'}</b></div>
+        ${m.utrRef && m.utrRef !== 'N/A' ? `<div style="font-size:9.5px; color:#00ff66;">UTR Ref: ${m.utrRef}</div>` : ''}
         <div style="margin-top:6px; display:flex; gap:4px; flex-wrap:wrap;">
           <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">📄 फॉर्म डाउनलोड</button>
           ${!isPaid ? `<button onclick="approveMemberPayment(${m.id})" style="background:#ffcc00; color:#000; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">✅ फीस अप्रूव करें</button>` : ''}
@@ -664,7 +710,10 @@ function approveMemberPayment(id) {
     records[idx].dueFee = 0;
     localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
-    alert("✅ फीस सफलतापूर्वक अप्रूव कर दी गई है!");
+    
+    activeReceiptMember = records[idx];
+    downloadAdmissionCardNow(records[idx], 'hi');
+    alert("✅ फीस सफलतापूर्वक अप्रूव कर दी गई है और रसीद खुल रही है!");
     renderAdminTable();
   }
 }
@@ -701,14 +750,14 @@ function deleteMemberRecord(id) {
     localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
     renderAdminTable();
-    alert("🗑️ रिकॉर्ड डिलीट हो गया है!");
+    alert("🗑️ रिकॉर्ड सफलतापूर्वक डिलीट कर दिया गया है!");
   }
 }
 
 function exportAdmissionsToCSV() {
   const records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
-  let csv = "ID,Name,Phone,Plan,Fee,Status\n";
-  records.forEach(r => { csv += `"${r.code || r.id}","${r.name}","${r.phone}","${r.plan}","${r.totalFee}","${r.status}"\n`; });
+  let csv = "ID,Name,Phone,Plan,Fee,Status,UTR\n";
+  records.forEach(r => { csv += `"${r.code || r.id}","${r.name}","${r.phone}","${r.plan}","${r.totalFee}","${r.status}","${r.utrRef || 'N/A'}"\n`; });
   const blob = new Blob([csv], { type: "text/csv" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -786,6 +835,7 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
           Total Fee: ₹ <span class="line-input" style="width:60px;">${m.totalFee || 500}</span> &nbsp;&nbsp;
           Paid: ₹ <span class="line-input" style="width:60px;">${isPaid ? (m.totalFee || 500) : 0}</span> &nbsp;&nbsp;
           Due: ₹ <span class="line-input" style="width:60px;">${isPaid ? '0' : (m.dueFee || 500)}</span>
+          ${m.utrRef && m.utrRef !== 'N/A' ? ` &nbsp;&nbsp; UTR: <span class="line-input">${m.utrRef}</span>` : ''}
         </div>
 
         <div class="row" style="margin-top:8px;">
