@@ -306,7 +306,7 @@
   <!-- STEP 5: PAYMENT SELECTION -->
   <div id="stepBox5" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
-      5. भुगतान माध्यम (Payment Mode)
+          5. भुगतान माध्यम (Payment Mode)
     </div>
 
     <div style="display:flex; gap:10px; margin-bottom:14px;">
@@ -342,17 +342,6 @@
     </div>
   </div>
 
-</div>
-
-<!-- SUCCESS / CONFIRMATION MODAL -->
-<div id="successModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;">
-  <div style="background:#121212; border:2px solid #00ff66; border-radius:14px; max-width:400px; width:100%; padding:20px; text-align:center; color:#fff;">
-    <div style="font-size:36px; margin-bottom:6px;">🎉</div>
-    <h3 style="color:#00ff66; margin:0 0 8px; font-size:18px;">फॉर्म सफलतापूर्वक जमा हो गया है!</h3>
-    <p style="font-size:12px; color:#ccc; margin-bottom:15px;">आपका एडमिशन फॉर्म 5 Brother's Fitness Club में दर्ज हो गया है। नीचे दिए गए बटन से अपनी रसीद/फॉर्म तुरंत डाउनलोड करें।</p>
-    <button type="button" onclick="downloadReceiptAndClose()" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:11px; border:none; border-radius:8px; cursor:pointer; font-size:12px; margin-bottom:8px;">📄 रसीद / फॉर्म डाउनलोड करें (PDF)</button>
-    <button type="button" onclick="location.reload()" style="width:100%; background:#333; color:#fff; font-size:11px; padding:8px; border:none; border-radius:6px; cursor:pointer;">नया फॉर्म भरें</button>
-  </div>
 </div>
 
 <!-- ADMIN DESK -->
@@ -429,7 +418,7 @@ function searchAndDownloadAdmissionCard() {
   resultsBox.innerHTML = matched.slice(0, 5).map(m => `
     <div style="background:#1c1c1c; border:1px solid #333; border-left:3px solid #ffcc00; border-radius:6px; padding:8px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
       <div style="font-size:11px;"><b style="color:#ffcc00;">${m.name}</b> (${m.phone})</div>
-      <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:10px; font-weight:bold; padding:6px 10px; border:none; border-radius:5px; cursor:pointer;">📥 फॉर्म डाउनलोड</button>
+      <button type="button" onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:10px; font-weight:bold; padding:6px 10px; border:none; border-radius:5px; cursor:pointer;">📥 फॉर्म डाउनलोड</button>
     </div>
   `).join("");
 }
@@ -443,7 +432,7 @@ function updatePlanDurations() {
   } else if (cat === "student") {
     dur.innerHTML = '<option value="1M|300|30" selected>1 महीना - ₹300</option><option value="3M|850|90">3 महीने - ₹850</option>';
   } else if (cat === "cardio") {
-    dur.innerHTML = '<option value="1M|400|30" selected>1 महीना - ₹400</option><option value="1M|350|30" selected>1 महीना विशेष डिस्काउंट - ₹350</option>';
+    dur.innerHTML = '<option value="1M|400|30" selected>1 महीना - ₹400</option><option value="1M|350|30">1 महीना विशेष डिस्काउंट - ₹350</option>';
   } else {
     dur.innerHTML = '<option value="1M|500|30" selected>1 महीना - ₹500</option><option value="3M|1400|90">3 महीने - ₹1400</option><option value="6M|2600|180">6 महीने - ₹2600</option><option value="1Y|4800|365">1 वर्ष - ₹4800</option>';
   }
@@ -654,10 +643,10 @@ function submitAdmissionForm() {
           <p style="font-size:13px; color:#ddd; line-height:1.5; margin-bottom:16px;">
             <b>${memberData.name}</b>, आपका फॉर्म सफलतापूर्वक जमा हो गया है! आज से आप <b>5 Brother's Fitness Club</b> के सदस्य बन चुके हैं।
           </p>
-          <button type="button" onclick="document.getElementById('customSuccessModal').remove(); downloadAdmissionCardNow(activeReceiptMember, 'hi');" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:12px; border:none; border-radius:8px; cursor:pointer; font-size:13px; margin-bottom:8px;">
+          <button type="button" onclick="downloadAdmissionCardNow(activeReceiptMember, 'hi');" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:12px; border:none; border-radius:8px; cursor:pointer; font-size:13px; margin-bottom:8px;">
             📄 फॉर्म / रसीद डाउनलोड करें (PDF)
           </button>
-          <button type="button" onclick="location.reload();" style="width:100%; background:#222; color:#aaa; font-size:11px; padding:8px; border:1px solid #444; border-radius:6px; cursor:pointer;">
+          <button type="button" onclick="document.getElementById('customSuccessModal').remove(); location.reload();" style="width:100%; background:#222; color:#aaa; font-size:11px; padding:8px; border:1px solid #444; border-radius:6px; cursor:pointer;">
             बंद करें / नया फॉर्म भरें
           </button>
         </div>
@@ -667,7 +656,7 @@ function submitAdmissionForm() {
     renderAdminTable();
   };
 
-  if (photoInput && photoInput.files && photoInput.files[0]) {
+if (photoInput && photoInput.files && photoInput.files[0]) {
     resizeImageToDataUrl(photoInput.files[0], 300, 400, function(compressedPhoto) {
       photoDataUrl = compressedPhoto;
       if (signInput && signInput.files && signInput.files[0]) {
@@ -686,14 +675,6 @@ function submitAdmissionForm() {
     });
   } else {
     proceedSaving();
-  }
-}
-  
-
- function downloadReceiptAndClose() {
-  document.getElementById("successModal").style.display = "none";
-  if (activeReceiptMember) {
-    downloadAdmissionCardNow(activeReceiptMember, 'hi');
   }
 }
 
@@ -734,17 +715,17 @@ function renderAdminTable() {
         <div style="font-size:10px; color:#ccc;">📞 ${m.phone} | 📦 ${m.plan} | Status: <b style="color:${isPaid ? '#00ff66' : '#ff9900'};">${m.status || 'Pending'}</b></div>
         ${m.utrRef && m.utrRef !== 'N/A' ? `<div style="font-size:9.5px; color:#00ff66;">UTR Ref: ${m.utrRef}</div>` : ''}
         <div style="margin-top:6px; display:flex; gap:4px; flex-wrap:wrap;">
-          <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">📄 फॉर्म डाउनलोड</button>
-          ${!isPaid ? `<button onclick="approveMemberPayment(${m.id})" style="background:#ffcc00; color:#000; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">✅ फीस अप्रूव करें</button>` : ''}
-          <button onclick="editMemberRecord(${m.id})" style="background:#333; color:#fff; font-size:9px; font-weight:bold; padding:4px 8px; border:1px solid #666; border-radius:3px; cursor:pointer;">✏️ एडिट</button>
-          <button onclick="deleteMemberRecord(${m.id})" style="background:#ff3333; color:#fff; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">🗑️ डिलीट</button>
+          <button type="button" onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">📄 फॉर्म डाउनलोड</button>
+          ${!isPaid ? `<button type="button" onclick="approveMemberPayment(${m.id})" style="background:#ffcc00; color:#000; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">✅ फीस अप्रूव करें</button>` : ''}
+          <button type="button" onclick="editMemberRecord(${m.id})" style="background:#333; color:#fff; font-size:9px; font-weight:bold; padding:4px 8px; border:1px solid #666; border-radius:3px; cursor:pointer;">✏️ एडिट</button>
+          <button type="button" onclick="deleteMemberRecord(${m.id})" style="background:#ff3333; color:#fff; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">🗑️ डिलीट</button>
         </div>
       </div>
     `;
   }).join("");
 }
 
-  function approveMemberPayment(id) {
+function approveMemberPayment(id) {
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   let idx = records.findIndex(r => r.id === id);
   if (idx !== -1) {
@@ -763,7 +744,7 @@ function renderAdminTable() {
   }
 }
 
-  function editMemberRecord(id) {
+function editMemberRecord(id) {
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   let m = records.find(r => String(r.id) === String(id));
   if (!m) { alert("❌ रिकॉर्ड नहीं मिला!"); return; }
@@ -797,8 +778,6 @@ function deleteMemberRecord(id) {
     renderAdminTable();
     alert("🗑️ रिकॉर्ड सफलतापूर्वक डिलीट कर दिया गया है!");
   }
-}
-  
 }
 
 function exportAdmissionsToCSV() {
