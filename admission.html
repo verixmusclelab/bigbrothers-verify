@@ -138,10 +138,10 @@
     </button>
   </div>
 
-  <!-- STEP 2: PERSONAL DETAILS -->
+  <!-- STEP 2: PERSONAL DETAILS & LIVE PHOTO/SIGN UPLOAD -->
   <div id="stepBox2" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
-      2. व्यक्तिगत विवरण (Personal Details)
+      2. व्यक्तिगत विवरण एवं फोटो/साइन (Personal Details)
     </div>
 
     <div style="margin-bottom:9px;">
@@ -196,6 +196,22 @@
       </div>
     </div>
 
+    <!-- LIVE CAMERA & GALLERY PHOTO / SIGN UPLOAD -->
+    <div style="background:#161616; border:1px solid #444; border-radius:8px; padding:10px; margin-bottom:10px;">
+      <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📸 सदस्य फोटो और हस्ताक्षर (Live Camera / Gallery)</div>
+      
+      <div style="display:flex; gap:10px;">
+        <div style="flex:1;">
+          <label style="display:block; font-size:10px; color:#aaa; margin-bottom:3px;">सदस्य की फोटो (Live Camera/Gallery):</label>
+          <input type="file" id="memberPhotoFile" accept="image/*" capture="user" style="font-size:10px; color:#ccc; width:100%;">
+        </div>
+        <div style="flex:1;">
+          <label style="display:block; font-size:10px; color:#aaa; margin-bottom:3px;">साइन की फोटो (Paper Signature):</label>
+          <input type="file" id="memberSignFile" accept="image/*" capture="environment" style="font-size:10px; color:#ccc; width:100%;">
+        </div>
+      </div>
+    </div>
+
     <div style="background:#161616; border:1px solid #333; border-radius:8px; padding:9px; margin-bottom:12px;">
       <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">
         🚨 आपातकालीन संपर्क (Emergency Contact) — परिवार/रिश्तेदार
@@ -213,7 +229,7 @@
     </div>
   </div>
 
-  <!-- STEP 3: HEALTH & SUPPLEMENT DETAILS -->
+  <!-- STEP 3: HEALTH DETAILS -->
   <div id="stepBox3" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
       3. स्वास्थ्य एवं फिटनेस विवरण (Health Details)
@@ -259,23 +275,23 @@
     </div>
   </div>
 
-  <!-- STEP 4: TERMS & RULES -->
+  <!-- STEP 4: TERMS & STRICT LEGAL WARNING -->
   <div id="stepBox4" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:10px; border-left:3px solid #ffcc00; padding-left:8px;">
-      4. नियम, शर्तें एवं दायित्व पत्र (Terms, Rules & Waiver)
+      4. नियम, शर्तें एवं कानूनी चेतावनी (Terms & Legal Warning)
     </div>
 
-    <div style="background:#141414; border:1px solid #333; border-radius:8px; padding:12px; font-size:11px; line-height:1.55; color:#ccc; max-height:220px; overflow-y:auto; margin-bottom:12px;">
+    <div style="background:#141414; border:1.5px solid #ff3333; border-radius:8px; padding:12px; font-size:10.5px; line-height:1.55; color:#ddd; max-height:220px; overflow-y:auto; margin-bottom:12px;">
       <b style="color:#ffcc00;">1. फीस एवं उपस्थिति नियम (FEES POLICY):</b> 1 दिन भी आने पर 1 महीने की पूरी फीस देय होगी। फीस गैर-वापसी योग्य (Non-Refundable) है।<br><br>
       <b style="color:#ffcc00;">2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि जिम छोड़ना है, तो महीना पूरा होते ही तुरंत बताएं। बकाया रखने पर प्रबंधन सख्त कदम उठाएगा।<br><br>
-      <b style="color:#ffcc00;">3. जिम अनुशासन (DISCIPLINE):</b> इनडोर जूते व तौलिया अनिवार्य है। उपकरण पटकना, गुटका/तंबाकू खाना मना है।<br><br>
-      <b style="color:#ffcc00;">4. स्वास्थ्य जोखिम एवं दायित्व मुक्ति (WAIVER):</b> भारी वजन उठाने में होने वाली चोट की जिम्मेदारी स्वयं सदस्य की होगी।
+      <b style="color:#ffcc00; font-size:11px; text-decoration:underline; color:#ff4444;">3. सख्त कानूनी चेतावनी एवं वसूली सहमति (Strict Legal Warning & Recovery):</b><br>
+      <span style="color:#fff; font-weight:bold;">"यदि आप ये फॉर्म सबमिट करते हैं—जो कि आपने पहले अच्छे से पढ़कर, साइन और फोटो अपलोड की है—और यदि आप जिम की फीस या अन्य कोई बकाया (Due) छोड़कर भाग जाते हैं, जिम आना बंद कर देते हैं, तो आप 5 Brother's Fitness Club प्रबंधन को अपने ऊपर कानूनी कार्रवाई करने की पूर्ण अनुमति और अधिकार देते हैं। भविष्य में आप यह नहीं कह सकते कि आपको इसकी जानकारी नहीं थी।"</span>
     </div>
 
     <div style="background:#1f1f1f; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:14px;">
       <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; color:#fff; font-size:11px; font-weight:bold;">
         <input type="checkbox" id="rulesAgreedCheck">
-        <span>"मैंने 5 BFC के सभी नियम और फीस पॉलिसी को अच्छी तरह पढ़ लिया है और मैं सहमत हूँ।" *</span>
+        <span>"मैंने 5 BFC के सभी नियम, फीस पॉलिसी और सख्त कानूनी चेतावनी को पढ़कर फॉर्म सबमिट कर रहा हूँ।" *</span>
       </label>
     </div>
 
@@ -287,33 +303,7 @@
 
   <!-- STEP 5: PAYMENT SELECTION -->
   <div id="stepBox5" style="display:none; margin-top:10px;">
-    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
-      5. भुगतान माध्यम (Payment Mode)
-    </div>
-
-    <div style="display:flex; gap:10px; margin-bottom:14px;">
-      <button type="button" id="payBtnCash" onclick="selectPaymentMode('Cash')" style="flex:1; padding:11px; background:#222; border:1.5px solid #ffcc00; color:#fff; font-weight:bold; border-radius:8px; cursor:pointer; font-size:12px;">💵 नकद (CASH)</button>
-      <button type="button" id="payBtnOnline" onclick="selectPaymentMode('Online')" style="flex:1; padding:11px; background:#222; border:1.5px solid #444; color:#aaa; font-weight:bold; border-radius:8px; cursor:pointer; font-size:12px;">📱 ऑनलाइन (UPI)</button>
-    </div>
-
-    <div id="onlinePaymentTray" style="display:none; background:#121212; border:1.5px solid #00ff66; padding:14px; border-radius:12px; margin-bottom:14px;">
-      <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom:12px;">
-        <button type="button" onclick="triggerUPIApp('gpay')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟢 Google Pay</button>
-        <button type="button" onclick="triggerUPIApp('phonepe')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟣 PhonePe</button>
-      </div>
-            <button type="button" onclick="triggerUPIApp('gpay')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟢 Google Pay</button>
-      <button type="button" onclick="triggerUPIApp('phonepe')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟣 PhonePe</button>
-    </div>
-      <div style="text-align:center;">
-        <button type="button" onclick="toggleQrView()" style="background:transparent; border:none; color:#00ff66; font-size:11px; text-decoration:underline; cursor:pointer; font-weight:bold;">📷 QR कोड देखें</button>
-        <div id="onlineQrBox" style="display:none; text-align:center; background:#fff; padding:12px; border-radius:10px; margin-top:10px;">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=9140417259@okbizaxis%26pn=5%20Brother's%20Fitness%20Club%26cu=INR" alt="QR" style="width:140px; height:140px; display:block; margin:0 auto;">
-          <div style="color:#000; font-size:11px; font-weight:bold; margin-top:5px;">9140417259@okbizaxis</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="cashNoticeBox" style="background:#1a1a1a; border-left:3px solid #ffcc00; padding:10px; border-radius:4px; font-size:11px; color:#ccc; margin-bottom:14px;">
+    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding:10px; border-radius:4px; font-size:11px; color:#ccc; margin-bottom:14px;">
       ℹ️ <b>नकद नियम:</b> काउंटर पर सत्यापन के बाद रसीद अनलॉक होगी।
     </div>
 
@@ -526,61 +516,98 @@ function submitAdmissionForm() {
   let medList = [];
   document.querySelectorAll(".medCond:checked").forEach(cb => medList.push(cb.value));
 
-  const memberData = {
-    id: memberId,
-    code: "5BFC-" + memberId.toString().slice(-6),
-    name: document.getElementById("admFullName").value.trim(),
-    parentName: document.getElementById("admParentName").value.trim(),
-    dob: document.getElementById("admDobInput").value || "N/A",
-    age: document.getElementById("admAge").value.trim(),
-    gender: document.getElementById("admGender").value,
-    phone: document.getElementById("admPhone").value.trim(),
-    occupation: document.getElementById("admOccupation").value.trim() || "N/A",
-    village: document.getElementById("unnaoAreaInput").value.trim(),
-    emergName: document.getElementById("admEmergName").value.trim() || "N/A",
-    emergRelation: document.getElementById("admEmergRelation").value.trim() || "N/A",
-    emergPhone: document.getElementById("admEmergPhone").value.trim() || "N/A",
-    height: document.getElementById("admHeight").value.trim() || "N/A",
-    weight: document.getElementById("admWeight").value.trim() || "N/A",
-    bloodGroup: document.getElementById("admBloodGroup").value.trim() || "N/A",
-    medicalHistory: medList.length > 0 ? medList.join(", ") : "Fit / No Issues",
-    joinDate: joinDateStr,
-    expiryDate: expObj.toISOString().split("T")[0],
-    lastPaid: joinDateStr,
-    planMonths: totalDays >= 365 ? 12 : (totalDays >= 180 ? 6 : (totalDays >= 90 ? 3 : 1)),
-    plan: document.getElementById("admCategorySelect").selectedOptions[0].text,
-    slot: document.getElementById("admSlotSelect").value,
-    totalFee: totalNum,
-    paidFee: selectedPaymentMode === "Online" ? totalNum : 0,
-    dueFee: selectedPaymentMode === "Online" ? 0 : totalNum,
-    payMode: selectedPaymentMode,
-    fees: selectedPaymentMode === "Online" ? "Paid" : "Due",
-    status: selectedPaymentMode === "Online" ? "Full Paid" : "Pending",
-    manualStatus: selectedPaymentMode === "Online" ? "Paid" : "Pending",
-    activeInGym: true
+  const photoInput = document.getElementById("memberPhotoFile");
+  const signInput = document.getElementById("memberSignFile");
+
+  let photoDataUrl = "";
+  let signDataUrl = "";
+
+  const proceedSaving = () => {
+    const memberData = {
+      id: memberId,
+      code: "5BFC-" + memberId.toString().slice(-6),
+      name: document.getElementById("admFullName").value.trim(),
+      parentName: document.getElementById("admParentName").value.trim(),
+      dob: document.getElementById("admDobInput").value || "N/A",
+      age: document.getElementById("admAge").value.trim(),
+      gender: document.getElementById("admGender").value,
+      phone: document.getElementById("admPhone").value.trim(),
+      occupation: document.getElementById("admOccupation").value.trim() || "N/A",
+      village: document.getElementById("unnaoAreaInput").value.trim(),
+      emergName: document.getElementById("admEmergName").value.trim() || "N/A",
+      emergRelation: document.getElementById("admEmergRelation").value.trim() || "N/A",
+      emergPhone: document.getElementById("admEmergPhone").value.trim() || "N/A",
+      height: document.getElementById("admHeight").value.trim() || "N/A",
+      weight: document.getElementById("admWeight").value.trim() || "N/A",
+      bloodGroup: document.getElementById("admBloodGroup").value.trim() || "N/A",
+      medicalHistory: medList.length > 0 ? medList.join(", ") : "Fit / No Issues",
+      memberPhoto: photoDataUrl,
+      memberSign: signDataUrl,
+      joinDate: joinDateStr,
+      expiryDate: expObj.toISOString().split("T")[0],
+      lastPaid: joinDateStr,
+      planMonths: totalDays >= 365 ? 12 : (totalDays >= 180 ? 6 : (totalDays >= 90 ? 3 : 1)),
+      plan: document.getElementById("admCategorySelect").selectedOptions[0].text,
+      slot: document.getElementById("admSlotSelect").value,
+      totalFee: totalNum,
+      paidFee: selectedPaymentMode === "Online" ? totalNum : 0,
+      dueFee: selectedPaymentMode === "Online" ? 0 : totalNum,
+      payMode: selectedPaymentMode,
+      fees: selectedPaymentMode === "Online" ? "Paid" : "Due",
+      status: selectedPaymentMode === "Online" ? "Full Paid" : "Pending",
+      manualStatus: selectedPaymentMode === "Online" ? "Paid" : "Pending",
+      activeInGym: true
+    };
+
+    activeReceiptMember = memberData;
+
+    let bfcRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    bfcRecords.unshift(memberData);
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(bfcRecords));
+
+    let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
+    bbfMaster.unshift(memberData);
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(bbfMaster));
+
+    let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+    admSync.unshift(memberData);
+    localStorage.setItem("5bfc_admissions", JSON.stringify(admSync));
+
+    document.getElementById("stepBox5").style.display = "none";
+    document.getElementById("welcomeUserName").innerText = memberData.name.toUpperCase();
+    document.getElementById("welcomeAdmDate").innerText = memberData.joinDate;
+    document.getElementById("welcomeArea").innerText = memberData.village;
+    document.getElementById("welcomePayMode").innerText = memberData.payMode;
+    document.getElementById("welcomePopupModal").style.display = "flex";
+    renderAdminTable();
   };
 
-  activeReceiptMember = memberData;
-
-  let bfcRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
-  bfcRecords.unshift(memberData);
-  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(bfcRecords));
-
-  let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
-  bbfMaster.unshift(memberData);
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(bbfMaster));
-
-  let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
-  admSync.unshift(memberData);
-  localStorage.setItem("5bfc_admissions", JSON.stringify(admSync));
-
-  document.getElementById("stepBox5").style.display = "none";
-  document.getElementById("welcomeUserName").innerText = memberData.name.toUpperCase();
-  document.getElementById("welcomeAdmDate").innerText = memberData.joinDate;
-  document.getElementById("welcomeArea").innerText = memberData.village;
-  document.getElementById("welcomePayMode").innerText = memberData.payMode;
-  document.getElementById("welcomePopupModal").style.display = "flex";
-  renderAdminTable();
+  if (photoInput && photoInput.files && photoInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      photoDataUrl = e.target.result;
+      if (signInput && signInput.files && signInput.files[0]) {
+        const signReader = new FileReader();
+        signReader.onload = function(sev) {
+          signDataUrl = sev.target.result;
+          proceedSaving();
+        };
+        signReader.readAsDataURL(signInput.files[0]);
+      } else {
+        proceedSaving();
+      }
+    };
+    reader.readAsDataURL(photoInput.files[0]);
+  } else if (signInput && signInput.files && signInput.files[0]) {
+    const signReader = new FileReader();
+    signReader.onload = function(sev) {
+      signDataUrl = sev.target.result;
+      proceedSaving();
+    };
+    signReader.readAsDataURL(signInput.files[0]);
+  } else {
+    proceedSaving();
+  }
 }
 
 function closeWelcomeModal() {
@@ -632,7 +659,7 @@ function exportAdmissionsToCSV() {
   a.click();
 }
 
-// EXACT PHYSICAL-STYLE 2-PAGE ADMISSION FORM DOWNLOAD
+// EXACT PHYSICAL-STYLE 2-PAGE ADMISSION FORM DOWNLOAD WITH LIVE PHOTO & SIGN
 function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
   const m = customMember || activeReceiptMember;
   if (!m) return;
@@ -652,7 +679,8 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
         .club-name { font-size: 19px; font-weight: 900; margin: 0; }
         .sub-header { font-size: 11px; margin-top: 2px; }
         
-        .photo-box { position: absolute; right: 15px; top: 15px; width: 100px; 15px; width: 100px; height: 120px; border: 1.5px solid #000; text-align: center; font-size: 10px; padding-top: 45px; background: #fafafa; box-sizing: border-box; }
+        .photo-box { position: absolute; right: 15px; top: 15px; width: 100px; height: 120px; border: 1.5px solid #000; text-align: center; font-size: 9px;px; height: 120px; border: 1.5px solid #000; text-align: center; font-size: 9px; overflow: hidden; background: #fafafa; box-sizing: border-box; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
         
         .section-title { font-size: 11.5px; font-weight: bold; margin-top: 10px; margin-bottom: 4px; border-bottom: 1px solid #000; padding-bottom: 2px; }
         .row { margin-bottom: 5px; font-size: 11px; }
@@ -665,7 +693,10 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
         .table-grid th, .table-grid td { border: 1px solid #000; padding: 4px; text-align: center; font-size: 10px; }
         .table-grid th { background: #eee; }
 
-        .footer-sig { display: flex; justify-content: space-between; margin-top: 25px; font-size: 11px; font-weight: bold; }
+        .footer-sig { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; font-size: 11px; font-weight: bold; }
+        .sign-box { border-bottom: 1px dotted #000; display: inline-block; height: 35px; width: 150px; text-align: center; }
+        .sign-box img { max-height: 35px; max-width: 150px; object-fit: contain; }
+
         .btn-print { background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin: 20px auto; display: block; }
         @media print { .no-print { display: none; } }
       </style>
@@ -674,7 +705,9 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
 
       <!-- PAGE 1 -->
       <div class="page">
-        <div class="photo-box">Passport Size<br>Photo</div>
+        <div class="photo-box">
+          ${m.memberPhoto ? `<img src="${m.memberPhoto}" alt="Photo">` : 'Passport Size<br>Photo'}
+        </div>
 
         <div class="header">
           <h1 class="club-name">5 BROTHER'S FITNESS CLUB</h1>
@@ -752,7 +785,9 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
         </div>
 
         <div class="footer-sig">
-          <div>सदस्य के हस्ताक्षर: <span class="line-input" style="width:130px;">${m.name}</span></div>
+          <div>सदस्य के हस्ताक्षर:<br>
+            <div class="sign-box">${m.memberSign ? `<img src="${m.memberSign}" alt="Sign">` : ''}</div>
+          </div>
           <div>दिनांक: <span class="line-input" style="width:80px;">${m.joinDate}</span></div>
         </div>
       </div>
@@ -789,14 +824,15 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
         </div>
 
         <div style="border: 1px solid #000; padding: 5px; margin-top: 6px; background: #fafafa; font-size: 10px;">
-          <b>घोषणा (DECLARATION)</b><br>
-          <i>"मैंने 5 Brother's Fitness Club के सभी नियमों एवं फीस पॉलिसी को भली-भांति पढ़ व समझ लिया है। मैं इन शर्तों से सहमत हूँ।"</i>
+          <b>कानूनी चेतावनी एवं घोषणा (Legal Declaration & Warning):</b><br>
+          <i>"मैंने 5 Brother's Fitness Club के सभी नियमों, फीस पॉलिसी और सख्त कानूनी चेतावनी को भली-भांति पढ़ व समझ लिया है। यदि मैं फीस या बकाया छोड़कर भागता हूँ, तो प्रबंधन को मेरे विरुद्ध कानूनी कार्रवाई करने की पूर्ण अनुमति है।"</i>
           <div style="margin-top: 5px;">
             सदस्य का नाम: <span class="line-input" style="width:150px;">${m.name}</span> &nbsp;&nbsp;
             दिनांक: <span class="line-input" style="width:80px;">${m.joinDate}</span>
           </div>
           <div style="margin-top: 4px;">
-            सदस्य के हस्ताक्षर: <span class="line-input" style="width:150px;">${m.name}</span>
+            सदस्य के हस्ताक्षर: 
+            <div class="sign-box" style="width:120px; height:25px;">${m.memberSign ? `<img src="${m.memberSign}" alt="Sign" style="max-height:25px;">` : ''}</div>
           </div>
         </div>
 
@@ -806,7 +842,7 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
             Form Received By: <span class="line-input" style="width:150px;">Saurabh Singh</span> &nbsp;&nbsp;
             Batch Timing: [ ] Morning [✓] Evening
           </div>
-          <div class="row" style="margin-top: 3px;">
+          <div style="margin-top: 3px;">
             Amount Received: ₹ <span class="line-input" style="width:80px;">${isPaid ? (m.totalFee || 500) : '0'}</span> &nbsp;&nbsp;
             Date & Sign: <span class="line-input" style="width:110px;">${m.joinDate} - 5BFC</span>
           </div>
