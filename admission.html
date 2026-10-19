@@ -191,14 +191,14 @@
       </div>
       <div style="flex:2; position:relative;">
         <label style="display:block; font-size:11px; color:#ffcc00; margin-bottom:3px;">📍 पूरा पता / गांव / मोहल्ला *</label>
-        <input type="text" id="unnaoAreaInput" oninput="searchUnnaoAreas()" placeholder="उदा. अकरमपुर, उन्नाव" autocomplete="off" style="width:100%; background:#181818; border:1px solid #ffcc00; color:#fff; padding:8px; border-radius:7px; font-size:11px; box-sizing:border-box;">
+        <input type="text" id="unnaoAreaInput" oninput="searchUnnaoAreas()" placeholder="उदा. अकरमपुर, उन्नाव" autocomplete="off" style="width:100%; background:#181818; border:1.5px solid #ffcc00; color:#fff; padding:8px; border-radius:7px; font-size:11px; box-sizing:border-box;">
         <div id="unnaoAreaDropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:#202020; border:1.5px solid #ffcc00; border-radius:7px; max-height:180px; overflow-y:auto; z-index:9999; margin-top:3px;"></div>
       </div>
     </div>
 
     <div style="background:#161616; border:1px solid #333; border-radius:8px; padding:9px; margin-bottom:12px;">
       <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">
-        🚨 आपातकालीन संपर्क (Emergency Contact)
+        🚨 आपातकालीन संपर्क (Emergency Contact) — परिवार/रिश्तेदार
       </div>
       <div style="display:flex; gap:6px; margin-bottom:6px;">
         <input type="text" id="admEmergName" placeholder="संपर्क व्यक्ति का नाम" style="flex:1.2; background:#202020; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11px; box-sizing:border-box;">
@@ -216,7 +216,7 @@
   <!-- STEP 3: HEALTH & SUPPLEMENT DETAILS -->
   <div id="stepBox3" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
-      3. स्वास्थ्य एवं सप्लीमेंट विवरण (Health Details)
+      3. स्वास्थ्य एवं फिटनेस विवरण (Health Details)
     </div>
 
     <div style="display:flex; gap:6px; margin-bottom:12px;">
@@ -234,42 +234,22 @@
       </div>
     </div>
 
-    <!-- SUPPLEMENT HISTORY -->
-    <div style="background:#161616; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:12px;">
-      <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">💊 सप्लीमेंट इतिहास (Supplement History):</div>
-      <div style="font-size:11px; color:#ccc; margin-bottom:6px;">क्या आपने पहले कभी या अभी कोई फिटनेस सप्लीमेंट खाया है?</div>
-      <div style="display:flex; gap:10px; margin-bottom:8px;">
-        <label style="cursor:pointer; color:#fff; font-size:11px;"><input type="radio" name="suppUseCheck" value="Yes" onclick="toggleSupplementInput(true)"> हाँ (Yes)</label>
-        <label style="cursor:pointer; color:#fff; font-size:11px;"><input type="radio" name="suppUseCheck" value="No" onclick="toggleSupplementInput(false)" checked> नहीं (No)</label>
-      </div>
-      
-      <div id="supplementDetailBox" style="display:none; margin-top:6px;">
-        <div style="font-size:10.5px; color:#aaa; margin-bottom:4px;">कौन सा सप्लीमेंट इस्तेमाल किया/कर रहे हैं?:</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:11px; margin-bottom:6px;">
-          <label style="cursor:pointer;"><input type="checkbox" class="suppBrand" value="Whey Protein"> Whey Protein</label>
-          <label style="cursor:pointer;"><input type="checkbox" class="suppBrand" value="Mass Gainer"> Mass Gainer</label>
-          <label style="cursor:pointer;"><input type="checkbox" class="suppBrand" value="Creatine Monohydrate"> Creatine Monohydrate</label>
-          <label style="cursor:pointer;"><input type="checkbox" class="suppBrand" value="Fish Oil / Multivitamin"> Multivitamin / Fish Oil</label>
-        </div>
-        <input type="text" id="suppOtherInput" placeholder="अन्य कोई (Anything Else - यहाँ लिखें)" style="width:100%; background:#202020; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11px; box-sizing:border-box;">
-      </div>
-    </div>
-
     <div style="background:#161616; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:12px;">
       <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">स्वास्थ्य स्थिति:</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:11px;">
-        <label style="cursor:pointer;"><input type="checkbox" id="condFit" checked onchange="toggleFitCondition()"> <b>✅ कोई समस्या नहीं (Fit)</b></label>
+        <label style="cursor:pointer;"><input type="checkbox" id="condFit" checked> <b>✅ कोई समस्या नहीं (Fit)</b></label>
         <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="हाई / लो बीपी"> हाई / लो बीपी</label>
-        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="शुगर"> शुगर</label>
+        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="शुगर (Diabetes)"> शुगर (Diabetes)</label>
         <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="दिल की बीमारी"> दिल की बीमारी</label>
-        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="कमर दर्द"> कमर दर्द</label>
+        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="अस्थमा / सांस"> अस्थमा / सांस</label>
+        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="कमर दर्द / स्लिप डिस्क"> कमर दर्द / स्लिप डिस्क</label>
       </div>
     </div>
 
     <div style="background:#261200; border:1.5px solid #ff9900; border-radius:8px; padding:10px; margin-bottom:14px; font-size:10.5px; line-height:1.45; color:#eee;">
       <label style="display:flex; align-items:flex-start; gap:6px; cursor:pointer; color:#00ff66; font-weight:bold;">
         <input type="checkbox" id="medicalTermsCheck">
-        <span>मैंने स्वास्थ्य घोषणा पढ़ ली है और जिम्मेदारी मेरी है।</span>
+        <span>मैंने आपातकालीन और स्वास्थ्य घोषणा पढ़ ली है।</span>
       </label>
     </div>
 
@@ -279,32 +259,28 @@
     </div>
   </div>
 
-  <!-- STEP 4: TERMS & RECOVERY CONSENT -->
+  <!-- STEP 4: TERMS & RULES -->
   <div id="stepBox4" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:10px; border-left:3px solid #ffcc00; padding-left:8px;">
-      4. नियम, शर्तें एवं वसूली सहमति (Terms & Recovery Consent)
+      4. नियम, शर्तें एवं दायित्व पत्र (Terms, Rules & Waiver)
     </div>
 
     <div style="background:#141414; border:1px solid #333; border-radius:8px; padding:12px; font-size:11px; line-height:1.55; color:#ccc; max-height:220px; overflow-y:auto; margin-bottom:12px;">
-      <b style="color:#ffcc00;">1. फीस नियम:</b> 1 दिन भी आने पर 1 महीने की पूरी फीस देय होगी। फीस गैर-वापसी योग्य (Non-Refundable) है।<br><br>
-      <b style="color:#ffcc00;">2. अनुशासन:</b> इनडोर जूते व तौलिया अनिवार्य है।<br><br>
-      <b style="color:#ffcc00; font-size:11.5px; text-decoration:underline;">3. बकाया वसूली एवं परिवार संपर्क सहमति (Recovery & Family Consent):</b><br>
-      <span style="color:#ffffff; font-weight:bold;">यदि कोई सदस्य जिम में बिना फीस जमा किए या समय पर बकाया (Due) चुकाए बिना कसरत करता है, या फीस देने में टालमटोल करता है, तो सदस्य स्वेच्छा से 5 Brother's Fitness Club प्रबंधन को यह पूर्ण विधिक अधिकार देता है कि वह उसके माता-पिता, परिवार के सदस्यों, भाई या मित्रों/दोस्तों को फोन कॉल, व्हाट्सएप या मैसेज के माध्यम से संपर्क करके बकाया शुल्क की मांग कर सकता है।</span>
+      <b style="color:#ffcc00;">1. फीस एवं उपस्थिति नियम (FEES POLICY):</b> 1 दिन भी आने पर 1 महीने की पूरी फीस देय होगी। फीस गैर-वापसी योग्य (Non-Refundable) है।<br><br>
+      <b style="color:#ffcc00;">2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि जिम छोड़ना है, तो महीना पूरा होते ही तुरंत बताएं। बकाया रखने पर प्रबंधन सख्त कदम उठाएगा।<br><br>
+      <b style="color:#ffcc00;">3. जिम अनुशासन (DISCIPLINE):</b> इनडोर जूते व तौलिया अनिवार्य है। उपकरण पटकना, गुटका/तंबाकू खाना मना है।<br><br>
+      <b style="color:#ffcc00;">4. स्वास्थ्य जोखिम एवं दायित्व मुक्ति (WAIVER):</b> भारी वजन उठाने में होने वाली चोट की जिम्मेदारी स्वयं सदस्य की होगी।
     </div>
 
     <div style="background:#1f1f1f; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:14px;">
       <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; color:#fff; font-size:11px; font-weight:bold;">
         <input type="checkbox" id="rulesAgreedCheck">
-        <span>"मैंने 5 BFC के सभी नियम और परिवार संपर्क रिकवरी पॉलिसी को अच्छी तरह पढ़ लिया है और मैं सहमत हूँ।" *</span>
+        <span>"मैंने 5 BFC के सभी नियम और फीस पॉलिसी को अच्छी तरह पढ़ लिया है और मैं सहमत हूँ।" *</span>
       </label>
     </div>
 
     <div style="display:flex; gap:8px;">
-            <button type="button" onclick="goToStep(3)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
-      <button type="button" onclick="goToStep(5)" style="flex:2; background:#ffcc00; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">भुगतान पर जाएं (NEXT ➔)</button>
-    </div>
-  </div>
-        <button type="button" onclick="goToStep(3)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
+      <button type="button" onclick="goToStep(3)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
       <button type="button" onclick="goToStep(5)" style="flex:2; background:#ffcc00; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">भुगतान पर जाएं (NEXT ➔)</button>
     </div>
   </div>
@@ -325,6 +301,9 @@
         <button type="button" onclick="triggerUPIApp('gpay')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟢 Google Pay</button>
         <button type="button" onclick="triggerUPIApp('phonepe')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟣 PhonePe</button>
       </div>
+            <button type="button" onclick="triggerUPIApp('gpay')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟢 Google Pay</button>
+      <button type="button" onclick="triggerUPIApp('phonepe')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟣 PhonePe</button>
+    </div>
       <div style="text-align:center;">
         <button type="button" onclick="toggleQrView()" style="background:transparent; border:none; color:#00ff66; font-size:11px; text-decoration:underline; cursor:pointer; font-weight:bold;">📷 QR कोड देखें</button>
         <div id="onlineQrBox" style="display:none; text-align:center; background:#fff; padding:12px; border-radius:10px; margin-top:10px;">
@@ -416,10 +395,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   renderAdminTable();
 });
-
-function toggleSupplementInput(isYes) {
-  document.getElementById("supplementDetailBox").style.display = isYes ? "block" : "none";
-}
 
 function searchAndDownloadAdmissionCard() {
   const query = document.getElementById("quickSearchInput").value.trim().toLowerCase();
@@ -547,6 +522,10 @@ function submitAdmissionForm() {
   expObj.setDate(expObj.getDate() + totalDays);
 
   const memberId = Date.now();
+  
+  let medList = [];
+  document.querySelectorAll(".medCond:checked").forEach(cb => medList.push(cb.value));
+
   const memberData = {
     id: memberId,
     code: "5BFC-" + memberId.toString().slice(-6),
@@ -564,6 +543,7 @@ function submitAdmissionForm() {
     height: document.getElementById("admHeight").value.trim() || "N/A",
     weight: document.getElementById("admWeight").value.trim() || "N/A",
     bloodGroup: document.getElementById("admBloodGroup").value.trim() || "N/A",
+    medicalHistory: medList.length > 0 ? medList.join(", ") : "Fit / No Issues",
     joinDate: joinDateStr,
     expiryDate: expObj.toISOString().split("T")[0],
     lastPaid: joinDateStr,
@@ -582,17 +562,14 @@ function submitAdmissionForm() {
 
   activeReceiptMember = memberData;
 
-  // 1. Save to 5BFC_MEMBERS (Master Roster & Fee System)
   let bfcRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   bfcRecords.unshift(memberData);
   localStorage.setItem("5BFC_MEMBERS", JSON.stringify(bfcRecords));
 
-  // 2. Also Sync to bbf_master_records_v4 so Attendance & Kiosk recognises instantly without reloading issues
   let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
   bbfMaster.unshift(memberData);
   localStorage.setItem("bbf_master_records_v4", JSON.stringify(bbfMaster));
 
-  // 3. Also Sync to 5bfc_admissions
   let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
   admSync.unshift(memberData);
   localStorage.setItem("5bfc_admissions", JSON.stringify(admSync));
@@ -638,7 +615,7 @@ function renderAdminTable() {
       <div style="display:flex; justify-content:space-between;"><b style="color:#ffcc00;">${m.name}</b><span style="font-size:9.5px; color:#aaa;">${m.joinDate}</span></div>
       <div style="font-size:10px; color:#ccc;">📞 ${m.phone} | 📦 ${m.plan}</div>
       <div style="margin-top:4px; display:flex; gap:4px;">
-      <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:9px; font-weight:bold; padding:3px 6px; border:none; border-radius:3px; cursor:pointer;">📄 डाउनलोड फॉर्म</button>
+        <button onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:9px; font-weight:bold; padding:3px 6px; border:none; border-radius:3px; cursor:pointer;">📄 डाउनलोड फॉर्म</button>
       </div>
     </div>
   `).join("");
@@ -655,97 +632,202 @@ function exportAdmissionsToCSV() {
   a.click();
 }
 
-// FULL PHYSICAL-STYLE ADMISSION FORM & RECEIPT DOWNLOAD
+// EXACT PHYSICAL-STYLE 2-PAGE ADMISSION FORM DOWNLOAD
 function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
   const m = customMember || activeReceiptMember;
   if (!m) return;
   const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid' || m.manualStatus === 'Paid');
-  const printWin = window.open('', '_blank', 'width=800,height=1000');
-  const isHindi = (lang === 'hi');
+  const printWin = window.open('', '_blank', 'width=850,height=1100');
 
   printWin.document.write(`
     <!DOCTYPE html>
-    <html lang="${isHindi ? 'hi' : 'en'}">
+    <html lang="hi">
     <head>
       <meta charset="UTF-8">
-      <title>5BFC - ${isHindi ? 'सदस्यता पंजीकरण फॉर्म (Membership Form)' : 'Membership Admission Form'}</title>
+      <title>5BFC - Membership Registration Form</title>
       <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 15px; color: #000; line-height: 1.35; background: #fff; font-size: 11.5px; }
-        .form-container { max-width: 720px; margin: 0 auto; border: 2px solid #000; padding: 15px; }
-        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 8px; }
-        .club-name { font-size: 18px; font-weight: 900; margin: 0; color: #000; letter-spacing: 0.5px; }
-        .sub-header { font-size: 10.5px; color: #333; margin-top: 2px; }
-        .badge { display: inline-block; background: #000; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 10px; border-radius: 3px; margin-top: 4px; }
+        body { font-family: Arial, sans-serif; padding: 20px; color: #000; line-height: 1.3; background: #fff; font-size: 11px; }
+        .page { max-width: 750px; margin: 0 auto; border: 2px solid #000; padding: 15px; page-break-after: always; position: relative; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px; }
+        .club-name { font-size: 19px; font-weight: 900; margin: 0; }
+        .sub-header { font-size: 11px; margin-top: 2px; }
         
-        .section-title { font-size: 11px; font-weight: bold; background: #ddd; color: #000; padding: 3px 6px; margin-top: 8px; border: 1px solid #000; }
-        .grid-table { width: 100%; border-collapse: collapse; margin-top: 3px; }
-        .grid-table td { padding: 4px 6px; border: 1px solid #000; font-size: 11px; }
-        .grid-table td.label { font-weight: bold; background: #f2f2f2; width: 35%; }
+        .photo-box { position: absolute; right: 15px; top: 15px; width: 100px; 15px; width: 100px; height: 120px; border: 1.5px solid #000; text-align: center; font-size: 10px; padding-top: 45px; background: #fafafa; box-sizing: border-box; }
         
-        .photo-box { float: right; width: 95px; height: 115px; border: 1.5px solid #000; text-align: center; font-size: 9.5px; padding-top: 35px; background: #f9f9f9; box-sizing: border-box; margin-left: 8px; }
-        .rules-box { border: 1px solid #000; background: #fafafa; padding: 6px 8px; margin-top: 8px; font-size: 9.5px; line-height: 1.35; }
-        .footer-sig { display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px; font-weight: bold; }
-        .btn-print { background: #000; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .lang-switch { margin-bottom: 10px; text-align: center; }
+        .section-title { font-size: 11.5px; font-weight: bold; margin-top: 10px; margin-bottom: 4px; border-bottom: 1px solid #000; padding-bottom: 2px; }
+        .row { margin-bottom: 5px; font-size: 11px; }
+        .line-input { border-bottom: 1px dotted #000; display: inline-block; padding: 0 5px; font-weight: bold; }
+        
+        .rules-list { font-size: 10px; padding-left: 15px; margin: 4px 0; }
+        .rules-list li { margin-bottom: 3px; }
+        
+        .table-grid { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .table-grid th, .table-grid td { border: 1px solid #000; padding: 4px; text-align: center; font-size: 10px; }
+        .table-grid th { background: #eee; }
+
+        .footer-sig { display: flex; justify-content: space-between; margin-top: 25px; font-size: 11px; font-weight: bold; }
+        .btn-print { background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin: 20px auto; display: block; }
         @media print { .no-print { display: none; } }
       </style>
     </head>
     <body>
-      <div class="lang-switch no-print">
-        <button onclick="window.opener.downloadAdmissionCardNow(${JSON.stringify(m)}, 'hi')" style="background:${isHindi ? '#000':'#ccc'}; color:${isHindi ? '#fff':'#000'}; padding:5px 10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">शुद्ध हिंदी फॉर्म</button>
-        <button onclick="window.opener.downloadAdmissionCardNow(${JSON.stringify(m)}, 'en')" style="background:${!isHindi ? '#000':'#ccc'}; color:${!isHindi ? '#fff':'#000'}; padding:5px 10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; margin-left:5px;">English Form</button>
-      </div>
 
-      <div class="form-container">
-        <div class="header">
-          <h1 class="club-name">👑 5 BROTHER'S FITNESS CLUB</h1>
-          <div class="sub-header">उमराव खेड़ा, अकरमपुर, उन्नाव (UP) | Contact: 9140417259</div>
-          <div class="badge">सदस्य पंजीकरण एवं स्वास्थ्य विवरण (Membership Registration Form)</div>
-        </div>
-
+      <!-- PAGE 1 -->
+      <div class="page">
         <div class="photo-box">Passport Size<br>Photo</div>
 
+        <div class="header">
+          <h1 class="club-name">5 BROTHER'S FITNESS CLUB</h1>
+          <div class="sub-header">सदस्य पंजीकरण एवं स्वास्थ्य विवरण (Membership Registration Form)</div>
+        </div>
+
         <div class="section-title">1. व्यक्तिगत विवरण (Personal Details)</div>
-        <table class="grid-table" style="width: calc(100% - 105px);">
-          <tr><td class="label">Member ID:</td><td><b>${m.code || ('5BFC-' + m.id)}</b></td></tr>
-          <tr><td class="label">Joining Date:</td><td><b>${m.joinDate}</b></td></tr>
-          <tr><td class="label">Valid Till:</td><td><b style="color:#b30000;">${m.expiryDate || 'N/A'}</b></td></tr>
-          <tr><td class="label">Plan / Slot:</td><td><b>${m.plan}</b> (${m.slot || '06:00 AM'})</td></tr>
-          <tr><td class="label">Total Fee / Paid:</td><td>₹${m.totalFee || 500} | <b style="color:${isPaid?'green':'red'};">${isPaid ? 'PAID' : 'DUE (₹'+(m.dueFee||500)+')'}</b></td></tr>
-        </table>
-        <div style="clear: both;"></div>
+        <div class="row">
+          Member ID: <span class="line-input" style="width:70px;">${m.code || ('5BFC-' + m.id)}</span> &nbsp;&nbsp;
+          Joining Date: <span class="line-input" style="width:90px;">${m.joinDate}</span>
+        </div>
+        <div class="row" style="margin-top:5px;">
+          Plan: [${m.plan && m.plan.includes('1') ? '✓' : '&nbsp;&nbsp;'}] 1 माह &nbsp;
+          [${m.plan && m.plan.includes('3') ? '✓' : '&nbsp;&nbsp;'}] 3 माह &nbsp;
+          [${m.plan && m.plan.includes('6') ? '✓' : '&nbsp;&nbsp;'}] 6 माह &nbsp;
+          [${m.plan && m.plan.includes('12') ? '✓' : '&nbsp;&nbsp;'}] 12 माह
+        </div>
+        <div class="row" style="margin-top:5px;">
+          Total Fee: ₹ <span class="line-input" style="width:60px;">${m.totalFee || 500}</span> &nbsp;&nbsp;
+          Paid: ₹ <span class="line-input" style="width:60px;">${isPaid ? (m.totalFee || 500) : 0}</span> &nbsp;&nbsp;
+          Due: ₹ <span class="line-input" style="width:60px;">${isPaid ? '0' : (m.dueFee || 500)}</span>
+        </div>
 
-        <table class="grid-table" style="margin-top: 5px;">
-          <tr><td class="label">पूरा नाम (Full Name):</td><td><b>${m.name}</b></td></tr>
-          <tr><td class="label">पिता / माता का नाम:</td><td>${m.parentName || 'N/A'}</td></tr>
-          <tr><td class="label">जन्म तिथि / आयु / लिंग:</td><td>${m.dob} / ${m.age || '--'} yrs / ${m.gender}</td></tr>
-          <tr><td class="label">व्यवसाय / मोबाइल नंबर:</td><td>${m.occupation || 'N/A'} | <b>+91 ${m.phone}</b></td></tr>
-          <tr><td class="label">पूरा पता (Address):</td><td>${m.village || 'Unnao'}</td></tr>
-        </table>
+        <div class="row" style="margin-top:8px;">
+          पूरा नाम (Full Name): <span class="line-input" style="width:380px;">${m.name}</span>
+        </div>
+        <div class="row">
+          पिता / माता का नाम (Parent Name): <span class="line-input" style="width:330px;">${m.parentName || 'N/A'}</span>
+        </div>
+        <div class="row">
+          जन्म तिथि / आयु (DOB / Age): <span class="line-input" style="width:160px;">${m.dob}</span> &nbsp;
+          लिंग (M/F): <span class="line-input" style="width:80px;">${m.gender}</span>
+        </div>
+        <div class="row">
+          व्यवसाय (Occupation): <span class="line-input" style="width:170px;">${m.occupation || 'N/A'}</span> &nbsp;
+          मोबाइल नंबर (Mobile): <span class="line-input" style="width:150px;">+91 ${m.phone}</span>
+        </div>
+        <div class="row">
+          पूरा पता (Address): <span class="line-input" style="width:400px;">${m.village || 'Unnao'}</span>
+        </div>
 
-        <div style="background:#eee; border:1px solid #000; padding:4px 6px; margin-top:5px; font-size:10px;">
-          🚨 <b>आपातकालीन संपर्क (Emergency Contact):</b> ${m.emergName || '--'} (${m.emergRelation || 'रिश्तेदार'}) - <b>📞 ${m.emergPhone || '--'}</b>
+        <div style="border: 1px solid #000; padding: 6px; margin-top: 8px; background: #f9f9f9;">
+          <div style="font-weight: bold; font-size: 11px;">🚨 आपातकालीन संपर्क — केवल परिवार/रिश्तेदार का नंबर</div>
+          <div style="font-size: 9.5px; color: #333;">माता-पिता, परिवार के सदस्य या अभिभावक का ही नंबर दें।</div>
+          <div class="row" style="margin-top: 4px;">
+            संपर्क व्यक्ति का नाम: <span class="line-input" style="width:180px;">${m.emergName || '--'}</span> &nbsp;
+            संबंध: <span class="line-input" style="width:100px;">${m.emergRelation || '--'}</span>
+          </div>
+          <div class="row">
+            मोबाइल नंबर: <span class="line-input" style="width:180px;">${m.emergPhone || '--'}</span>
+          </div>
         </div>
 
         <div class="section-title">2. स्वास्थ्य एवं फिटनेस विवरण (Health Details)</div>
-        <table class="grid-table">
-          <tr><td class="label">ऊंचाई / वजन / ब्लड ग्रुप:</td><td><b>${m.height || '--'} सेमी</b> | <b>${m.weight || '--'} किग्रा</b> | <b> ब्लड ग्रुप: ${m.bloodGroup || 'N/A'}</b></td></tr>
-          <tr><td class="label">स्वास्थ्य स्थिति (Medical Check):</td><td>कोई गंभीर बीमारी नहीं / सामान्य (Fit)</td></tr>
-        </table>
+        <div class="row">
+          ऊंचाई: <span class="line-input" style="width:60px;">${m.height || '--'}</span> सेमी &nbsp;
+          वजन: <span class="line-input" style="width:60px;">${m.weight || '--'}</span> किग्रा &nbsp;
+          ब्लड ग्रुप: <span class="line-input" style="width:80px;">${m.bloodGroup || '--'}</span>
+        </div>
+        <div class="row" style="margin-top:4px;">
+          फिटनेस लक्ष्य: [✓] वजन घटाना / बॉडी बिल्डिंग
+        </div>
+        <div class="row" style="margin-top:4px;">
+          स्वास्थ्य स्थिति (यदि लागू हो तो टिक [✓] करें):
+        </div>
+        <div class="row" style="font-size: 10px; margin-top: 2px;">
+          [ ] हाई / लो बीपी &nbsp;&nbsp; [ ] शुगर (Diabetes) &nbsp;&nbsp; [ ] दिल की बीमारी<br>
+          [ ] अस्थमा / सांस &nbsp;&nbsp; [ ] कमर दर्द / स्लिप डिस्क &nbsp;&nbsp; [✓] कोई समस्या नहीं (Fit)<br>
+          क्या आप वर्तमान में कोई नियमित दवा ले रहे हैं? [ ] हाँ [✓] नहीं | डॉक्टर ने मना किया है? [ ] हाँ [✓] नहीं
+        </div>
 
-        <div class="rules-box">
-          <b style="text-decoration:underline;">नियम, शर्ते एवं वसूली सहमति (Terms & Recovery Consent):</b><br>
-          1. <b>फीस पॉलिसी:</b> 1 दिन भी आने पर 1 महीने की पूरी फीस देय होगी। फीस गैर-वापसी योग्य (Non-Refundable) है।<br>
-          2. <b>बकाया वसूली सहमति:</b> यदि सदस्य समय पर बकाया शुल्क नहीं चुकाता है, तो 5 BFC प्रबंधन को उसके माता-पिता, परिवार या मित्रों को कॉल/मैसेज करके बकाया राशि की मांग करने का पूर्ण विधिक अधिकार होगा।
+        <div class="section-title">3. आपातकालीन सहमति</div>
+        <div style="font-size: 10px; line-height: 1.3;">
+          मैं जिम परिसर में किसी भी आपातकालीन स्थिति में प्राथमिक चिकित्सा या नजदीकी अस्पताल ले जाने हेतु जिम प्रबंधन को पूर्ण सहमति देता/देती हूँ।
         </div>
 
         <div class="footer-sig">
-          <div><div>__________________________</div><div>सदस्य के हस्ताक्षर (Member Signature)</div></div>
-          <div style="text-align:right;"><div>__________________________</div><div>दिनांक: ${m.joinDate}</div></div>
+          <div>सदस्य के हस्ताक्षर: <span class="line-input" style="width:130px;">${m.name}</span></div>
+          <div>दिनांक: <span class="line-input" style="width:80px;">${m.joinDate}</span></div>
         </div>
       </div>
 
-      <div style="text-align:center; margin-top:12px;" class="no-print">
+
+      <!-- PAGE 2 -->
+      <div class="page" style="page-break-before: always;">
+        <div style="text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px;">
+          नियम, शर्ते एवं दायित्व पत्र (Terms, Rules & Waiver)
+        </div>
+
+        <div style="font-size: 10px; line-height: 1.35;">
+          <b>1. फीस एवं उपस्थिति नियम (FEES POLICY - STRICT):</b>
+          <ul class="rules-list">
+            <li>शिक्षा संस्थानों की तरह यह भी एक अभ्यास संस्थान है। यदि आप महीने में 1 दिन भी आते हैं, तो भी पूरे 1 महीने की पूरी फीस देय होगी।</li>
+            <li>अनुपस्थिति के आधार पर फीस में कोई छूट या रिफंड नहीं मिलेगा। फीस गैर-वापसी योग्य (Non-Refundable) है।</li>
+          </ul>
+
+          <b>2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b>
+          <ul class="rules-list">
+            <li>यदि जिम छोड़ना है, तो महीना पूरा होते ही तुरंत जिम आना बंद कर दें। बिना फीस दिए नया महीना शुरू करने पर प्रबंधन सख्त कदम उठाएगा।</li>
+          </ul>
+
+          <b>3. जिम अनुशासन एवं व्यवस्था (DISCIPLINE):</b>
+          <ul class="rules-list">
+            <li>जिम के अंदर साफ इनडोर जूते व पर्सनल तौलिया लाना अनिवार्य है। उपकरण पटकना मना है।</li>
+            <li>गुटका, तंबाकू, धूम्रपान या शराब जिम में पूर्णतः प्रतिबंधित है। कीमती सामान की सुरक्षा स्वयं करें।</li>
+          </ul>
+
+          <b>4. स्वास्थ्य जोखिम एवं दायित्व मुक्ति (WAIVER):</b>
+          <ul class="rules-list">
+            <li>भारी वजन उठाने में होने वाले खिंचाव या चोट की जिम्मेदारी स्वयं सदस्य की होगी। प्रबंधन कानूनी रूप से जिम्मेदार नहीं होगा।</li>
+          </ul>
+        </div>
+
+        <div style="border: 1px solid #000; padding: 5px; margin-top: 6px; background: #fafafa; font-size: 10px;">
+          <b>घोषणा (DECLARATION)</b><br>
+          <i>"मैंने 5 Brother's Fitness Club के सभी नियमों एवं फीस पॉलिसी को भली-भांति पढ़ व समझ लिया है। मैं इन शर्तों से सहमत हूँ।"</i>
+          <div style="margin-top: 5px;">
+            सदस्य का नाम: <span class="line-input" style="width:150px;">${m.name}</span> &nbsp;&nbsp;
+            दिनांक: <span class="line-input" style="width:80px;">${m.joinDate}</span>
+          </div>
+          <div style="margin-top: 4px;">
+            सदस्य के हस्ताक्षर: <span class="line-input" style="width:150px;">${m.name}</span>
+          </div>
+        </div>
+
+        <div style="border: 1.5px solid #000; padding: 6px; margin-top: 10px;">
+          <div style="font-weight: bold; font-size: 10.5px; margin-bottom: 4px; text-decoration: underline;">केवल कार्यालय उपयोग हेतु (OFFICE USE ONLY)</div>
+          <div class="row">
+            Form Received By: <span class="line-input" style="width:150px;">Saurabh Singh</span> &nbsp;&nbsp;
+            Batch Timing: [ ] Morning [✓] Evening
+          </div>
+          <div class="row" style="margin-top: 3px;">
+            Amount Received: ₹ <span class="line-input" style="width:80px;">${isPaid ? (m.totalFee || 500) : '0'}</span> &nbsp;&nbsp;
+            Date & Sign: <span class="line-input" style="width:110px;">${m.joinDate} - 5BFC</span>
+          </div>
+
+          <div style="font-weight: bold; font-size: 10px; margin-top: 6px;">BODY MEASUREMENTS & MONTHLY PROGRESS RECORD</div>
+          <table class="table-grid">
+            <tr>
+              <th>Stage</th><th>Chest</th><th>Waist</th><th>Shoulder</th><th>Biceps</th><th>Forearm</th><th>Weight</th>
+            </tr>
+            <tr>
+              <td>Initial</td><td></td><td></td><td></td><td></td><td></td><td>${m.weight || ''}</td>
+            </tr>
+            <tr>
+              <td>Current</td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="no-print">
         <button class="btn-print" onclick="window.print()">🖨️ प्रिंट निकालें / PDF सेव करें</button>
       </div>
     </body>
