@@ -138,7 +138,7 @@
     </button>
   </div>
 
-  <!-- STEP 2: PERSONAL DETAILS & LIVE PHOTO/SIGN UPLOAD -->
+  <!-- STEP 2: PERSONAL DETAILS -->
   <div id="stepBox2" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
       2. व्यक्तिगत विवरण एवं फोटो/साइन (Personal Details)
@@ -198,7 +198,7 @@
       </div>
     </div>
 
-    <!-- LIVE CAMERA & GALLERY PHOTO / SIGN UPLOAD -->
+    <!-- PHOTO & SIGN UPLOAD -->
     <div style="background:#161616; border:1px solid #444; border-radius:8px; padding:10px; margin-bottom:10px;">
       <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📸 सदस्य फोटो और हस्ताक्षर (Live Camera / Gallery)</div>
       
@@ -305,7 +305,6 @@
 
   <!-- STEP 5: PAYMENT SELECTION -->
   <div id="stepBox5" style="display:none; margin-top:10px;">
-    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid="stepBox5" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
       5. भुगतान माध्यम (Payment Mode)
     </div>
@@ -417,7 +416,7 @@ function updatePlanDurations() {
   } else if (cat === "student") {
     dur.innerHTML = '<option value="1M|300|30" selected>1 महीना - ₹300</option><option value="3M|850|90">3 महीने - ₹850</option>';
   } else if (cat === "cardio") {
-    dur.innerHTML = '<option value="1M|400|30" selected>1 महीना - ₹400</option><option value="1M|350|30">1 महीना विशेष डिस्काउंट - ₹350</option>';
+    dur.innerHTML = '<option value="1M|400|30" selected>1 महीना - ₹400</option><option value="1M|350|30" selected>1 महीना विशेष डिस्काउंट - ₹350</option>';
   } else {
     dur.innerHTML = '<option value="1M|500|30" selected>1 महीना - ₹500</option><option value="3M|1400|90">3 महीने - ₹1400</option><option value="6M|2600|180">6 महीने - ₹2600</option><option value="1Y|4800|365">1 वर्ष - ₹4800</option>';
   }
