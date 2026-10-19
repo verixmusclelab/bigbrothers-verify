@@ -760,7 +760,7 @@
     }
   }
 
-  function captureLiveSelfieProof() {
+    function captureLiveSelfieProof() {
     if (!currentlyLoadedMember) {
       alert("पहले सदस्य चुनें।");
       closeCameraModal();
@@ -838,14 +838,15 @@
     currentDateISO = todayISO;
 
     let target = currentlyLoadedMember;
-    let cycleStart = new Date(target.lastPaid || target.joinDate || '2026-09-01');
+    // अब यहाँ जॉइनिंग तिथि (joinDate) से ही गिनती शुरू होगी
+    let cycleStart = new Date(target.joinDate || '2026-09-01');
     let totalAttendedInCycle = 0;
     let curr = new Date(cycleStart);
     let todayDate = new Date();
     while(curr <= todayDate) {
       let isoStr = getLocalDateISO(curr);
       let dayAttMap = fetchAttendanceMapForDate(isoStr);
-      if(curr.getDay() === 0 || (dayAttMap[target.id] && dayAttMap[target.id].isReal)) {
+      if(dayAttMap[target.id] && dayAttMap[target.id].isReal) {
         totalAttendedInCycle++;
       }
       curr.setDate(curr.getDate() + 1);
@@ -855,8 +856,8 @@
     document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
     document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
     document.getElementById("attendanceCelebrationModal").classList.add("show");
-  }
-
+   }
+  
   function completeAttendanceAndResetKiosk() {
     const modal = document.getElementById('attendanceCelebrationModal');
     if (modal) modal.classList.remove('show');
