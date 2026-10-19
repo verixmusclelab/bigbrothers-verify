@@ -677,38 +677,84 @@
   function showAlreadyMarkedWarning() {
     alert("Your Attendance Already Marked!\nआपकी आज की उपस्थिति पहले ही दर्ज की जा चुकी है।");
   }
-
-  function handleAttendanceClick() {
+function handleAttendanceClick() {
     if (!currentlyLoadedMember) return;
     const m = currentlyLoadedMember;
 
-    const manualStat = m.manualStatus || 'Paid';
-    let isMonthExpired = false;
-    
-    const baseRefDate = m.lastPaid || m.joinDate;
-    if (baseRefDate) {
-      const joinD = new Date(baseRefDate);
-      const expD = new Date(joinD);
-      expD.setMonth(expD.getMonth() + (m.planMonths || 1));
-      if (new Date() >= expD) isMonthExpired = true;
+    // 1. Joining Date Validation (Joining date se piche attendance lock)
+    const todayISOStr = getLocalDateISO(new Date());
+    if (m.joinDate && todayISOStr < m.joinDate) {
+        alert("❌ Aap apni joining date se pehle attendance nahi laga sakte!");
+        return;
     }
 
-    if ((manualStat !== 'Paid' || isMonthExpired) && !m.feesPromiseDate) {
-      document.getElementById("expiringMemberName").innerText = m.name;
-      document.getElementById("strictExpiryModal").classList.add("show");
-      return;
+    // 2. GPS Location Check (Fake attendance rokne ke liye geo-fencing)
+    if (!navigator.geolocation) {
+        alert("❌ Aapke browser mein GPS support nahi hai!");
+        return;
     }
 
-    const now = new Date();
-    const todayISO = getLocalDateISO(now);
-    const todayMap = fetchAttendanceMapForDate(todayISO);
-    if (todayMap[String(m.id)]) {
-      showAlreadyMarkedWarning();
-      loadSingleMemberKioskCard(m.id);
-      return;
-    }
+    const GYM_LAT = 26.5460; // Unnao / Gym ki Latitude
+    const GYM_LNG = 80.4870; // Unnao / Gym ki Longitude
+    const ALLOWED_DISTANCE_METERS = 100; // 100 meter ke daayre mein hi attendance manayegi
 
-    initiateCameraVerification(m);
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+
+            // Distance calculate formula
+            const R = 6371e3;
+            const φ1 = userLat * Math.PI/180;
+            const φ2 = GYM_LAT * Math.PI/180;
+            const Δφ = (GYM_LAT - userLat) * Math.PI/180;
+            const Δλ = (GYM_LNG - userLng) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+
+            if (distance > ALLOWED_DISTANCE_METERS) {
+                alert("❌ Aap gym mein nahi hain! Fake attendance mat lagaiye, warna aapke aaye hue din bhi kaat diye jayenge!");
+                return;
+            }
+
+            // --- Purana Original Logic Yahan Se Chalu Hoga ---
+            const manualStat = m.manualStatus || 'Paid';
+            let isMonthExpired = false;
+
+            const baseRefDate = m.lastPaid || m.joinDate;
+            if (baseRefDate) {
+                const joinD = new Date(baseRefDate);
+                const expD = new Date(joinD);
+                expD.setMonth(expD.getMonth() + (m.planMonths || 1));
+                if (new Date() >= expD) isMonthExpired = true;
+            }
+
+            if ((manualStat !== 'Paid' || isMonthExpired) && !m.feesPromiseDate) {
+                document.getElementById("expiringMemberName").innerText = m.name;
+                document.getElementById("strictExpiryModal").classList.add("show");
+                return;
+            }
+
+            const now = new Date();
+            const todayISO = getLocalDateISO(now);
+            const todayMap = fetchAttendanceMapForDate(todayISO);
+            if (todayMap[String(m.id)]) {
+                showAlreadyMarkedWarning();
+                loadSingleMemberKioskCard(m.id);
+                return;
+            }
+
+            initiateCameraVerification(m);
+        },
+        (error) => {
+            alert("❌ GPS location access nahi mil paaya. Kripya apne phone ka Location (GPS) on karein!");
+        },
+        { enableHighAccuracy: true }
+    );
+}
+  
   }
 
   function showPromiseDateField() {
