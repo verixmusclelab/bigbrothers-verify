@@ -786,7 +786,7 @@
 
     const sourceWidth = videoElem.videoWidth;
     const sourceHeight = videoElem.videoHeight;
-    const maxSide = 480;
+    const maxSide = 320;
     const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
     canvas.width = Math.max(1, Math.round(sourceWidth * scale));
     canvas.height = Math.max(1, Math.round(sourceHeight * scale));
@@ -801,7 +801,7 @@
     ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
     ctx.restore();
 
-    const base64Stamp = canvas.toDataURL("image/jpeg", 0.4);
+    const base64Stamp = canvas.toDataURL("image/jpeg", 0.3);
     const dayStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth()+1).padStart(2, '0')}-${now.getFullYear()}`;
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
     
