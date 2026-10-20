@@ -1149,6 +1149,87 @@ function handleAttendanceClick() {
     runLiveSystemClock();
     setInterval(runLiveSystemClock, 1000);
   };
+
+    // Member ke liye Monthly Calendar render karne ka function
+  function renderAttendanceCalendar(member, year, month) {
+    const grid = document.getElementById("calendarDaysGrid");
+    const title = document.getElementById("calendarMonthTitle");
+    const counter = document.getElementById("totalPresentCounter");
+    if (!grid || !member) return;
+
+    grid.innerHTML = "";
+    
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    if(title) title.innerText = `${monthNames[month]} ${year}`;
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    let startingSpace = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+    
+    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    let joinDateStr = member.joinDate || '2026-10-01';
+    let joinDate = new Date(joinDateStr);
+
+    let presentCount = 0;
+
+    for (let i = 0; i < startingSpace; i++) {
+      grid.innerHTML += `<div></div>`;
+    }
+
+    for (let day = 1; day <= totalDaysInMonth; day++) {
+      let dayISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      let currentDate = new Date(dayISO);
+      let isSunday = (currentDate.getDay() === 0);
+      
+      let isBeforeJoin = currentDate < new Date(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate());
+
+      let dayMap = fetchAttendanceMapForDate(dayISO);
+      let isPresent = isSunday ? true : (dayMap[member.id] && dayMap[member.id].isReal ? true : false);
+
+      if (isPresent && !isBeforeJoin) presentCount++;
+
+      let bgStyle = "background:#222; color:#fff; border:1px solid #444;";
+      let statusDot = `<div style="width:4px; height:4px; background:#ff4444; border-radius:50%; margin:2px auto 0;"></div>`;
+
+      if (isBeforeJoin) {
+        bgStyle = "background:#111; color:#444; border:1px solid #222; opacity:0.3; cursor:not-allowed;";
+        statusDot = "";
+      } else if (isSunday || isPresent) {
+        bgStyle = "background:#0d2614; color:#00ff66; border:1px solid #00ff66;";
+        statusDot = `<div style="width:4px; height:4px; background:#00ff66; border-radius:50%; margin:2px auto 0;"></div>`;
+      }
+
+      grid.innerHTML += `
+        <div onclick="${isBeforeJoin ? '' : `toggleCalendarDay('${member.id}', '${dayISO}')`}" 
+             style="${bgStyle} border-radius:6px; padding:6px 2px; text-align:center; font-size:11px; font-weight:bold; cursor:${isBeforeJoin ? 'not-allowed' : 'pointer'};">
+          <div>${day}</div>
+          ${statusDot}
+        </div>
+      `;
+    }
+
+    if(counter) counter.innerText = `Total Present: ${presentCount} Days`;
+  }
+
+  // Admin click karke kisi bhi din ko Present/Absent toggle kar sake
+  function toggleCalendarDay(memberId, dateISO) {
+    let dayMap = fetchAttendanceMapForDate(dateISO);
+    let isCurrentlyPresent = dayMap[memberId] && dayMap[memberId].isReal;
+
+    if (isCurrentlyPresent) {
+      delete dayMap[memberId];
+    } else {
+      dayMap[memberId] = { time: "Manual Admin", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
+    }
+
+    localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
+    
+    if (window.currentlyLoadedMember) {
+      let now = new Date();
+      renderAttendanceCalendar(window.currentlyLoadedMember, now.getFullYear(), now.getMonth());
+    }
+  }
+  
 </script>
 </body>
 </html>
