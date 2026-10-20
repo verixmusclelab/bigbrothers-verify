@@ -176,8 +176,8 @@ th{color:#ffcc00;}
 
       <div class="row">
         <div class="field-group">
-          <label>जॉइनिंग तिथि (Joining Date)</label>
-          <input type="date" id="mFeeJoinDate" onchange="checkLateStatus()" onclick="this.showPicker()">
+          <label>जॉइनिंग तिथि (Joining Date) [🔒 केवल एडमिन]</label>
+          <input type="date" id="mFeeJoinDate" readonly style="background:#111; color:#aaa; cursor:not-allowed;" title="यह केवल एडमिन द्वारा बदली जा सकती है">
         </div>
         <div class="field-group">
           <label>अंतिम भुगतान तिथि (Previous Payment)</label>
@@ -375,7 +375,16 @@ th{color:#ffcc00;}
           <p style="font-size:10px; color:#777; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
         </div>
 
-            <div class="r-row"><span>Bill ID:</span><b id="billId" style="color:#b37400;"></b></div>
+        <div class="receipt-watermark">5 Brother's Fitness Club</div>
+
+        <div class="receipt-header">
+          <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">PAGE 1 : OFFICIAL INVOICE</div>
+          <h2 style="font-size:16px; margin-top:4px; font-weight:900;">5 Brother's Fitness Club</h2>
+          <div style="font-size:10px; font-weight:bold; color:#555; margin-top:2px;">"100% असली और असरदार रिजल्ट"</div>
+          <p style="font-size:10px; color:#777; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
+        </div>
+
+        <div class="r-row"><span>Bill ID:</span><b id="billId" style="color:#b37400;"></b></div>
         <div class="r-row"><span>प्रकार:</span><b id="rMode" style="color:#000;"></b></div>
         <div class="r-row"><span>जॉइनिंग तारीख:</span><b id="rJoinDate"></b></div>
         <div class="r-row"><span>भुगतान तारीख:</span><b id="billDate"></b></div>
@@ -457,17 +466,32 @@ const INITIAL_MEMBERS = [
 ];
 
 function getMasterList() {
-  let saved = localStorage.getItem("bbf_master_records_v4");
-  if (!saved) {
+  let masterSaved = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
+  let bfcSaved = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  let admSaved = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+
+  let combined = [...masterSaved, ...bfcSaved, ...admSaved];
+  let uniqueMap = new Map();
+
+  combined.forEach(m => {
+    let key = (m.phone && m.phone.length > 5) ? m.phone.trim() : (m.id ? m.id.toString() : m.name);
+    if (!uniqueMap.has(key)) {
+      if (!m.father && m.parentName) m.father = m.parentName;
+      if (!m.parentName && m.father) m.parentName = m.father;
+      uniqueMap.set(key, m);
+    }
+  });
+
+  let finalList = Array.from(uniqueMap.values());
+  if (finalList.length === 0) {
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(INITIAL_MEMBERS));
     return INITIAL_MEMBERS;
   }
-  return JSON.parse(saved);
+  return finalList;
 }
 
 window.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().split('T')[0];
-  document.getElementById("mFeeJoinDate").value = today;
   document.getElementById("mFeePaidDate").value = today;
   document.getElementById("mFeePrevPaidDate").value = today;
   updatePlanPrices();
@@ -546,7 +570,8 @@ function handleAutoSearch() {
   const matches = list.filter(mem => 
     (mem.name && mem.name.toLowerCase().includes(q)) ||
     (mem.phone && mem.phone.includes(q)) ||
-    (mem.father && mem.father.toLowerCase().includes(q))
+    (mem.father && mem.father.toLowerCase().includes(q)) ||
+    (mem.parentName && mem.parentName.toLowerCase().includes(q))
   );
 
   card.style.display = "block";
@@ -554,14 +579,14 @@ function handleAutoSearch() {
     let html = `<div style="font-size:10px; color:#ffcc00; margin-bottom:6px; font-weight:bold;">मिलते-जुलते सदस्य (${matches.length}):</div>`;
     matches.slice(0, 4).forEach(m => {
       const maskedPhone = m.phone ? (m.phone.slice(0, 4) + "****" + m.phone.slice(-2)) : "N/A";
-      const isPaid = m.status === 'Paid';
+      const isPaid = (m.status === 'Paid' || m.manualStatus === 'Paid' || m.fees === 'Paid');
       html += `
         <div style="background:#222; border:1px solid #444; border-radius:6px; padding:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
           <div>
             <b style="color:#fff; font-size:12px;">${m.name}</b><br>
-            <small style="color:#aaa;">Ph: ${maskedPhone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${m.status}</span></small>
+            <small style="color:#aaa;">Ph: ${maskedPhone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPaid ? 'Paid' : 'Pending'}</span></small>
           </div>
-          <button type="button" onclick="autoFillById(${m.id})" style="background:#ffcc00; color:#000; border:none; padding:5px 9px; border-radius:4px; font-weight:bold; font-size:11px; cursor:pointer;">लोड करें</button>
+          <button type="button" onclick="autoFillById('${m.id || m.phone}')" style="background:#ffcc00; color:#000; border:none; padding:5px 9px; border-radius:4px; font-weight:bold; font-size:11px; cursor:pointer;">लोड करें</button>
         </div>
       `;
     });
@@ -571,16 +596,21 @@ function handleAutoSearch() {
   }
 }
 
-function autoFillById(memberId) {
-  const m = getMasterList().find(x => x.id === memberId);
+function autoFillById(identifier) {
+  const m = getMasterList().find(x => (x.id && x.id.toString() === identifier.toString()) || (x.phone && x.phone.toString() === identifier.toString()));
   if (!m) return;
-  document.getElementById("mFeeName").value = m.name;
-  document.getElementById("mFeeFather").value = (m.father && m.father !== "-") ? m.father : "";
-  document.getElementById("mFeePhone").value = m.phone;
-  document.getElementById("feeCategory").value = m.type || "job";
+
+  document.getElementById("mFeeName").value = m.name || "";
+  let fatherName = m.father || m.parentName || "";
+  document.getElementById("mFeeFather").value = (fatherName && fatherName !== "-") ? fatherName : "";
+  document.getElementById("mFeePhone").value = m.phone || "";
+  document.getElementById("feeCategory").value = m.type || (m.plan && m.plan.includes('विद्यार्थी') ? 'student' : 'job');
   updatePlanPrices();
-  document.getElementById("mFeeJoinDate").value = m.joinDate || new Date().toISOString().split('T')[0];
-  document.getElementById("mFeePrevPaidDate").value = m.lastPaid || new Date().toISOString().split('T')[0];
+
+  let jDate = m.joinDate || m.lastPaid || new Date().toISOString().split('T')[0];
+  document.getElementById("mFeeJoinDate").value = jDate;
+  document.getElementById("mFeePrevPaidDate").value = m.lastPaid || jDate;
+  
   checkLateStatus();
   document.getElementById("searchResultCard").style.display = "none";
   document.getElementById("feeSearchInput").value = m.name;
@@ -589,14 +619,17 @@ function autoFillById(memberId) {
 function getLateDaysDetails() {
   const joinDateVal = document.getElementById("mFeeJoinDate").value;
   const paidDateVal = document.getElementById("mFeePaidDate").value;
-  if (!joinDateVal || !paidDateVal) return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
+  const prevPaidVal = document.getElementById("mFeePrevPaidDate").value;
+   if (!joinDateVal || !paidDateVal) return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
 
-  const joinD = new Date(joinDateVal);
+  const refDateStr = prevPaidVal || joinDateVal;
+  const refD = new Date(refDateStr);
   const payD = new Date(paidDateVal);
 
-  const dueThisCycle = new Date(payD.getFullYear(), payD.getMonth(), joinD.getDate());
-  if (payD > dueThisCycle) {
-    const diffMs = payD - dueThisCycle;
+  refD.setMonth(refD.getMonth() + 1);
+
+  if (payD > refD) {
+    const diffMs = payD - refD;
     const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     return { isLate: true, days: days, text: `${days} दिन लेट ⚠️` };
   }
@@ -627,7 +660,7 @@ function handleInitialSubmit(e) {
   const planAmt = parseFloat(document.getElementById("mFeeAmount").value) || 0;
   const paidAmt = parseFloat(document.getElementById("mFeePaidAmount").value) || 0;
   const mode = document.getElementById("paymentMethod").value;
-    const paidDateVal = document.getElementById("mFeePaidDate").value;
+  const paidDateVal = document.getElementById("mFeePaidDate").value;
   const joinDateVal = document.getElementById("mFeeJoinDate").value;
   const prevPaidDateVal = document.getElementById("mFeePrevPaidDate").value;
   const isDiscountChecked = document.getElementById("chkSpecialDiscount").checked;
@@ -707,21 +740,29 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
   const prevDateFormatted = formatDateDMY(data.prevPaidDateVal);
 
   let list = getMasterList();
-  let existingIndex = list.findIndex(x => x.name.toLowerCase() === data.name.toLowerCase() || x.phone === data.phone);
+  let existingIndex = list.findIndex(x => (x.name && x.name.toLowerCase() === data.name.toLowerCase()) || x.phone === data.phone);
+  
   if (existingIndex >= 0) {
     list[existingIndex].status = "Paid";
+    list[existingIndex].manualStatus = "Paid";
+    list[existingIndex].fees = "Paid";
     list[existingIndex].payMode = shortMode;
     list[existingIndex].amount = data.paidAmt;
     list[existingIndex].lastPaid = data.paidDateVal;
+    list[existingIndex].father = data.father;
+    list[existingIndex].parentName = data.father;
   } else {
     list.push({ 
       id: Date.now(),
       name: data.name, 
       father: data.father, 
+      parentName: data.father,
       phone: data.phone, 
       emergency: "",
       address: "",
       status: "Paid", 
+      manualStatus: "Paid",
+      fees: "Paid",
       payMode: shortMode,
       amount: data.paidAmt, 
       lastPaid: data.paidDateVal, 
@@ -730,7 +771,9 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
       idSubmitted: true
     });
   }
+  
   localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
+  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
 
   const billId = "5BFC-" + Date.now().toString().slice(-4);
   document.getElementById("billId").innerText = billId;
@@ -782,12 +825,6 @@ ${prevPayMsg}
 ${specialDiscountMsg}• *बकाया राशि:* ₹${data.dueAmt} ${data.dueAmt === 0 ? '(कोई बकाया नहीं)' : '⚠️'}
 • *अगला भुगतान:* ${validTill}
 • *खाता स्थिति:* सक्रिय (Active)
-━━━━━━━━━━━━━━━━━━━━
-💡 *स्मार्ट बचत योजना (Save Money):*
-हर महीने फीस जमा करने के बजाय लंबी सदस्यता लेकर बचत करें:
-• 3 महीने का प्लान: ₹1,200 *(सीधे ₹300 की बचत)*
-• 6 महीने का प्लान: ₹2,200 *(सीधे ₹800 की बचत)*
-*(अगली बार लंबा प्लान चुनें और पैसे बचाएं)*
 ━━━━━━━━━━━━━━━━━━━━
 📍 उमराव खेड़ा, अकरमपुर, उन्नाव
 📞 संपर्क: 9140417259`;
@@ -890,10 +927,12 @@ function renderAdminTable() {
     const dueDay = m.joinDate ? parseInt(m.joinDate.split('-')[2]) : "-";
     let tr = document.createElement("tr");
 
+    let isPaid = (m.status === 'Paid' || m.manualStatus === 'Paid' || m.fees === 'Paid');
+
     let idStatusHtml = "-";
     if (m.type === "student") {
       idStatusHtml = `
-        <button type="button" onclick="toggleStudentIdById(${m.id})" style="padding:3px 6px; font-size:10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; background:${m.idSubmitted ? '#00ff66' : '#ff4444'}; color:${m.idSubmitted ? '#000' : '#fff'};">
+        <button type="button" onclick="toggleStudentIdById('${m.id || m.phone}')" style="padding:3px 6px; font-size:10px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; background:${m.idSubmitted ? '#00ff66' : '#ff4444'}; color:${m.idSubmitted ? '#000' : '#fff'};">
           ${m.idSubmitted ? 'Yes (जमा)' : 'No (बाकी)'}
         </button>
       `;
@@ -906,7 +945,7 @@ function renderAdminTable() {
         <small style="color:#888;">${m.phone}</small>
       </td>
       <td>
-        <span style="color:${m.status === 'Paid' ? '#00ff66' : '#ff4444'}; font-weight:bold;">${m.status}</span>
+        <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPaid ? 'Paid' : 'Pending'}</span>
       </td>
       <td>
         <span style="background:#222; padding:2px 6px; border-radius:4px; font-size:10px; color:#ffcc00;">${m.payMode || 'Cash'}</span>
@@ -914,11 +953,11 @@ function renderAdminTable() {
       <td>${idStatusHtml}</td>
       <td>
         <div style="display:flex; gap:3px;">
-          <button type="button" onclick="toggleMemberPaidById(${m.id})" style="padding:4px 6px; background:${m.status === 'Paid' ? '#444' : '#00ff66'}; color:${m.status === 'Paid' ? '#fff' : '#000'}; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">
-            ${m.status === 'Paid' ? 'Pending' : '✓ Paid'}
+          <button type="button" onclick="toggleMemberPaidById('${m.id || m.phone}')" style="padding:4px 6px; background:${isPaid ? '#444' : '#00ff66'}; color:${isPaid ? '#fff' : '#000'}; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">
+            ${isPaid ? 'Pending' : '✓ Paid'}
           </button>
-          <button type="button" onclick="showMemberDetailById(${m.id})" style="padding:4px 6px; background:#ffcc00; color:#000; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">👁</button>
-          <button type="button" onclick="deleteMemberById(${m.id})" style="padding:4px 6px; background:#ff3333; color:#fff; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">🗑️</button>
+          <button type="button" onclick="showMemberDetailById('${m.id || m.phone}')" style="padding:4px 6px; background:#ffcc00; color:#000; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">👁</button>
+          <button type="button" onclick="deleteMemberById('${m.id || m.phone}')" style="padding:4px 6px; background:#ff3333; color:#fff; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">🗑️</button>
         </div>
       </td>
     `;
@@ -926,55 +965,57 @@ function renderAdminTable() {
   });
 }
 
-function toggleStudentIdById(memberId) {
+function toggleStudentIdById(identifier) {
   let list = getMasterList();
-  const idx = list.findIndex(x => x.id === memberId);
+  const idx = list.findIndex(x => (x.id && x.id.toString() === identifier.toString()) || (x.phone && x.phone.toString() === identifier.toString()));
   if (idx < 0) return;
 
   list[idx].idSubmitted = !list[idx].idSubmitted;
   localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  
-  if (!list[idx].idSubmitted) {
-    const m = list[idx];
-    const warnMsg = `⚠️ *सूचना: 5 Brother's Fitness Club*\n\nप्रिय सदस्य *${m.name}*,\nआपका स्कूल/कॉलेज आईडी कार्ड (Student ID) अभी तक जिम में जमा नहीं हुआ है।\n\nकृपया *72 घंटे (3 दिन)* के अंदर अपना मान्य आईडी कार्ड जमा करें, अन्यथा आपकी सदस्यता नियमित (Job/Business) में बदल दी जाएगी और मासिक फीस ₹300 से बढ़कर ₹500 हो जाएगी।\n\n- सौरभ सिंह चंदेल (5 Brother's Fitness Club)`;
-    
-    if (confirm(`आईडी जमा नहीं है! क्या ${m.name} (${m.phone}) को 72 घंटे की चेतावनी का WhatsApp भेजना चाहते हैं?`)) {
-      window.open("https://wa.me/91" + m.phone + "?text=" + encodeURIComponent(warnMsg), "_blank");
-    }
-  }
+  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
   renderAdminTable();
 }
 
-function toggleMemberPaidById(memberId) {
+function toggleMemberPaidById(identifier) {
   let list = getMasterList();
-  const idx = list.findIndex(x => x.id === memberId);
+  const idx = list.findIndex(x => (x.id && x.id.toString() === identifier.toString()) || (x.phone && x.phone.toString() === identifier.toString()));
   if (idx < 0) return;
 
-  list[idx].status = (list[idx].status === "Paid") ? "Pending" : "Paid";
+  let currentPaid = (list[idx].status === 'Paid' || list[idx].manualStatus === 'Paid');
+  let nextStatus = currentPaid ? "Pending" : "Paid";
+
+  list[idx].status = nextStatus;
+  list[idx].manualStatus = nextStatus;
+  list[idx].fees = nextStatus;
   list[idx].lastPaid = new Date().toISOString().split('T')[0];
+  
   localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
+  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
   renderAdminTable();
 }
 
-function showMemberDetailById(memberId) {
-  const m = getMasterList().find(x => x.id === memberId);
+function showMemberDetailById(identifier) {
+  const m = getMasterList().find(x => (x.id && x.id.toString() === identifier.toString()) || (x.phone && x.phone.toString() === identifier.toString()));
   if (!m) return;
-  alert(`📋 सदस्य सम्पूर्ण रिकॉर्ड (ADMIN ONLY):\n\nनाम: ${m.name}\nपिता का नाम: ${m.father || 'N/A'}\nमोबाइल: ${m.phone}\nइमरजेंसी संपर्क: ${m.emergency || 'उपलब्ध नहीं'}\nपता: ${m.address || 'उपलब्ध नहीं'}\nश्रेणी: ${m.type === 'student' ? 'विद्यार्थी' : 'जॉब/व्यापार'}\nस्थिति: ${m.status}\nमाध्यम: ${m.payMode || 'Cash'}\nस्टूडेंट ID: ${m.type === 'student' ? (m.idSubmitted ? 'जमा है' : 'बाकी है') : 'लागू नहीं'}\nअंतिम पेमेंट तिथि: ${m.lastPaid || 'N/A'}\nजॉइनिंग तिथि: ${m.joinDate || 'N/A'}`);
+  alert(`📋 सदस्य सम्पूर्ण रिकॉर्ड (ADMIN ONLY):\n\nनाम: ${m.name}\nपिता का नाम: ${m.father || m.parentName || 'N/A'}\nमोबाइल: ${m.phone}\nश्रेणी: ${m.type === 'student' ? 'विद्यार्थी' : 'जॉब/व्यापार'}\nस्थिति: ${m.status || m.manualStatus}\nमाध्यम: ${m.payMode || 'Cash'}\nअंतिम पेमेंट तिथि: ${m.lastPaid || 'N/A'}\nजॉइनिंग तिथि: ${m.joinDate || 'N/A'}`);
 }
 
-function deleteMemberById(memberId) {
+function deleteMemberById(identifier) {
   let list = getMasterList();
-  const m = list.find(x => x.id === memberId);
+  const m = list.find(x => (x.id && x.id.toString() === identifier.toString()) || (x.phone && x.phone.toString() === identifier.toString()));
   if (!m) return;
 
   let pin = prompt(`⚠️ क्या आप "${m.name}" का भुगतान स्टेटस रद्द (Reset to Pending) करना चाहते हैं?\nAdmin PIN दर्ज करें:`);
   if (pin === ADMIN_PIN) {
     m.status = "Pending";
+    m.manualStatus = "Pending";
+    m.fees = "Due";
     m.payMode = "-";
     m.amount = 0;
     m.lastPaid = "";
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-    alert(`✅ "${m.name}" की फीस स्थिति रद्द कर दी गई है (अब Pending है)। सदस्य रजिस्टर में सुरक्षित है।`);
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+    alert(`✅ "${m.name}" की फीस स्थिति रद्द कर दी गई है (अब Pending है)।`);
     renderAdminTable();
   } else {
     alert("❌ गलत Admin PIN! कोई बदलाव नहीं किया गया।");
@@ -1011,6 +1052,7 @@ function handleManualAddSubmit(e) {
     id: Date.now(),
     name: name,
     father: father,
+    parentName: father,
     phone: phone,
     emergency: emergency,
     address: address,
@@ -1018,6 +1060,8 @@ function handleManualAddSubmit(e) {
     joinDate: joinDate,
     lastPaid: (status === "Paid") ? joinDate : "",
     status: status,
+    manualStatus: status,
+    fees: status === 'Paid' ? 'Paid' : 'Due',
     payMode: "Cash",
     amount: amt,
     idSubmitted: (type === "student" ? false : true)
@@ -1025,17 +1069,19 @@ function handleManualAddSubmit(e) {
 
   list.push(newMember);
   localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  alert(`✅ नया सदस्य "${name}" सफलतापूर्वक रजिस्टर में हमेशा के लिए जोड़ दिया गया!`);
+  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+  alert(`✅ नया सदस्य "${name}" सफलतापूर्वक जोड़ दिया गया है!`);
   closeAddMemberModal();
   renderAdminTable();
 }
 
 function downloadCSV() {
   const list = getMasterList();
-  let csv = "क्र.,तारीख,सदस्य का नाम,पिता का नाम,मोबाइल नंबर,इमरजेंसी संपर्क,पता,श्रेणी,स्थिति,माध्यम,आईडी जमा,अंतिम पेमेंट\n";
+  let csv = "क्र.,तारीख,सदस्य का नाम,पिता का नाम,मोबाइल नंबर,श्रेणी,स्थिति,माध्यम,अंतिम पेमेंट\n";
   list.forEach((m, i) => {
     let day = m.joinDate ? m.joinDate.split('-')[2] : '-';
-    csv += `"${i+1}","${day} तारीख","${m.name}","${m.father || '-'}","${m.phone}","${m.emergency || '-'}","${m.address || '-'}","${m.type || '-'}","${m.status}","${m.payMode || 'Cash'}","${m.idSubmitted ? 'Yes' : 'No'}","${m.lastPaid || '-'}"\n`;
+    let isPaid = (m.status === 'Paid' || m.manualStatus === 'Paid' || m.fees === 'Paid');
+    csv += `"${i+1}","${day} तारीख","${m.name}","${m.father || m.parentName || '-'}","${m.phone}","${m.type || '-'}","${isPaid ? 'Paid' : 'Pending'}","${m.payMode || 'Cash'}","${m.lastPaid || '-'}"\n`;
   });
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement("a");
@@ -1075,7 +1121,7 @@ function renderRefTags() {
 
 function removeRefTag(idx) {
   referredList.splice(idx, 1);
-  referralCount = referredList.length;
+  referralCount = referralCount = referredList.length;
   renderRefTags();
   calculateFinalAmount();
 }
@@ -1092,4 +1138,3 @@ function closeBillModalAndReset() {
 </script>
 </body>
 </html>
-
