@@ -694,9 +694,9 @@ function handleAttendanceClick() {
         alert("❌ Aapke browser mein GPS support nahi hai!");
         return;
     }
-    const GYM_LAT = 26.5460; 
-    const GYM_LNG = 80.4870; 
-    const ALLOWED_DISTANCE_METERS = 300; // दायरा बढ़ाकर 300 मीटर कर दिया गया है (इंडोर GPS के लिए)
+    const GYM_LAT = 26.5187839; 
+    const GYM_LNG = 80.446607; 
+    const ALLOWED_DISTANCE_METERS = 1000; // दायरा बढ़ाकर 1000 मीटर कर दिया गया है (इंडोर GPS के लिए)
 
     navigator.geolocation.getCurrentPosition(
         (position) => {
