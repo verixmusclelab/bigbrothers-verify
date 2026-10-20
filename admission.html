@@ -396,8 +396,9 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   if (records.length === 0) {
-    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(DEFAULT_MASTER_ROSTER));
-  }
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
+    
   renderAdminTable();
 });
 
