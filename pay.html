@@ -595,7 +595,6 @@ function handleAutoSearch() {
     card.innerHTML = `<div style="color:#ff6666; font-size:11px; text-align:center;">कोई सदस्य नहीं मिला।</div>`;
   }
 }
-
 function autoFillById(identifier) {
   const m = getMasterList().find(x => (x.id && x.id.toString() === identifier.toString()) || (x.phone && x.phone.toString() === identifier.toString()));
   if (!m) return;
@@ -604,18 +603,23 @@ function autoFillById(identifier) {
   let fatherName = m.father || m.parentName || "";
   document.getElementById("mFeeFather").value = (fatherName && fatherName !== "-") ? fatherName : "";
   document.getElementById("mFeePhone").value = m.phone || "";
-  document.getElementById("feeCategory").value = m.type || (m.plan && m.plan.includes('विद्यार्थी') ? 'student' : 'job');
+  
+  const category = m.type || (m.plan && m.plan.includes('विद्यार्थी') ? 'student' : 'job');
+  document.getElementById("feeCategory").value = category;
+  
   updatePlanPrices();
 
   let jDate = m.joinDate || m.lastPaid || new Date().toISOString().split('T')[0];
   document.getElementById("mFeeJoinDate").value = jDate;
   document.getElementById("mFeePrevPaidDate").value = m.lastPaid || jDate;
   
+  calculateFinalAmount();
   checkLateStatus();
-  document.getElementById("searchResultCard").style.display = "none";
+
+    document.getElementById("searchResultCard").style.display = "none";
   document.getElementById("feeSearchInput").value = m.name;
 }
-
+  
 function getLateDaysDetails() {
   const joinDateVal = document.getElementById("mFeeJoinDate").value;
   const paidDateVal = document.getElementById("mFeePaidDate").value;
