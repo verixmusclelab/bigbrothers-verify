@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5BFC - File Version & Backup Manager</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+    body { background: #080808; color: #fff; padding: 16px; max-width: 600px; margin: 0 auto; }
+    .header { background: linear-gradient(135deg, #221d0a 0%, #111111 100%); border: 2px solid #ffcc00; border-radius: 14px; padding: 16px; text-align: center; margin-bottom: 20px; }
+    .title { font-size: 18px; font-weight: 900; color: #ffcc00; text-transform: uppercase; }
+    .card { background: #141414; border: 1.5px solid #282828; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+    .btn { background: #ffcc00; color: #000; font-weight: bold; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; width: 100%; margin-top: 8px; }
+    .btn-restore { background: #00ff66; color: #000; }
+    .log-item { background: #1f1f1f; border-left: 3px solid #ffcc00; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 11.5px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2 class="title">🛡️ 5BFC File Auto-Backup & Restore Manager</h2>
+    <p style="color:#aaa; font-size:11px; margin-top:4px;">ग़लत कोडिंग या फाइल खराब होने पर एक क्लिक में पुरानी वर्शन वापस लाएं!</p>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:bold; color:#ffcc00; margin-bottom:8px;">📁 फाइल बैकअप बनाएं (Manual Snapshot)</div>
+    <select id="targetFileSelect" style="width:100%; background:#1f1f1f; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:12px; margin-bottom:8px;">
+      <option value="admission.html">admission.html</option>
+      <option value="app.html">app.html</option>
+      <option value="attendance.html">attendance.html</option>
+      <option value="store.html">store.html</option>
+    </select>
+    <textarea id="fileContentInput" placeholder="यहाँ उस फाइल का पूरा कोड पेस्ट करें जिसका बैकअप लेना है..." style="width:100%; height:100px; background:#1f1f1f; border:1px solid #444; color:#fff; padding:8px; border-radius:8px; font-size:11px; resize:vertical; margin-bottom:8px;"></textarea>
+    <button type="button" onclick="saveFileSnapshot()" class="btn">💾 इस वर्शन का बैकअप लें (Save Snapshot)</button>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:bold; color:#00ff66; margin-bottom:8px;">📜 बदलाव का इतिहास और रिस्टोर (History & Rollback)</div>
+    <div id="backupHistoryList"></div>
+  </div>
+
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  renderBackupHistory();
+});
+
+function saveFileSnapshot() {
+  const fileName = document.getElementById("targetFileSelect").value;
+  const content = document.getElementById("fileContentInput").value.trim();
+  
+  if (!content) {
+    alert("❌ कृपया फाइल का कोड पेस्ट करें!");
+    return;
+  }
+
+  const now = new Date();
+  const timeString = now.toLocaleDateString('hi-IN') + " - " + now.toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  let backups = JSON.parse(localStorage.getItem("5bfc_file_backups") || "[]");
+  
+  const newBackup = {
+    id: Date.now(),
+    fileName: fileName,
+    timestamp: timeString,
+    content: content
+  };
+
+  backups.unshift(newBackup);
+  // Keep last 20 backups max
+  if (backups.length > 20) backups.pop();
+
+  localStorage.setItem("5bfc_file_backups", JSON.stringify(backups));
+  document.getElementById("fileContentInput").value = "";
+  alert(`✅ ${fileName} का बैकअप सफलताપूर्वक ${timeString} पर सेव हो गया है!`);
+  renderBackupHistory();
+}
+
+function renderBackupHistory() {
+  const container = document.getElementById("backupHistoryList");
+  let backups = JSON.parse(localStorage.getItem("5bfc_file_backups") || "[]");
+
+  if (backups.length === 0) {
+    container.innerHTML = `<div style="color:#666; text-align:center; padding:10px; font-size:11px;">कोई पुराना बैकअप उपलब्ध नहीं है।</div>`;
+    return;
+  }
+
+  container.innerHTML = backups.map(b => `
+    <div class="log-item">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <b style="color:#ffcc00;">📄 ${b.fileName}</b>
+        <span style="color:#00ff66; font-size:10px;">⏰ ${b.timestamp}</span>
+      </div>
+      <div style="font-size:10px; color:#aaa; margin-bottom:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:450px;">
+        कोड स्निपेट: ${b.content.substring(0, 60)}...
+      </div>
+      <div style="display:flex; gap:6px;">
+        <button type="button" onclick="restoreBackupCode(${b.id})" class="btn btn-restore" style="margin-top:0; padding:6px;">🔄 इस वर्शन पर वापस जाएं (Restore)</button>
+        <button type="button" onclick="deleteBackup(${b.id})" class="btn" style="margin-top:0; padding:6px; background:#ff3333; color:#fff; width:auto;">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function restoreBackupCode(id) {
+  let backups = JSON.parse(localStorage.getItem("5bfc_file_backups") || "[]");
+  let target = backups.find(b => b.id === id);
+  if (!target) return;
+
+  if (confirm(`⚠️ क्या आप वाकई ${target.fileName} को इस पुराने वर्शन (${target.timestamp}) से बदलना चाहते हैं?`)) {
+    // Copy content to clipboard or display for easy pasting
+    navigator.clipboard.writeText(target.content).then(() => {
+      alert(`✅ ${target.fileName} का कोड कॉपी हो गया है! अब आप अपनी गिटहब या कोडिंग फाइल में इसे पेस्ट कर सकते हैं।`);
+    }).catch(() => {
+      prompt("नीचे दिए गए कोड को कॉपी करें:", target.content);
+    });
+  }
+}
+
+function deleteBackup(id) {
+  if (confirm("क्या आप इस बैकअप को हटाना चाहते हैं?")) {
+    let backups = JSON.parse(localStorage.getItem("5bfc_file_backups") || "[]");
+    let filtered = backups.filter(b => b.id !== id);
+    localStorage.setItem("5bfc_file_backups", JSON.stringify(filtered));
+    renderBackupHistory();
+  }
+}
+</script>
+
+</body>
+</html>
