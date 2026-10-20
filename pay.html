@@ -620,7 +620,7 @@ function getLateDaysDetails() {
   const joinDateVal = document.getElementById("mFeeJoinDate").value;
   const paidDateVal = document.getElementById("mFeePaidDate").value;
   const prevPaidVal = document.getElementById("mFeePrevPaidDate").value;
-   if (!joinDateVal || !paidDateVal) return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
+  if (!joinDateVal || !paidDateVal) return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
 
   const refDateStr = prevPaidVal || joinDateVal;
   const refD = new Date(refDateStr);
@@ -635,6 +635,7 @@ function getLateDaysDetails() {
   }
   return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
 }
+  
 
 function checkLateStatus() {
   const lateInfo = getLateDaysDetails();
@@ -732,12 +733,14 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
   const data = pendingPaymentData;
   if (!data) return;
 
-  let n = data.paidDateVal ? new Date(data.paidDateVal) : new Date();
-  n.setMonth(n.getMonth() + data.months);
-  const validTill = n.toLocaleDateString('en-GB');
-  const paidDateFormatted = formatDateDMY(data.paidDateVal);
-  const joinDateFormatted = formatDateDMY(data.joinDateVal);
-  const prevDateFormatted = formatDateDMY(data.prevPaidDateVal);
+    // अगला भुगतान हमेशा जॉइनिंग तारीख के हिसाब से अगले महीने की फिक्स तारीख पर होगा
+  let baseDateForNext = data.joinDateVal ? new Date(data.joinDateVal) : new Date();
+  baseDateForNext.setMonth(baseDateForNext.getMonth() + data.months);
+   const validTill = baseDateForNext.toLocaleDateString('en-GB');
+   const validTill = n.toLocaleDateString('en-GB');
+   const paidDateFormatted = formatDateDMY(data.paidDateVal);
+   const joinDateFormatted = formatDateDMY(data.joinDateVal);
+   const prevDateFormatted = formatDateDMY(data.prevPaidDateVal);
 
   let list = getMasterList();
   let existingIndex = list.findIndex(x => (x.name && x.name.toLowerCase() === data.name.toLowerCase()) || x.phone === data.phone);
@@ -827,7 +830,7 @@ ${specialDiscountMsg}• *बकाया राशि:* ₹${data.dueAmt} ${dat
 • *खाता स्थिति:* सक्रिय (Active)
 ━━━━━━━━━━━━━━━━━━━━
 📍 उमराव खेड़ा, अकरमपुर, उन्नाव
-📞 संपर्क: 9140417259`;
+📞 संपर्क: 9990954574`;
 
   document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + data.phone + "?text=" + encodeURIComponent(msg), "_blank");
 
