@@ -1037,6 +1037,25 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
   `);
   printWin.document.close();
 }
+    // Admission Form aur Attendance/Fees data ko aapas mein sync karne ka safe helper
+  function getSyncedMembersList() {
+    let rawMembers = localStorage.getItem("5bfc_members");
+    if (!rawMembers) return [];
+    
+    try {
+      let members = JSON.parse(rawMembers);
+      members.forEach(m => {
+        if (!m.joinDate) {
+          m.joinDate = m.lastPaid || '2026-10-01';
+        }
+      });
+      return members;
+    } catch(e) {
+      console.error("Data Sync Error:", e);
+      return [];
+    }
+  }
+  
 </script>
 </body>
 </html>
