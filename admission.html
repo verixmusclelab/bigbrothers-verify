@@ -450,11 +450,23 @@ function autofillMemberForm(m) {
   document.getElementById("admHeight").value = m.height || "";
   document.getElementById("admWeight").value = m.weight || "";
   document.getElementById("admBloodGroup").value = m.bloodGroup || "";
+
+  // Plan aur Duration ko sahi se set karne ke liye
+  if (m.plan) {
+    const durationSelect = document.getElementById("admDurationSelect");
+    for (let i = 0; i < durationSelect.options.length; i++) {
+      if (durationSelect.options[i].text.includes(m.plan) || m.plan.includes(durationSelect.options[i].text)) {
+        durationSelect.selectedIndex = i;
+        break;
+      }
+    }
+    calculateAdmissionFee();
+  }
   
   goToStep(2);
-  alert("✅ पुराने सदस्य का डेटा फॉर्म में भर दिया गया है!");
+  alert("✅ पुराने सदस्य का डेटा, पिता का नाम और प्लान फॉर्म में भर दिया गया है!");
 }
-  
+    
 
 function updatePlanDurations() {
   const cat = document.getElementById("admCategorySelect").value;
@@ -514,7 +526,7 @@ function searchUnnaoAreas() {
   const query = document.getElementById("unnaoAreaInput").value.trim().toLowerCase();
   const dropdown = document.getElementById("unnaoAreaDropdown");
   if (!query) { dropdown.style.display = "none"; return; }
-  let pool = ["अकरमपुर - 209862", "उमराव खेड़ा - 209862", "दही चौकी - 209862", "सिविल लाइंस - 209801"];
+  let pool = ["अकरमपुर - 209862", "उमराव खेड़ा - 209862", "मसवासी- 209862", "देवी खेड़ा- 209862"];
   const matched = pool.filter(l => l.toLowerCase().includes(query));
   if(matched.length > 0) {
     dropdown.style.display = "block";
