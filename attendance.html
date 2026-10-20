@@ -1151,7 +1151,7 @@ function handleAttendanceClick() {
   };
 
     // Member ke liye Monthly Calendar render karne ka function
-  function renderAttendanceCalendar(member, year, month) {
+    function renderAttendanceCalendar(member, year, month) {
     const grid = document.getElementById("calendarDaysGrid");
     const title = document.getElementById("calendarMonthTitle");
     const counter = document.getElementById("totalPresentCounter");
@@ -1167,7 +1167,7 @@ function handleAttendanceClick() {
     
     const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
     
-    let joinDateStr = member.joinDate || '2026-10-01';
+    let joinDateStr = member.joinDate || member.lastPaid || '2026-10-01';
     let joinDate = new Date(joinDateStr);
 
     let presentCount = 0;
@@ -1199,6 +1199,7 @@ function handleAttendanceClick() {
         statusDot = `<div style="width:4px; height:4px; background:#00ff66; border-radius:50%; margin:2px auto 0;"></div>`;
       }
 
+      // Safe onclick binding for toggle
       grid.innerHTML += `
         <div onclick="${isBeforeJoin ? '' : `toggleCalendarDay('${member.id}', '${dayISO}')`}" 
              style="${bgStyle} border-radius:6px; padding:6px 2px; text-align:center; font-size:11px; font-weight:bold; cursor:${isBeforeJoin ? 'not-allowed' : 'pointer'};">
@@ -1209,10 +1210,10 @@ function handleAttendanceClick() {
     }
 
     if(counter) counter.innerText = `Total Present: ${presentCount} Days`;
-  }
-
+    }
+  
   // Admin click karke kisi bhi din ko Present/Absent toggle kar sake
-  function toggleCalendarDay(memberId, dateISO) {
+    function toggleCalendarDay(memberId, dateISO) {
     let dayMap = fetchAttendanceMapForDate(dateISO);
     let isCurrentlyPresent = dayMap[memberId] && dayMap[memberId].isReal;
 
@@ -1224,11 +1225,14 @@ function handleAttendanceClick() {
 
     localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
     
-    if (window.currentlyLoadedMember) {
+    // Global variable ya current member find karke re-render karein
+    let allRecords = fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (m) {
       let now = new Date();
-      renderAttendanceCalendar(window.currentlyLoadedMember, now.getFullYear(), now.getMonth());
+      renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
     }
-  }
+   }
   
 </script>
 </body>
