@@ -306,7 +306,7 @@
   <!-- STEP 5: PAYMENT SELECTION -->
   <div id="stepBox5" style="display:none; margin-top:10px;">
     <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
-          5. भुगतान माध्यम (Payment Mode)
+      5. भुगतान माध्यम (Payment Mode)
     </div>
 
     <div style="display:flex; gap:10px; margin-bottom:14px;">
@@ -360,7 +360,6 @@
     </div>
   </div>
 
-  <!-- ADMIN AUTO SEARCH BAR -->
   <div style="margin-bottom:10px;">
     <input 
       type="text" 
@@ -396,9 +395,8 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   if (records.length === 0) {
-    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
-    localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
-    
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(DEFAULT_MASTER_ROSTER));
+  }
   renderAdminTable();
 });
 
@@ -410,7 +408,7 @@ function searchAndDownloadAdmissionCard() {
 
   let allRecords = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
   
-    const matched = allRecords.filter(m => {
+  const matched = allRecords.filter(m => {
     const nameMatch = m.name && m.name.toLowerCase().includes(query);
     const phoneMatch = m.phone && m.phone.includes(query);
     const codeMatch = m.code && m.code.toLowerCase().includes(query);
@@ -422,7 +420,7 @@ function searchAndDownloadAdmissionCard() {
     return;
   }
 
-    resultsBox.innerHTML = matched.map(m => `
+  resultsBox.innerHTML = matched.map(m => `
     <div style="background:#1c1c1c; border:1px solid #00ff66; border-radius:6px; padding:8px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
       <div style="font-size:11px;">
         <b style="color:#ffcc00;">${m.name}</b> (${m.phone})<br>
@@ -451,23 +449,10 @@ function autofillMemberForm(m) {
   document.getElementById("admHeight").value = m.height || "";
   document.getElementById("admWeight").value = m.weight || "";
   document.getElementById("admBloodGroup").value = m.bloodGroup || "";
-
-  // Plan aur Duration ko sahi se set karne ke liye
-  if (m.plan) {
-    const durationSelect = document.getElementById("admDurationSelect");
-    for (let i = 0; i < durationSelect.options.length; i++) {
-      if (durationSelect.options[i].text.includes(m.plan) || m.plan.includes(durationSelect.options[i].text)) {
-        durationSelect.selectedIndex = i;
-        break;
-      }
-    }
-    calculateAdmissionFee();
-  }
   
   goToStep(2);
-  alert("✅ पुराने सदस्य का डेटा, पिता का नाम और प्लान फॉर्म में भर दिया गया है!");
+  alert("✅ पुराने सदस्य का डेटा फॉर्म में भर दिया गया है!");
 }
-    
 
 function updatePlanDurations() {
   const cat = document.getElementById("admCategorySelect").value;
@@ -527,7 +512,7 @@ function searchUnnaoAreas() {
   const query = document.getElementById("unnaoAreaInput").value.trim().toLowerCase();
   const dropdown = document.getElementById("unnaoAreaDropdown");
   if (!query) { dropdown.style.display = "none"; return; }
-  let pool = ["अकरमपुर - 209862", "उमराव खेड़ा - 209862", "मसवासी- 209862", "देवी खेड़ा- 209862"];
+  let pool = ["अकरमपुर - 209862", "उमराव खेड़ा - 209862", "दही चौकी - 209862", "सिविल लाइंस - 209801"];
   const matched = pool.filter(l => l.toLowerCase().includes(query));
   if(matched.length > 0) {
     dropdown.style.display = "block";
@@ -671,7 +656,6 @@ function submitAdmissionForm() {
     localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
 
-    // WhatsApp Message Trigger for both Cash and Online
     let waMsg = "";
     if (selectedPaymentMode === "Cash") {
       waMsg = `📢 *NEW ADMISSION (CASH PAYMENT)*%0A👤 नाम: ${memberData.name}%0A📞 फोन: ${memberData.phone}%0A📦 प्लान: ${memberData.plan}%0A💰 फीस: ₹${totalNum} (Pending / Cash)%0A🆔 ID: ${memberData.code}%0A%0Aफॉर्म सफलतापूर्वक जमा हो गया है। कृपया एडमिन डेस्क से अप्रूव करें।`;
@@ -680,7 +664,6 @@ function submitAdmissionForm() {
     }
     window.open(`https://wa.me/919140417259?text=${waMsg}`, '_blank');
 
-    // Success Modal in Hindi with instant download
     const modalHtml = `
       <div id="customSuccessModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;">
         <div style="background:#121212; border:2px solid #00ff66; border-radius:16px; max-width:400px; width:100%; padding:22px; text-align:center; color:#fff; box-shadow:0 0 30px rgba(0,255,102,0.3);">
@@ -702,7 +685,7 @@ function submitAdmissionForm() {
     renderAdminTable();
   };
 
-if (photoInput && photoInput.files && photoInput.files[0]) {
+  if (photoInput && photoInput.files && photoInput.files[0]) {
     resizeImageToDataUrl(photoInput.files[0], 300, 400, function(compressedPhoto) {
       photoDataUrl = compressedPhoto;
       if (signInput && signInput.files && signInput.files[0]) {
@@ -837,7 +820,6 @@ function exportAdmissionsToCSV() {
   a.click();
 }
 
-// EXACT PHYSICAL-STYLE 2-PAGE ADMISSION FORM DOWNLOAD
 function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
   const m = customMember || activeReceiptMember;
   if (!m) return;
@@ -971,7 +953,6 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
         </div>
       </div>
 
-
       <!-- PAGE 2 -->
       <div class="page" style="page-break-before: always;">
         <div style="text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px;">
@@ -1038,37 +1019,18 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
               <td>Current</td><td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
           </table>
-        </div>
+       </div>
 
       </div>
 
       <div class="no-print">
-        <button class="btn-print" onclick="window.print()">🖨️ प्रिंट निकालें / PDF सेव करें</button>
+        <<button class="btn-print" onclick="window.print()">🖨️ प्रिंट निकालें / PDF सेव करें</button>
       </div>
     </body>
     </html>
   `);
   printWin.document.close();
 }
-    // Admission Form aur Attendance/Fees data ko aapas mein sync karne ka safe helper
-  function getSyncedMembersList() {
-    let rawMembers = localStorage.getItem("5bfc_members");
-    if (!rawMembers) return [];
-    
-    try {
-      let members = JSON.parse(rawMembers);
-      members.forEach(m => {
-        if (!m.joinDate) {
-          m.joinDate = m.lastPaid || '2026-10-01';
-        }
-      });
-      return members;
-    } catch(e) {
-      console.error("Data Sync Error:", e);
-      return [];
-    }
-  }
-  
 </script>
 </body>
 </html>
