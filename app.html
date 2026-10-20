@@ -115,32 +115,6 @@
 </head>
 <body>
 
-  <!-- Intro Video Splash Screen Overlay -->
-  <div id="introVideoOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:999999; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-    <video id="splashVideo" autoplay playsinline muted style="max-width:100%; max-height:85vh; object-fit:contain;">
-      <source src="5 Brother's_20261020_094238.mp4" type="video/mp4">
-      आपका ब्राउज़र वीडियो सपोर्ट नहीं करता।
-    </video>
-    <button type="button" onclick="closeIntroVideo()" style="margin-top:15px; background:#ffcc00; color:#000; font-weight:bold; border:none; padding:8px 20px; border-radius:6px; cursor:pointer; font-size:12px;">
-      Skip Video ➔
-    </button>
-  </div>
-
-  <script>
-    document.getElementById('splashVideo').addEventListener('ended', function() {
-      closeIntroVideo();
-    });
-
-    function closeIntroVideo() {
-      const overlay = document.getElementById('introVideoOverlay');
-      if (overlay) {
-        overlay.style.transition = 'opacity 0.5s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => { overlay.remove(); }, 500);
-      }
-    }
-  </script>
-
   <div class="club-header">
     <div class="club-title">👑 5 Brother's Fitness Club</div>
     <div class="club-subtitle">Counter Master Management System</div>
@@ -158,7 +132,7 @@
       </div>
     </a>
 
-    <!-- Master Database Hub -->
+       <!-- Master Database Hub -->
     <a href="master.html" class="menu-card">
       <div class="card-icon">📊</div>
       <div class="card-title">Master Hub</div>
