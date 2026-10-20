@@ -928,48 +928,18 @@ function handleAttendanceClick() {
       document.body.appendChild(modal);
     }
 
-    const baseRefStr = m.lastPaid || m.joinDate || '2026-09-01';
-    let startDate = new Date(baseRefStr);
-    const now = new Date();
-    
-    let currentMonthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    let currentMonth = now.getMonth();
-   
-    let currentYear = now.getFullYear();
-    let cycleStartDay = (startDate.getMonth() === currentMonth && startDate.getFullYear() === currentYear) ? startDate.getDate() : 1;
-
-    let calendarHTML = '';
-    for (let d = cycleStartDay; d <= currentMonthDays; d++) {
-      let dayISO = `${currentYear}-${(currentMonth+1) < 10 ? '0'+(currentMonth+1) : (currentMonth+1)}-${d < 10 ? '0'+d : d}`;
-      let dateObj = new Date(dayISO);
-      let isSunday = (dateObj.getDay() === 0);
-
-      let dayDisplay = `${d < 10 ? '0'+d : d}-${(currentMonth+1) < 10 ? '0'+(currentMonth+1) : (currentMonth+1)}-${currentYear}`;
-      let dayMap = fetchAttendanceMapForDate(dayISO);
-      let isPresent = isSunday ? true : (dayMap[m.id] && dayMap[m.id].isReal ? true : false);
-
-      calendarHTML += `
-        <label style="background:#181818; border:1px solid ${isPresent ? '#00ff66' : '#444'}; padding:8px 10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12px; cursor:pointer;">
-          <span style="display:flex; align-items:center; gap:8px;">
-            <input type="checkbox" class="admin-date-checkbox" value="${dayISO}" style="width:16px; height:16px; cursor:pointer;" ${isSunday ? 'checked disabled' : ''}>
-            📅 <b>${dayDisplay} ${isSunday ? '(Sunday - Holiday)' : ''}</b>
-          </span>
-          <span style="color:${isPresent ? '#00ff66' : '#ff4444'}; font-weight:bold;">${isPresent ? '✅ Present' : '❌ Absent'}</span>
-        </label>
-      `;
-    }
-
     const currentStat = m.manualStatus || 'Paid';
+    let now = new Date();
 
     modal.innerHTML = `
       <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:18px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
-          <h3 style="color:#ffcc00; margin:0; font-size:16px;">⚙️ एडमिन कंट्रोल: ${m.name}</h3>
+          <h3 style="color:#ffcc00; margin:0; font-size:15px;">⚙️ Admin Control: ${m.name}</h3>
           <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
         </div>
 
         <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें (Admin Edit):</div>
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें:</div>
           <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
           <button onclick="saveAdminLastPaidDate('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 अंतिम फीस अपडेट करें</button>
         </div>
@@ -983,14 +953,16 @@ function handleAttendanceClick() {
           <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 फीस स्टेटस अपडेट करें</button>
         </div>
 
-        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 साइकिल तारीख (${formatDateToDDMMYYYY(baseRefStr)}) से आज तक की अटेंडेंस:</div>
-        <div style="max-height:160px; overflow-y:auto; border:1px solid #333; padding:8px; border-radius:6px; margin-bottom:12px;">
-          ${calendarHTML}
-        </div>
-
-        <div style="display:flex; gap:8px; margin-bottom:12px;">
-          <button onclick="applyBatchAttendance('${m.id}', true)" style="flex:1; background:#00ff66; color:#000; font-weight:bold; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:11px;">✅ Present करें</button>
-          <button onclick="applyBatchAttendance('${m.id}', false)" style="flex:1; background:#ff4444; color:#fff; font-weight:bold; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:11px;">❌ Absent करें</button>
+        <!-- MONTHLY ATTENDANCE CALENDAR VIEW INJECTED -->
+        <div id="attendanceCalendarContainer" style="background:#1a1a1a; border:1.5px solid var(--gold); border-radius:12px; padding:10px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 id="calendarMonthTitle" style="color:var(--gold); font-size:14px; margin:0;">October 2026</h4>
+            <div style="font-size:11px; color:#00ff66; font-weight:bold;" id="totalPresentCounter">Total Present: 0 Days</div>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:10px; font-weight:bold; color:#888; margin-bottom:4px;">
+            <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
+          </div>
+          <div id="calendarDaysGrid" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;"></div>
         </div>
 
         <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
@@ -1001,8 +973,11 @@ function handleAttendanceClick() {
       </div>
     `;
     modal.style.display = "flex";
+    renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
   }
-
+  
+    // Calendar render function call
+    
   function saveAdminLastPaidDate(memberId) {
     let newDate = document.getElementById("adminEditableLastPaid").value;
     if (!newDate) return;
