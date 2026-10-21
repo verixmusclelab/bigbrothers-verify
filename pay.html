@@ -91,6 +91,23 @@ th{color:#ffcc00;}
 .action-btns{display:flex;gap:6px;margin-top:8px;}
 .dl-btn{flex:1;background:#000;color:#ffcc00;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
 .wa-btn{flex:1;background:#25D366;color:#fff;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
+.receipt-footer-stamp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  border-top: 1.5px dashed #ccc;
+  padding-top: 10px;
+  position: relative;
+  z-index: 2;
+}
+.receipt-sign-box { text-align: left; }
+.receipt-sign-img { width: 140px; height: auto; margin-bottom: 2px; }
+.receipt-owner-txt { font-size: 10px; color: #333; line-height: 1.2; }
+.receipt-owner-txt strong { display: block; font-size: 11px; color: #000; }
+.receipt-stamp-box { text-align: right; }
+.receipt-stamp-img { width: 95px; height: 95px; object-fit: contain; }
+  
 </style>
 </head>
 <body>
@@ -397,7 +414,21 @@ th{color:#ffcc00;}
         <div class="r-row"><span>जमा फीस:</span><b id="rGymFee" style="color:green; font-size:13px;"></b></div>
         <div class="r-row"><span>बकाया राशि:</span><b id="rDueFee" style="color:#ff3333;"></b></div>
         <div class="r-row"><span>वैधता / अगला भुगतान:</span><b id="rValidTill" style="color:#b37400;"></b></div>
+        <div class="receipt-footer-stamp">
+        <div class="receipt-sign-box">
+            <img src="https://i.ibb.co/mVtxCHkp/IMG-20261021-164158.jpg" alt="Signature" class="receipt-sign-img">
+            <div class="receipt-owner-txt">
+              <strong>Saurabh Singh Chandel</strong>
+              Owner<br>5 Brother's Fitness Club
+            </div>
+          </div>
+          <div class="receipt-stamp-box">
+            <img src="https://i.ibb.co/mVtxCHkp/IMG-20261021-164158.jpg" alt="Authorized Stamp" class="receipt-stamp-img">
+          </div>
+        </div>
       </div>
+    </div>
+    
     </div>
 
     <div class="action-btns" data-html2canvas-ignore="true">
