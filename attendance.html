@@ -207,28 +207,28 @@
 <body>
 
   <div class="nav-header">
-    <a href="app.html" class="btn-back-home">тмЕ Back / Master App</a>
-    <button type="button" class="btn-admin-pill" onclick="unlockAdminControl()">ЁЯФТ Admin Access</button>
+    <a href="app.html" class="btn-back-home">⬅ Back / Master App</a>
+    <button type="button" class="btn-admin-pill" onclick="unlockAdminControl()">🔒 Admin Access</button>
   </div>
 
   <div class="branding-card">
-    <div class="branding-title">ЁЯСС 5 BROTHER'S FITNESS CLUB</div>
+    <div class="branding-title">👑 5 BROTHER'S FITNESS CLUB</div>
     <div style="font-size:11px; color:#aaa; margin-top:2px;">Digital Attendance & Verification Register</div>
     <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
   </div>
 
   <div class="kiosk-hero-box" id="kioskHeroBox">
-    <div style="font-size:34px; margin-bottom:6px;">ЁЯПЛя╕ПтАНтЩВя╕П</div>
-    <h3 style="font-size:14px; color:#ffcc00; margin-bottom:4px;">рд╕реНрдорд╛рд░реНрдЯ рдмрд╛рдпреЛрдореЗрдЯреНрд░рд┐рдХ рдЙрдкрд╕реНрдерд┐рддрд┐ рдкреНрд░рдгрд╛рд▓реА</h3>
-    <div style="font-size:10.5px; color:#888; margin-bottom:12px;">рдирд╛рдо рдпрд╛ рдореЛрдмрд╛рдЗрд▓ рдирдВрдмрд░ рд╕реЗ рддреБрд░рдВрдд рдЦреЛрдЬреЗрдВ (рд╣рд┐рдВрджреА/English)</div>
-    <button type="button" class="btn-mark-kiosk-trigger" onclick="openSearchKiosk()">ЁЯСЙ MARK YOUR ATTENDANCE</button>
+    <div style="font-size:34px; margin-bottom:6px;">🏋️‍♂️</div>
+    <h3 style="font-size:14px; color:#ffcc00; margin-bottom:4px;">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</h3>
+    <div style="font-size:10.5px; color:#888; margin-bottom:12px;">नाम या मोबाइल नंबर से तुरंत खोजें (हिंदी/English)</div>
+    <button type="button" class="btn-mark-kiosk-trigger" onclick="openSearchKiosk()">👉 MARK YOUR ATTENDANCE</button>
     
     <div style="margin-top:10px; display:flex; justify-content:space-around; align-items:center;">
       <button type="button" onclick="toggleBatchDirectList()" style="background:transparent; border:none; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; text-decoration:underline;">
-        ЁЯУЛ рд╕рднреА рд╕рджрд╕реНрдпреЛрдВ рдХреА рд╕реВрдЪреА рджреЗрдЦреЗрдВ
+        📋 सभी सदस्यों की सूची देखें
       </button>
       <button type="button" onclick="openAddMemberModal()" style="background:rgba(255,204,0,0.15); border:1px solid var(--gold); color:var(--gold); font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px; cursor:pointer;">
-        тЮХ рдирдпрд╛ рд╕рджрд╕реНрдп рдЬреЛрдбрд╝реЗрдВ
+        ➕ नया सदस्य जोड़ें
       </button>
     </div>
   </div>
@@ -236,17 +236,17 @@
   <div class="batch-direct-list-box" id="batchDirectListBox">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
       <b style="font-size:12px; color:var(--gold);" id="directListTitle">All Registered Members (Cloud Sync)</b>
-      <button onclick="document.getElementById('batchDirectListBox').style.display='none'; cancelSearchAndReset();" style="background:#222; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">тмЕ Back</button>
+      <button onclick="document.getElementById('batchDirectListBox').style.display='none'; cancelSearchAndReset();" style="background:#222; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">⬅ Back</button>
     </div>
     <div id="directListContainerNode" style="max-height:220px; overflow-y:auto;"></div>
   </div>
 
   <div class="search-area-wrapper" id="searchAreaWrapper">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <span style="font-size:11px; font-weight:bold; color:var(--gold);">ЁЯФН рд╕рджрд╕реНрдп рдЦреЛрдЬреЗрдВ (Universal Cloud Search)</span>
-      <button type="button" onclick="cancelSearchAndReset()" style="background:#282828; color:#bbb; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">тмЕ Back</button>
+      <span style="font-size:11px; font-weight:bold; color:var(--gold);">🔍 सदस्य खोजें (Universal Cloud Search)</span>
+      <button type="button" onclick="cancelSearchAndReset()" style="background:#282828; color:#bbb; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">⬅ Back</button>
     </div>
-    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="рдирд╛рдо рдпрд╛ рдореЛрдмрд╛рдЗрд▓ рдирдВрдмрд░ рд▓рд┐рдЦреЗрдВ (рд╣рд┐рдВрджреА/English)..." oninput="executeUniversalSearch()">
+    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="नाम या मोबाइल नंबर लिखें (हिंदी/English)..." oninput="executeUniversalSearch()">
     <div id="searchDropdownNode" class="search-dropdown-results"></div>
   </div>
 
@@ -255,22 +255,22 @@
       <div class="card-top-row">
         <div>
           <div class="card-member-name" id="cardMemberName">MEMBER NAME</div>
-          <div style="font-size:10.5px; color:#888; margin-top:2px;" id="cardMemberPhone">ЁЯУЮ +91 0000000000</div>
+          <div style="font-size:10.5px; color:#888; margin-top:2px;" id="cardMemberPhone">📞 +91 0000000000</div>
         </div>
         <span class="fee-pill-tag fee-paid" id="cardFeeBadge" onclick="toggleManualFeeStatus()" title="Click to change status">FEES PAID</span>
       </div>
 
       <div class="card-details-box">
-        <div>ЁЯУЛ <b>рдкреНрд▓рд╛рди:</b> <span id="cardPlanText">General (1 рдорд╛рд╣)</span></div>
-        <div>ЁЯУЕ <b>рдЬреЙрдЗрдирд┐рдВрдЧ рддрд┐рдерд┐:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <b>рдЕрдВрддрд┐рдо рдлреАрд╕:</b> <span id="cardLastPaidDisplay" style="color:var(--gold); font-weight:bold;">DD-MM-YYYY</span></div>
+        <div>📋 <b>प्लान:</b> <span id="cardPlanText">General (1 माह)</span></div>
+        <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <b>अंतिम फीस:</b> <span id="cardLastPaidDisplay" style="color:var(--gold); font-weight:bold;">DD-MM-YYYY</span></div>
         
         <div id="cardPromiseDateBox" style="display:none; color:#00ff66; margin-top:5px; font-weight:bold; font-size:11px;">
-          ЁЯУЕ рдлреАрд╕ рд╡рд╛рджрд╛ рддрд╛рд░реАрдЦ (Promise Date): <span id="cardPromiseDateVal">--</span>
+          📅 फीस वादा तारीख (Promise Date): <span id="cardPromiseDateVal">--</span>
         </div>
 
         <div class="slot-row-flex">
-          <span>ЁЯХТ рд╡рд░реНрддрдорд╛рди рд╕реНрд▓реЙрдЯ: <b id="cardSlotDisplay">06:00 AM - 07:00 AM</b></span>
-          <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal()">тЪЩя╕П Slot рдмрджрд▓реЗрдВ</button>
+          <span>🕒 वर्तमान स्लॉट: <b id="cardSlotDisplay">06:00 AM - 07:00 AM</b></span>
+          <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal()">⚙️ Slot बदलें</button>
         </div>
       </div>
 
@@ -278,16 +278,16 @@
 
       <div class="card-actions-row">
         <button type="button" class="btn-pres-action not-ver" id="btnPresTrigger" onclick="handleAttendanceClick()">
-          ЁЯУ╕ PRESENT рджрд░реНрдЬ рдХрд░реЗрдВ (рд╕реЗрд▓реНрдлреА рдХреЗ рд╕рд╛рде)
+          📸 PRESENT दर्ज करें (सेल्फी के साथ)
         </button>
         <button type="button" class="btn-clear-action" onclick="cancelSearchAndReset()">
-          тмЕ BACK / CLEAR
+          ⬅ BACK / CLEAR
         </button>
       </div>
 
       <div style="margin-top:8px; text-align:right;">
         <button type="button" onclick="openAdminMemberManager(currentlyLoadedMember.id)" style="background:transparent; border:1px dashed var(--gold); color:var(--gold); font-size:10px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">
-          тЪЩя╕П рдПрдбрдорд┐рди рдХрдВрдЯреНрд░реЛрд▓ (рдХреИуГмуГ│уГАуГ╝, рдЕрдВрддрд┐рдо рдлреАрд╕, рдбрд┐рд▓реАрдЯ & рд╕реНрдЯреЗрдЯрд╕)
+          ⚙️ एडमिन कंट्रोल (कैレンダー, अंतिम फीस, डिलीट & स्टेटस)
         </button>
       </div>
     </div>
@@ -295,63 +295,63 @@
 
   <div class="custom-modal-backdrop" id="addMemberModal">
     <div class="modal-box-card" style="border-color:var(--gold); text-align:left;">
-      <h3 style="color:var(--gold); font-size:15px; margin-bottom:8px; text-align:center;">тЮХ рдирдпрд╛ рд╕рджрд╕реНрдп рдЬреЛрдбрд╝реЗрдВ (Cloud Sync)</h3>
-      <div style="font-size:11px; margin-bottom:6px;">рд╕рджрд╕реНрдп рдХрд╛ рдирд╛рдо (рд╣рд┐рдВрджреА/English):</div>
+      <h3 style="color:var(--gold); font-size:15px; margin-bottom:8px; text-align:center;">➕ नया सदस्य जोड़ें (Cloud Sync)</h3>
+      <div style="font-size:11px; margin-bottom:6px;">सदस्य का नाम (हिंदी/English):</div>
       <input type="text" id="newMemberNameInput" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
       
-      <div style="font-size:11px; margin-bottom:6px;">рдореЛрдмрд╛рдЗрд▓ рдирдВрдмрд░ (10 рдЕрдВрдХ):</div>
+      <div style="font-size:11px; margin-bottom:6px;">मोबाइल नंबर (10 अंक):</div>
       <input type="tel" id="newMemberPhoneInput" maxlength="10" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
 
       <div style="display:flex; gap:8px;">
-        <button type="button" onclick="closeModal('addMemberModal')" style="flex:1; background:#222; color:#bbb; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;">тмЕ Back</button>
-        <button type="button" onclick="saveNewMemberData()" style="flex:2; background:var(--gold); color:#000; border:none; padding:8px; border-radius:6px; font-weight:900; cursor:pointer;">тЬФ рдХреНрд▓рд╛рдЙрдб рдкрд░ рд╕реЗрд╡ рдХрд░реЗрдВ</button>
+        <button type="button" onclick="closeModal('addMemberModal')" style="flex:1; background:#222; color:#bbb; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;">⬅ Back</button>
+        <button type="button" onclick="saveNewMemberData()" style="flex:2; background:var(--gold); color:#000; border:none; padding:8px; border-radius:6px; font-weight:900; cursor:pointer;">✔ क्लाउड पर सेव करें</button>
       </div>
     </div>
   </div>
 
   <div class="custom-modal-backdrop" id="strictExpiryModal">
     <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
-      <div style="font-size:38px; margin-bottom:2px;">тЪая╕П</div>
+      <div style="font-size:38px; margin-bottom:2px;">⚠️</div>
       <h3 style="color:#ffcc00; margin:0 0 4px; font-size:16px; text-transform:uppercase;">5 BROTHER'S FITNESS CLUB</h3>
-      <div style="color:#ff6666; font-size:11.5px; font-weight:bold; margin-bottom:10px;">рд╕рджрд╕реНрдпрддрд╛ рдЕрд╡рдзрд┐ рд╡ рдлреАрд╕ рд╕рдорд╛рдкреНрддрд┐ рд╕реВрдЪрдирд╛</div>
+      <div style="color:#ff6666; font-size:11.5px; font-weight:bold; margin-bottom:10px;">सदस्यता अवधि व फीस समाप्ति सूचना</div>
 
       <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:8px; padding:10px; margin-bottom:12px; text-align:left; font-size:11px; line-height:1.5;">
-        рдкреНрд░рд┐рдп <b id="expiringMemberName">рд╕рджрд╕реНрдп</b>,<br>
-        рдЖрдкрдХреА рдЬрд┐рдо рдореЗрдВрдмрд░рд╢рд┐рдк рдПрдХреНрд╕рдкрд╛рдпрд░ рд╣реЛ рдЪреБрдХреА рд╣реИ рдпрд╛ рдлреАрд╕ рдмрдХрд╛рдпрд╛ рд╣реИред<br>
-        <b style="color:#ffcc00;">рд╕рдЦреНрдд рдирд┐рдпрдо:</b> рдХреГрдкрдпрд╛ рдЕрдкрдиреА рдлреАрд╕ рдЬрдорд╛ рдХрд░реЗрдВ рдпрд╛ рдПрдбрдорд┐рди рд╕реЗ рд╕рдВрдкрд░реНрдХ рдХрд░реЗрдВред
+        प्रिय <b id="expiringMemberName">सदस्य</b>,<br>
+        आपकी जिम मेंबरशिप एक्सपायर हो चुकी है या फीस बकाया है。<br>
+        <b style="color:#ffcc00;">सख्त नियम:</b> कृपया अपनी फीस जमा करें या एडमिन से संपर्क करें।
       </div>
 
       <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:12px; text-align:left;">
         <label style="display:block; font-size:10.5px; color:#00ff66; font-weight:bold; margin-bottom:4px;">
-          ЁЯУЕ рдЖрдк рдлреАрд╕ рдХрд┐рд╕ рддрд╛рд░реАрдЦ рддрдХ рдЬрдорд╛ рдХрд░ рджреЗрдВрдЧреЗ? (Promise Date):
+          📅 आप फीस किस तारीख तक जमा कर देंगे? (Promise Date):
         </label>
         <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box; margin-bottom:6px;">
         <button onclick="submitPromiseAndOpenCam()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
-          тЬФ рддрд╛рд░реАрдЦ рд▓реЙрдХ рдХрд░реЗрдВ рд╡ рд╕реЗрд▓реНрдлреА рд▓реЗрдВ
+          ✔ तारीख लॉक करें व सेल्फी लें
         </button>
       </div>
 
       <div id="initialActionButtons" style="display:flex; flex-direction:column; gap:6px;">
         <button onclick="showPromiseDateField()" style="background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
-          тЬФ рд╣рд╛рдБ, рдореИрдВ рд╕рд╣рдордд рд╣реВрдБ (рдлреАрд╕ рддрд╛рд░реАрдЦ рдЪреБрдиреЗрдВ)
+          ✔ हाँ, मैं सहमत हूँ (फीस तारीख चुनें)
         </button>
         <button onclick="handleDisagreeLegalNotice()" style="background:#261212; color:#ff6666; font-weight:bold; padding:9px; border:1.5px solid #ff4d4d; border-radius:6px; font-size:11.5px; cursor:pointer;">
-          тЬЦ рдореИрдВ рд╕рд╣рдордд рдирд╣реАрдВ рд╣реВрдБ
+          ✖ मैं सहमत नहीं हूँ
         </button>
       </div>
 
       <div style="margin-top:10px;">
-        <button onclick="closeModal('strictExpiryModal')" style="background:#333; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; width:100%;">тмЕ Back</button>
+        <button onclick="closeModal('strictExpiryModal')" style="background:#333; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; width:100%;">⬅ Back</button>
       </div>
     </div>
   </div>
 
   <div class="custom-modal-backdrop" id="slotChangerModal">
     <div class="modal-box-card" style="border-color:var(--gold);">
-      <h3 style="color:#ffcc00; font-size:15px; margin-bottom:4px;">ЁЯХТ рд╕реНрд▓реЙрдЯ рдЪреБрдиреЗрдВ (Slot Changer)</h3>
-      <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">рд╕рджрд╕реНрдп: --</div>
+      <h3 style="color:#ffcc00; font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Slot Changer)</h3>
+      <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
 
-      <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">ЁЯМЕ MORNING SLOTS:</div>
+      <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM')">05:00 - 06:00 AM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM')">06:00 - 07:00 AM</button>
@@ -359,7 +359,7 @@
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM')">08:00 - 09:00 AM</button>
       </div>
 
-      <div style="text-align:left; font-size:11px; font-weight:bold; color:#00c8ff; margin-bottom:4px;">ЁЯМЩ EVENING SLOTS:</div>
+      <div style="text-align:left; font-size:11px; font-weight:bold; color:#00c8ff; margin-bottom:4px;">🌙 EVENING SLOTS:</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:14px;">
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('04:00 PM - 05:00 PM')">04:00 - 05:00 PM</button>
         <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:30 PM - 06:30 PM')">05:30 - 06:30 PM</button>
@@ -368,7 +368,7 @@
         <button type="button" class="slot-chip-btn" style="grid-column: span 2;" onclick="saveNewMemberSlot('08:30 PM - 09:30 PM')">08:30 - 09:30 PM</button>
       </div>
 
-      <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#282828; color:#fff; border:none; padding:9px; border-radius:6px; font-size:12px; cursor:pointer;">тмЕ Back</button>
+      <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#282828; color:#fff; border:none; padding:9px; border-radius:6px; font-size:12px; cursor:pointer;">⬅ Back</button>
     </div>
   </div>
 
@@ -384,7 +384,7 @@
         <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span>
       </div>
 
-        <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
+            <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
         ✔ ठीक है (DONE)
       </button>
     </div>
@@ -860,7 +860,7 @@
     const videoElem = document.getElementById("videoElement");
     const canvas = document.getElementById("offscreenCanvas");
 
-      const attendanceRecords = fetchAttendanceMapForDate(todayISO);
+    const attendanceRecords = fetchAttendanceMapForDate(todayISO);
     if (attendanceRecords[String(currentlyLoadedMember.id)]) {
       closeCameraModal();
       showAlreadyMarkedWarning();
@@ -890,7 +890,7 @@
     ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
     ctx.restore();
 
-    const base64Stamp = canvas.toDataURL("image/jpeg", 0.3);
+        const base64Stamp = canvas.toDataURL("image/jpeg", 0.3);
     const dayStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth()+1).padStart(2, '0')}-${now.getFullYear()}`;
     const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
     
@@ -918,7 +918,8 @@
     } catch (cloudErr) {
       console.error("Attendance cloud sync error:", cloudErr);
     }
-        currentDateISO = todayISO;
+
+    currentDateISO = todayISO;
 
     let target = currentlyLoadedMember;
     let cycleStart = new Date(target.joinDate || '2026-09-01');
