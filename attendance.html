@@ -6,6 +6,11 @@
 <title>5 Brother's Fitness Club - Attendance Kiosk</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ffcc00">
+
+<!-- Firebase App & Firestore SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
 <style>
   :root {
     --gold: #ffcc00;
@@ -65,7 +70,6 @@
     padding: 4px 12px; border-radius: 14px; margin-top: 6px;
   }
 
-  /* KIOSK MAIN ACTION */
   .kiosk-hero-box {
     background: #111; border: 2px dashed #333; border-radius: 14px;
     padding: 20px 14px; text-align: center; margin-bottom: 14px;
@@ -104,7 +108,6 @@
     display: none; background: #111; border: 1.5px solid #333; border-radius: 12px; padding: 12px; margin-bottom: 14px;
   }
 
-  /* SINGLE CLEAN MEMBER CARD */
   .single-member-container {
     display: none; margin-bottom: 14px;
   }
@@ -173,7 +176,6 @@
     font-size: 11px; font-weight: bold; padding: 12px; border-radius: 8px; cursor: pointer;
   }
 
-  /* MODALS */
   .custom-modal-backdrop {
     display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0, 0, 0, 0.95); z-index: 999999;
@@ -189,8 +191,6 @@
   .camera-feed-container {
     width: 100%; height: 380px; background: #000; border-radius: 10px;
     position: relative; overflow: hidden; border: 2px solid #333;
-  }
-  
   }
   #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
   .scanner-reticle-ring {
@@ -217,7 +217,6 @@
     <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
   </div>
 
-  <!-- KIOSK HERO SECTION -->
   <div class="kiosk-hero-box" id="kioskHeroBox">
     <div style="font-size:34px; margin-bottom:6px;">🏋️‍♂️</div>
     <h3 style="font-size:14px; color:#ffcc00; margin-bottom:4px;">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</h3>
@@ -234,26 +233,23 @@
     </div>
   </div>
 
-  <!-- DIRECT MEMBER LIST -->
   <div class="batch-direct-list-box" id="batchDirectListBox">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <b style="font-size:12px; color:var(--gold);" id="directListTitle">All Registered Members</b>
+      <b style="font-size:12px; color:var(--gold);" id="directListTitle">All Registered Members (Cloud Sync)</b>
       <button onclick="document.getElementById('batchDirectListBox').style.display='none'; cancelSearchAndReset();" style="background:#222; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">⬅ Back</button>
     </div>
     <div id="directListContainerNode" style="max-height:220px; overflow-y:auto;"></div>
   </div>
 
-  <!-- UNIVERSAL SEARCH INTERFACE -->
   <div class="search-area-wrapper" id="searchAreaWrapper">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <span style="font-size:11px; font-weight:bold; color:var(--gold);">🔍 सदस्य खोजें (Universal Search Active)</span>
+      <span style="font-size:11px; font-weight:bold; color:var(--gold);">🔍 सदस्य खोजें (Universal Cloud Search)</span>
       <button type="button" onclick="cancelSearchAndReset()" style="background:#282828; color:#bbb; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">⬅ Back</button>
     </div>
     <input type="text" id="memberFilterInput" class="live-search-input" placeholder="नाम या मोबाइल नंबर लिखें (हिंदी/English)..." oninput="executeUniversalSearch()">
     <div id="searchDropdownNode" class="search-dropdown-results"></div>
   </div>
 
-  <!-- SINGLE LOADED MEMBER CARD -->
   <div class="single-member-container" id="singleMemberContainer">
     <div class="loaded-member-card" id="activeLoadedCard">
       <div class="card-top-row">
@@ -289,7 +285,6 @@
         </button>
       </div>
 
-      <!-- ADMIN MANUAL CALENDAR & PACKAGE CHANGER TRIGGER -->
       <div style="margin-top:8px; text-align:right;">
         <button type="button" onclick="openAdminMemberManager(currentlyLoadedMember.id)" style="background:transparent; border:1px dashed var(--gold); color:var(--gold); font-size:10px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">
           ⚙️ एडमिन कंट्रोल (कैレンダー, अंतिम फीस, डिलीट & स्टेटस)
@@ -298,10 +293,9 @@
     </div>
   </div>
 
-  <!-- ADD NEW MEMBER MODAL -->
   <div class="custom-modal-backdrop" id="addMemberModal">
     <div class="modal-box-card" style="border-color:var(--gold); text-align:left;">
-      <h3 style="color:var(--gold); font-size:15px; margin-bottom:8px; text-align:center;">➕ नया सदस्य जोड़ें (Add Member)</h3>
+      <h3 style="color:var(--gold); font-size:15px; margin-bottom:8px; text-align:center;">➕ नया सदस्य जोड़ें (Cloud Sync)</h3>
       <div style="font-size:11px; margin-bottom:6px;">सदस्य का नाम (हिंदी/English):</div>
       <input type="text" id="newMemberNameInput" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
       
@@ -310,12 +304,11 @@
 
       <div style="display:flex; gap:8px;">
         <button type="button" onclick="closeModal('addMemberModal')" style="flex:1; background:#222; color:#bbb; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;">⬅ Back</button>
-        <button type="button" onclick="saveNewMemberData()" style="flex:2; background:var(--gold); color:#000; border:none; padding:8px; border-radius:6px; font-weight:900; cursor:pointer;">✔ सेव करें</button>
+        <button type="button" onclick="saveNewMemberData()" style="flex:2; background:var(--gold); color:#000; border:none; padding:8px; border-radius:6px; font-weight:900; cursor:pointer;">✔ क्लाउड पर सेव करें</button>
       </div>
     </div>
   </div>
 
-  <!-- STRICT FEES EXPIRED / OVERDUE MODAL -->
   <div class="custom-modal-backdrop" id="strictExpiryModal">
     <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
       <div style="font-size:38px; margin-bottom:2px;">⚠️</div>
@@ -353,7 +346,6 @@
     </div>
   </div>
 
-  <!-- SLOT CHANGER MODAL -->
   <div class="custom-modal-backdrop" id="slotChangerModal">
     <div class="modal-box-card" style="border-color:var(--gold);">
       <h3 style="color:#ffcc00; font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Slot Changer)</h3>
@@ -380,7 +372,6 @@
     </div>
   </div>
 
-  <!-- CELEBRATION / STATUS MODAL -->
   <div class="custom-modal-backdrop" id="attendanceCelebrationModal">
     <div class="modal-box-card" id="celebrateModalCard" style="border-color:#00ff66; box-shadow:0 0 30px rgba(0,255,102,0.3);">
       <div style="font-size:42px; margin-bottom:3px;" id="celebrateEmoji">💪</div>
@@ -390,16 +381,15 @@
       <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:12px; text-align:left; font-size:12px; line-height:1.6; margin-bottom:14px;">
         <div style="color:#ffcc00; font-weight:bold; margin-bottom:4px;" id="celebrateSubTitle">Thank So Much To Verify Your Attendance!</div>
         <div style="color:#00ff66; font-size:11.5px; margin-bottom:6px;" id="celebrateMainMsg">आपकी उपस्थिति आज की दर्ज कर ली गई है।</div>
-        <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span></div>
+        <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span>
       </div>
 
-      <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
+      <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weighht:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
         ✔ ठीक है (DONE)
       </button>
     </div>
   </div>
 
-  <!-- CAMERA MODAL -->
   <div class="custom-modal-backdrop" id="cameraBackdropModal">
     <div class="modal-box-card">
       <div style="text-align:center; margin-bottom:8px;">
@@ -420,10 +410,24 @@
   <canvas id="offscreenCanvas" style="display: none;"></canvas>
 
 <script>
+  // --- FIREBASE CLOUD SETUP ---
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWe...",
+    authDomain: "brother-s-fitness-club.firebaseapp.com",
+    projectId: "brother-s-fitness-club",
+    storageBucket: "brother-s-fitness-club.appspot.com",
+    messagingSenderId: "781489019006",
+    appId: "1:781489019006:web:4a230698f2195e7208202f"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
   const ADMIN_PIN = "5555";
   let isAdminUnlocked = false;
   let currentlyLoadedMember = null;
   let currentVideoStream = null;
+  let cachedMembersList = [];
 
   function getLocalDateISO(date = new Date()) {
     const y = date.getFullYear();
@@ -442,7 +446,23 @@
     if (clockElem) clockElem.innerText = `📅 ${dayStr} | ⏰ ${timeStr}`;
   }
 
-  function fetchStoredMembers() {
+  // --- CLOUD FIRESTORE MEMBERS SYNC ---
+  async function fetchStoredMembers() {
+    try {
+      const snapshot = await db.collection("members").get();
+      let cloudList = [];
+      snapshot.forEach(doc => {
+        cloudList.push({ id: doc.id, ...doc.data() });
+      });
+
+      if (cloudList.length > 0) {
+        cachedMembersList = cloudList;
+        return cloudList;
+      }
+    } catch (e) {
+      console.error("Cloud fetch error, using local fallback:", e);
+    }
+
     let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
     let bfcMembers = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
     let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
@@ -458,6 +478,15 @@
       }
     });
     return Array.from(uniqueMap.values());
+  }
+
+  async function syncMemberToCloud(member) {
+    try {
+      const docId = String(member.id);
+      await db.collection("members").doc(docId).set(member, { merge: true });
+    } catch (err) {
+      console.error("Cloud sync failed:", err);
+    }
   }
 
   function fetchAttendanceMapForDate(dateStr) {
@@ -491,14 +520,14 @@
     currentlyLoadedMember = null;
   }
 
-  function toggleBatchDirectList() {
+  async function toggleBatchDirectList() {
     const box = document.getElementById("batchDirectListBox");
     if (box.style.display === "block") {
       box.style.display = "none";
       return;
     }
 
-    const allMembers = fetchStoredMembers();
+    const allMembers = await fetchStoredMembers();
     document.getElementById("directListTitle").innerText = `All Registered Members (${allMembers.length})`;
     const container = document.getElementById("directListContainerNode");
     container.innerHTML = "";
@@ -523,7 +552,7 @@
     box.style.display = "block";
   }
 
-  function executeUniversalSearch() {
+  async function executeUniversalSearch() {
     const query = document.getElementById("memberFilterInput").value.trim().toLowerCase();
     const dropdown = document.getElementById("searchDropdownNode");
 
@@ -532,7 +561,7 @@
       return;
     }
 
-    const allMembers = fetchStoredMembers();
+    const allMembers = await fetchStoredMembers();
     const matches = allMembers.filter(m => {
       return (m.name && m.name.toLowerCase().includes(query)) || (m.phone && m.phone.includes(query));
     });
@@ -565,7 +594,7 @@
     document.getElementById("addMemberModal").classList.add("show");
   }
 
-  function saveNewMemberData() {
+  async function saveNewMemberData() {
     const name = document.getElementById("newMemberNameInput").value.trim();
     const phone = document.getElementById("newMemberPhoneInput").value.trim();
 
@@ -574,7 +603,6 @@
       return;
     }
 
-    let records = fetchStoredMembers();
     const newId = Date.now();
     const todayStr = getLocalDateISO();
 
@@ -591,15 +619,14 @@
       feesPromiseDate: ""
     };
 
-    records.push(newMember);
-    syncAllStorage(records);
+    await syncMemberToCloud(newMember);
     closeModal('addMemberModal');
-    alert(`✅ ${name} को सफलतापूर्वक जोड़ दिया गया है!`);
+    alert(`✅ ${name} को क्लाउड पर सफलतापूर्वक जोड़ दिया गया है!`);
     toggleBatchDirectList();
   }
 
-  function loadSingleMemberKioskCard(memberId) {
-    const list = fetchStoredMembers();
+  async function loadSingleMemberKioskCard(memberId) {
+    const list = await fetchStoredMembers();
     const m = list.find(x => x.id.toString() === memberId.toString());
     if (!m) return;
 
@@ -660,44 +687,38 @@
     document.getElementById("singleMemberContainer").style.display = "block";
   }
 
-  function toggleManualFeeStatus() {
+  async function toggleManualFeeStatus() {
     if (!currentlyLoadedMember) return;
     let current = currentlyLoadedMember.manualStatus || 'Paid';
     let next = current === 'Paid' ? 'Pending' : 'Paid';
     
-    let records = fetchStoredMembers();
-    let target = records.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
-    if (target) {
-      target.manualStatus = next;
-      syncAllStorage(records);
-      alert(`✅ फीस स्टेटस बदलकर "${next.toUpperCase()}" कर दिया गया है!`);
-      loadSingleMemberKioskCard(target.id);
-    }
+    currentlyLoadedMember.manualStatus = next;
+    await syncMemberToCloud(currentlyLoadedMember);
+    alert(`✅ फीस स्टेटस बदलकर "${next.toUpperCase()}" कर दिया गया है!`);
+    loadSingleMemberKioskCard(currentlyLoadedMember.id);
   }
 
   function showAlreadyMarkedWarning() {
     alert("Your Attendance Already Marked!\nआपकी आज की उपस्थिति पहले ही दर्ज की जा चुकी है।");
   }
 
-function handleAttendanceClick() {
+  function handleAttendanceClick() {
     if (!currentlyLoadedMember) return;
     const m = currentlyLoadedMember;
 
-    // 1. Joining Date Validation (Joining date se piche attendance lock)
     const todayISOStr = getLocalDateISO(new Date());
     if (m.joinDate && todayISOStr < m.joinDate) {
         alert("❌ Aap apni joining date se pehle attendance nahi laga sakte!");
         return;
     }
 
-    // 2. GPS Location Check (Fake attendance rokne ke liye geo-fencing)
     if (!navigator.geolocation) {
         alert("❌ Aapke browser mein GPS support nahi hai!");
         return;
     }
     const GYM_LAT = 26.5187839; 
     const GYM_LNG = 80.446607; 
-    const ALLOWED_DISTANCE_METERS = 1000; // दायरा बढ़ाकर 1000 मीटर कर दिया गया है (इंडोर GPS के लिए)
+    const ALLOWED_DISTANCE_METERS = 1000; 
 
     navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -712,15 +733,13 @@ function handleAttendanceClick() {
 
             const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            const distance = Math.round(R * c); // Meters mein distance
+            const distance = Math.round(R * c);
 
             if (distance > ALLOWED_DISTANCE_METERS) {
                 alert(`❌ Aap gym mein nahi hain! (Duri: ${distance}m). Fake attendance mat lagaiye!`);
                 return;
             }
-          
 
-            // --- Original Logic ---
             const manualStat = m.manualStatus || 'Paid';
             let isMonthExpired = false;
 
@@ -752,28 +771,23 @@ function handleAttendanceClick() {
         (error) => {
             alert("❌ GPS location access nahi mil paaya. Kripya apne phone ka Location (GPS) on karein!");
         },
-        { enableHighAccuracy: true }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
-}
+  }
   
   function showPromiseDateField() {
     document.getElementById("initialActionButtons").style.display = "none";
     document.getElementById("promiseDateContainer").style.display = "block";
   }
 
-  function submitPromiseAndOpenCam() {
+  async function submitPromiseAndOpenCam() {
     const promiseVal = document.getElementById("memberPromiseDate").value;
     if (!promiseVal) {
       alert("⚠️ कृपया वादा तारीख चुनें!");
       return;
     }
     currentlyLoadedMember.feesPromiseDate = promiseVal;
-    let records = fetchStoredMembers();
-    let target = records.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
-    if (target) {
-      target.feesPromiseDate = promiseVal;
-      syncAllStorage(records);
-    }
+    await syncMemberToCloud(currentlyLoadedMember);
     closeModal('strictExpiryModal');
     initiateCameraVerification(currentlyLoadedMember);
   }
@@ -793,20 +807,24 @@ function handleAttendanceClick() {
     document.getElementById("modalCandidateName").innerText = candidate.name;
     document.getElementById("cameraBackdropModal").classList.add("show");
     const videoElem = document.getElementById("videoElement");
-    videoElem.srcObject = null;
-        try {
-      currentVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+    
+    try {
+      if (!currentVideoStream) {
+        currentVideoStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, 
+          audio: false 
+        });
+      }
       videoElem.srcObject = currentVideoStream;
       await videoElem.play();
     } catch (err) {
-          
       console.error("Camera error:", err);
-      alert("कैमरा शुरू नहीं हो पाया। Camera permission दें।");
+      alert("कैमरा शुरू नहीं हो पाया। कृपया कैमरा परमिशन (Permissions) Allow करें।");
       closeCameraModal();
     }
   }
 
-    function captureLiveSelfieProof() {
+  function captureLiveSelfieProof() {
     if (!currentlyLoadedMember) {
       alert("पहले सदस्य चुनें।");
       closeCameraModal();
@@ -865,20 +883,7 @@ function handleAttendanceClick() {
     try {
       localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
     } catch (storageError) {
-      console.error("Storage full, clearing old logs:", storageError);
-      try {
-        Object.keys(localStorage).forEach(k => {
-          if (k.startsWith("5bfc_attendance_") && k !== "5bfc_attendance_" + todayISO) {
-            localStorage.removeItem(k);
-          }
-        });
-        localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
-      } catch (err2) {
-        Object.keys(attendanceRecords).forEach(id => {
-          attendanceRecords[id].photo = ""; 
-        });
-        localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
-      }
+      console.error("Storage full:", storageError);
     }
 
     currentDateISO = todayISO;
@@ -890,352 +895,308 @@ function handleAttendanceClick() {
     let todayDate = new Date();
     while(curr <= todayDate) {
       let isoStr = getLocalDateISO(curr);
-      let dayAttMap = fetchAttendanceMapForDate(isoStr);
-      if(dayAttMap[target.id] && dayAttMap[target.id].isReal) {
-        totalAttendedInCycle++;
-      }
-      curr.setDate(curr.getDate() + 1);
+         let isoStr = getLocalDateISO(curr);
+    let dayAttMap = fetchAttendanceMapForDate(isoStr);
+    if(dayAttMap[target.id] && dayAttMap[target.id].isReal) {
+      totalAttendedInCycle++;
     }
-
-    closeCameraModal();
-    document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
-    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
-    document.getElementById("attendanceCelebrationModal").classList.add("show");
-  }
-    
-  
-  function completeAttendanceAndResetKiosk() {
-    const modal = document.getElementById('attendanceCelebrationModal');
-    if (modal) modal.classList.remove('show');
-    cancelSearchAndReset();
-    window.location.reload();
+    curr.setDate(curr.getDate() + 1);
   }
 
-  function openAdminMemberManager(memberId) {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
-    if (pin !== ADMIN_PIN) {
-      if(pin !== null) alert("❌ गलत पिन!");
-      return;
-    }
+  closeCameraModal();
+  document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
+  document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
+  document.getElementById("attendanceCelebrationModal").classList.add("show");
+}
 
-    let allRecords = fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (!m) { alert("सदस्य नहीं मिला!"); return; }
+function completeAttendanceAndResetKiosk() {
+  const modal = document.getElementById('attendanceCelebrationModal');
+  if (modal) modal.classList.remove('show');
+  cancelSearchAndReset();
+}
 
-    let modal = document.getElementById("adminMemberManagerModal");
-    if (!modal) {
-      modal = document.createElement("div");
-      modal.id = "adminMemberManagerModal";
-      modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
-      document.body.appendChild(modal);
-    }
+async function openAdminMemberManager(memberId) {
+  let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
+  if (pin !== ADMIN_PIN) {
+    if(pin !== null) alert("❌ गलत पिन!");
+    return;
+  }
 
-    const currentStat = m.manualStatus || 'Paid';
-    let now = new Date();
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (!m) { alert("सदस्य नहीं मिला!"); return; }
 
-    modal.innerHTML = `
-      <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:18px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
-          <h3 style="color:#ffcc00; margin:0; font-size:15px;">⚙️ Admin Control: ${m.name}</h3>
-          <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
-        </div>
+  let modal = document.getElementById("adminMemberManagerModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "adminMemberManagerModal";
+    modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
+    document.body.appendChild(modal);
+  }
 
-        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें:</div>
-          <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-          <button onclick="saveAdminLastPaidDate('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 अंतिम फीस अपडेट करें</button>
-        </div>
+  const currentStat = m.manualStatus || 'Paid';
+  let now = new Date();
 
-        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">💰 फीस स्थिति (Fee Status Control):</div>
-          <select id="adminFeeStatusSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-            <option value="Paid" ${currentStat === 'Paid' ? 'selected' : ''}>✅ Paid (फीस जमा है)</option>
-            <option value="Pending" ${currentStat === 'Pending' ? 'selected' : ''}>❌ Pending (फीस बकाया है)</option>
-          </select>
-          <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 फीस स्टेटस अपडेट करें</button>
-        </div>
-
-        <!-- MONTHLY ATTENDANCE CALENDAR VIEW INJECTED -->
-        <div id="attendanceCalendarContainer" style="background:#1a1a1a; border:1.5px solid var(--gold); border-radius:12px; padding:10px; margin-bottom:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <h4 id="calendarMonthTitle" style="color:var(--gold); font-size:14px; margin:0;">October 2026</h4>
-            <div style="font-size:11px; color:#00ff66; font-weight:bold;" id="totalPresentCounter">Total Present: 0 Days</div>
-          </div>
-          <div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:10px; font-weight:bold; color:#888; margin-bottom:4px;">
-            <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
-          </div>
-          <div id="calendarDaysGrid" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;"></div>
-        </div>
-
-        <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
-          <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">🗑️ इस सदस्य को हमेशा के लिए डिलीट करें</button>
-        </div>
-
-        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें</button>
+  modal.innerHTML = `
+    <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:18px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
+        <h3 style="color:#ffcc00; margin:0; font-size:15px;">⚙️ Admin Control: ${m.name}</h3>
+        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
       </div>
-    `;
-    modal.style.display = "flex";
-    renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
-  }
-  
-    // Calendar render function call
-    
-  function saveAdminLastPaidDate(memberId) {
-    let newDate = document.getElementById("adminEditableLastPaid").value;
-    if (!newDate) return;
-    let allRecords = fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (m) {
-      m.lastPaid = newDate;
-      syncAllStorage(allRecords);
-      alert("✅ अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
-      openAdminMemberManager(m.id);
-    }
-  }
 
-  function saveAdminFeeStatus(memberId) {
-    let allRecords = fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (!m) return;
-    let newStatus = document.getElementById("adminFeeStatusSelect").value;
-    m.manualStatus = newStatus;
-    syncAllStorage(allRecords);
-    alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
-    document.getElementById('adminMemberManagerModal').style.display = 'none';
-    loadSingleMemberKioskCard(m.id);
-  }
-
-  function applyBatchAttendance(memberId, makePresent) {
-    const checkboxes = document.querySelectorAll(".admin-date-checkbox:checked:not(:disabled)");
-    if (checkboxes.length === 0) {
-      alert("⚠️ कृपया कम से कम एक तारीख (Date) टिक करें!");
-      return;
-    }
-    checkboxes.forEach(chk => {
-      let dateISO = chk.value;
-      let dayMap = fetchAttendanceMapForDate(dateISO);
-      if (makePresent) {
-        dayMap[memberId] = { time: "07:00 AM (Admin)", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
-      } else {
-        delete dayMap[memberId];
-      }
-      localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
-    });
-    alert(`✅ सफलतापूर्वक अटेंडेंस अपडेट कर दी गई है!`);
-    openAdminMemberManager(memberId);
-  }
-
-  function openAdminPhotoVault() {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें (सेल्फी गैलरी देखने के लिए):");
-    if (pin !== ADMIN_PIN) {
-      if(pin !== null) alert("❌ गलत पिन!");
-      return;
-    }
-
-    let targetDate = prompt("📅 तारीख दर्ज करें (YYYY-MM-DD फॉर्मेट में, जैसे आज की तारीख):", currentDateISO);
-    if (!targetDate) return;
-
-    let dayData = fetchAttendanceMapForDate(targetDate);
-    let keys = Object.keys(dayData);
-
-    let vaultModal = document.getElementById("adminPhotoVaultModal");
-    if (!vaultModal) {
-      vaultModal = document.createElement("div");
-      vaultModal.id = "adminPhotoVaultModal";
-      vaultModal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
-      document.body.appendChild(vaultModal);
-    }
-
-    let galleryHTML = "";
-    if (keys.length === 0) {
-      galleryHTML = `<div style="color:#ff4444; text-align:center; padding:20px;">इस तारीख (${targetDate}) पर कोई सेल्फी/अटेंडेंस रिकॉर्ड नहीं मिला।</div>`;
-    } else {
-      keys.forEach(k => {
-        let entry = dayData[k];
-        galleryHTML += `
-          <div style="background:#181818; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:10px; display:flex; align-items:center; gap:12px;">
-            <img src="${entry.photo}" style="width:55px; height:55px; border-radius:6px; object-fit:cover; border:1.5px solid var(--green-accent);">
-            <div style="text-align:left; font-size:11.5px; line-height:1.4;">
-              <b style="color:#ffcc00; font-size:13px;">${entry.name || 'Unknown'}</b><br>
-              <span style="color:#aaa;">📞 ${entry.phone || '--'}</span><br>
-              <span style="color:#00ff66;">⏰ ${entry.time} | ${targetDate}</span>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    vaultModal.innerHTML = `
-      <div style="background:#111; border:2px solid #00ff66; border-radius:14px; max-width:450px; width:100%; padding:18px; color:#fff; max-height:85vh; overflow-y:auto; box-sizing:border-box;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:12px;">
-          <h3 style="color:#00ff66; margin:0; font-size:15px;">📸 पुरानी सेल्फी गैलरी (${targetDate})</h3>
-          <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:5px 9px; border-radius:4px; cursor:pointer;">✕</button>
-        </div>
-        <div>${galleryHTML}</div>
-        <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="width:100%; background:#222; color:#fff; border:none; padding:10px; border-radius:6px; margin-top:10px; font-weight:bold; cursor:pointer;">⬅ बंद करें</button>
+      <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें:</div>
+        <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+        <button onclick="saveAdminLastPaidDate('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 अंतिम फीस अपडेट करें</button>
       </div>
-    `;
-    vaultModal.style.display = "flex";
-  }
 
-  function deleteMemberPermanently(memberId) {
-    if (!confirm("⚠️ क्या आप वाकई इस सदस्य को हमेशा के लिए डिलीट करना चाहते हैं?")) return;
-    let records = fetchStoredMembers();
-    let filtered = records.filter(r => r.id.toString() !== memberId.toString());
-    syncAllStorage(filtered);
-    alert("✅ सदस्य डिलीट हो गया!");
+      <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">💰 फीस स्थिति (Fee Status Control):</div>
+        <select id="adminFeeStatusSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+          <option value="Paid" ${currentStat === 'Paid' ? 'selected' : ''}>✅ Paid (फीस जमा है)</option>
+          <option value="Pending" ${currentStat === 'Pending' ? 'selected' : ''}>❌ Pending (फीस बकाया है)</option>
+        </select>
+        <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 फीस स्टेटस अपडेट करें</button>
+      </div>
+
+      <div id="attendanceCalendarContainer" style="background:#1a1a1a; border:1.5px solid var(--gold); border-radius:12px; padding:10px; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h4 id="calendarMonthTitle" style="color:var(--gold); font-size:14px; margin:0;">October 2026</h4>
+          <div style="font-size:11px; color:#00ff66; font-weight:bold;" id="totalPresentCounter">Total Present: 0 Days</div>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:10px; font-weight:bold; color:#888; margin-bottom:4px;">
+          <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
+        </div>
+        <div id="calendarDaysGrid" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;"></div>
+      </div>
+
+      <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
+        <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">🗑️ इस सदस्य को हमेशा के लिए डिलीट करें</button>
+      </div>
+
+      <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें</button>
+    </div>
+  `;
+  modal.style.display = "flex";
+  renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
+}
+
+async function saveAdminLastPaidDate(memberId) {
+  let newDate = document.getElementById("adminEditableLastPaid").value;
+  if (!newDate) return;
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (m) {
+    m.lastPaid = newDate;
+    await syncMemberToCloud(m);
+    alert("✅ अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
+    openAdminMemberManager(m.id);
+  }
+}
+
+async function saveAdminFeeStatus(memberId) {
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (!m) return;
+  let newStatus = document.getElementById("adminFeeStatusSelect").value;
+  m.manualStatus = newStatus;
+  await syncMemberToCloud(m);
+  alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
+  document.getElementById('adminMemberManagerModal').style.display = 'none';
+  loadSingleMemberKioskCard(m.id);
+}
+
+async function deleteMemberPermanently(memberId) {
+  if (!confirm("⚠️ क्या आप वाकई इस सदस्य को हमेशा के लिए डिलीट करना चाहते हैं?")) return;
+  try {
+    await db.collection("members").doc(String(memberId)).delete();
+    alert("✅ सदस्य क्लाउड से डिलीट हो गया!");
     document.getElementById('adminMemberManagerModal').style.display = 'none';
     cancelSearchAndReset();
     location.reload();
+  } catch (err) {
+    alert("❌ डिलीट करने में समस्या आई: " + err.message);
   }
+}
 
-  function openSlotChangerModal() {
-    document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
-    document.getElementById("slotChangerModal").classList.add("show");
-  }
+async function openSlotChangerModal() {
+  document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
+  document.getElementById("slotChangerModal").classList.add("show");
+}
 
-  function saveNewMemberSlot(newSlot) {
-    if (!currentlyLoadedMember) return;
-    let records = fetchStoredMembers();
-    let target = records.find(r => r.id.toString() === currentlyLoadedMember.id.toString());
-    if (target) {
-      target.slot = newSlot;
-      syncAllStorage(records);
-      currentlyLoadedMember = target;
-      alert(`✅ स्लॉट बदलकर "${newSlot}" कर दिया गया!`);
-      closeModal('slotChangerModal');
-      loadSingleMemberKioskCard(target.id);
+async function saveNewMemberSlot(newSlot) {
+  if (!currentlyLoadedMember) return;
+  currentlyLoadedMember.slot = newSlot;
+  await syncMemberToCloud(currentlyLoadedMember);
+  alert(`✅ स्लॉट बदलकर "${newSlot}" कर दिया गया!`);
+  closeModal('slotChangerModal');
+  loadSingleMemberKioskCard(currentlyLoadedMember.id);
+}
+
+function unlockAdminControl() {
+  let pin = prompt("🔒 Admin PIN दर्ज करें:");
+  if (pin === ADMIN_PIN) {
+    isAdminUnlocked = true;
+    let openVault = confirm("✅ Admin Verified!\nक्या आप पुरानी तारीख की सेल्फी गैलरी देखना चाहते हैं?");
+    if (openVault) {
+      openAdminPhotoVault();
+    } else {
+      alert("Admin Access सक्रिय है!");
     }
   }
+}
 
-  function unlockAdminControl() {
-    let pin = prompt("🔒 Admin PIN दर्ज करें:");
-    if (pin === ADMIN_PIN) {
-      isAdminUnlocked = true;
-      let openVault = confirm("✅ Admin Verified!\nक्या आप पुरानी तारीख की सेल्फी गैलरी (Photo Vault) देखना चाहते हैं?");
-      if (openVault) {
-        openAdminPhotoVault();
-      } else {
-        alert("Admin Access सक्रिय है!");
-      }
-    }
+function openAdminPhotoVault() {
+  let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें (सेल्फी गैलरी देखने के लिए):");
+  if (pin !== ADMIN_PIN) {
+    if(pin !== null) alert("❌ गलत पिन!");
+    return;
   }
 
-  function syncAllStorage(records) {
-    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
+  let targetDate = prompt("📅 तारीख दर्ज करें (YYYY-MM-DD फॉर्मेट में):", currentDateISO);
+  if (!targetDate) return;
+
+  let dayData = fetchAttendanceMapForDate(targetDate);
+  let keys = Object.keys(dayData);
+
+  let vaultModal = document.getElementById("adminPhotoVaultModal");
+  if (!vaultModal) {
+    vaultModal = document.createElement("div");
+    vaultModal.id = "adminPhotoVaultModal";
+    vaultModal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
+    document.body.appendChild(vaultModal);
   }
 
-  function closeCameraModal() {
-    if (currentVideoStream) {
-      currentVideoStream.getTracks().forEach(t => t.stop());
-      currentVideoStream = null;
-    }
-    document.getElementById("cameraBackdropModal").classList.remove("show");
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).classList.remove("show");
-  }
-
-  function formatDateToDDMMYYYY(dateString) {
-    if (!dateString || dateString === "N/A") return "N/A";
-    let parts = dateString.split("-");
-    if (parts.length === 3) {
-      if (parts[0].length === 4) return `${parts[2]}-${parts[1]}-${parts[0]}`;
-      return dateString;
-    }
-    return dateString;
-  }
-
-  window.onload = () => {
-    runLiveSystemClock();
-    setInterval(runLiveSystemClock, 1000);
-  };
-
-    // Member ke liye Monthly Calendar render karne ka function
-    function renderAttendanceCalendar(member, year, month) {
-    const grid = document.getElementById("calendarDaysGrid");
-    const title = document.getElementById("calendarMonthTitle");
-    const counter = document.getElementById("totalPresentCounter");
-    if (!grid || !member) return;
-
-    grid.innerHTML = "";
-    
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    if(title) title.innerText = `${monthNames[month]} ${year}`;
-
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    let startingSpace = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    
-    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-    
-    let joinDateStr = member.joinDate || member.lastPaid || '2026-10-01';
-    let joinDate = new Date(joinDateStr);
-
-    let presentCount = 0;
-
-    for (let i = 0; i < startingSpace; i++) {
-      grid.innerHTML += `<div></div>`;
-    }
-
-    for (let day = 1; day <= totalDaysInMonth; day++) {
-      let dayISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      let currentDate = new Date(dayISO);
-      let isSunday = (currentDate.getDay() === 0);
-      
-      let isBeforeJoin = currentDate < new Date(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate());
-
-      let dayMap = fetchAttendanceMapForDate(dayISO);
-      let isPresent = isSunday ? true : (dayMap[member.id] && dayMap[member.id].isReal ? true : false);
-
-      if (isPresent && !isBeforeJoin) presentCount++;
-
-      let bgStyle = "background:#222; color:#fff; border:1px solid #444;";
-      let statusDot = `<div style="width:4px; height:4px; background:#ff4444; border-radius:50%; margin:2px auto 0;"></div>`;
-
-      if (isBeforeJoin) {
-        bgStyle = "background:#111; color:#444; border:1px solid #222; opacity:0.3; cursor:not-allowed;";
-        statusDot = "";
-      } else if (isSunday || isPresent) {
-        bgStyle = "background:#0d2614; color:#00ff66; border:1px solid #00ff66;";
-        statusDot = `<div style="width:4px; height:4px; background:#00ff66; border-radius:50%; margin:2px auto 0;"></div>`;
-      }
-
-      // Safe onclick binding for toggle
-      grid.innerHTML += `
-        <div onclick="${isBeforeJoin ? '' : `toggleCalendarDay('${member.id}', '${dayISO}')`}" 
-             style="${bgStyle} border-radius:6px; padding:6px 2px; text-align:center; font-size:11px; font-weight:bold; cursor:${isBeforeJoin ? 'not-allowed' : 'pointer'};">
-          <div>${day}</div>
-          ${statusDot}
+  let galleryHTML = "";
+  if (keys.length === 0) {
+    galleryHTML = `<div style="color:#ff4444; text-align:center; padding:20px;">इस तारीख (${targetDate}) पर कोई रिकॉर्ड नहीं मिला।</div>`;
+  } else {
+    keys.forEach(k => {
+      let entry = dayData[k];
+      galleryHTML += `
+        <div style="background:#181818; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:10px; display:flex; align-items:center; gap:12px;">
+          <img src="${entry.photo}" style="width:55px; height:55px; border-radius:6px; object-fit:cover; border:1.5px solid var(--green-accent);">
+          <div style="text-align:left; font-size:11.5px; line-height:1.4;">
+            <b style="color:#ffcc00; font-size:13px;">${entry.name || 'Unknown'}</b><br>
+            <span style="color:#aaa;">📞 ${entry.phone || '--'}</span><br>
+            <span style="color:#00ff66;">⏰ ${entry.time} | ${targetDate}</span>
+          </div>
         </div>
       `;
-    }
+    });
+  }
 
-    if(counter) counter.innerText = `Total Present: ${presentCount} Days`;
-    }
+  vaultModal.innerHTML = `
+    <div style="background:#111; border:2px solid #00ff66; border-radius:14px; max-width:450px; width:100%; padding:18px; color:#fff; max-height:85vh; overflow-y:auto; box-sizing:border-box;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:12px;">
+        <h3 style="color:#00ff66; margin:0; font-size:15px;">📸 पुरानी सेल्फी गैलरी (${targetDate})</h3>
+        <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:5px 9px; border-radius:4px; cursor:pointer;">✕</button>
+      </div>
+      <div>${galleryHTML}</div>
+      <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="width:100%; background:#222; color:#fff; border:none; padding:10px; border-radius:6px; margin-top:10px; font-weight:bold; cursor:pointer;">⬅ बंद करें</button>
+    </div>
+  `;
+  vaultModal.style.display = "flex";
+}
+
+function closeCameraModal() {
+  document.getElementById("cameraBackdropModal").classList.remove("show");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+
+function formatDateToDDMMYYYY(dateString) {
+  if (!dateString || dateString === "N/A") return "N/A";
+  let parts = dateString.split("-");
+  if (parts.length === 3) {
+    if (parts[0].length === 4) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    return dateString;
+  }
+  return dateString;
+}
+
+window.onload = () => {
+  runLiveSystemClock();
+  setInterval(runLiveSystemClock, 1000);
+};
+
+async function renderAttendanceCalendar(member, year, month) {
+  const grid = document.getElementById("calendarDaysGrid");
+  const title = document.getElementById("calendarMonthTitle");
+  const counter = document.getElementById("totalPresentCounter");
+  if (!grid || !member) return;
+
+  grid.innerHTML = "";
   
-  // Admin click karke kisi bhi din ko Present/Absent toggle kar sake
-    function toggleCalendarDay(memberId, dateISO) {
-    let dayMap = fetchAttendanceMapForDate(dateISO);
-    let isCurrentlyPresent = dayMap[memberId] && dayMap[memberId].isReal;
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  if(title) title.innerText = `${monthNames[month]} ${year}`;
 
-    if (isCurrentlyPresent) {
-      delete dayMap[memberId];
-    } else {
-      dayMap[memberId] = { time: "Manual Admin", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
-    }
-
-    localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
-    
-    // Global variable ya current member find karke re-render karein
-    let allRecords = fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (m) {
-      let now = new Date();
-      renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
-    }
-   }
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  let startingSpace = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
   
+  let joinDateStr = member.joinDate || member.lastPaid || '2026-10-01';
+  let joinDate = new Date(joinDateStr);
+  let presentCount = 0;
+
+  for (let i = 0; i < startingSpace; i++) {
+    grid.innerHTML += `<div></div>`;
+  }
+
+  for (let day = 1; day <= totalDaysInMonth; day++) {
+    let dayISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    let currentDate = new Date(dayISO);
+    let isSunday = (currentDate.getDay() === 0);
+    let isBeforeJoin = currentDate < new Date(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate());
+
+    let dayMap = fetchAttendanceMapForDate(dayISO);
+    let isPresent = isSunday ? true : (dayMap[member.id] && dayMap[member.id].isReal ? true : false);
+
+    if (isPresent && !isBeforeJoin) presentCount++;
+
+    let bgStyle = "background:#222; color:#fff; border:1px solid #444;";
+    let statusDot = `<div style="width:4px; height:4px; background:#ff4444; border-radius:50%; margin:2px auto 0;"></div>`;
+
+    if (isBeforeJoin) {
+      bgStyle = "background:#111; color:#444; border:1px solid #222; opacity:0.3; cursor:not-allowed;";
+      statusDot = "";
+    } else if (isSunday || isPresent) {
+      bgStyle = "background:#0d2614; color:#00ff66; border:1px solid #00ff66;";
+      statusDot = `<div style="width:4px; height:4px; background:#00ff66; border-radius:50%; margin:2px auto 0;"></div>`;
+    }
+
+    grid.innerHTML += `
+      <div onclick="${isBeforeJoin ? '' : `toggleCalendarDay('${member.id}', '${dayISO}')`}" 
+           style="${bgStyle} border-radius:6px; padding:6px 2px; text-align:center; font-size:11px; font-weight:bold; cursor:${isBeforeJoin ? 'not-allowed' : 'pointer'};">
+        <div>${day}</div>
+        ${statusDot}
+      </div>
+    `;
+  }
+  if(counter) counter.innerText = `Total Present: ${presentCount} Days`;
+}
+
+async function toggleCalendarDay(memberId, dateISO) {
+  let dayMap = fetchAttendanceMapForDate(dateISO);
+  let isCurrentlyPresent = dayMap[memberId] && dayMap[memberId].isReal;
+
+  if (isCurrentlyPresent) {
+    delete dayMap[memberId];
+  } else {
+    dayMap[memberId] = { time: "Manual Admin", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
+  }
+
+  localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
+  
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (m) {
+    let now = new Date();
+    renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
+  }
+}
 </script>
 </body>
 </html>
