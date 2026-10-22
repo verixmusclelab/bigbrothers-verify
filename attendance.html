@@ -890,12 +890,22 @@
       phone: currentlyLoadedMember.phone,
       slot: currentlyLoadedMember.slot || ""
       };
-
-  try {
+  
+    try {
     localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
   } catch (storageError) {
     console.error("Storage full:", storageError);
   }
+
+  // ☁️ Attendance ko Firestore Cloud par sync karein
+  try {
+    await db.collection("attendance").doc(todayISO).set({
+      [currentlyLoadedMember.id]: attendanceRecords[String(currentlyLoadedMember.id)]
+    }, { merge: true });
+  } catch (cloudErr) {
+    console.error("Attendance cloud sync error:", cloudErr);
+  }
+    
 
   currentDateISO = todayISO;
 
