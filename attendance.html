@@ -937,6 +937,18 @@
     if (!m) { alert("सदस्य नहीं मिला!"); return; }
 
     let modal = document.getElementById("adminMemberManagerModal");
+  async function openAdminMemberManager(memberId) {
+    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
+    if (pin !== ADMIN_PIN) {
+      if(pin !== null) alert("❌ गलत पिन!");
+      return;
+    }
+
+    let allRecords = await fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (!m) { alert("सदस्य नहीं मिला!"); return; }
+
+    let modal = document.getElementById("adminMemberManagerModal");
     if (!modal) {
       modal = document.createElement("div");
       modal.id = "adminMemberManagerModal";
@@ -955,9 +967,24 @@
         </div>
 
         <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 ज्वाइनिंग तिथि बदलें:</div>
+          <input type="date" id="adminEditableJoinDate" value="${m.joinDate || ''}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+          
           <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें:</div>
           <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-          <button onclick="saveAdminLastPaidDate('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 अंतिम फीस अपडेट करें</button>
+          
+          <button onclick="saveAdminDates('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 ज्वाइनिंग व फीस तिथियां अपडेट करें</button>
+        </div>
+
+        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📋 मासिक प्लान बदलें (Plan Months):</div>
+          <select id="adminPlanMonthsSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+            <option value="1" ${Number(m.planMonths) === 1 ? 'selected' : ''}>1 महीना (1 Month)</option>
+            <option value="3" ${Number(m.planMonths) === 3 ? 'selected' : ''}>3 महीने (3 Months)</option>
+            <option value="6" ${Number(m.planMonths) === 6 ? 'selected' : ''}>6 महीने (6 Months)</option>
+            <option value="12" ${Number(m.planMonths) === 12 ? 'selected' : ''}>1 साल (12 Months)</option>
+          </select>
+          <button onclick="saveAdminPlan('${m.id}')" style="background:#00c8ff; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 प्लान अपडेट करें</button>
         </div>
 
         <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
@@ -991,15 +1018,31 @@
     renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
   }
 
-  async function saveAdminLastPaidDate(memberId) {
-    let newDate = document.getElementById("adminEditableLastPaid").value;
-    if (!newDate) return;
+  async function saveAdminDates(memberId) {
+    let newJoin = document.getElementById("adminEditableJoinDate").value;
+    let newLastPaid = document.getElementById("adminEditableLastPaid").value;
+    if (!newJoin && !newLastPaid) return;
+
     let allRecords = await fetchStoredMembers();
     let m = allRecords.find(r => r.id.toString() === memberId.toString());
     if (m) {
-      m.lastPaid = newDate;
+      if (newJoin) m.joinDate = newJoin;
+      if (newLastPaid) m.lastPaid = newLastPaid;
       await syncMemberToCloud(m);
-      alert("✅ अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
+      alert("✅ ज्वाइनिंग और अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
+      openAdminMemberManager(m.id);
+    }
+  }
+
+  async function saveAdminPlan(memberId) {
+    let months = document.getElementById("adminPlanMonthsSelect").value;
+    let allRecords = await fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (m) {
+      m.planMonths = Number(months);
+      m.plan = `सामान्य (General Fitness - ₹500/माह x ${months} माह)`;
+      await syncMemberToCloud(m);
+      alert("✅ सदस्य का प्लान सफलतापूर्वक अपडेट कर दिया गया है!");
       openAdminMemberManager(m.id);
     }
   }
@@ -1028,7 +1071,7 @@
       alert("❌ डिलीट करने में समस्या आई: " + err.message);
     }
   }
-
+    
   async function openSlotChangerModal() {
     document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
     document.getElementById("slotChangerModal").classList.add("show");
