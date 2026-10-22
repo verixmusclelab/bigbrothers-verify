@@ -477,9 +477,18 @@
         uniqueMap.set(key, item);
       }
     });
-    return Array.from(uniqueMap.values());
-  }
-
+        let localArray = Array.from(uniqueMap.values());
+    if (localArray.length > 0) {
+      localArray.forEach(async (m) => {
+        try {
+          await db.collection("members").doc(String(m.id)).set(m, { merge: true });
+        } catch(err) {
+          console.error("Auto sync error:", err);
+        }
+      });
+      return localArray;
+    }
+    
   async function syncMemberToCloud(member) {
     try {
       const docId = String(member.id);
@@ -603,7 +612,7 @@
       return;
     }
 
-    const newId = Date.now();
+    const newId = phone;
     const todayStr = getLocalDateISO();
 
     const newMember = {
