@@ -384,7 +384,7 @@
         <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span>
       </div>
 
-      <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
+        <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
         ✔ ठीक है (DONE)
       </button>
     </div>
@@ -889,367 +889,355 @@
       name: currentlyLoadedMember.name,
       phone: currentlyLoadedMember.phone,
       slot: currentlyLoadedMember.slot || ""
-    };
+      };
 
-    try {
-      localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
-    } catch (storageError) {
-      console.error("Storage full:", storageError);
-    }
-
-    currentDateISO = todayISO;
-
-    let target = currentlyLoadedMember;
-    let cycleStart = new Date(target.joinDate || '2026-09-01');
-    let totalAttendedInCycle = 0;
-    let curr = new Date(cycleStart);
-    let todayDate = new Date();
-    while(curr <= todayDate) {
-      let isoStr = getLocalDateISO(curr);
-      let dayAttMap = fetchAttendanceMapForDate(isoStr);
-      if(dayAttMap[target.id] && dayAttMap[target.id].isReal) {
-        totalAttendedInCycle++;
-      }
-      curr.setDate(curr.getDate() + 1);
-    }
-
-    closeCameraModal();
-    document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
-    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
-    document.getElementById("attendanceCelebrationModal").classList.add("show");
+  try {
+    localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
+  } catch (storageError) {
+    console.error("Storage full:", storageError);
   }
 
-  function completeAttendanceAndResetKiosk() {
-    const modal = document.getElementById('attendanceCelebrationModal');
-    if (modal) modal.classList.remove('show');
-    cancelSearchAndReset();
+  currentDateISO = todayISO;
+
+  let target = currentlyLoadedMember;
+  let cycleStart = new Date(target.joinDate || '2026-09-01');
+  let totalAttendedInCycle = 0;
+  let curr = new Date(cycleStart);
+  let todayDate = new Date();
+  while(curr <= todayDate) {
+    let isoStr = getLocalDateISO(curr);
+    let dayAttMap = fetchAttendanceMapForDate(isoStr);
+    if(dayAttMap[target.id] && dayAttMap[target.id].isReal) {
+      totalAttendedInCycle++;
+    }
+    curr.setDate(curr.getDate() + 1);
   }
 
-  async function openAdminMemberManager(memberId) {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
-    if (pin !== ADMIN_PIN) {
-      if(pin !== null) alert("❌ गलत पिन!");
-      return;
-    }
+  closeCameraModal();
+  document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
+  document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
+  document.getElementById("attendanceCelebrationModal").classList.add("show");
+}
 
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (!m) { alert("सदस्य नहीं मिला!"); return; }
+function completeAttendanceAndResetKiosk() {
+  const modal = document.getElementById('attendanceCelebrationModal');
+  if (modal) modal.classList.remove('show');
+  cancelSearchAndReset();
+}
 
-    let modal = document.getElementById("adminMemberManagerModal");
-  async function openAdminMemberManager(memberId) {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
-    if (pin !== ADMIN_PIN) {
-      if(pin !== null) alert("❌ गलत पिन!");
-      return;
-    }
+async function openAdminMemberManager(memberId) {
+  let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
+  if (pin !== ADMIN_PIN) {
+    if(pin !== null) alert("❌ गलत पिन!");
+    return;
+  }
 
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (!m) { alert("सदस्य नहीं मिला!"); return; }
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (!m) { alert("सदस्य नहीं मिला!"); return; }
 
-    let modal = document.getElementById("adminMemberManagerModal");
-    if (!modal) {
-      modal = document.createElement("div");
-      modal.id = "adminMemberManagerModal";
-      modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
-      document.body.appendChild(modal);
-    }
+  let modal = document.getElementById("adminMemberManagerModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "adminMemberManagerModal";
+    modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
+    document.body.appendChild(modal);
+  }
 
-    const currentStat = m.manualStatus || 'Paid';
-    let now = new Date();
+  const currentStat = m.manualStatus || 'Paid';
+  let now = new Date();
 
-    modal.innerHTML = `
-      <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:18px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
-          <h3 style="color:#ffcc00; margin:0; font-size:15px;">⚙️ Admin Control: ${m.name}</h3>
-          <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
-        </div>
-
-        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 ज्वाइनिंग तिथि बदलें:</div>
-          <input type="date" id="adminEditableJoinDate" value="${m.joinDate || ''}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-          
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें:</div>
-          <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-          
-          <button onclick="saveAdminDates('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 ज्वाइनिंग व फीस तिथियां अपडेट करें</button>
-        </div>
-
-        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📋 मासिक प्लान बदलें (Plan Months):</div>
-          <select id="adminPlanMonthsSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-            <option value="1" ${Number(m.planMonths) === 1 ? 'selected' : ''}>1 महीना (1 Month)</option>
-            <option value="3" ${Number(m.planMonths) === 3 ? 'selected' : ''}>3 महीने (3 Months)</option>
-            <option value="6" ${Number(m.planMonths) === 6 ? 'selected' : ''}>6 महीने (6 Months)</option>
-            <option value="12" ${Number(m.planMonths) === 12 ? 'selected' : ''}>1 साल (12 Months)</option>
-          </select>
-          <button onclick="saveAdminPlan('${m.id}')" style="background:#00c8ff; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 प्लान अपडेट करें</button>
-        </div>
-
-        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">💰 फीस स्थिति (Fee Status Control):</div>
-          <select id="adminFeeStatusSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-            <option value="Paid" ${currentStat === 'Paid' ? 'selected' : ''}>✅ Paid (फीस जमा है)</option>
-            <option value="Pending" ${currentStat === 'Pending' ? 'selected' : ''}>❌ Pending (फीस बकाया है)</option>
-          </select>
-          <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 फीस स्टेटस अपडेट करें</button>
-        </div>
-
-        <div id="attendanceCalendarContainer" style="background:#1a1a1a; border:1.5px solid var(--gold); border-radius:12px; padding:10px; margin-bottom:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <h4 id="calendarMonthTitle" style="color:var(--gold); font-size:14px; margin:0;">October 2026</h4>
-            <div style="font-size:11px; color:#00ff66; font-weight:bold;" id="totalPresentCounter">Total Present: 0 Days</div>
-          </div>
-          <div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:10px; font-weight:bold; color:#888; margin-bottom:4px;">
-            <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
-          </div>
-          <div id="calendarDaysGrid" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;"></div>
-        </div>
-
-        <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
-          <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">🗑️ इस सदस्य को हमेशा के लिए डिलीट करें</button>
-        </div>
-
-        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें</button>
+  modal.innerHTML = `
+    <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:18px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
+        <h3 style="color:#ffcc00; margin:0; font-size:15px;">⚙️ Admin Control: ${m.name}</h3>
+        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
       </div>
-    `;
-    modal.style.display = "flex";
-    renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
-  }
 
-  async function saveAdminDates(memberId) {
-    let newJoin = document.getElementById("adminEditableJoinDate").value;
-    let newLastPaid = document.getElementById("adminEditableLastPaid").value;
-    if (!newJoin && !newLastPaid) return;
+      <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 ज्वाइनिंग तिथि बदलें:</div>
+        <input type="date" id="adminEditableJoinDate" value="${m.joinDate || ''}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+        
+        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें:</div>
+        <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+        
+        <button onclick="saveAdminDates('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 ज्वाइनिंग व फीस तिथियां अपडेट करें</button>
+      </div>
 
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (m) {
-      if (newJoin) m.joinDate = newJoin;
-      if (newLastPaid) m.lastPaid = newLastPaid;
-      await syncMemberToCloud(m);
-      alert("✅ ज्वाइनिंग और अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
-      openAdminMemberManager(m.id);
-    }
-  }
+      <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📋 मासिक प्लान बदलें (Plan Months):</div>
+        <select id="adminPlanMonthsSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+          <option value="1" ${Number(m.planMonths) === 1 ? 'selected' : ''}>1 महीना (1 Month)</option>
+          <option value="3" ${Number(m.planMonths) === 3 ? 'selected' : ''}>3 महीने (3 Months)</option>
+          <option value="6" ${Number(m.planMonths) === 6 ? 'selected' : ''}>6 महीने (6 Months)</option>
+          <option value="12" ${Number(m.planMonths) === 12 ? 'selected' : ''}>1 साल (12 Months)</option>
+        </select>
+        <button onclick="saveAdminPlan('${m.id}')" style="background:#00c8ff; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 प्लान अपडेट करें</button>
+      </div>
 
-  async function saveAdminPlan(memberId) {
-    let months = document.getElementById("adminPlanMonthsSelect").value;
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (m) {
-      m.planMonths = Number(months);
-      m.plan = `सामान्य (General Fitness - ₹500/माह x ${months} माह)`;
-      await syncMemberToCloud(m);
-      alert("✅ सदस्य का प्लान सफलतापूर्वक अपडेट कर दिया गया है!");
-      openAdminMemberManager(m.id);
-    }
-  }
+      <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+        <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">💰 फीस स्थिति (Fee Status Control):</div>
+        <select id="adminFeeStatusSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+          <option value="Paid" ${currentStat === 'Paid' ? 'selected' : ''}>✅ Paid (फीस जमा है)</option>
+          <option value="Pending" ${currentStat === 'Pending' ? 'selected' : ''}>❌ Pending (फीस बकाया है)</option>
+        </select>
+        <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 फीस स्टेटस अपडेट करें</button>
+      </div>
 
-  async function saveAdminFeeStatus(memberId) {
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (!m) return;
-    let newStatus = document.getElementById("adminFeeStatusSelect").value;
-    m.manualStatus = newStatus;
+      <div id="attendanceCalendarContainer" style="background:#1a1a1a; border:1.5px solid var(--gold); border-radius:12px; padding:10px; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h4 id="calendarMonthTitle" style="color:var(--gold); font-size:14px; margin:0;">October 2026</h4>
+          <div style="font-size:11px; color:#00ff66; font-weight:bold;" id="totalPresentCounter">Total Present: 0 Days</div>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:10px; font-weight:bold; color:#888; margin-bottom:4px;">
+          <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
+        </div>
+        <div id="calendarDaysGrid" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;"></div>
+      </div>
+
+      <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
+        <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">🗑️ इस सदस्य को हमेशा के लिए डिलीट करें</button>
+      </div>
+
+      <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें</button>
+    </div>
+  `;
+  modal.style.display = "flex";
+  renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
+}
+
+async function saveAdminDates(memberId) {
+  let newJoin = document.getElementById("adminEditableJoinDate").value;
+  let newLastPaid = document.getElementById("adminEditableLastPaid").value;
+  if (!newJoin && !newLastPaid) return;
+
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (m) {
+    if (newJoin) m.joinDate = newJoin;
+    if (newLastPaid) m.lastPaid = newLastPaid;
     await syncMemberToCloud(m);
-    alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
+    alert("✅ ज्वाइनिंग और अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
+    openAdminMemberManager(m.id);
+  }
+}
+
+async function saveAdminPlan(memberId) {
+  let months = document.getElementById("adminPlanMonthsSelect").value;
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (m) {
+    m.planMonths = Number(months);
+    m.plan = `सामान्य (General Fitness - ₹500/माह x ${months} माह)`;
+    await syncMemberToCloud(m);
+    alert("✅ सदस्य का प्लान सफलतापूर्वक अपडेट कर दिया गया है!");
+    openAdminMemberManager(m.id);
+  }
+}
+
+async function saveAdminFeeStatus(memberId) {
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (!m) return;
+  let newStatus = document.getElementById("adminFeeStatusSelect").value;
+  m.manualStatus = newStatus;
+  await syncMemberToCloud(m);
+  alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
+  document.getElementById('adminMemberManagerModal').style.display = 'none';
+  loadSingleMemberKioskCard(m.id);
+}
+
+async function deleteMemberPermanently(memberId) {
+  if (!confirm("⚠️ क्या आप वाकई इस सदस्य को हमेशा के लिए डिलीट करना चाहते हैं?")) return;
+  try {
+    await db.collection("members").doc(String(memberId)).delete();
+    alert("✅ सदस्य क्लाउड से डिलीट हो गया!");
     document.getElementById('adminMemberManagerModal').style.display = 'none';
-    loadSingleMemberKioskCard(m.id);
+    cancelSearchAndReset();
+    location.reload();
+  } catch (err) {
+    alert("❌ डिलीट करने में समस्या आई: " + err.message);
   }
+}
 
-  async function deleteMemberPermanently(memberId) {
-    if (!confirm("⚠️ क्या आप वाकई इस सदस्य को हमेशा के लिए डिलीट करना चाहते हैं?")) return;
-    try {
-      await db.collection("members").doc(String(memberId)).delete();
-      alert("✅ सदस्य क्लाउड से डिलीट हो गया!");
-      document.getElementById('adminMemberManagerModal').style.display = 'none';
-      cancelSearchAndReset();
-      location.reload();
-    } catch (err) {
-      alert("❌ डिलीट करने में समस्या आई: " + err.message);
-    }
-  }
-    
-  async function openSlotChangerModal() {
-    document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
-    document.getElementById("slotChangerModal").classList.add("show");
-  }
+async function openSlotChangerModal() {
+  document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
+  document.getElementById("slotChangerModal").classList.add("show");
+}
 
-  async function saveNewMemberSlot(newSlot) {
-    if (!currentlyLoadedMember) return;
-    currentlyLoadedMember.slot = newSlot;
-    await syncMemberToCloud(currentlyLoadedMember);
-    alert(`✅ स्लॉट बदलकर "${newSlot}" कर दिया गया!`);
-    closeModal('slotChangerModal');
-    loadSingleMemberKioskCard(currentlyLoadedMember.id);
-  }
+async function saveNewMemberSlot(newSlot) {
+  if (!currentlyLoadedMember) return;
+  currentlyLoadedMember.slot = newSlot;
+  await syncMemberToCloud(currentlyLoadedMember);
+  alert(`✅ स्लॉट बदलकर "${newSlot}" कर दिया गया!`);
+  closeModal('slotChangerModal');
+  loadSingleMemberKioskCard(currentlyLoadedMember.id);
+}
 
-  function unlockAdminControl() {
-    let pin = prompt("🔒 Admin PIN दर्ज करें:");
-    if (pin === ADMIN_PIN) {
-      isAdminUnlocked = true;
-      let openVault = confirm("✅ Admin Verified!\nक्या आप पुरानी तारीख की सेल्फी गैलरी देखना चाहते हैं?");
-      if (openVault) {
-        openAdminPhotoVault();
-      } else {
-        alert("Admin Access सक्रिय है!");
-      }
-    }
-  }
-
-  function openAdminPhotoVault() {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें (सेल्फी गैलरी देखने के लिए):");
-    if (pin !== ADMIN_PIN) {
-      if(pin !== null) alert("❌ गलत पिन!");
-      return;
-    }
-
-    let targetDate = prompt("📅 तारीख दर्ज करें (YYYY-MM-DD फॉर्मेट में):", currentDateISO);
-    if (!targetDate) return;
-
-    let dayData = fetchAttendanceMapForDate(targetDate);
-    let keys = Object.keys(dayData);
-
-    let vaultModal = document.getElementById("adminPhotoVaultModal");
-    if (!vaultModal) {
-      vaultModal = document.createElement("div");
-      vaultModal.id = "adminPhotoVaultModal";
-      vaultModal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
-      document.body.appendChild(vaultModal);
-    }
-
-    let galleryHTML = "";
-    if (keys.length === 0) {
-      galleryHTML = `<div style="color:#ff4444; text-align:center; padding:20px;">इस तारीख (${targetDate}) पर कोई रिकॉर्ड नहीं मिला।</div>`;
+function unlockAdminControl() {
+  let pin = prompt("🔒 Admin PIN दर्ज करें:");
+  if (pin === ADMIN_PIN) {
+    isAdminUnlocked = true;
+    let openVault = confirm("✅ Admin Verified!\nक्या आप पुरानी तारीख की सेल्फी गैलरी देखना चाहते हैं?");
+    if (openVault) {
+      openAdminPhotoVault();
     } else {
-      keys.forEach(k => {
-        let entry = dayData[k];
-        galleryHTML += `
-          <div style="background:#181818; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:10px; display:flex; align-items:center; gap:12px;">
-            <img src="${entry.photo}" style="width:55px; height:55px; border-radius:6px; object-fit:cover; border:1.5px solid var(--green-accent);">
-            <div style="text-align:left; font-size:11.5px; line-height:1.4;">
-              <b style="color:#ffcc00; font-size:13px;">${entry.name || 'Unknown'}</b><br>
-              <span style="color:#aaa;">📞 ${entry.phone || '--'}</span><br>
-              <span style="color:#00ff66;">⏰ ${entry.time} | ${targetDate}</span>
-            </div>
+      alert("Admin Access सक्रिय है!");
+    }
+  }
+}
+
+function openAdminPhotoVault() {
+  let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें (सेल्फी गैलरी देखने के लिए):");
+  if (pin !== ADMIN_PIN) {
+    if(pin !== null) alert("❌ गलत पिन!");
+    return;
+  }
+
+  let targetDate = prompt("📅 तारीख दर्ज करें (YYYY-MM-DD फॉर्मेट में):", currentDateISO);
+  if (!targetDate) return;
+
+  let dayData = fetchAttendanceMapForDate(targetDate);
+  let keys = Object.keys(dayData);
+
+  let vaultModal = document.getElementById("adminPhotoVaultModal");
+  if (!vaultModal) {
+    vaultModal = document.createElement("div");
+    vaultModal.id = "adminPhotoVaultModal";
+    vaultModal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
+    document.body.appendChild(vaultModal);
+  }
+
+  let galleryHTML = "";
+  if (keys.length === 0) {
+    galleryHTML = `<div style="color:#ff4444; text-align:center; padding:20px;">इस तारीख (${targetDate}) पर कोई रिकॉर्ड नहीं मिला।</div>`;
+  } else {
+    keys.forEach(k => {
+      let entry = dayData[k];
+      galleryHTML += `
+        <div style="background:#181818; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:10px; display:flex; align-items:center; gap:12px;">
+          <img src="${entry.photo}" style="width:55px; height:55px; border-radius:6px; object-fit:cover; border:1.5px solid var(--green-accent);">
+          <div style="text-align:left; font-size:11.5px; line-height:1.4;">
+            <b style="color:#ffcc00; font-size:13px;">${entry.name || 'Unknown'}</b><br>
+            <span style="color:#aaa;">📞 ${entry.phone || '--'}</span><br>
+            <span style="color:#00ff66;">⏰ ${entry.time} | ${targetDate}</span>
           </div>
-        `;
-      });
-    }
-
-    vaultModal.innerHTML = `
-      <div style="background:#111; border:2px solid #00ff66; border-radius:14px; max-width:450px; width:100%; padding:18px; color:#fff; max-height:85vh; overflow-y:auto; box-sizing:border-box;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:12px;">
-          <h3 style="color:#00ff66; margin:0; font-size:15px;">📸 पुरानी सेल्फी गैलरी (${targetDate})</h3>
-          <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:5px 9px; border-radius:4px; cursor:pointer;">✕</button>
-        </div>
-        <div>${galleryHTML}</div>
-        <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="width:100%; background:#222; color:#fff; border:none; padding:10px; border-radius:6px; margin-top:10px; font-weight:bold; cursor:pointer;">⬅ बंद करें</button>
-      </div>
-    `;
-    vaultModal.style.display = "flex";
-  }
-
-  function closeCameraModal() {
-    document.getElementById("cameraBackdropModal").classList.remove("show");
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).classList.remove("show");
-  }
-
-  function formatDateToDDMMYYYY(dateString) {
-    if (!dateString || dateString === "N/A") return "N/A";
-    let parts = dateString.split("-");
-    if (parts.length === 3) {
-      if (parts[0].length === 4) return `${parts[2]}-${parts[1]}-${parts[0]}`;
-      return dateString;
-    }
-    return dateString;
-  }
-
-  window.onload = () => {
-    runLiveSystemClock();
-    setInterval(runLiveSystemClock, 1000);
-  };
-
-  async function renderAttendanceCalendar(member, year, month) {
-    const grid = document.getElementById("calendarDaysGrid");
-    const title = document.getElementById("calendarMonthTitle");
-    const counter = document.getElementById("totalPresentCounter");
-    if (!grid || !member) return;
-
-    grid.innerHTML = "";
-    
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    if(title) title.innerText = `${monthNames[month]} ${year}`;
-
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    let startingSpace = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-    
-    let joinDateStr = member.joinDate || member.lastPaid || '2026-10-01';
-    let joinDate = new Date(joinDateStr);
-    let presentCount = 0;
-
-    for (let i = 0; i < startingSpace; i++) {
-      grid.innerHTML += `<div></div>`;
-    }
-
-    for (let day = 1; day <= totalDaysInMonth; day++) {
-      let dayISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      let currentDate = new Date(dayISO);
-      let isSunday = (currentDate.getDay() === 0);
-      let isBeforeJoin = currentDate < new Date(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate());
-
-      let dayMap = fetchAttendanceMapForDate(dayISO);
-      let isPresent = isSunday ? true : (dayMap[member.id] && dayMap[member.id].isReal ? true : false);
-
-      if (isPresent && !isBeforeJoin) presentCount++;
-
-      let bgStyle = "background:#222; color:#fff; border:1px solid #444;";
-      let statusDot = `<div style="width:4px; height:4px; background:#ff4444; border-radius:50%; margin:2px auto 0;"></div>`;
-
-      if (isBeforeJoin) {
-        bgStyle = "background:#111; color:#444; border:1px solid #222; opacity:0.3; cursor:not-allowed;";
-        statusDot = "";
-      } else if (isSunday || isPresent) {
-        bgStyle = "background:#0d2614; color:#00ff66; border:1px solid #00ff66;";
-        statusDot = `<div style="width:4px; height:4px; background:#00ff66; border-radius:50%; margin:2px auto 0;"></div>`;
-      }
-
-      grid.innerHTML += `
-        <div onclick="${isBeforeJoin ? '' : `toggleCalendarDay('${member.id}', '${dayISO}')`}" 
-             style="${bgStyle} border-radius:6px; padding:6px 2px; text-align:center; font-size:11px; font-weight:bold; cursor:${isBeforeJoin ? 'not-allowed' : 'pointer'};">
-          <div>${day}</div>
-          ${statusDot}
         </div>
       `;
-    }
-    if(counter) counter.innerText = `Total Present: ${presentCount} Days`;
+    });
   }
 
-  async function toggleCalendarDay(memberId, dateISO) {
-    let dayMap = fetchAttendanceMapForDate(dateISO);
-    let isCurrentlyPresent = dayMap[memberId] && dayMap[memberId].isReal;
+  vaultModal.innerHTML = `
+    <div style="background:#111; border:2px solid #00ff66; border-radius:14px; max-width:450px; width:100%; padding:18px; color:#fff; max-height:85vh; overflow-y:auto; box-sizing:border-box;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:12px;">
+        <h3 style="color:#00ff66; margin:0; font-size:15px;">📸 पुरानी सेल्फी गैलरी (${targetDate})</h3>
+        <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:5px 9px; border-radius:4px; cursor:pointer;">✕</button>
+      </div>
+      <div>${galleryHTML}</div>
+      <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="width:100%; background:#222; color:#fff; border:none; padding:10px; border-radius:6px; margin-top:10px; font-weight:bold; cursor:pointer;">⬅ बंद करें</button>
+    </div>
+  `;
+  vaultModal.style.display = "flex";
+}
 
-    if (isCurrentlyPresent) {
-      delete dayMap[memberId];
-    } else {
-      dayMap[memberId] = { time: "Manual Admin", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
-    }
+function closeCameraModal() {
+  document.getElementById("cameraBackdropModal").classList.remove("show");
+}
 
-    localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
-    
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (m) {
-      let now = new Date();
-      renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
-    }
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+
+function formatDateToDDMMYYYY(dateString) {
+  if (!dateString || dateString === "N/A") return "N/A";
+  let parts = dateString.split("-");
+  if (parts.length === 3) {
+    if (parts[0].length === 4) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    return dateString;
   }
+  return dateString;
+}
+
+window.onload = () => {
+  runLiveSystemClock();
+  setInterval(runLiveSystemClock, 1000);
+};
+
+async function renderAttendanceCalendar(member, year, month) {
+  const grid = document.getElementById("calendarDaysGrid");
+  const title = document.getElementById("calendarMonthTitle");
+  const counter = document.getElementById("totalPresentCounter");
+  if (!grid || !member) return;
+
+  grid.innerHTML = "";
+  
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  if(title) title.innerText = `${monthNames[month]} ${year}`;
+
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  let startingSpace = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+  
+  let joinDateStr = member.joinDate || member.lastPaid || '2026-10-01';
+  let joinDate = new Date(joinDateStr);
+  let presentCount = 0;
+
+  for (let i = 0; i < startingSpace; i++) {
+    grid.innerHTML += `<div></div>`;
+  }
+
+  for (let day = 1; day <= totalDaysInMonth; day++) {
+    let dayISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    let currentDate = new Date(dayISO);
+    let isSunday = (currentDate.getDay() === 0);
+    let isBeforeJoin = currentDate < new Date(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate());
+
+    let dayMap = fetchAttendanceMapForDate(dayISO);
+    let isPresent = isSunday ? true : (dayMap[member.id] && dayMap[member.id].isReal ? true : false);
+
+    if (isPresent && !isBeforeJoin) presentCount++;
+
+    let bgStyle = "background:#222; color:#fff; border:1px solid #444;";
+    let statusDot = `<div style="width:4px; height:4px; background:#ff4444; border-radius:50%; margin:2px auto 0;"></div>`;
+
+    if (isBeforeJoin) {
+      bgStyle = "background:#111; color:#444; border:1px solid #222; opacity:0.3; cursor:not-allowed;";
+      statusDot = "";
+    } else if (isSunday || isPresent) {
+      bgStyle = "background:#0d2614; color:#00ff66; border:1px solid #00ff66;";
+      statusDot = `<div style="width:4px; height:4px; background:#00ff66; border-radius:50%; margin:2px auto 0;"></div>`;
+    }
+
+    grid.innerHTML += `
+      <div onclick="${isBeforeJoin ? '' : `toggleCalendarDay('${member.id}', '${dayISO}')`}" 
+           style="${bgStyle} border-radius:6px; padding:6px 2px; text-align:center; font-size:11px; font-weight:bold; cursor:${isBeforeJoin ? 'not-allowed' : 'pointer'};">
+        <div>${day}</div>
+        ${statusDot}
+      </div>
+    `;
+  }
+  if(counter) counter.innerText = `Total Present: ${presentCount} Days`;
+}
+
+async function toggleCalendarDay(memberId, dateISO) {
+  let dayMap = fetchAttendanceMapForDate(dateISO);
+  let isCurrentlyPresent = dayMap[memberId] && dayMap[memberId].isReal;
+
+  if (isCurrentlyPresent) {
+    delete dayMap[memberId];
+  } else {
+    dayMap[memberId] = { time: "Manual Admin", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
+  }
+
+  localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
+  
+  let allRecords = await fetchStoredMembers();
+  let m = allRecords.find(r => r.id.toString() === memberId.toString());
+  if (m) {
+    let now = new Date();
+    renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
+  }
+}
 </script>
 </body>
 </html>
