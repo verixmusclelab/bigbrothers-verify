@@ -1,413 +1,12 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club - Attendance Kiosk</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffcc00">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5 Brother's Fitness Club - Digital Admission Form</title>
 <!-- Firebase App & Firestore SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-<style>
-  :root {
-    --gold: #ffcc00;
-    --gold-glow: rgba(255, 204, 0, 0.28);
-    --bg-dark: #070707;
-    --card-bg: #121212;
-    --border-color: #242424;
-    --green-accent: #00ff66;
-    --red-accent: #ff3333;
-    --text-muted: #888888;
-  }
-
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  body {
-    background-color: var(--bg-dark);
-    color: #ffffff;
-    padding: 12px 10px 90px 10px;
-    max-width: 500px;
-    margin: 0 auto;
-    min-height: 100vh;
-  }
-
-  .nav-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
-  }
-
-  .btn-back-home {
-    background: var(--gold); color: #000; text-decoration: none;
-    font-size: 11px; font-weight: 900; padding: 7px 12px; border-radius: 8px;
-    text-transform: uppercase;
-  }
-
-  .btn-admin-pill {
-    background: #1c1c1c; color: var(--gold); border: 1px solid var(--gold);
-    font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 8px; cursor: pointer;
-  }
-
-  .branding-card {
-    background: radial-gradient(circle at top, #1e1908 0%, #0d0d0d 100%);
-    border: 1.5px solid var(--gold); border-radius: 14px;
-    padding: 14px; text-align: center; margin-bottom: 12px;
-    box-shadow: 0 4px 20px var(--gold-glow);
-  }
-
-  .branding-title {
-    font-size: 18px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px;
-  }
-
-  .badge-live-clock {
-    display: inline-block; background: #161616; border: 1px solid #ffcc00;
-    color: var(--gold); font-size: 11px; font-weight: 800;
-    padding: 4px 12px; border-radius: 14px; margin-top: 6px;
-  }
-
-  .kiosk-hero-box {
-    background: #111; border: 2px dashed #333; border-radius: 14px;
-    padding: 20px 14px; text-align: center; margin-bottom: 14px;
-  }
-
-  .btn-mark-kiosk-trigger {
-    width: 100%; background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%);
-    color: #000; font-size: 14px; font-weight: 900; padding: 14px; border: none;
-    border-radius: 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
-    box-shadow: 0 4px 20px var(--gold-glow);
-  }
-
-  .search-area-wrapper {
-    display: none; background: #141414; border: 1.5px solid var(--gold);
-    border-radius: 12px; padding: 12px; margin-bottom: 14px;
-  }
-
-  .live-search-input {
-    width: 100%; background: #000; border: 1.5px solid #444;
-    border-radius: 8px; padding: 12px 14px; color: #fff; font-size: 14px; outline: none;
-  }
-  .live-search-input:focus { border-color: var(--gold); }
-
-  .search-dropdown-results {
-    margin-top: 8px; max-height: 250px; overflow-y: auto;
-  }
-
-  .search-result-item {
-    background: #1f1f1f; border: 1px solid #333; border-radius: 8px;
-    padding: 10px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
-    cursor: pointer;
-  }
-  .search-result-item:hover { border-color: var(--gold); }
-
-  .batch-direct-list-box {
-    display: none; background: #111; border: 1.5px solid #333; border-radius: 12px; padding: 12px; margin-bottom: 14px;
-  }
-
-  .single-member-container {
-    display: none; margin-bottom: 14px;
-  }
-
-  .loaded-member-card {
-    background: var(--card-bg); border: 2px solid var(--border-color);
-    border-radius: 14px; padding: 14px; position: relative;
-  }
-  .loaded-member-card.status-present {
-    border-color: #00ff66 !important;
-    background: linear-gradient(180deg, #0d1a10 0%, #07120a 100%) !important;
-    box-shadow: 0 0 16px rgba(0, 255, 102, 0.25);
-  }
-
-  .card-top-row {
-    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;
-  }
-
-  .card-member-name {
-    font-size: 16px; font-weight: 900; color: #fff;
-  }
-
-  .fee-pill-tag {
-    font-size: 9.5px; font-weight: 900; padding: 3px 8px; border-radius: 4px; cursor: pointer;
-  }
-  .fee-paid { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
-  .fee-due { background: rgba(255, 77, 77, 0.15); color: #ff6666; border: 1px solid #ff6666; }
-
-  .card-details-box {
-    background: #161616; border: 1px solid #282828; border-radius: 8px;
-    padding: 10px; margin-bottom: 10px; font-size: 11px; line-height: 1.6;
-  }
-
-  .slot-row-flex {
-    display: flex; justify-content: space-between; align-items: center;
-    background: #1f1f1f; border: 1px solid #333; border-radius: 6px; padding: 6px 10px; margin-top: 6px;
-  }
-
-  .btn-slot-gear {
-    background: var(--gold); color: #000; border: none; border-radius: 4px;
-    padding: 3px 8px; font-size: 10px; font-weight: 900; cursor: pointer;
-  }
-
-  .compact-proof-badge {
-    display: flex; align-items: center; gap: 8px;
-    background: #000; border: 1.5px dashed var(--green-accent);
-    border-radius: 8px; padding: 6px 10px; margin: 8px 0; font-size: 10px; color: #00ff66; font-weight: bold;
-  }
-  .compact-proof-badge img {
-    width: 36px; height: 36px; border-radius: 4px; object-fit: cover; border: 1px solid var(--green-accent);
-  }
-
-  .card-actions-row {
-    display: flex; gap: 8px; margin-top: 10px;
-  }
-
-  .btn-pres-action {
-    flex: 2; font-size: 12px; font-weight: 900; padding: 12px; border-radius: 8px;
-    border: none; cursor: pointer; text-transform: uppercase;
-  }
-  .btn-pres-action.is-ver { background: #00ff66; color: #000; }
-  .btn-pres-action.not-ver { background: #132417; color: #00ff66; border: 1.5px solid #00ff66; }
-
-  .btn-clear-action {
-    flex: 1; background: #222; color: #bbb; border: 1px solid #444;
-    font-size: 11px; font-weight: bold; padding: 12px; border-radius: 8px; cursor: pointer;
-  }
-
-  .custom-modal-backdrop {
-    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.95); z-index: 999999;
-    align-items: center; justify-content: center; padding: 14px; box-sizing: border-box;
-  }
-  .custom-modal-backdrop.show { display: flex; }
-
-  .modal-box-card {
-    background: #111; border: 2px solid var(--gold); border-radius: 14px;
-    max-width: 430px; width: 100%; padding: 18px 14px; text-align: center;
-    box-shadow: 0 0 30px var(--gold-glow); color: #fff;
-  }
-  .camera-feed-container {
-    width: 100%; height: 380px; background: #000; border-radius: 10px;
-    position: relative; overflow: hidden; border: 2px solid #333;
-  }
-  #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-  .scanner-reticle-ring {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 180px; height: 180px; border: 2px dashed var(--green-accent); border-radius: 50%;
-  }
-
-  .slot-chip-btn {
-    background: #1c1c1c; border: 1px solid #333; color: #aaa;
-    font-size: 11px; font-weight: bold; padding: 7px; border-radius: 6px; cursor: pointer;
-  }
-</style>
-</head>
-<body>
-
-  <div class="nav-header">
-    <a href="app.html" class="btn-back-home">⬅ Back / Master App</a>
-    <button type="button" class="btn-admin-pill" onclick="unlockAdminControl()">🔒 Admin Access</button>
-  </div>
-
-  <div class="branding-card">
-    <div class="branding-title">👑 5 BROTHER'S FITNESS CLUB</div>
-    <div style="font-size:11px; color:#aaa; margin-top:2px;">Digital Attendance & Verification Register</div>
-    <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
-  </div>
-
-  <div class="kiosk-hero-box" id="kioskHeroBox">
-    <div style="font-size:34px; margin-bottom:6px;">🏋️‍♂️</div>
-    <h3 style="font-size:14px; color:#ffcc00; margin-bottom:4px;">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</h3>
-    <div style="font-size:10.5px; color:#888; margin-bottom:12px;">नाम या मोबाइल नंबर से तुरंत खोजें (हिंदी/English)</div>
-    <button type="button" class="btn-mark-kiosk-trigger" onclick="openSearchKiosk()">👉 MARK YOUR ATTENDANCE</button>
-    
-    <div style="margin-top:10px; display:flex; justify-content:space-around; align-items:center;">
-      <button type="button" onclick="toggleBatchDirectList()" style="background:transparent; border:none; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; text-decoration:underline;">
-        📋 सभी सदस्यों की सूची देखें
-      </button>
-      <button type="button" onclick="openAddMemberModal()" style="background:rgba(255,204,0,0.15); border:1px solid var(--gold); color:var(--gold); font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px; cursor:pointer;">
-        ➕ नया सदस्य जोड़ें
-      </button>
-    </div>
-  </div>
-
-  <div class="batch-direct-list-box" id="batchDirectListBox">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <b style="font-size:12px; color:var(--gold);" id="directListTitle">All Registered Members (Cloud Sync)</b>
-      <button onclick="document.getElementById('batchDirectListBox').style.display='none'; cancelSearchAndReset();" style="background:#222; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">⬅ Back</button>
-    </div>
-    <div id="directListContainerNode" style="max-height:220px; overflow-y:auto;"></div>
-  </div>
-
-  <div class="search-area-wrapper" id="searchAreaWrapper">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <span style="font-size:11px; font-weight:bold; color:var(--gold);">🔍 सदस्य खोजें (Universal Cloud Search)</span>
-      <button type="button" onclick="cancelSearchAndReset()" style="background:#282828; color:#bbb; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">⬅ Back</button>
-    </div>
-    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="नाम या मोबाइल नंबर लिखें (हिंदी/English)..." oninput="executeUniversalSearch()">
-    <div id="searchDropdownNode" class="search-dropdown-results"></div>
-  </div>
-
-  <div class="single-member-container" id="singleMemberContainer">
-    <div class="loaded-member-card" id="activeLoadedCard">
-      <div class="card-top-row">
-        <div>
-          <div class="card-member-name" id="cardMemberName">MEMBER NAME</div>
-          <div style="font-size:10.5px; color:#888; margin-top:2px;" id="cardMemberPhone">📞 +91 0000000000</div>
-        </div>
-        <span class="fee-pill-tag fee-paid" id="cardFeeBadge" onclick="toggleManualFeeStatus()" title="Click to change status">FEES PAID</span>
-      </div>
-
-      <div class="card-details-box">
-        <div>📋 <b>प्लान:</b> <span id="cardPlanText">General (1 माह)</span></div>
-        <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <b>अंतिम फीस:</b> <span id="cardLastPaidDisplay" style="color:var(--gold); font-weight:bold;">DD-MM-YYYY</span></div>
-        
-        <div id="cardPromiseDateBox" style="display:none; color:#00ff66; margin-top:5px; font-weight:bold; font-size:11px;">
-          📅 फीस वादा तारीख (Promise Date): <span id="cardPromiseDateVal">--</span>
-        </div>
-
-        <div class="slot-row-flex">
-          <span>🕒 वर्तमान स्लॉट: <b id="cardSlotDisplay">06:00 AM - 07:00 AM</b></span>
-          <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal()">⚙️ Slot बदलें</button>
-        </div>
-      </div>
-
-      <div id="cardProofContainer"></div>
-
-      <div class="card-actions-row">
-        <button type="button" class="btn-pres-action not-ver" id="btnPresTrigger" onclick="handleAttendanceClick()">
-          📸 PRESENT दर्ज करें (सेल्फी के साथ)
-        </button>
-        <button type="button" class="btn-clear-action" onclick="cancelSearchAndReset()">
-          ⬅ BACK / CLEAR
-        </button>
-      </div>
-
-      <div style="margin-top:8px; text-align:right;">
-        <button type="button" onclick="openAdminMemberManager(currentlyLoadedMember.id)" style="background:transparent; border:1px dashed var(--gold); color:var(--gold); font-size:10px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">
-          ⚙️ एडमिन कंट्रोल (कैレンダー, अंतिम फीस, डिलीट & स्टेटस)
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="custom-modal-backdrop" id="addMemberModal">
-    <div class="modal-box-card" style="border-color:var(--gold); text-align:left;">
-      <h3 style="color:var(--gold); font-size:15px; margin-bottom:8px; text-align:center;">➕ नया सदस्य जोड़ें (Cloud Sync)</h3>
-      <div style="font-size:11px; margin-bottom:6px;">सदस्य का नाम (हिंदी/English):</div>
-      <input type="text" id="newMemberNameInput" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-      
-      <div style="font-size:11px; margin-bottom:6px;">मोबाइल नंबर (10 अंक):</div>
-      <input type="tel" id="newMemberPhoneInput" maxlength="10" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-
-      <div style="display:flex; gap:8px;">
-        <button type="button" onclick="closeModal('addMemberModal')" style="flex:1; background:#222; color:#bbb; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;">⬅ Back</button>
-        <button type="button" onclick="saveNewMemberData()" style="flex:2; background:var(--gold); color:#000; border:none; padding:8px; border-radius:6px; font-weight:900; cursor:pointer;">✔ क्लाउड पर सेव करें</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="custom-modal-backdrop" id="strictExpiryModal">
-    <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
-      <div style="font-size:38px; margin-bottom:2px;">⚠️</div>
-      <h3 style="color:#ffcc00; margin:0 0 4px; font-size:16px; text-transform:uppercase;">5 BROTHER'S FITNESS CLUB</h3>
-      <div style="color:#ff6666; font-size:11.5px; font-weight:bold; margin-bottom:10px;">सदस्यता अवधि व फीस समाप्ति सूचना</div>
-
-      <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:8px; padding:10px; margin-bottom:12px; text-align:left; font-size:11px; line-height:1.5;">
-        प्रिय <b id="expiringMemberName">सदस्य</b>,<br>
-        आपकी जिम मेंबरशिप एक्सपायर हो चुकी है या फीस बकाया है।<br>
-        <b style="color:#ffcc00;">सख्त नियम:</b> कृपया अपनी फीस जमा करें या एडमिन से संपर्क करें।
-      </div>
-
-      <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:12px; text-align:left;">
-        <label style="display:block; font-size:10.5px; color:#00ff66; font-weight:bold; margin-bottom:4px;">
-          📅 आप फीस किस तारीख तक जमा कर देंगे? (Promise Date):
-        </label>
-        <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box; margin-bottom:6px;">
-        <button onclick="submitPromiseAndOpenCam()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
-          ✔ तारीख लॉक करें व सेल्फी लें
-        </button>
-      </div>
-
-      <div id="initialActionButtons" style="display:flex; flex-direction:column; gap:6px;">
-        <button onclick="showPromiseDateField()" style="background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
-          ✔ हाँ, मैं सहमत हूँ (फीस तारीख चुनें)
-        </button>
-        <button onclick="handleDisagreeLegalNotice()" style="background:#261212; color:#ff6666; font-weight:bold; padding:9px; border:1.5px solid #ff4d4d; border-radius:6px; font-size:11.5px; cursor:pointer;">
-          ✖ मैं सहमत नहीं हूँ
-        </button>
-      </div>
-
-      <div style="margin-top:10px;">
-        <button onclick="closeModal('strictExpiryModal')" style="background:#333; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; width:100%;">⬅ Back</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="custom-modal-backdrop" id="slotChangerModal">
-    <div class="modal-box-card" style="border-color:var(--gold);">
-      <h3 style="color:#ffcc00; font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Slot Changer)</h3>
-      <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
-
-      <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM')">05:00 - 06:00 AM</button>
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM')">06:00 - 07:00 AM</button>
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM')">07:00 - 08:00 AM</button>
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM')">08:00 - 09:00 AM</button>
-      </div>
-
-      <div style="text-align:left; font-size:11px; font-weight:bold; color:#00c8ff; margin-bottom:4px;">🌙 EVENING SLOTS:</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:14px;">
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('04:00 PM - 05:00 PM')">04:00 - 05:00 PM</button>
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:30 PM - 06:30 PM')">05:30 - 06:30 PM</button>
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM')">06:30 - 07:30 PM</button>
-        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:30 PM - 08:30 PM')">07:30 - 08:30 PM</button>
-        <button type="button" class="slot-chip-btn" style="grid-column: span 2;" onclick="saveNewMemberSlot('08:30 PM - 09:30 PM')">08:30 - 09:30 PM</button>
-      </div>
-
-      <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#282828; color:#fff; border:none; padding:9px; border-radius:6px; font-size:12px; cursor:pointer;">⬅ Back</button>
-    </div>
-  </div>
-
-  <div class="custom-modal-backdrop" id="attendanceCelebrationModal">
-    <div class="modal-box-card" id="celebrateModalCard" style="border-color:#00ff66; box-shadow:0 0 30px rgba(0,255,102,0.3);">
-      <div style="font-size:42px; margin-bottom:3px;" id="celebrateEmoji">💪</div>
-      <h3 style="color:#ffcc00; font-size:16px; margin:0 0 2px; font-weight:900;" id="celebrateHeaderTitle">ATTENDANCE VERIFIED</h3>
-      <div style="color:#00ff66; font-size:13px; font-weight:bold; margin-bottom:10px;" id="celebrateMemberName">MEMBER NAME</div>
-
-      <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:12px; text-align:left; font-size:12px; line-height:1.6; margin-bottom:14px;">
-        <div style="color:#ffcc00; font-weight:bold; margin-bottom:4px;" id="celebrateSubTitle">Thank So Much To Verify Your Attendance!</div>
-        <div style="color:#00ff66; font-size:11.5px; margin-bottom:6px;" id="celebrateMainMsg">आपकी उपस्थिति आज की दर्ज कर ली गई है।</div>
-        <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span>
-      </div>
-
-            <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
-        ✔ ठीक है (DONE)
-      </button>
-    </div>
-  </div>
-
-  <div class="custom-modal-backdrop" id="cameraBackdropModal">
-    <div class="modal-box-card">
-      <div style="text-align:center; margin-bottom:8px;">
-        <div style="font-size:15px; font-weight:900; color:var(--gold);" id="modalCandidateName">Member Name</div>
-        <div style="font-size:11px; color:#888;">सेल्फी अनिवार्य है</div>
-      </div>
-      <div class="camera-feed-container">
-        <video id="videoElement" autoplay playsinline></video>
-        <div class="scanner-reticle-ring"></div>
-      </div>
-      <div style="display:flex; gap:8px; width:100%; margin-top:12px;">
-        <button onclick="closeCameraModal()" style="flex:1; background:#222; color:#bbb; border:1px solid #444; padding:11px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">⬅ Back</button>
-        <button onclick="captureLiveSelfieProof()" style="flex:2; background:var(--green-accent); color:#000; padding:11px; border-radius:8px; font-weight:bold; border:none; cursor:pointer; font-size:12px;">📸 CAPTURE</button>
-      </div>
-    </div>
-  </div>
-
-  <canvas id="offscreenCanvas" style="display: none;"></canvas>
 
 <script>
   // --- FIREBASE CLOUD SETUP ---
@@ -420,846 +19,1061 @@
     appId: "1:781489019006:web:4a230698f2195e7208202f"
   };
 
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   const db = firebase.firestore();
+</script>
+</head>
+<body style="background:#050505; color:#fff; font-family:sans-serif; margin:0; padding:12px;">
 
-  const ADMIN_PIN = "5555";
-  let isAdminUnlocked = false;
-  let currentlyLoadedMember = null;
-  let currentVideoStream = null;
-  let cachedMembersList = [];
+<!-- TOP BACK NAVIGATION BAR -->
+<div style="max-width:520px; margin:10px auto; display:flex; justify-content:space-between; align-items:center; background:#111; border:1px solid #ffcc00; padding:10px 14px; border-radius:8px;">
+  <a href="app.html" style="background:#ffcc00; color:#000; text-decoration:none; font-weight:bold; font-size:12px; padding:6px 12px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
+    ⬅️ मुख्य मेन्यू (Home)
+  </a>
+  <span style="color:#ffcc00; font-size:12px; font-weight:bold;">5 BROTHER'S FITNESS</span>
+</div>
 
-  function getLocalDateISO(date = new Date()) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+<!-- QUICK ADMISSION CARD DOWNLOAD SEARCH BAR -->
+<div style="max-width:520px; margin:0 auto 12px; background:#121212; border:1.5px solid #ffcc00; border-radius:12px; padding:12px; box-sizing:border-box;">
+  <div style="font-size:12px; font-weight:bold; color:#ffcc00; margin-bottom:6px;">
+    🔍 अपना डिजिटल एडमिशन फॉर्म / रसीद डाउनलोड करें:
+  </div>
+  <div style="display:flex; gap:6px;">
+    <input 
+      type="text" 
+      id="quickSearchInput" 
+      placeholder="नाम या मोबाइल के 2 अंक दर्ज करें..." 
+      style="flex:1; background:#000; border:1px solid #444; color:#fff; padding:8px 10px; border-radius:6px; font-size:11.5px; outline:none; box-sizing:border-box;"
+      oninput="searchAndDownloadAdmissionCard()"
+    >
+    <button 
+      type="button" 
+      onclick="searchAndDownloadAdmissionCard()" 
+      style="background:#ffcc00; color:#000; font-weight:bold; border:none; padding:8px 12px; border-radius:6px; font-size:11px; cursor:pointer;"
+    >
+      कार्ड खोजें ➔
+    </button>
+  </div>
+  <div id="quickSearchResults" style="margin-top:8px;"></div>
+</div>
+  
+<div id="admissionAppContainer" style="max-width:520px; margin:0 auto; background:#0e0e0e; border:1.5px solid #ffcc00; border-radius:14px; padding:16px; box-sizing:border-box; box-shadow:0 0 25px rgba(255,204,0,0.15);">
+
+  <!-- Club Header -->
+  <div style="text-align:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:14px;">
+    <h2 style="color:#ffcc00; margin:0; font-size:18px; letter-spacing:0.5px;">5 BROTHER'S FITNESS CLUB</h2>
+    <p style="color:#aaa; font-size:11px; margin:3px 0 0;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
+    <div style="display:inline-block; margin-top:6px; background:#222; border:1px solid #ffcc00; color:#ffcc00; font-size:10px; font-weight:bold; padding:2px 8px; border-radius:12px;">
+      डिजिटल प्रवेश पत्र (ADMISSION FORM)
+    </div>
+  </div>
+
+  <!-- STEP 1: PLAN & ADMISSION DATE -->
+  <div id="stepBox1">
+    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
+      1. सदस्यता योजना (Plan & Date)
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="display:block; font-size:11px; color:#aaa; margin-bottom:4px;">
+        📅 प्रवेश तिथि (Joining Date) *
+      </label>
+      <input 
+        type="date" 
+        id="admDateInput" 
+        style="width:100%; background:#181818; border:1.5px solid #ffcc00; color:#00ff66; padding:9px; border-radius:8px; font-size:13px; font-weight:bold; box-sizing:border-box;"
+      >
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="display:block; font-size:11px; color:#aaa; margin-bottom:4px;">
+        मेम्बरशिप श्रेणी (Member Category) *
+      </label>
+      <select 
+        id="admCategorySelect" 
+        onchange="updatePlanDurations()" 
+        style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px; box-sizing:border-box;"
+      >
+        <option value="">-- श्रेणी चुनें --</option>
+        <option value="trial">🔥 7 दिन का ट्रायल (7 Days Trial - ₹99)</option>
+        <option value="student">विद्यार्थी (Student Offer - ₹300/माह)</option>
+        <option value="cardio">युवा / बेरोजगार / गैर-पेशेवर (Job Seeker - ₹400 / ₹350)</option>
+        <option value="general" selected>सामान्य (General Fitness - ₹500/माह)</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="display:block; font-size:11px; color:#aaa; margin-bottom:4px;">
+        बैच समय स्लॉट (Time Slot) *
+      </label>
+      <select 
+        id="admSlotSelect" 
+        style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px; box-sizing:border-box;"
+      >
+        <optgroup label="🌅 Morning Shift">
+          <option value="05:00 AM - 06:00 AM">05:00 AM - 06:00 AM</option>
+          <option value="06:00 AM - 07:00 AM" selected>06:00 AM - 07:00 AM</option>
+          <option value="07:00 AM - 08:00 AM">07:00 AM - 08:00 AM</option>
+          <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+        </optgroup>
+        <optgroup label="🌙 Evening Shift">
+          <option value="04:30 PM - 05:30 PM">04:30 PM - 05:30 PM</option>
+          <option value="05:30 PM - 06:30 PM">05:30 PM - 06:30 PM</option>
+          <option value="06:30 PM - 07:30 PM">06:30 PM - 07:30 PM</option>
+          <option value="07:30 PM - 08:30 PM">07:30 PM - 08:30 PM</option>
+          <option value="08:30 PM - 09:30 PM">08:30 PM - 09:30 PM</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label style="display:block; font-size:11px; color:#aaa; margin-bottom:4px;">
+        योजना अवधि (Duration) *
+      </label>
+      <select 
+        id="admDurationSelect" 
+        onchange="calculateAdmissionFee()" 
+        style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px; box-sizing:border-box;"
+      >
+        <option value="1M|500|30" selected>1 महीना - ₹500</option>
+        <option value="3M|1400|90">3 महीने - ₹1400</option>
+        <option value="6M|2600|180">6 महीने - ₹2600</option>
+        <option value="1Y|4800|365">1 वर्ष - ₹4800</option>
+      </select>
+    </div>
+
+    <div style="background:#141414; border:1.5px solid #00ff66; padding:8px; border-radius:8px; text-align:center; margin-bottom:14px;">
+      <span style="font-size:11px; color:#aaa; display:block;">कुल फीस (Total Fee):</span>
+      <span id="admFeeDisplay" style="font-size:22px; font-weight:bold; color:#00ff66;">₹500</span>
+    </div>
+
+    <button 
+      type="button" 
+      onclick="goToStep(2)" 
+      style="width:100%; background:#ffcc00; color:#000; font-weight:bold; padding:11px; border:none; border-radius:8px; cursor:pointer; font-size:13px;"
+    >
+      व्यक्तिगत विवरण पर जाएं (NEXT ➔)
+    </button>
+  </div>
+
+  <!-- STEP 2: PERSONAL DETAILS -->
+  <div id="stepBox2" style="display:none; margin-top:10px;">
+    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
+      2. व्यक्तिगत विवरण एवं फोटो/साइन (Personal Details)
+    </div>
+
+    <input type="hidden" id="editMemberId" value="">
+
+    <div style="margin-bottom:9px;">
+      <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">पूरा नाम (Full Name) *</label>
+      <input type="text" id="admFullName" placeholder="उदा. राहुल सिंह" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:8px; border-radius:7px; font-size:12px; box-sizing:border-box;">
+    </div>
+
+    <div style="margin-bottom:9px;">
+      <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">पिता / माता का नाम (Father/Mother Name) *</label>
+      <input type="text" id="admParentName" placeholder="उदा. श्री रामेश्वर सिंह" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:8px; border-radius:7px; font-size:12px; box-sizing:border-box;">
+    </div>
+
+    <div style="display:flex; gap:6px; margin-bottom:9px;">
+      <div style="flex:1.4;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">जन्म तिथि (DOB) *</label>
+        <input type="date" id="admDobInput" onchange="autoCalculateAgeFromDob()" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:7px; border-radius:7px; font-size:11px; box-sizing:border-box;">
+      </div>
+      <div style="flex:0.8;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">आयु (Age) *</label>
+        <input type="number" id="admAge" placeholder="18" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:7px; border-radius:7px; font-size:11px; box-sizing:border-box;">
+      </div>
+      <div style="flex:1;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">लिंग (M/F) *</label>
+        <select id="admGender" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:7px; border-radius:7px; font-size:11px; box-sizing:border-box;">
+          <option value="M">पुरुष (M)</option>
+          <option value="F">महिला (F)</option>
+          <option value="O">अन्य (Other)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:6px; margin-bottom:9px;">
+      <div style="flex:1;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">व्यवसाय (Occupation)</label>
+        <input type="text" id="admOccupation" placeholder="उदा. छात्र / जॉब" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:8px; border-radius:7px; font-size:11px; box-sizing:border-box;">
+      </div>
+      <div style="flex:1.2;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">मोबाइल नंबर (WhatsApp) *</label>
+        <input type="tel" id="admPhone" maxlength="10" placeholder="10 अंक मोबाइल" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:8px; border-radius:7px; font-size:11px; box-sizing:border-box;">
+      </div>
+    </div>
+
+    <div style="display:flex; gap:6px; margin-bottom:10px;">
+      <div style="flex:1;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">📮 पिनकोड</label>
+        <input type="number" id="memberPincode" oninput="onPincodeEntered()" placeholder="209862" maxlength="6" style="width:100%; background:#181818; border:1px solid #444; color:#ffcc00; padding:8px; border-radius:7px; font-size:11px; font-weight:bold; box-sizing:border-box;">
+      </div>
+      <div style="flex:2; position:relative;">
+        <label style="display:block; font-size:11px; color:#ffcc00; margin-bottom:3px;">📍 पूरा पता / गांव / मोहल्ला *</label>
+        <input type="text" id="unnaoAreaInput" oninput="searchUnnaoAreas()" placeholder="उदा. अकरमपुर, उन्नाव" autocomplete="off" style="width:100%; background:#181818; border:1.5px solid #ffcc00; color:#fff; padding:8px; border-radius:7px; font-size:11px; box-sizing:border-box;">
+        <div id="unnaoAreaDropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:#202020; border:1.5px solid #ffcc00; border-radius:7px; max-height:180px; overflow-y:auto; z-index:9999; margin-top:3px;"></div>
+      </div>
+    </div>
+
+    <!-- PHOTO & SIGN UPLOAD -->
+    <div style="background:#161616; border:1px solid #444; border-radius:8px; padding:10px; margin-bottom:10px;">
+      <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📸 सदस्य फोटो और हस्ताक्षर (Live Camera / Gallery)</div>
+      
+      <div style="display:flex; gap:10px;">
+        <div style="flex:1;">
+          <label style="display:block; font-size:10px; color:#aaa; margin-bottom:3px;">सदस्य की फोटो:</label>
+          <input type="file" id="memberPhotoFile" accept="image/*" capture="user" style="font-size:10px; color:#ccc; width:100%;">
+        </div>
+        <div style="flex:1;">
+          <label style="display:block; font-size:10px; color:#aaa; margin-bottom:3px;">साइन की फोटो:</label>
+          <input type="file" id="memberSignFile" accept="image/*" capture="environment" style="font-size:10px; color:#ccc; width:100%;">
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#161616; border:1px solid #333; border-radius:8px; padding:9px; margin-bottom:12px;">
+      <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">
+        🚨 आपातकालीन संपर्क (Emergency Contact) — परिवार/रिश्तेदार
+      </div>
+      <div style="display:flex; gap:6px; margin-bottom:6px;">
+        <input type="text" id="admEmergName" placeholder="संपर्क व्यक्ति का नाम" style="flex:1.2; background:#202020; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11px; box-sizing:border-box;">
+        <input type="text" id="admEmergRelation" placeholder="संबंध (उदा. पिता/भाई)" style="flex:1; background:#202020; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11px; box-sizing:border-box;">
+      </div>
+      <input type="tel" id="admEmergPhone" maxlength="10" placeholder="आपातकालीन मोबाइल नंबर *" style="width:100%; background:#202020; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11px; box-sizing:border-box;">
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button type="button" onclick="goToStep(1)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
+      <button type="button" onclick="goToStep(3)" style="flex:2; background:#ffcc00; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">स्वास्थ्य विवरण पर जाएं (NEXT ➔)</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: HEALTH DETAILS -->
+  <div id="stepBox3" style="display:none; margin-top:10px;">
+    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
+      3. स्वास्थ्य एवं फिटनेस विवरण (Health Details)
+    </div>
+
+    <div style="display:flex; gap:6px; margin-bottom:12px;">
+      <div style="flex:1;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">ऊंचाई (सेमी)</label>
+        <input type="number" id="admHeight" placeholder="उदा. 168" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11px; box-sizing:border-box;">
+      </div>
+      <div style="flex:1;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">वजन (किग्रा)</label>
+        <input type="number" id="admWeight" placeholder="उदा. 58" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11px; box-sizing:border-box;">
+      </div>
+      <div style="flex:1.2;">
+        <label style="display:block; font-size:11px; color:#aaa; margin-bottom:3px;">ब्लड ग्रुप</label>
+        <input type="text" id="admBloodGroup" placeholder="उदा. B+, O+" style="width:100%; background:#181818; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11px; box-sizing:border-box;">
+      </div>
+    </div>
+
+    <div style="background:#161616; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:12px;">
+      <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">स्वास्थ्य स्थिति:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:11px;">
+        <label style="cursor:pointer;"><input type="checkbox" id="condFit" checked> <b>✅ कोई समस्या नहीं (Fit)</b></label>
+        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="हाई / लो बीपी"> हाई / लो बीपी</label>
+        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="शुगर (Diabetes)"> शुगर (Diabetes)</label>
+        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="दिल की बीमारी"> दिल की बीमारी</label>
+        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="अस्थमा / सांस"> अस्थमा / सांस</label>
+        <label style="cursor:pointer;"><input type="checkbox" class="medCond" value="कमर दर्द / स्लिप डिस्क"> कमर दर्द / स्लिप डिस्क</label>
+      </div>
+    </div>
+
+    <div style="background:#261200; border:1.5px solid #ff9900; border-radius:8px; padding:10px; margin-bottom:14px; font-size:10.5px; line-height:1.45; color:#eee;">
+      <label style="display:flex; align-items:flex-start; gap:6px; cursor:pointer; color:#00ff66; font-weight:bold;">
+        <input type="checkbox" id="medicalTermsCheck">
+        <span>मैंने आपातकालीन और स्वास्थ्य घोषणा पढ़ ली है।</span>
+      </label>
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button type="button" onclick="goToStep(2)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
+      <button type="button" onclick="goToStep(4)" style="flex:2; background:#ffcc00; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">नियम व शर्तें (NEXT ➔)</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: TERMS & LEGAL WARNING -->
+  <div id="stepBox4" style="display:none; margin-top:10px;">
+    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:10px; border-left:3px solid #ffcc00; padding-left:8px;">
+      4. नियम, शर्तें एवं कानूनी चेतावनी (Terms & Legal Warning)
+    </div>
+
+    <div style="background:#141414; border:1.5px solid #ff3333; border-radius:8px; padding:12px; font-size:10.5px; line-height:1.55; color:#ddd; max-height:220px; overflow-y:auto; margin-bottom:12px;">
+      <b style="color:#ffcc00;">1. फीस एवं उपस्थिति नियम (FEES POLICY):</b> 1 दिन भी आने पर 1 महीने की पूरी फीस देय होगी। फीस गैर-वापसी योग्य (Non-Refundable) है।<br><br>
+      <b style="color:#ffcc00;">2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि जिम छोड़ना है, तो महीना पूरा होते ही तुरंत बताएं। बकाया रखने पर प्रबंधन सख्त कदम उठाएगा।<br><br>
+      <b style="color:#ffcc00; font-size:11px; text-decoration:underline; color:#ff4444;">3. सख्त कानूनी चेतावनी एवं वसूली सहमति (Strict Legal Warning & Recovery):</b><br>
+      <span style="color:#fff; font-weight:bold;">"यदि आप ये फॉर्म सबमिट करते हैं—जो कि आपने पहले अच्छे से पढ़कर, साइन और फोटो अपलोड की है—और यदि आप जिम की फीस या अन्य कोई बकाया (Due) छोड़कर भाग जाते हैं, जिम आना बंद कर देते हैं, तो आप 5 Brother's Fitness Club प्रबंधन को अपने ऊपर कानूनी कार्रवाई करने की पूर्ण अनुमति और अधिकार देते हैं। भविष्य में आप यह नहीं कह सकते कि आपको इसकी जानकारी नहीं थी।"</span>
+    </div>
+
+    <div style="background:#1f1f1f; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:14px;">
+      <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; color:#fff; font-size:11px; font-weight:bold;">
+        <input type="checkbox" id="rulesAgreedCheck">
+        <span>"मैंने 5 BFC के सभी नियम, फीस पॉलिसी और सख्त कानूनी चेतावनी को पढ़कर फॉर्म सबमिट कर रहा हूँ।" *</span>
+      </label>
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button type="button" onclick="goToStep(3)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
+      <button type="button" onclick="goToStep(5)" style="flex:2; background:#ffcc00; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">भुगतान पर जाएं (NEXT ➔)</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: PAYMENT SELECTION -->
+  <div id="stepBox5" style="display:none; margin-top:10px;">
+    <div style="color:#ffcc00; font-weight:bold; font-size:13px; margin-bottom:12px; border-left:3px solid #ffcc00; padding-left:8px;">
+      5. भुगतान माध्यम (Payment Mode)
+    </div>
+
+    <div style="display:flex; gap:10px; margin-bottom:14px;">
+      <button type="button" id="payBtnCash" onclick="selectPaymentMode('Cash')" style="flex:1; padding:11px; background:#222; border:1.5px solid #ffcc00; color:#fff; font-weight:bold; border-radius:8px; cursor:pointer; font-size:12px;">💵 नकद (CASH / Pending)</button>
+      <button type="button" id="payBtnOnline" onclick="selectPaymentMode('Online')" style="flex:1; padding:11px; background:#222; border:1.5px solid #444; color:#aaa; font-weight:bold; border-radius:8px; cursor:pointer; font-size:12px;">📱 ऑनलाइन (UPI)</button>
+    </div>
+
+    <div id="onlinePaymentTray" style="display:none; background:#121212; border:1.5px solid #00ff66; padding:14px; border-radius:12px; margin-bottom:14px;">
+      <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom:12px;">
+        <button type="button" onclick="triggerUPIApp('gpay')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟢 Google Pay</button>
+        <button type="button" onclick="triggerUPIApp('phonepe')" style="background:#1a1a1a; border:1px solid #444; color:#fff; padding:10px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;">🟣 PhonePe</button>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-size:11px; color:#ffcc00; margin-bottom:3px;">🔗 UTR / UPI Reference Number दर्ज करें:</label>
+        <input type="text" id="upiUtrInput" placeholder="उदा. 427192837465" style="width:100%; background:#000; border:1px solid #00ff66; color:#fff; padding:8px; border-radius:6px; font-size:11.5px; box-sizing:border-box;">
+      </div>
+      <div style="text-align:center;">
+        <button type="button" onclick="toggleQrView()" style="background:transparent; border:none; color:#00ff66; font-size:11px; text-decoration:underline; cursor:pointer; font-weight:bold;">📷 QR कोड देखें</button>
+        <div id="onlineQrBox" style="display:none; text-align:center; background:#fff; padding:12px; border-radius:10px; margin-top:10px;">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=9140417259@okbizaxis%26pn=5%20Brother's%20Fitness%20Club%26cu=INR" alt="QR" style="width:140px; height:140px; display:block; margin:0 auto;">
+          <div style="color:#000; font-size:11px; font-weight:bold; margin-top:5px;">9140417259@okbizaxis</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="cashNoticeBox" style="background:#1a1a1a; border-left:3px solid #ffcc00; padding:10px; border-radius:4px; font-size:11px; color:#ccc; margin-bottom:14px;">
+      ℹ️ <b>नकद नियम:</b> सबमिट करते ही सौरभ भाई के WhatsApp पर अप्रूवल मैसेज जाएगा।
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button type="button" onclick="goToStep(4)" style="flex:1; background:#333; color:#fff; font-weight:bold; padding:11px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">⬅ पीछे</button>
+      <button type="button" onclick="submitAdmissionForm()" style="flex:2; background:#00ff66; color:#000; font-weight:bold; padding:11px; border:none; border-radius:8px; cursor:pointer; font-size:13px;">फॉर्म जमा करें (SUBMIT)</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADMIN DESK -->
+<div style="text-align:center; margin:30px auto 10px;">
+  <button type="button" onclick="openAdminDeskWithPassword()" style="background:transparent; border:none; color:#444; font-size:11px; cursor:pointer; text-decoration:underline;">
+    🔒 5BFC Staff / Admin Desk & Edit
+  </button>
+</div>
+
+<div id="adminDeskContainer" style="display:none; max-width:520px; margin:15px auto 30px; background:#141414; border:1.5px solid #ffcc00; border-radius:12px; padding:15px; color:#fff; box-sizing:border-box;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:8px;">
+    <span style="font-size:13px; font-weight:bold; color:#ffcc00;">📋 काउंटर एडमिन डेस्क (Manage & Approve)</span>
+    <div style="display:flex; gap:6px;">
+      <button type="button" onclick="exportAdmissionsToCSV()" style="background:#00ff66; color:#000; font-size:10px; font-weight:bold; padding:5px 8px; border:none; border-radius:5px; cursor:pointer;">📥 CSV</button>
+      <button type="button" onclick="closeAdminDesk()" style="background:#333; color:#aaa; font-size:10px; padding:5px 8px; border:1px solid #555; border-radius:5px; cursor:pointer;">✕ बंद</button>
+    </div>
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <input 
+      type="text" 
+      id="adminSearchInput" 
+      placeholder="🔍 नाम या मोबाइल नंबर से खोजें..." 
+      oninput="renderAdminTable()"
+      style="width:100%; background:#000; border:1px solid #ffcc00; color:#fff; padding:8px; border-radius:6px; font-size:11px; box-sizing:border-box;"
+    >
+  </div>
+
+  <div id="admissionsTableList" style="max-height:380px; overflow-y:auto; font-size:11px;"></div>
+</div>
+
+<script>
+let selectedPaymentMode = "Cash";
+const ADMIN_SECURITY_PIN = "5555";
+let activeReceiptMember = null;
+
+const PINCODE_LOCALITY_MAP = {
+  "209862": ["उमराव खेड़ा - 209862", "अकरमपुर - 209862", "दही चौकी - 209862", "मगरवारा - 209862"],
+  "209801": ["बड़ा चौराहा - 209801", "सिविल लाइंस - 209801"]
+};
+
+const DEFAULT_MASTER_ROSTER = [
+  { id: 1, name: "अभिषेक शर्मा", parentName: "Devendra", phone: "7068541091", joinDate: "2026-10-02", plan: "सामान्य (₹500)", status: "Full Paid", fees: "Paid", slot: "06:30 PM - 07:30 PM", village: "Unnao", totalFee: 500, activeInGym: true },
+  { id: 2, name: "प्रियांशु", parentName: "सुरेश", phone: "8467813176", joinDate: "2026-09-03", plan: "सामान्य (₹500)", status: "Pending", fees: "Due", slot: "06:00 AM - 07:00 AM", village: "Unnao", totalFee: 500, activeInGym: true }
+];
+
+window.addEventListener("DOMContentLoaded", () => {
+  const dateField = document.getElementById("admDateInput");
+  if (dateField && !dateField.value) {
+    dateField.value = new Date().toISOString().split("T")[0];
   }
-  let currentDateISO = getLocalDateISO();
-
-  function runLiveSystemClock() {
-    const now = new Date();
-    currentDateISO = getLocalDateISO(now);
-    const dayStr = `${now.getDate() < 10 ? '0'+now.getDate() : now.getDate()}-${(now.getMonth()+1) < 10 ? '0'+(now.getMonth()+1) : (now.getMonth()+1)}-${now.getFullYear()}`;
-    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-    const clockElem = document.getElementById("liveSystemClock");
-    if (clockElem) clockElem.innerText = `📅 ${dayStr} | ⏰ ${timeStr}`;
+  let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  if (records.length === 0) {
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(DEFAULT_MASTER_ROSTER));
   }
+  renderAdminTable();
+});
 
-  // --- CLOUD FIRESTORE MEMBERS SYNC ---
-  async function fetchStoredMembers() {
-    try {
-      const snapshot = await db.collection("members").get();
-      let cloudList = [];
-      snapshot.forEach(doc => {
-        cloudList.push({ id: doc.id, ...doc.data() });
-      });
+async function searchAndDownloadAdmissionCard() {
+  const query = document.getElementById("quickSearchInput").value.trim().toLowerCase();
+  const resultsBox = document.getElementById("quickSearchResults");
+  resultsBox.innerHTML = "";
+  if (!query || query.length < 1) return;
 
-      const localPool = [];
-      for (const key of ["5BFC_MEMBERS", "bbf_master_records_v4", "5bfc_admissions"]) {
-        try {
-          const value = JSON.parse(localStorage.getItem(key) || "[]");
-          if (Array.isArray(value)) localPool.push(...value);
-        } catch (err) { console.warn("Invalid local member data in", key, err); }
-      }
-      const merged = new Map();
-      [...cloudList, ...localPool].forEach(m => {
-        if (!m) return;
-        const key = String(m.phone || m.id || m.code || "").trim();
-        if (!key) return;
-        merged.set(key, { ...(merged.get(key) || {}), ...m });
-      });
-      cachedMembersList = Array.from(merged.values()).filter(m => m.activeInGym !== false);
-      return cachedMembersList;
-    } catch (e) {
-      console.error("Cloud fetch error, using local fallback:", e);
+  let allRecords = [];
+  try {
+    for (const key of ["5BFC_MEMBERS", "bbf_master_records_v4", "5bfc_admissions"]) {
+      const rows = JSON.parse(localStorage.getItem(key) || "[]");
+      if (Array.isArray(rows)) allRecords.push(...rows);
     }
+    const cloudSnapshot = await db.collection("members").get();
+    cloudSnapshot.forEach(doc => allRecords.push({ id: doc.id, ...doc.data() }));
+  } catch (err) {
+    console.warn("Cloud member search unavailable; searching local records only.", err);
+  }
+  const unique = new Map();
+  allRecords.forEach(m => {
+    if (!m) return;
+    const key = String(m.phone || m.id || m.code || "").trim();
+    if (key) unique.set(key, { ...(unique.get(key) || {}), ...m });
+  });
+  allRecords = Array.from(unique.values());
+  const matched = allRecords.filter(m => {
+    const nameMatch = m.name && m.name.toLowerCase().includes(query);
+    const phoneMatch = m.phone && m.phone.includes(query);
+    const codeMatch = m.code && m.code.toLowerCase().includes(query);
+    return nameMatch || phoneMatch || codeMatch;
+  });
 
-    let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
-    let bfcMembers = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
-    let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+  if (matched.length === 0) {
+    resultsBox.innerHTML = `<div style="font-size:11px; color:#ff6666; padding:6px; text-align:center;">❌ कोई सदस्य नहीं मिला! नया फॉर्म भरें।</div>`;
+    return;
+  }
 
-    let pool = [...bfcMembers, ...bbfMaster, ...admSync];
-    let uniqueMap = new Map();
-    pool.forEach(item => {
-      let key = (item.phone && item.phone.length > 5) ? item.phone.trim() : item.id;
-      if (item.activeInGym !== false && !uniqueMap.has(key)) {
-        if (!item.slot) item.slot = "06:00 AM - 07:00 AM";
-        if (!item.manualStatus) item.manualStatus = item.status || "Paid";
-        uniqueMap.set(key, item);
-      }
-    });
+  resultsBox.innerHTML = matched.map(m => `
+    <div style="background:#1c1c1c; border:1px solid #00ff66; border-radius:6px; padding:8px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:11px;">
+        <b style="color:#ffcc00;">${m.name}</b> (${m.phone})<br>
+        <span style="color:#aaa; font-size:9.5px;">प्लान: ${m.plan || 'General'} | ID: ${m.code || 'N/A'}</span>
+      </div>
+      <div style="display:flex; gap:4px;">
+        <button type="button" onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:10px; font-weight:bold; padding:6px 10px; border:none; border-radius:5px; cursor:pointer;">📥 रसीद डाउनलोड</button>
+        <button type="button" onclick='autofillMemberForm(${JSON.stringify(m)})' style="background:#ffcc00; color:#000; font-size:10px; font-weight:bold; padding:6px 8px; border:none; border-radius:5px; cursor:pointer;" title="डेटा फॉर्म में भरें">✏️ भरें</button>
+      </div>
+    </div>
+  `).join("");
+}
 
-    let localArray = Array.from(uniqueMap.values());
-    if (localArray.length > 0) {
-      localArray.forEach(async (m) => {
-        try {
-          await db.collection("members").doc(String(m.id)).set(m, { merge: true });
-        } catch(err) {
-          console.error("Auto sync error:", err);
+function autofillMemberForm(m) {
+  document.getElementById("editMemberId").value = m.id;
+  document.getElementById("admFullName").value = m.name || "";
+  document.getElementById("admParentName").value = m.parentName || "";
+  document.getElementById("admDobInput").value = m.dob !== "N/A" ? m.dob : "";
+  document.getElementById("admAge").value = m.age || "";
+  document.getElementById("admPhone").value = m.phone || "";
+  document.getElementById("admOccupation").value = m.occupation || "";
+  document.getElementById("unnaoAreaInput").value = m.village || "";
+  document.getElementById("admEmergName").value = m.emergName || "";
+  document.getElementById("admEmergRelation").value = m.emergRelation || "";
+  document.getElementById("admEmergPhone").value = m.emergPhone || "";
+  document.getElementById("admHeight").value = m.height || "";
+  document.getElementById("admWeight").value = m.weight || "";
+  document.getElementById("admBloodGroup").value = m.bloodGroup || "";
+  
+  goToStep(2);
+  alert("✅ पुराने सदस्य का डेटा फॉर्म में भर दिया गया है!");
+}
+
+function updatePlanDurations() {
+  const cat = document.getElementById("admCategorySelect").value;
+  const dur = document.getElementById("admDurationSelect");
+  dur.innerHTML = '';
+  if (cat === "trial") {
+    dur.innerHTML = '<option value="7D|99|7" selected>7 दिन Trial - ₹99</option>';
+  } else if (cat === "student") {
+    dur.innerHTML = '<option value="1M|300|30" selected>1 महीना - ₹300</option><option value="3M|850|90">3 महीने - ₹850</option>';
+  } else if (cat === "cardio") {
+    dur.innerHTML = '<option value="1M|400|30" selected>1 महीना - ₹400</option><option value="1M|350|30">1 महीना विशेष डिस्काउंट - ₹350</option>';
+  } else {
+    dur.innerHTML = '<option value="1M|500|30" selected>1 महीना - ₹500</option><option value="3M|1400|90">3 महीने - ₹1400</option><option value="6M|2600|180">6 महीने - ₹2600</option><option value="1Y|4800|365">1 वर्ष - ₹4800</option>';
+  }
+  calculateAdmissionFee();
+}
+
+function calculateAdmissionFee() {
+  const durVal = document.getElementById("admDurationSelect").value;
+  const display = document.getElementById("admFeeDisplay");
+  if (durVal && durVal.includes("|")) {
+    display.innerText = "₹" + durVal.split("|")[1];
+  } else {
+    display.innerText = "₹500";
+  }
+}
+
+function autoCalculateAgeFromDob() {
+  const dobVal = document.getElementById("admDobInput").value;
+  if (!dobVal) return;
+  const birthDate = new Date(dobVal);
+  const diff = Date.now() - birthDate.getTime();
+  const calculatedAge = Math.abs(new Date(diff).getUTCFullYear() - 1970);
+  if (!isNaN(calculatedAge)) document.getElementById("admAge").value = calculatedAge;
+}
+
+async function onPincodeEntered() {
+  const pin = document.getElementById("memberPincode").value.trim();
+  const dropdown = document.getElementById("unnaoAreaDropdown");
+  if (pin.length !== 6) { dropdown.style.display = "none"; return; }
+  dropdown.style.display = "block";
+  dropdown.innerHTML = `<div style="padding:8px; font-size:11px; color:#ffcc00; text-align:center;">🔍 खोजा जा रहा है...</div>`;
+  try {
+    const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+    const data = await res.json();
+    if (data && data[0] && data[0].Status === "Success") {
+      dropdown.innerHTML = data[0].PostOffice.map(po => `<div onclick="selectUnnaoArea('${po.Name}, Unnao - ${pin}')" style="padding:7px; font-size:11.5px; border-bottom:1px solid #333; cursor:pointer;">📍 ${po.Name}, ${pin}</div>`).join("");
+      return;
+    }
+  } catch(e) {}
+  if(PINCODE_LOCALITY_MAP[pin]) {
+    dropdown.innerHTML = PINCODE_LOCALITY_MAP[pin].map(item => `<div onclick="selectUnnaoArea('${item}')" style="padding:7px; font-size:11.5px; border-bottom:1px solid #333; cursor:pointer;">📍 ${item}</div>`).join("");
+  }
+}
+
+function searchUnnaoAreas() {
+  const query = document.getElementById("unnaoAreaInput").value.trim().toLowerCase();
+  const dropdown = document.getElementById("unnaoAreaDropdown");
+  if (!query) { dropdown.style.display = "none"; return; }
+  let pool = ["अकरमपुर - 209862", "उमराव खेड़ा - 209862", "दही चौकी - 209862", "सिविल लाइंस - 209801"];
+  const matched = pool.filter(l => l.toLowerCase().includes(query));
+  if(matched.length > 0) {
+    dropdown.style.display = "block";
+    dropdown.innerHTML = matched.map(i => `<div onclick="selectUnnaoArea('${i}')" style="padding:7px; font-size:11.5px; border-bottom:1px solid #333; cursor:pointer;">📍 ${i}</div>`).join("");
+  }
+}
+
+function selectUnnaoArea(val) {
+  document.getElementById("unnaoAreaInput").value = val;
+  document.getElementById("unnaoAreaDropdown").style.display = "none";
+}
+
+function goToStep(step) {
+  if (step === 2 && !document.getElementById("admDateInput").value) { alert("कृपया प्रवेश तिथि चुनें!"); return; }
+  if (step === 3 && (!document.getElementById("admFullName").value || document.getElementById("admPhone").value.length !== 10)) { alert("कृपया सही नाम और 10 अंक मोबाइल नंबर भरें!"); return; }
+  if (step === 4 && !document.getElementById("medicalTermsCheck").checked) { alert("स्वास्थ्य घोषणा चेकबॉक्स पर टिक करें!"); return; }
+  if (step === 5 && !document.getElementById("rulesAgreedCheck").checked) { alert("नियम व शर्तें सहमति पर टिक करें!"); return; }
+  [1, 2, 3, 4, 5].forEach(i => document.getElementById(`stepBox${i}`).style.display = (i === step) ? "block" : "none");
+}
+
+function selectPaymentMode(mode) {
+  selectedPaymentMode = mode;
+  document.getElementById("payBtnCash").style.borderColor = (mode === 'Cash') ? "#ffcc00" : "#444";
+  document.getElementById("payBtnOnline").style.borderColor = (mode === 'Online') ? "#00ff66" : "#444";
+  document.getElementById("onlinePaymentTray").style.display = (mode === 'Online') ? "block" : "none";
+  document.getElementById("cashNoticeBox").style.display = (mode === 'Cash') ? "block" : "none";
+}
+
+function triggerUPIApp(app) {
+  const amt = parseInt(document.getElementById("admFeeDisplay").innerText.replace(/[^0-9]/g, '')) || 500;
+  window.location.href = `upi://pay?pa=9140417259@okbizaxis&pn=5%20Brothers%20Fitness%20Club&am=${amt}&cu=INR`;
+}
+
+function toggleQrView() {
+  const q = document.getElementById("onlineQrBox");
+  q.style.display = (q.style.display === "none") ? "block" : "none";
+}
+
+function resizeImageToDataUrl(file, maxWidth, maxHeight, callback) {
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const img = new Image();
+    img.onload = function () {
+      let width = img.width;
+      let height = img.height;
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
         }
-      });
-      return localArray;
-    }
-    cachedMembersList = [];
-    return [];
-  }
-
-  async function syncMemberToCloud(member) {
-    try {
-      const docId = String(member.id);
-      await db.collection("members").doc(docId).set(member, { merge: true });
-    } catch (err) {
-      console.error("Cloud sync failed:", err);
-    }
-  }
-
-  function fetchAttendanceMapForDate(dateStr) {
-    try {
-      const raw = localStorage.getItem("5bfc_attendance_" + dateStr);
-      return raw ? (JSON.parse(raw) || {}) : {};
-    } catch (err) {
-      console.error("Could not read attendance records:", err);
-      return {};
-    }
-  }
-
-  function openSearchKiosk() {
-    document.getElementById("kioskHeroBox").style.display = "none";
-    document.getElementById("searchAreaWrapper").style.display = "block";
-    document.getElementById("singleMemberContainer").style.display = "none";
-    document.getElementById("batchDirectListBox").style.display = "none";
-    const inp = document.getElementById("memberFilterInput");
-    inp.value = "";
-    inp.focus();
-    document.getElementById("searchDropdownNode").style.display = "none";
-  }
-
-  function cancelSearchAndReset() {
-    document.getElementById("kioskHeroBox").style.display = "block";
-    document.getElementById("searchAreaWrapper").style.display = "none";
-    document.getElementById("singleMemberContainer").style.display = "none";
-    document.getElementById("batchDirectListBox").style.display = "none";
-    document.getElementById("memberFilterInput").value = "";
-    document.getElementById("searchDropdownNode").style.display = "none";
-    currentlyLoadedMember = null;
-  }
-
-  async function toggleBatchDirectList() {
-    const box = document.getElementById("batchDirectListBox");
-    if (box.style.display === "block") {
-      box.style.display = "none";
-      return;
-    }
-
-    const allMembers = await fetchStoredMembers();
-    document.getElementById("directListTitle").innerText = `All Registered Members (${allMembers.length})`;
-    const container = document.getElementById("directListContainerNode");
-    container.innerHTML = "";
-
-    if (allMembers.length === 0) {
-      container.innerHTML = `<div style="color:#aaa; font-size:11px; text-align:center; padding:8px;">कोई सदस्य नहीं मिला।</div>`;
-    } else {
-      allMembers.forEach(m => {
-        const mStatus = m.manualStatus || 'Paid';
-        const isPaid = (mStatus === 'Paid');
-        container.innerHTML += `
-          <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
-            <div>
-              <b style="color:#fff; font-size:12px;">${m.name}</b><br>
-              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${mStatus.toUpperCase()}</span></small>
-            </div>
-            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:10px;">चुनें</button>
-          </div>
-        `;
-      });
-    }
-    box.style.display = "block";
-  }
-
-  async function executeUniversalSearch() {
-    const query = document.getElementById("memberFilterInput").value.trim().toLowerCase();
-    const dropdown = document.getElementById("searchDropdownNode");
-
-    if (!query || query.length < 1) {
-      dropdown.style.display = "none";
-      return;
-    }
-
-    const allMembers = await fetchStoredMembers();
-    const matches = allMembers.filter(m => {
-      return (m.name && m.name.toLowerCase().includes(query)) || (m.phone && m.phone.includes(query));
-    });
-
-    if (matches.length > 0) {
-      dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="font-size:10px; color:#ffcc00; margin-bottom:5px; font-weight:bold;">मिलते-जुलते सदस्य (${matches.length}):</div>`;
-      matches.forEach(m => {
-        const mStatus = m.manualStatus || 'Paid';
-        const isPaid = (mStatus === 'Paid');
-        dropdown.innerHTML += `
-          <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
-            <div>
-              <b style="color:#fff; font-size:12.5px;">${m.name}</b><br>
-              <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${mStatus.toUpperCase()}</span></small>
-            </div>
-            <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:900; font-size:11px;">लोड करें</button>
-          </div>
-        `;
-      });
-    } else {
-      dropdown.style.display = "block";
-      dropdown.innerHTML = `<div style="color:#ff4444; font-size:11px; text-align:center; padding:8px;">कोई सदस्य नहीं मिला। नया जोड़ें!</div>`;
-    }
-  }
-
-  function openAddMemberModal() {
-    document.getElementById("newMemberNameInput").value = "";
-    document.getElementById("newMemberPhoneInput").value = "";
-    document.getElementById("addMemberModal").classList.add("show");
-  }
-
-  async function saveNewMemberData() {
-    const name = document.getElementById("newMemberNameInput").value.trim();
-    const phone = document.getElementById("newMemberPhoneInput").value.trim();
-
-    if (!name || phone.length < 10) {
-      alert("⚠️ कृपया सही नाम और 10 अंकों का मोबाइल नंबर दर्ज करें!");
-      return;
-    }
-
-    const newId = phone;
-    const todayStr = getLocalDateISO();
-
-    const newMember = {
-      id: newId,
-      name: name,
-      phone: phone,
-      slot: "06:00 AM - 07:00 AM",
-      joinDate: todayStr,
-      lastPaid: todayStr,
-      planMonths: 1,
-      plan: "सामान्य (General Fitness - ₹500/माह)",
-      manualStatus: "Paid",
-      feesPromiseDate: ""
-    };
-
-    await syncMemberToCloud(newMember);
-    closeModal('addMemberModal');
-    alert(`✅ ${name} को क्लाउड पर सफलतापूर्वक जोड़ दिया गया है!`);
-    toggleBatchDirectList();
-  }
-
-  async function loadSingleMemberKioskCard(memberId) {
-    const list = await fetchStoredMembers();
-    const m = list.find(x => x.id.toString() === memberId.toString());
-    if (!m) return;
-
-    currentlyLoadedMember = m;
-    const attMap = fetchAttendanceMapForDate(currentDateISO);
-    const isPresent = !!attMap[m.id];
-    const checkin = attMap[m.id];
-    
-    const manualStat = m.manualStatus || 'Paid';
-    const baseLastPaid = m.lastPaid || m.joinDate;
-
-    document.getElementById("cardMemberName").innerText = m.name;
-    document.getElementById("cardMemberPhone").innerText = `📞 +91 ${m.phone}`;
-    
-    const feeBadge = document.getElementById("cardFeeBadge");
-    if (manualStat === 'Paid') {
-      feeBadge.className = "fee-pill-tag fee-paid";
-      feeBadge.innerText = "FEES PAID";
-    } else {
-      feeBadge.className = "fee-pill-tag fee-due";
-      feeBadge.innerText = "FEES PENDING";
-    }
-
-    document.getElementById("cardPlanText").innerText = `${m.plan || 'General Fitness'}`;
-    document.getElementById("cardJoinDate").innerText = formatDateToDDMMYYYY(m.joinDate);
-    document.getElementById("cardLastPaidDisplay").innerText = formatDateToDDMMYYYY(baseLastPaid);
-
-    const promiseBox = document.getElementById("cardPromiseDateBox");
-    const promiseValSpan = document.getElementById("cardPromiseDateVal");
-    if (m.feesPromiseDate) {
-      promiseBox.style.display = "block";
-      promiseValSpan.innerText = formatDateToDDMMYYYY(m.feesPromiseDate);
-    } else {
-      promiseBox.style.display = "none";
-    }
-
-    document.getElementById("cardSlotDisplay").innerText = m.slot || "06:00 AM - 07:00 AM";
-
-    const proofBox = document.getElementById("cardProofContainer");
-    if (isPresent && checkin) {
-      proofBox.innerHTML = `
-        <div class="compact-proof-badge">
-          <img src="${checkin.photo}" alt="Seal">
-          <span>✔ ${checkin.statusMsg || 'VERIFIED'} | ${checkin.time}</span>
-        </div>
-      `;
-    } else {
-      proofBox.innerHTML = "";
-    }
-
-    const btnPres = document.getElementById("btnPresTrigger");
-    btnPres.className = `btn-pres-action ${isPresent ? 'is-ver' : 'not-ver'}`;
-    btnPres.innerText = isPresent ? '📸 फिर से सेल्फी लें (Update Selfie)' : '📸 PRESENT दर्ज करें (सेल्फी के साथ)';
-
-    document.getElementById("activeLoadedCard").className = `loaded-member-card ${isPresent ? 'status-present' : ''}`;
-    document.getElementById("searchAreaWrapper").style.display = "none";
-    document.getElementById("batchDirectListBox").style.display = "none";
-    document.getElementById("singleMemberContainer").style.display = "block";
-  }
-
-  async function toggleManualFeeStatus() {
-    if (!currentlyLoadedMember) return;
-    let current = currentlyLoadedMember.manualStatus || 'Paid';
-    let next = current === 'Paid' ? 'Pending' : 'Paid';
-    
-    currentlyLoadedMember.manualStatus = next;
-    await syncMemberToCloud(currentlyLoadedMember);
-    alert(`✅ फीस स्टेटस बदलकर "${next.toUpperCase()}" कर दिया गया है!`);
-    loadSingleMemberKioskCard(currentlyLoadedMember.id);
-  }
-
-  function showAlreadyMarkedWarning() {
-    alert("Your Attendance Already Marked!\nआपकी आज की उपस्थिति पहले ही दर्ज की जा चुकी है।");
-  }
-
-  function handleAttendanceClick() {
-    if (!currentlyLoadedMember) return;
-    const m = currentlyLoadedMember;
-
-    const todayISOStr = getLocalDateISO(new Date());
-    if (m.joinDate && todayISOStr < m.joinDate) {
-        alert("❌ Aap apni joining date se pehle attendance nahi laga sakte!");
-        return;
-    }
-
-    if (!navigator.geolocation) {
-        alert("❌ Aapke browser mein GPS support nahi hai!");
-        return;
-    }
-    const GYM_LAT = 26.5187839; 
-    const GYM_LNG = 80.446607; 
-    const ALLOWED_DISTANCE_METERS = 1000; 
-
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            const userLat = position.coords.latitude;
-            const userLng = position.coords.longitude;
-
-            const R = 6371e3;
-            const φ1 = userLat * Math.PI/180;
-            const φ2 = GYM_LAT * Math.PI/180;
-            const Δφ = (GYM_LAT - userLat) * Math.PI/180;
-            const Δλ = (GYM_LNG - userLng) * Math.PI/180;
-
-            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            const distance = Math.round(R * c);
-
-            if (distance > ALLOWED_DISTANCE_METERS) {
-                alert(`❌ Aap gym mein nahi hain! (Duri: ${distance}m). Fake attendance mat lagaiye!`);
-                return;
-            }
-
-            const manualStat = m.manualStatus || 'Paid';
-            let isMonthExpired = false;
-
-            const baseRefDate = m.lastPaid || m.joinDate;
-            if (baseRefDate) {
-                const joinD = new Date(baseRefDate);
-                const expD = new Date(joinD);
-                expD.setMonth(expD.getMonth() + (m.planMonths || 1));
-                if (new Date() >= expD) isMonthExpired = true;
-            }
-
-            if ((manualStat !== 'Paid' || isMonthExpired) && !m.feesPromiseDate) {
-                document.getElementById("expiringMemberName").innerText = m.name;
-                document.getElementById("strictExpiryModal").classList.add("show");
-                return;
-            }
-
-            const now = new Date();
-            const todayISO = getLocalDateISO(now);
-            const todayMap = fetchAttendanceMapForDate(todayISO);
-            if (todayMap[String(m.id)]) {
-                showAlreadyMarkedWarning();
-                loadSingleMemberKioskCard(m.id);
-                return;
-            }
-
-            initiateCameraVerification(m);
-        },
-        (error) => {
-            alert("❌ GPS location access nahi mil paaya. Kripya apne phone ka Location (GPS) on karein!");
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-    );
-  }
-  
-  function showPromiseDateField() {
-    document.getElementById("initialActionButtons").style.display = "none";
-    document.getElementById("promiseDateContainer").style.display = "block";
-  }
-
-  async function submitPromiseAndOpenCam() {
-    const promiseVal = document.getElementById("memberPromiseDate").value;
-    if (!promiseVal) {
-      alert("⚠️ कृपया वादा तारीख चुनें!");
-      return;
-    }
-    currentlyLoadedMember.feesPromiseDate = promiseVal;
-    await syncMemberToCloud(currentlyLoadedMember);
-    closeModal('strictExpiryModal');
-    initiateCameraVerification(currentlyLoadedMember);
-  }
-
-  function handleDisagreeLegalNotice() {
-    alert("सदस्यता अवधि समाप्त हो चुकी है।");
-    closeModal('strictExpiryModal');
-    cancelSearchAndReset();
-  }
-
-  async function initiateCameraVerification(candidate) {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert("कैमरा उपलब्ध नहीं है। कृपया पेज को HTTPS या localhost पर खोलें।");
-      return;
-    }
-
-    document.getElementById("modalCandidateName").innerText = candidate.name;
-    document.getElementById("cameraBackdropModal").classList.add("show");
-    const videoElem = document.getElementById("videoElement");
-    
-    try {
-      if (!currentVideoStream) {
-        currentVideoStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, 
-          audio: false 
-        });
-      }
-      videoElem.srcObject = currentVideoStream;
-      await videoElem.play();
-    } catch (err) {
-      console.error("Camera error:", err);
-      alert("कैमरा शुरू नहीं हो पाया। कृपया कैमरा परमिशन (Permissions) Allow करें।");
-      closeCameraModal();
-    }
-  }
-
-  async function captureLiveSelfieProof() {
-    if (!currentlyLoadedMember) {
-      alert("पहले सदस्य चुनें।");
-      closeCameraModal();
-      return;
-    }
-    const now = new Date();
-    const todayISO = getLocalDateISO(now);
-    const videoElem = document.getElementById("videoElement");
-    const canvas = document.getElementById("offscreenCanvas");
-
-    const attendanceRecords = fetchAttendanceMapForDate(todayISO);
-    if (attendanceRecords[String(currentlyLoadedMember.id)]) {
-      closeCameraModal();
-      showAlreadyMarkedWarning();
-      loadSingleMemberKioskCard(currentlyLoadedMember.id);
-      return;
-    }
-
-    if (!videoElem || videoElem.readyState < HTMLMediaElement.HAVE_CURRENT_DATA || !videoElem.videoWidth || !videoElem.videoHeight) {
-      alert("कैमरा अभी तैयार नहीं है। कृपया थोड़ा प्रतीक्षा करें।");
-      return;
-    }
-
-    const sourceWidth = videoElem.videoWidth;
-    const sourceHeight = videoElem.videoHeight;
-    const maxSide = 320;
-    const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
-    canvas.width = Math.max(1, Math.round(sourceWidth * scale));
-    canvas.height = Math.max(1, Math.round(sourceHeight * scale));
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      alert("सेल्फी कैप्चर नहीं हो पाई। कृपया दोबारा कोशिश करें।");
-      return;
-    }
-    ctx.save();
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
-    ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
-    ctx.restore();
-
-        const base64Stamp = canvas.toDataURL("image/jpeg", 0.3);
-    const dayStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth()+1).padStart(2, '0')}-${now.getFullYear()}`;
-    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
-    
-    attendanceRecords[String(currentlyLoadedMember.id)] = {
-      time: timeStr,
-      fullStamp: `📅 ${dayStr} | ⏰ ${timeStr}`,
-      photo: base64Stamp,
-      statusMsg: "VERIFIED LIVE SELFIE",
-      isReal: true,
-      name: currentlyLoadedMember.name,
-      phone: currentlyLoadedMember.phone,
-      slot: currentlyLoadedMember.slot || ""
-    };
-  
-    try {
-      localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
-    } catch (storageError) {
-      console.error("Storage full:", storageError);
-    }
-
-    try {
-      await db.collection("attendance").doc(todayISO).set({
-        [currentlyLoadedMember.id]: attendanceRecords[String(currentlyLoadedMember.id)]
-      }, { merge: true });
-    } catch (cloudErr) {
-      console.error("Attendance cloud sync error:", cloudErr);
-    }
-
-    currentDateISO = todayISO;
-
-    let target = currentlyLoadedMember;
-    let cycleStart = new Date(target.joinDate || '2026-09-01');
-    let totalAttendedInCycle = 0;
-    let curr = new Date(cycleStart);
-    let todayDate = new Date();
-    while(curr <= todayDate) {
-      let isoStr = getLocalDateISO(curr);
-      let dayAttMap = fetchAttendanceMapForDate(isoStr);
-      if(dayAttMap[target.id] && dayAttMap[target.id].isReal) {
-        totalAttendedInCycle++;
-      }
-      curr.setDate(curr.getDate() + 1);
-    }
-
-    closeCameraModal();
-    document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
-    document.getElementById("celebrateAttendedDays").innerText = `इस महीने कुल ${totalAttendedInCycle} दिन आ चुके हैं`;
-    document.getElementById("attendanceCelebrationModal").classList.add("show");
-  }
-
-  function completeAttendanceAndResetKiosk() {
-    const modal = document.getElementById('attendanceCelebrationModal');
-    if (modal) modal.classList.remove('show');
-    cancelSearchAndReset();
-  }
-
-  async function openAdminMemberManager(memberId) {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें:");
-    if (pin !== ADMIN_PIN) {
-      if(pin !== null) alert("❌ गलत पिन!");
-      return;
-    }
-
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (!m) { alert("सदस्य नहीं मिला!"); return; }
-
-    let modal = document.getElementById("adminMemberManagerModal");
-    if (!modal) {
-      modal = document.createElement("div");
-      modal.id = "adminMemberManagerModal";
-      modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
-      document.body.appendChild(modal);
-    }
-
-    const currentStat = m.manualStatus || 'Paid';
-    let now = new Date();
-
-    modal.innerHTML = `
-      <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:18px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
-          <h3 style="color:#ffcc00; margin:0; font-size:15px;">⚙️ Admin Control: ${m.name}</h3>
-          <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
-        </div>
-
-        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 ज्वाइनिंग तिथि बदलें:</div>
-          <input type="date" id="adminEditableJoinDate" value="${m.joinDate || ''}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-          
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें:</div>
-          <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-          
-          <button onclick="saveAdminDates('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 ज्वाइनिंग व फीस तिथियां अपडेट करें</button>
-        </div>
-
-        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📋 मासिक प्लान बदलें (Plan Months):</div>
-          <select id="adminPlanMonthsSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-            <option value="1" ${Number(m.planMonths) === 1 ? 'selected' : ''}>1 महीना (1 Month)</option>
-            <option value="3" ${Number(m.planMonths) === 3 ? 'selected' : ''}>3 महीने (3 Months)</option>
-            <option value="6" ${Number(m.planMonths) === 6 ? 'selected' : ''}>6 महीने (6 Months)</option>
-            <option value="12" ${Number(m.planMonths) === 12 ? 'selected' : ''}>1 साल (12 Months)</option>
-          </select>
-          <button onclick="saveAdminPlan('${m.id}')" style="background:#00c8ff; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 प्लान अपडेट करें</button>
-        </div>
-
-        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">💰 फीस स्थिति (Fee Status Control):</div>
-          <select id="adminFeeStatusSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
-            <option value="Paid" ${currentStat === 'Paid' ? 'selected' : ''}>✅ Paid (फीस जमा है)</option>
-            <option value="Pending" ${currentStat === 'Pending' ? 'selected' : ''}>❌ Pending (फीस बकाया है)</option>
-          </select>
-          <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 फीस स्टेटस अपडेट करें</button>
-        </div>
-
-        <div id="attendanceCalendarContainer" style="background:#1a1a1a; border:1.5px solid var(--gold); border-radius:12px; padding:10px; margin-bottom:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <h4 id="calendarMonthTitle" style="color:var(--gold); font-size:14px; margin:0;">October 2026</h4>
-            <div style="font-size:11px; color:#00ff66; font-weight:bold;" id="totalPresentCounter">Total Present: 0 Days</div>
-          </div>
-          <div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:10px; font-weight:bold; color:#888; margin-bottom:4px;">
-            <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
-          </div>
-          <div id="calendarDaysGrid" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;"></div>
-        </div>
-
-        <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
-          <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">🗑️ इस सदस्य को हमेशा के लिए डिलीट करें</button>
-        </div>
-
-        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; location.reload();" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें</button>
-      </div>
-    `;
-    modal.style.display = "flex";
-    renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
-  }
-
-  async function saveAdminDates(memberId) {
-    let newJoin = document.getElementById("adminEditableJoinDate").value;
-    let newLastPaid = document.getElementById("adminEditableLastPaid").value;
-    if (!newJoin && !newLastPaid) return;
-
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (m) {
-      if (newJoin) m.joinDate = newJoin;
-      if (newLastPaid) m.lastPaid = newLastPaid;
-      await syncMemberToCloud(m);
-      alert("✅ ज्वाइनिंग और अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
-      openAdminMemberManager(m.id);
-    }
-  }
-
-  async function saveAdminPlan(memberId) {
-    let months = document.getElementById("adminPlanMonthsSelect").value;
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (m) {
-      m.planMonths = Number(months);
-      m.plan = `सामान्य (General Fitness - ₹500/माह x ${months} माह)`;
-      await syncMemberToCloud(m);
-      alert("✅ सदस्य का प्लान सफलतापूर्वक अपडेट कर दिया गया है!");
-      openAdminMemberManager(m.id);
-    }
-  }
-
-  async function saveAdminFeeStatus(memberId) {
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (!m) return;
-    let newStatus = document.getElementById("adminFeeStatusSelect").value;
-    m.manualStatus = newStatus;
-    await syncMemberToCloud(m);
-    alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
-    document.getElementById('adminMemberManagerModal').style.display = 'none';
-    loadSingleMemberKioskCard(m.id);
-  }
-
-  async function deleteMemberPermanently(memberId) {
-    if (!confirm("⚠️ क्या आप वाकई इस सदस्य को हमेशा के लिए डिलीट करना चाहते हैं?")) return;
-    try {
-      await db.collection("members").doc(String(memberId)).delete();
-      alert("✅ सदस्य क्लाउड से डिलीट हो गया!");
-      document.getElementById('adminMemberManagerModal').style.display = 'none';
-      cancelSearchAndReset();
-      location.reload();
-    } catch (err) {
-      alert("❌ डिलीट करने में समस्या आई: " + err.message);
-    }
-  }
-
-  async function openSlotChangerModal() {
-    document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
-    document.getElementById("slotChangerModal").classList.add("show");
-  }
-
-  async function saveNewMemberSlot(newSlot) {
-    if (!currentlyLoadedMember) return;
-    currentlyLoadedMember.slot = newSlot;
-    await syncMemberToCloud(currentlyLoadedMember);
-    alert(`✅ स्लॉट बदलकर "${newSlot}" कर दिया गया!`);
-    closeModal('slotChangerModal');
-    loadSingleMemberKioskCard(currentlyLoadedMember.id);
-  }
-
-  function unlockAdminControl() {
-    let pin = prompt("🔒 Admin PIN दर्ज करें:");
-    if (pin === ADMIN_PIN) {
-      isAdminUnlocked = true;
-      let openVault = confirm("✅ Admin Verified!\nक्या आप पुरानी तारीख की सेल्फी गैलरी देखना चाहते हैं?");
-      if (openVault) {
-        openAdminPhotoVault();
       } else {
-        alert("Admin Access सक्रिय है!");
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
       }
-    }
-  }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+      callback(canvas.toDataURL("image/jpeg", 0.7));
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+}
 
-  function openAdminPhotoVault() {
-    let pin = prompt("🔒 5 BFC Admin PIN दर्ज करें (सेल्फी गैलरी देखने के लिए):");
-    if (pin !== ADMIN_PIN) {
-      if(pin !== null) alert("❌ गलत पिन!");
-      return;
-    }
+function submitAdmissionForm() {
+  const totalNum = parseInt(document.getElementById("admFeeDisplay").innerText.replace(/[^0-9]/g, '')) || 500;
+  const durVal = document.getElementById("admDurationSelect").value;
+  const totalDays = durVal.includes("|") ? parseInt(durVal.split("|")[2]) : 30;
+  const joinDateStr = document.getElementById("admDateInput").value;
+  const expObj = new Date(joinDateStr);
+  expObj.setDate(expObj.getDate() + totalDays);
 
-    let targetDate = prompt("📅 तारीख दर्ज करें (YYYY-MM-DD फॉर्मेट में):", currentDateISO);
-    if (!targetDate) return;
+  const existingId = document.getElementById("editMemberId").value;
+  const memberId = existingId ? parseInt(existingId) : Date.now();
+  const utrRef = document.getElementById("upiUtrInput") ? document.getElementById("upiUtrInput").value.trim() : "";
+  
+  let medList = [];
+  document.querySelectorAll(".medCond:checked").forEach(cb => medList.push(cb.value));
 
-    let dayData = fetchAttendanceMapForDate(targetDate);
-    let keys = Object.keys(dayData);
+  const photoInput = document.getElementById("memberPhotoFile");
+  const signInput = document.getElementById("memberSignFile");
 
-    let vaultModal = document.getElementById("adminPhotoVaultModal");
-    if (!vaultModal) {
-      vaultModal = document.createElement("div");
-      vaultModal.id = "adminPhotoVaultModal";
-      vaultModal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
-      document.body.appendChild(vaultModal);
-    }
+  let photoDataUrl = "";
+  let signDataUrl = "";
 
-    let galleryHTML = "";
-    if (keys.length === 0) {
-      galleryHTML = `<div style="color:#ff4444; text-align:center; padding:20px;">इस तारीख (${targetDate}) पर कोई रिकॉर्ड नहीं मिला।</div>`;
-    } else {
-      keys.forEach(k => {
-        let entry = dayData[k];
-        galleryHTML += `
-          <div style="background:#181818; border:1px solid #333; border-radius:8px; padding:10px; margin-bottom:10px; display:flex; align-items:center; gap:12px;">
-            <img src="${entry.photo}" style="width:55px; height:55px; border-radius:6px; object-fit:cover; border:1.5px solid var(--green-accent);">
-            <div style="text-align:left; font-size:11.5px; line-height:1.4;">
-              <b style="color:#ffcc00; font-size:13px;">${entry.name || 'Unknown'}</b><br>
-              <span style="color:#aaa;">📞 ${entry.phone || '--'}</span><br>
-              <span style="color:#00ff66;">⏰ ${entry.time} | ${targetDate}</span>
-            </div>
-          </div>
-        `;
-      });
-    }
+  const proceedSaving = () => {
+    let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let existingIndex = records.findIndex(r => String(r.id) === String(memberId));
 
-    vaultModal.innerHTML = `
-      <div style="background:#111; border:2px solid #00ff66; border-radius:14px; max-width:450px; width:100%; padding:18px; color:#fff; max-height:85vh; overflow-y:auto; box-sizing:border-box;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:12px;">
-          <h3 style="color:#00ff66; margin:0; font-size:15px;">📸 पुरानी सेल्फी गैलरी (${targetDate})</h3>
-          <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:5px 9px; border-radius:4px; cursor:pointer;">✕</button>
-        </div>
-        <div>${galleryHTML}</div>
-        <button onclick="document.getElementById('adminPhotoVaultModal').style.display='none'" style="width:100%; background:#222; color:#fff; border:none; padding:10px; border-radius:6px; margin-top:10px; font-weight:bold; cursor:pointer;">⬅ बंद करें</button>
-      </div>
-    `;
-    vaultModal.style.display = "flex";
-  }
+    let existingPhoto = existingIndex !== -1 ? records[existingIndex].memberPhoto : "";
+    let existingSign = existingIndex !== -1 ? records[existingIndex].memberSign : "";
 
-  function closeCameraModal() {
-    document.getElementById("cameraBackdropModal").classList.remove("show");
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).classList.remove("show");
-  }
-
-  function formatDateToDDMMYYYY(dateString) {
-    if (!dateString || dateString === "N/A") return "N/A";
-    let parts = dateString.split("-");
-    if (parts.length === 3) {
-      if (parts[0].length === 4) return `${parts[2]}-${parts[1]}-${parts[0]}`;
-      return dateString;
-    }
-    return dateString;
-  }
-
-  window.onload = () => {
-    runLiveSystemClock();
-    setInterval(runLiveSystemClock, 1000);
+    const memberData = {
+      id: memberId,
+      code: "5BFC-" + memberId.toString().slice(-6),
+      name: document.getElementById("admFullName").value.trim(),
+      parentName: document.getElementById("admParentName").value.trim(),
+      dob: document.getElementById("admDobInput").value || "N/A",
+      age: document.getElementById("admAge").value.trim(),
+      gender: document.getElementById("admGender").value,
+      phone: document.getElementById("admPhone").value.trim(),
+      occupation: document.getElementById("admOccupation").value.trim() || "N/A",
+      village: document.getElementById("unnaoAreaInput").value.trim(),
+      emergName: document.getElementById("admEmergName").value.trim() || "N/A",
+      emergRelation: document.getElementById("admEmergRelation").value.trim() || "N/A",
+      emergPhone: document.getElementById("admEmergPhone").value.trim() || "N/A",
+      height: document.getElementById("admHeight").value.trim() || "N/A",
+      weight: document.getElementById("admWeight").value.trim() || "N/A",
+      bloodGroup: document.getElementById("admBloodGroup").value.trim() || "N/A",
+      medicalHistory: medList.length > 0 ? medList.join(", ") : "Fit / No Issues",
+      memberPhoto: photoDataUrl || existingPhoto,
+      memberSign: signDataUrl || existingSign,
+      joinDate: joinDateStr,
+      expiryDate: expObj.toISOString().split("T")[0],
+      lastPaid: joinDateStr,
+      planMonths: totalDays >= 365 ? 12 : (totalDays >= 180 ? 6 : (totalDays >= 90 ? 3 : 1)),
+      plan: document.getElementById("admCategorySelect").selectedOptions[0].text,
+      slot: document.getElementById("admSlotSelect").value,
+      totalFee: totalNum,
+      paidFee: selectedPaymentMode === "Online" ? totalNum : 0,
+      dueFee: selectedPaymentMode === "Online" ? 0 : totalNum,
+      payMode: selectedPaymentMode,
+      utrRef: utrRef || "N/A",
+          fees: selectedPaymentMode === "Online" ? "Paid" : "Due",
+    status: selectedPaymentMode === "Online" ? "Full Paid" : "Pending",
+    manualStatus: selectedPaymentMode === "Online" ? "Paid" : "Pending",
+    activeInGym: true
   };
 
-  async function renderAttendanceCalendar(member, year, month) {
-    const grid = document.getElementById("calendarDaysGrid");
-    const title = document.getElementById("calendarMonthTitle");
-    const counter = document.getElementById("totalPresentCounter");
-    if (!grid || !member) return;
+  activeReceiptMember = memberData;
 
-    grid.innerHTML = "";
-    
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    if(title) title.innerText = `${monthNames[month]} ${year}`;
-
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    let startingSpace = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-    
-    let joinDateStr = member.joinDate || member.lastPaid || '2026-10-01';
-    let joinDate = new Date(joinDateStr);
-    let presentCount = 0;
-
-    for (let i = 0; i < startingSpace; i++) {
-      grid.innerHTML += `<div></div>`;
-    }
-
-    for (let day = 1; day <= totalDaysInMonth; day++) {
-      let dayISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      let currentDate = new Date(dayISO);
-      let isSunday = (currentDate.getDay() === 0);
-      let isBeforeJoin = currentDate < new Date(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate());
-
-      let dayMap = fetchAttendanceMapForDate(dayISO);
-      let isPresent = isSunday ? true : (dayMap[member.id] && dayMap[member.id].isReal ? true : false);
-
-      if (isPresent && !isBeforeJoin) presentCount++;
-
-      let bgStyle = "background:#222; color:#fff; border:1px solid #444;";
-      let statusDot = `<div style="width:4px; height:4px; background:#ff4444; border-radius:50%; margin:2px auto 0;"></div>`;
-
-      if (isBeforeJoin) {
-        bgStyle = "background:#111; color:#444; border:1px solid #222; opacity:0.3; cursor:not-allowed;";
-        statusDot = "";
-      } else if (isSunday || isPresent) {
-        bgStyle = "background:#0d2614; color:#00ff66; border:1px solid #00ff66;";
-        statusDot = `<div style="width:4px; height:4px; background:#00ff66; border-radius:50%; margin:2px auto 0;"></div>`;
-      }
-
-      grid.innerHTML += `
-        <div onclick="${isBeforeJoin ? '' : `toggleCalendarDay('${member.id}', '${dayISO}')`}" 
-             style="${bgStyle} border-radius:6px; padding:6px 2px; text-align:center; font-size:11px; font-weight:bold; cursor:${isBeforeJoin ? 'not-allowed' : 'pointer'};">
-          <div>${day}</div>
-          ${statusDot}
-        </div>
-      `;
-    }
-    if(counter) counter.innerText = `Total Present: ${presentCount} Days`;
+  if (existingIndex !== -1) {
+    records[existingIndex] = memberData;
+  } else {
+    records.unshift(memberData);
   }
+  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
+  localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
 
-  async function toggleCalendarDay(memberId, dateISO) {
-    let dayMap = fetchAttendanceMapForDate(dateISO);
-    let isCurrentlyPresent = dayMap[memberId] && dayMap[memberId].isReal;
+  db.collection("members").doc(String(memberData.id)).set(memberData, { merge: true })
+    .then(() => console.log("Admission synced to Firestore:", memberData.name))
+    .catch(err => {
+      console.error("Admission cloud sync failed:", err);
+      alert("फॉर्म मोबाइल में सेव हुआ, लेकिन Cloud Sync नहीं हुआ।");
+    });
 
-    if (isCurrentlyPresent) {
-      delete dayMap[memberId];
+  let waMsg = "";
+  if (selectedPaymentMode === "Cash") {
+    waMsg = `📢 *NEW ADMISSION (CASH PAYMENT)*%0A👤 नाम: ${memberData.name}%0A📞 फोन: ${memberData.phone}%0A📦 प्लान: ${memberData.plan}%0A💰 फीस: ₹${totalNum} (Pending / Cash)%0A🆔 ID: ${memberData.code}%0A%0Aफॉर्म सफलतापूर्वक जमा हो गया है। कृपया एडमिन डेस्क से अप्रूव करें।`;
+  } else {
+    waMsg = `📢 *NEW ADMISSION (ONLINE UPI PAYMENT)*%0A👤 नाम: ${memberData.name}%0A📞 फोन: ${memberData.phone}%0A📦 प्लान: ${memberData.plan}%0A💰 फीस: ₹${totalNum} (Paid)%0A🔗 UTR Ref: ${utrRef}%0A🆔 ID: ${memberData.code}%0A%0Aऑनलाइन भुगतान प्राप्त हो गया है!`;
+  }
+  window.open(`https://wa.me/919140417259?text=${waMsg}`, '_blank');
+
+  const modalHtml = `
+    <div id="customSuccessModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;">
+      <div style="background:#121212; border:2px solid #00ff66; border-radius:16px; max-width:400px; width:100%; padding:22px; text-align:center; color:#fff; box-shadow:0 0 30px rgba(0,255,102,0.3);">
+        <div style="font-size:40px; margin-bottom:8px;">🎉</div>
+        <h3 style="color:#00ff66; margin:0 0 8px; font-size:18px;">धन्यवाद!</h3>
+        <p style="font-size:13px; color:#ddd; line-height:1.5; margin-bottom:16px;">
+          <b>${memberData.name}</b>, आपका फॉर्म सफलतापूर्वक जमा हो गया है! आज से आप <b>5 Brother's Fitness Club</b> के सदस्य बन चुके हैं।
+        </p>
+        <button type="button" onclick="downloadAdmissionCardNow(activeReceiptMember, 'hi');" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:12px; border:none; border-radius:8px; cursor:pointer; font-size:13px; margin-bottom:8px;">
+          📄 फॉर्म / रसीद डाउनलोड करें (PDF)
+        </button>
+        <button type="button" onclick="document.getElementById('customSuccessModal').remove(); location.reload();" style="width:100%; background:#222; color:#aaa; font-size:11px; padding:8px; border:1px solid #444; border-radius:6px; cursor:pointer;">
+          बंद करें / नया फॉर्म भरें
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  renderAdminTable();
+};
+
+if (photoInput && photoInput.files && photoInput.files[0]) {
+  resizeImageToDataUrl(photoInput.files[0], 300, 400, function(compressedPhoto) {
+    photoDataUrl = compressedPhoto;
+    if (signInput && signInput.files && signInput.files[0]) {
+      resizeImageToDataUrl(signInput.files[0], 300, 150, function(compressedSign) {
+        signDataUrl = compressedSign;
+        proceedSaving();
+      });
     } else {
-      dayMap[memberId] = { time: "Manual Admin", fullStamp: `📅 ${dateISO} | ⏰ Manual`, photo: "", isReal: true };
+      proceedSaving();
     }
+  });
+} else if (signInput && signInput.files && signInput.files[0]) {
+  resizeImageToDataUrl(signInput.files[0], 300, 150, function(compressedSign) {
+    signDataUrl = compressedSign;
+    proceedSaving();
+  });
+} else {
+  proceedSaving();
+}
+}
 
-    localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap));
-    
-    let allRecords = await fetchStoredMembers();
-    let m = allRecords.find(r => r.id.toString() === memberId.toString());
-    if (m) {
-      let now = new Date();
-      renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
-    }
+function openAdminDeskWithPassword() {
+  const pin = prompt("🔒 5 BFC Admin Security PIN दर्ज करें:");
+  if (pin === ADMIN_SECURITY_PIN) {
+    document.getElementById("adminDeskContainer").style.display = "block";
+    renderAdminTable();
+  } else if(pin !== null) {
+    alert("❌ गलत पिन!");
   }
+}
+
+function closeAdminDesk() {
+  document.getElementById("adminDeskContainer").style.display = "none";
+}
+
+function renderAdminTable() {
+  const container = document.getElementById("admissionsTableList");
+  if (!container) return;
+  const searchTxt = document.getElementById("adminSearchInput") ? document.getElementById("adminSearchInput").value.trim().toLowerCase() : "";
+  let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+
+  if (searchTxt) {
+    records = records.filter(m => (m.name && m.name.toLowerCase().includes(searchTxt)) || (m.phone && m.phone.includes(searchTxt)));
+  }
+
+  if (records.length === 0) {
+    container.innerHTML = '<div style="color:#666; text-align:center; padding:10px;">कोई रिकॉर्ड नहीं मिला</div>';
+    return;
+  }
+
+  container.innerHTML = records.map(m => {
+    const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid');
+    return `
+      <div style="background:#1f1f1f; border:1px solid ${isPaid ? '#00ff66' : '#ff9900'}; border-radius:6px; padding:8px; margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between;"><b style="color:#ffcc00;">${m.name}</b><span style="font-size:9.5px; color:#aaa;">${m.joinDate}</span></div>
+        <div style="font-size:10px; color:#ccc;">📞 ${m.phone} | 📦 ${m.plan} | Status: <b style="color:${isPaid ? '#00ff66' : '#ff9900'};">${m.status || 'Pending'}</b></div>
+        ${m.utrRef && m.utrRef !== 'N/A' ? `<div style="font-size:9.5px; color:#00ff66;">UTR Ref: ${m.utrRef}</div>` : ''}
+        <div style="margin-top:6px; display:flex; gap:4px; flex-wrap:wrap;">
+          <button type="button" onclick='downloadAdmissionCardNow(${JSON.stringify(m)}, "hi")' style="background:#00ff66; color:#000; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">📄 फॉर्म डाउनलोड</button>
+          ${!isPaid ? `<button type="button" onclick="approveMemberPayment(${m.id})" style="background:#ffcc00; color:#000; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">✅ फीस अप्रूव करें</button>` : ''}
+          <button type="button" onclick="editMemberRecord(${m.id})" style="background:#333; color:#fff; font-size:9px; font-weight:bold; padding:4px 8px; border:1px solid #666; border-radius:3px; cursor:pointer;">✏️ एडिट</button>
+          <button type="button" onclick="deleteMemberRecord(${m.id})" style="background:#ff3333; color:#fff; font-size:9px; font-weight:bold; padding:4px 8px; border:none; border-radius:3px; cursor:pointer;">🗑️ डिलीट</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function approveMemberPayment(id) {
+  let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  let idx = records.findIndex(r => r.id === id);
+  if (idx !== -1) {
+    records[idx].status = "Full Paid";
+    records[idx].fees = "Paid";
+    records[idx].manualStatus = "Paid";
+    records[idx].paidFee = records[idx].totalFee || 500;
+    records[idx].dueFee = 0;
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
+    
+    activeReceiptMember = records[idx];
+    downloadAdmissionCardNow(records[idx], 'hi');
+    alert("✅ फीस सफलतापूर्वक अप्रूव कर दी गई है और रसीद खुल रही है!");
+    renderAdminTable();
+  }
+}
+
+function editMemberRecord(id) {
+  let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  let m = records.find(r => String(r.id) === String(id));
+  if (!m) { alert("❌ रिकॉर्ड नहीं मिला!"); return; }
+
+  document.getElementById("editMemberId").value = m.id;
+  document.getElementById("admFullName").value = m.name || "";
+  document.getElementById("admParentName").value = m.parentName || "";
+  document.getElementById("admDobInput").value = m.dob !== "N/A" ? m.dob : "";
+  document.getElementById("admAge").value = m.age || "";
+  document.getElementById("admPhone").value = m.phone || "";
+  document.getElementById("admOccupation").value = m.occupation || "";
+  document.getElementById("unnaoAreaInput").value = m.village || "";
+  document.getElementById("admEmergName").value = m.emergName || "";
+  document.getElementById("admEmergRelation").value = m.emergRelation || "";
+  document.getElementById("admEmergPhone").value = m.emergPhone || "";
+  document.getElementById("admHeight").value = m.height || "";
+  document.getElementById("admWeight").value = m.weight || "";
+  document.getElementById("admBloodGroup").value = m.bloodGroup || "";
+
+  closeAdminDesk();
+  goToStep(2);
+  alert("✏️ सदस्य का डेटा फॉर्म में लोड कर दिया गया है। बदलाव करके सबमिट करें।");
+}
+
+function deleteMemberRecord(id) {
+  if (confirm("⚠️ क्या आप वाकई इस सदस्य के फॉर्म और रिकॉर्ड को हमेशा के लिए डिलीट करना चाहते हैं?")) {
+    let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let updatedRecords = records.filter(r => String(r.id) !== String(id));
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(updatedRecords));
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(updatedRecords));
+    renderAdminTable();
+    alert("🗑️ रिकॉर्ड सफलतापूर्वक डिलीट कर दिया गया है!");
+  }
+}
+
+function exportAdmissionsToCSV() {
+  const records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  let csv = "ID,Name,Phone,Plan,Fee,Status,UTR\n";
+  records.forEach(r => { csv += `"${r.code || r.id}","${r.name}","${r.phone}","${r.plan}","${r.totalFee}","${r.status}","${r.utrRef || 'N/A'}"\n`; });
+  const blob = new Blob([csv], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "5BFC_Admissions.csv";
+  a.click();
+}
+
+function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
+  const m = customMember || activeReceiptMember;
+  if (!m) return;
+  const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid' || m.manualStatus === 'Paid');
+  const printWin = window.open('', '_blank', 'width=850,height=1100');
+
+  printWin.document.write(`
+    <!DOCTYPE html>
+    <html lang="hi">
+    <head>
+      <meta charset="UTF-8">
+      <title>5BFC - Membership Registration Form</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; color: #000; line-height: 1.3; background: #fff; font-size: 11px; }
+        .page { max-width: 750px; margin: 0 auto; border: 2px solid #000; padding: 15px; page-break-after: always; position: relative; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px; }
+        .club-name { font-size: 19px; font-weight: 900; margin: 0; }
+        .sub-header { font-size: 11px; margin-top: 2px; }
+        
+        .photo-box { position: absolute; right: 15px; top: 15px; width: 100px; height: 120px; border: 1.5px solid #000; text-align: center; font-size: 9px; overflow: hidden; background: #fafafa; box-sizing: border-box; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .section-title { font-size: 11.5px; font-weight: bold; margin-top: 10px; margin-bottom: 4px; border-bottom: 1px solid #000; padding-bottom: 2px; }
+        .row { margin-bottom: 5px; font-size: 11px; }
+        .line-input { border-bottom: 1px dotted #000; display: inline-block; padding: 0 5px; font-weight: bold; }
+        
+        .rules-list { font-size: 10px; padding-left: 15px; margin: 4px 0; }
+        .rules-list li { margin-bottom: 3px; }
+        
+        .table-grid { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .table-grid th, .table-grid td { border: 1px solid #000; padding: 4px; text-align: center; font-size: 10px; }
+        .table-grid th { background: #eee; }
+
+        .footer-sig { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; font-size: 11px; font-weight: bold; }
+        .sign-box { border-bottom: 1px dotted #000; display: inline-block; height: 35px; width: 150px; text-align: center; }
+        .sign-box img { max-height: 35px; max-width: 150px; object-fit: contain; }
+
+        .btn-print { background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin: 20px auto; display: block; }
+        @media print { .no-print { display: none; } }
+      </style>
+    </head>
+    <body>
+
+      <!-- PAGE 1 -->
+      <div class="page">
+        <div class="photo-box">
+          ${m.memberPhoto ? `<img src="${m.memberPhoto}" alt="Photo">` : 'Passport Size<br>Photo'}
+        </div>
+
+        <div class="header">
+          <h1 class="club-name">5 BROTHER'S FITNESS CLUB</h1>
+          <div class="sub-header">सदस्य पंजीकरण एवं स्वास्थ्य विवरण (Membership Registration Form)</div>
+        </div>
+
+        <div class="section-title">1. व्यक्तिगत विवरण (Personal Details)</div>
+        <div class="row">
+          Member ID: <span class="line-input" style="width:70px;">${m.code || ('5BFC-' + m.id)}</span> &nbsp;&nbsp;
+          Joining Date: <span class="line-input" style="width:90px;">${m.joinDate}</span>
+        </div>
+        <div class="row" style="margin-top:5px;">
+          Plan: [${m.plan && m.plan.includes('1') ? '✓' : '&nbsp;&nbsp;'}] 1 माह &nbsp;
+          [${m.plan && m.plan.includes('3') ? '✓' : '&nbsp;&nbsp;'}] 3 माह &nbsp;
+          [${m.plan && m.plan.includes('6') ? '✓' : '&nbsp;&nbsp;'}] 6 माह &nbsp;
+          [${m.plan && m.plan.includes('12') ? '✓' : '&nbsp;&nbsp;'}] 12 माह
+        </div>
+        <div class="row" style="margin-top:5px;">
+          Total Fee: ₹ <span class="line-input" style="width:60px;">${m.totalFee || 500}</span> &nbsp;&nbsp;
+          Paid: ₹ <span class="line-input" style="width:60px;">${isPaid ? (m.totalFee || 500) : 0}</span> &nbsp;&nbsp;
+          Due: ₹ <span class="line-input" style="width:60px;">${isPaid ? '0' : (m.dueFee || 500)}</span>
+          ${m.utrRef && m.utrRef !== 'N/A' ? ` &nbsp;&nbsp; UTR: <span class="line-input">${m.utrRef}</span>` : ''}
+        </div>
+
+        <div class="row" style="margin-top:8px;">
+          पूरा नाम (Full Name): <span class="line-input" style="width:380px;">${m.name}</span>
+        </div>
+        <div class="row">
+          पिता / माता का नाम (Parent Name): <span class="line-input" style="width:330px;">${m.parentName || 'N/A'}</span>
+        </div>
+        <div class="row">
+          जन्म तिथि / आयु (DOB / Age): <span class="line-input" style="width:160px;">${m.dob}</span> &nbsp;
+          लिंग (M/F): <span class="line-input" style="width:80px;">${m.gender}</span>
+        </div>
+        <div class="row">
+          व्यवसाय (Occupation): <span class="line-input" style="width:170px;">${m.occupation || 'N/A'}</span> &nbsp;
+          मोबाइल नंबर (Mobile): <span class="line-input" style="width:150px;">+91 ${m.phone}</span>
+        </div>
+        <div class="row">
+          पूरा पता (Address): <span class="line-input" style="width:400px;">${m.village || 'Unnao'}</span>
+        </div>
+
+        <div style="border: 1px solid #000; padding: 6px; margin-top: 8px; background: #f9f9f9;">
+          <div style="font-weight: bold; font-size: 11px;">🚨 आपातकालीन संपर्क — केवल परिवार/रिश्तेदार का नंबर</div>
+          <div style="font-size: 9.5px; color: #333;">माता-पिता, परिवार के सदस्य या अभिभावक का ही नंबर दें।</div>
+          <div class="row" style="margin-top: 4px;">
+            संपर्क व्यक्ति का नाम: <span class="line-input" style="width:180px;">${m.emergName || '--'}</span> &nbsp;
+            संबंध: <span class="line-input" style="width:100px;">${m.emergRelation || '--'}</span>
+          </div>
+          <div class="row">
+            मोबाइल नंबर: <span class="line-input" style="width:180px;">${m.emergPhone || '--'}</span>
+          </div>
+        </div>
+
+        <div class="section-title">2. स्वास्थ्य एवं फिटनेस विवरण (Health Details)</div>
+        <div class="row">
+          ऊंचाई: <span class="line-input" style="width:60px;">${m.height || '--'}</span> सेमी &nbsp;
+          वजन: <span class="line-input" style="width:60px;">${m.weight || '--'}</span> किग्रा &nbsp;
+          ब्लड ग्रुप: <span class="line-input" style="width:80px;">${m.bloodGroup || '--'}</span>
+        </div>
+        <div class="row" style="margin-top:4px;">
+          फिटनेस लक्ष्य: [✓] वजन घटाना / बॉडी बिल्डिंग
+        </div>
+        <div class="row" style="margin-top:4px;">
+          स्वास्थ्य स्थिति (यदि लागू हो तो टिक [✓] करें):
+        </div>
+        <div class="row" style="font-size: 10px; margin-top: 2px;">
+          [ ] हाई / लो बीपी &nbsp;&nbsp; [ ] शुगर (Diabetes) &nbsp;&nbsp; [ ] दिल की बीमारी<br>
+          [ ] अस्थमा / सांस &nbsp;&nbsp; [ ] कमर दर्द / स्लिप डिस्क &nbsp;&nbsp; [✓] कोई समस्या नहीं (Fit)<br>
+          क्या आप वर्तमान में कोई नियमित दवा ले रहे हैं? [ ] हाँ [✓] नहीं | डॉक्टर ने मना किया है? [ ] हाँ [✓] नहीं
+        </div>
+
+        <div class="section-title">3. आपातकालीन सहमति</div>
+        <div style="font-size: 10px; line-height: 1.3;">
+          मैं जिम परिसर में किसी भी आपातकालीन स्थिति में प्राथमिक चिकित्सा या नजदीकी अस्पताल ले जाने हेतु जिम प्रबंधन को पूर्ण सहमति देता/देती हूँ।
+        </div>
+
+        <div class="footer-sig">
+          <div>सदस्य के हस्ताक्षर:<br>
+            <div class="sign-box">${m.memberSign ? `<img src="${m.memberSign}" alt="Sign">` : ''}</div>
+          </div>
+          <div>दिनांक: <span class="line-input" style="width:80px;">${m.joinDate}</span></div>
+        </div>
+      </div>
+
+      <!-- PAGE 2 -->
+      <div class="page" style="page-break-before: always;">
+        <div style="text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 6px;">
+          नियम, शर्ते एवं दायित्व पत्र (Terms, Rules & Waiver)
+        </div>
+
+        <div style="font-size: 10px; line-height: 1.35;">
+          <b>1. फीस एवं उपस्थिति नियम (FEES POLICY - STRICT):</b>
+          <ul class="rules-list">
+            <li>शिक्षा संस्थानों की तरह यह भी एक अभ्यास संस्थान है। यदि आप महीने में 1 दिन भी आते हैं, तो भी पूरे 1 महीने की पूरी फीस देय होगी।</li>
+            <li>अनुपस्थिति के आधार पर फीस में कोई छूट या रिफंड नहीं मिलेगा। फीस गैर-वापसी योग्य (Non-Refundable) है।</li>
+          </ul>
+
+          <b>2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b>
+          <ul class="rules-list">
+            <li>यदि जिम छोड़ना है, तो महीना पूरा होते ही तुरंत जिम आना बंद कर दें। बिना फीस दिए नया महीना शुरू करने पर प्रबंधन सख्त कदम उठाएगा।</li>
+          </ul>
+
+          <b>3. जिम अनुशासन एवं व्यवस्था (DISCIPLINE):</b>
+          <ul class="rules-list">
+            <li>जिम के अंदर साफ इनडोर जूते व पर्सनल तौलिया लाना अनिवार्य है। उपकरण पटकना मना है।</li>
+            <li>गुटका, तंबाकू, धूम्रपान या शराब जिम में पूर्णतः प्रतिबंधित है। कीमती सामान की सुरक्षा स्वयं करें।</li>
+          </ul>
+
+          <b>4. स्वास्थ्य जोखिम एवं दायित्व मुक्ति (WAIVER):</b>
+          <ul class="rules-list">
+            <li>भारी वजन उठाने में होने वाले खिंचाव या चोट की जिम्मेदारी स्वयं सदस्य की होगी। प्रबंधन कानूनी रूप से जिम्मेदार नहीं होगा।</li>
+          </ul>
+        </div>
+
+        <div style="border: 1px solid #000; padding: 5px; margin-top: 6px; background: #fafafa; font-size: 10px;">
+          <b>कानूनी चेतावनी एवं घोषणा (Legal Declaration & Warning):</b><br>
+          <i>"मैंने 5 Brother's Fitness Club के सभी नियमों, फीस पॉलिसी और सख्त कानूनी चेतावनी को भली-भांति पढ़ व समझ लिया है। यदि मैं फीस या बकाया छोड़कर भागता हूँ, तो प्रबंधन को मेरे विरुद्ध कानूनी कार्रवाई करने की पूर्ण अनुमति है।"</i>
+          <div style="margin-top: 5px;">
+            सदस्य का नाम: <span class="line-input" style="width:150px;">${m.name}</span> &nbsp;&nbsp;
+            दिनांक: <span class="line-input" style="width:80px;">${m.joinDate}</span>
+          </div>
+          <div style="margin-top: 4px;">
+            सदस्य के हस्ताक्षर: 
+            <div class="sign-box" style="width:120px; height:25px;">${m.memberSign ? `<img src="${m.memberSign}" alt="Sign" style="max-height:25px;">` : ''}</div>
+          </div>
+        </div>
+
+        <div stylyle="border: 1.5px solid #000; padding: 6px; margin-top: 10px;">
+          <div style="font-weight: bold; font-size: 10.5px; margin-bottom: 4px; text-decoration: underline;">केवल कार्यालय उपयोग हेतु (OFFICE USE ONLY)</div>
+          <div class="row">
+            Form Received By: <span class="line-input" style="width:150px;">Saurabh Singh</span> &nbsp;&nbsp;
+            Batch Timing: [ ] Morning [✓] Evening
+          </div>
+          <div style="margin-top: 3px;">
+            Amount Received: ₹ <span class="line-input" style="width:80px;">${isPaid ? (m.totalFee || 500) : '0'}</span> &nbsp;&nbsp;
+            Date & Sign: <span class="line-input" style="width:110px;">${m.joinDate} - 5BFC</span>
+          </div>
+
+          <div style="font-weight: bold; font-size: 10px; margin-top: 6px;">BODY MEASUREMENTS & MONTHLY PROGRESS RECORD</div>
+          <table class="table-grid">
+            <tr>
+              <th>Stage</th><th>Chest</th><th>Waist</th><th>Shoulder</th><th>Biceps</th><th>Forearm</th><th>Weight</th>
+            </tr>
+            <tr>
+              <td>Initial</td><td></td><td></td><td></td><td></td><td></td><td>${m.weight || ''}</td>
+            </tr>
+            <tr>
+              <td>Current</td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+          </table>
+       </div>
+
+      </div>
+
+      <div class="no-print">
+        <button class="btn-print" onclick="window.print()">🖨️ प्रिंट निकालें / PDF सेव करें</button>
+      </div>
+    </body>
+    </html>
+  `);
+  printWin.document.close();
+}
 </script>
 </body>
 </html>
