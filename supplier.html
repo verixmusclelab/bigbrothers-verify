@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>5 Brother's Fitness Club - Supplier Portal</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+
+body{
+  background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.95)), url('owner.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.main-card{
+  background: rgba(18, 16, 5, 0.94);
+  border: 2px solid #ffcc00;
+  border-radius: 18px;
+  max-width: 540px;
+  width: 100%;
+  padding: 16px;
+  box-shadow: 0 0 35px rgba(255,204,0,0.3);
+  margin-bottom: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.header{text-align:center;border-bottom:2px dashed #ffcc00;padding-bottom:10px;margin-bottom:12px;position:relative;}
+.header h1{color:#ffcc00;font-size:20px;letter-spacing:1px;font-weight:900;}
+.tagline{color:#e6c300;font-size:10px;font-weight:700;margin-top:4px;background:rgba(255,204,0,0.12);display:inline-block;padding:2px 8px;border-radius:10px;}
+
+.field-group{margin-bottom:10px;position:relative;}
+label{display:block;font-size:11px;color:#ddd;margin-bottom:3px;font-weight:600;}
+label span{color:#ff3333;}
+input, select, textarea{width:100%;background:#181818;border:1.5px solid #444;color:#fff;padding:9px;border-radius:8px;font-size:12px;outline:none;}
+input:focus, select:focus, textarea:focus{border-color:#ffcc00;background:#141414;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.box-panel{background:#141414;border:1.5px solid #333;border-radius:10px;padding:11px;margin-bottom:11px;}
+.btn-submit{width:100%;background:#25D366;color:#000;border:none;padding:12px;border-radius:8px;font-weight:bold;font-size:13px;cursor:pointer;margin-top:10px;}
+
+/* LOCK SCREEN */
+#authOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.98);z-index:999999;display:flex;justify-content:center;align-items:center;padding:16px;}
+.auth-box{background:#141414;border:2px solid #ffcc00;border-radius:16px;padding:24px;max-width:360px;width:100%;text-align:center;}
+
+/* ITEM ROW */
+.item-row{background:#1a1a1a;border:1px solid #444;border-radius:10px;padding:10px;margin-bottom:8px;position:relative;}
+.del-item-btn{position:absolute;top:6px;right:6px;background:#ff3333;color:#fff;border:none;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* RECEIPT MODAL */
+#receiptModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:99999;justify-content:center;align-items:flex-start;padding:12px;overflow-y:auto;}
+.receipt-wrapper{max-width:420px;width:100%;margin:15px auto;position:relative;}
+.receipt-card{background:#fff;color:#000;border-radius:12px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden;}
+.receipt-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) rotate(-30deg);font-size:24px;font-weight:900;color:rgba(0, 0, 0, 0.05);white-space:nowrap;pointer-events:none;text-transform:uppercase;letter-spacing:2px;z-index:1;}
+.receipt-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:6px;margin-bottom:6px;position:relative;z-index:2;}
+.r-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;border-bottom:1px dotted #ccc;padding-bottom:2px;position:relative;z-index:2;}
+.action-btns{display:flex;gap:6px;margin-top:8px;}
+.dl-btn{flex:1;background:#000;color:#ffcc00;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
+.wa-btn{flex:1;background:#25D366;color:#fff;border:none;padding:10px;border-radius:6px;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- SECURITY AUTH OVERLAY -->
+<div id="authOverlay">
+  <div class="auth-box">
+    <div style="font-size:36px; margin-bottom:8px;">🔐</div>
+    <h3 style="color:#ffcc00; font-size:16px; margin-bottom:6px;">गुप्त सप्लायर पोर्टल</h3>
+    <p style="font-size:11px; color:#aaa; margin-bottom:14px;">यह पेज सुरक्षित है। कृपया Admin PIN दर्ज करें:</p>
+    <input type="password" id="adminPinInput" placeholder="4-अंकों का PIN..." style="text-align:center; font-size:18px; letter-spacing:4px; margin-bottom:12px;" maxlength="4">
+    <button type="button" onclick="verifyAdminPin()" style="width:100%; background:#ffcc00; color:#000; border:none; padding:10px; border-radius:8px; font-weight:bold; font-size:13px; cursor:pointer;">🔓 अनलॉक करें (Unlock)</button>
+  </div>
+</div>
+
+<div class="main-card" id="mainPortalContent" style="display:none;">
+  <div class="header">
+    <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">WHOLESALE PURCHASE PORTAL</div>
+    <h1>5 Brother's Fitness Club</h1>
+    <div class="tagline">सप्लायर माल खरीद एवं हिसाब किताब (Supplier Ledger)</div>
+  </div>
+
+  <form id="formSupplierBill" onsubmit="generateSupplierBill(event)">
+    <div class="row">
+      <div class="field-group">
+        <label>सप्लायर का नाम (Supplier Name) <span>*</span></label>
+        <input type="text" id="supName" required placeholder="कंपनी या सप्लायर का नाम">
+      </div>
+      <div class="field-group">
+        <label>सप्लायर मोबाइल नंबर <span>*</span></label>
+        <input type="tel" id="supPhone" required placeholder="10 अंक मोबाइल नंबर">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field-group">
+        <label>खरीद दिनांक (Purchase Date) <span>*</span></label>
+        <input type="date" id="supDate" required onclick="this.showPicker()">
+      </div>
+      <div class="field-group">
+        <label>पुरानी बकाया राशि (Old Due ₹)</label>
+        <input type="number" id="supOldDue" value="0" oninput="calculateGrandTotal()" style="color:#ff6666; font-weight:bold;">
+      </div>
+    </div>
+
+    <div class="box-panel" style="border:1.5px dashed #ffcc00; background:rgba(255,204,0,0.03); margin-top:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <b style="font-size:12px; color:#ffcc00;">📦 खरीदे गए प्रोडक्ट्स (Items List):</b>
+        <button type="button" onclick="addItemRow()" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">+ नया आइटम जोड़ें</button>
+      </div>
+
+      <div id="itemsContainer"></div>
+    </div>
+
+    <div class="box-panel" style="background:#181818; border:1.5px solid #444; padding:12px;">
+      <div class="r-row" style="font-size:12px; margin-bottom:6px;"><span>इस बार के माल का कुल मूल्य:</span><b id="lblCurrentTotal" style="color:#00ff99;">₹0</b></div>
+      <div class="r-row" style="font-size:12px; margin-bottom:6px;"><span>पुरानी बकाया राशि:</span><b id="lblOldDue" style="color:#ff6666;">₹0</b></div>
+      <div class="r-row" style="font-size:13px; margin-bottom:8px; border-bottom:1px solid #555; padding-bottom:4px;"><span>कुल कुल देय राशि (Grand Total):</span><b id="lblGrandTotal" style="color:#ffcc00; font-size:14px;">₹0</b></div>
+      
+      <div class="row" style="margin-top:8px;">
+        <div class="field-group" style="margin-bottom:0;">
+          <label>आज कितना भुगतान किया (Paid Now ₹) <span>*</span></label>
+          <input type="number" id="supPaidNow" required value="0" oninput="calculateGrandTotal()" style="color:#00ff99; font-weight:bold;">
+        </div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label>भुगतान माध्यम (Mode)</label>
+          <select id="supPayMode">
+            <option value="Cash">💵 नकद (Cash)</option>
+            <option value="Online">📱 ऑनलाइन (UPI / Bank Transfer)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:8px; text-align:right;">
+        <span style="font-size:11px; color:#aaa;">नया शेष बकाया (New Remaining Due): </span>
+        <strong id="lblNewDue" style="color:#ff3333; font-size:14px;">₹0</strong>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit">🧾 सप्लायर बिल व रसीद बनाएं (Generate Bill)</button>
+  </form>
+</div>
+
+<!-- OFFICIAL SUPPLIER RECEIPT MODAL -->
+<div id="receiptModal">
+  <div class="receipt-wrapper">
+    <div style="display:flex; justify-content:space-between; margin-bottom:8px;" data-html2canvas-ignore="true">
+      <button type="button" onclick="closeReceiptModal()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">⬅️ Back to Portal</button>
+    </div>
+
+    <div id="printableSupplierPage">
+      <div class="receipt-card">
+        <div class="receipt-watermark">5 Brother's Fitness Club</div>
+
+        <div class="receipt-header">
+          <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">SUPPLIER PURCHASE INVOICE</div>
+          <h2 style="font-size:16px; margin-top:4px; font-weight:900;">5 Brother's Fitness Club</h2>
+          <p style="font-size:10px; color:#555; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
+        </div>
+
+        <div class="r-row"><span>Bill ID:</span><b id="rSupBillId" style="color:#b37400;"></b></div>
+        <div class="r-row"><span>खरीद दिनांक:</span><b id="rSupDate"></b></div>
+        <div class="r-row"><span>सप्लायर नाम:</span><b id="rSupName"></b></div>
+        <div class="r-row"><span>मोबाइल:</span><b id="rSupPhone"></b></div>
+
+        <div style="margin:8px 0; border-top:1px dashed #000; border-bottom:1px dashed #000; padding:6px 0;">
+          <div style="font-size:11px; font-weight:bold; margin-bottom:4px; color:#000;">खरीदे गए आइटम्स का विवरण:</div>
+          <table style="width:100%; font-size:10.5px; border-collapse:collapse;">
+            <thead>
+              <tr style="border-bottom:1px solid #000;">
+                <th style="text-align:left; padding:3px;">विवरण (Item & Brand)</th>
+                <th style="text-align:center; padding:3px;">मात्रा</th>
+                <th style="text-align:right; padding:3px;">रेट (₹)</th>
+                <th style="text-align:right; padding:3px;">कुल (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="rItemsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="r-row"><span>इस बार के माल का कुल मूल्य:</span><b id="rCurrentTotal"></b></div>
+        <div class="r-row"><span>पुरानी बकाया राशि:</span><b id="rOldDue"></b></div>
+        <div class="r-row" style="font-weight:bold;"><span>कुल कुल देय राशि:</span><b id="rGrandTotal"></b></div>
+        <div class="r-row"><span>आज भुगतान किया (<span id="rPayMode"></span>):</span><b id="rPaidNow" style="color:green;"></b></div>
+        <div class="r-row" style="font-size:12px; font-weight:bold; border-top:1px solid #000; padding-top:4px;"><span>नया शेष बकाया (New Due):</span><b id="rNewDue" style="color:red;"></b></div>
+
+        <div style="margin-top:15px; border-top:1.5px dashed #ccc; padding-top:8px; display:flex; justify-content:space-between; font-size:10px;">
+          <div><b>Authorized Signature</b><br>5 Brother's Fitness Club</div>
+          <div style="text-align:right;"><b>Supplier Signature</b><br>Received & Verified</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-btns" data-html2canvas-ignore="true">
+      <button type="button" class="dl-btn" onclick="downloadSupplierPDF()">📥 Image & PDF Download</button>
+      <button type="button" class="wa-btn" id="waSupBtn">📲 WhatsApp</button>
+    </div>
+    <button type="button" onclick="closeReceiptModal()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;" data-html2canvas-ignore="true">नया बिल बनाएं (Reset)</button>
+  </div>
+</div>
+
+<script>
+const ADMIN_PIN = "5555";
+let pendingSupplierData = null;
+
+const CATEGORIES = [
+  { name: "Mass Gainer 1 Kg", brands: ["Welcore Mass Gainer", "Muscleblaze Mass Gainer", "Muscletech Mass Gainer", "Labrada Mass Gainer", "Optimum Nutrition Gainer"] },
+  { name: "Mass Gainer Packet 1 Kg", brands: ["Welcore Bulk Packet", "Muscleblaze Packet", "As-It-Is Mass Gainer", "Nakpro Gainer"] },
+  { name: "Protein 1.81 Kg / 2 Kg", brands: ["Muscleblaze Biozyme", "Muscletech NitroTech", "Dymatize ISO100", "Optimum Nutrition (ON) Gold Standard", "Avvatar Whey"] },
+  { name: "Creatine 307 Gram / 250g", brands: ["Muscleblaze Creatine Monohydrate", "Muscletech Platinum Creatine", "As-It-Is Creatine", "Nakpro Creatine", "GNC Creatine"] }
+];
+
+function verifyAdminPin() {
+  const pin = document.getElementById("adminPinInput").value.trim();
+  if (pin === ADMIN_PIN) {
+    document.getElementById("authOverlay").style.display = "none";
+    document.getElementById("mainPortalContent").style.display = "block";
+    document.getElementById("supDate").value = new Date().toISOString().split('T')[0];
+    addItemRow();
+  } else {
+    alert("❌ गलत Admin PIN!");
+    document.getElementById("adminPinInput").value = "";
+  }
+}
+
+function addItemRow() {
+  const container = document.getElementById("itemsContainer");
+  const index = container.children.length;
+
+  let catOptions = CATEGORIES.map((c, idx) => `<option value="${idx}">${c.name}</option>`).join('');
+  
+  let rowDiv = document.createElement("div");
+  rowDiv.className = "item-row";
+  rowDiv.innerHTML = `
+    ${container.children.length > 0 ? '<button type="button" class="del-item-btn" onclick="this.parentElement.remove(); calculateGrandTotal();">✕</button>' : ''}
+    <div class="row" style="margin-bottom:6px;">
+      <div class="field-group" style="margin-bottom:0;">
+        <label>कैटेगरी (Category)</label>
+        <select class="item-cat" onchange="updateBrandOptions(this)">${catOptions}</select>
+      </div>
+      <div class="field-group" style="margin-bottom:0;">
+        <label>ब्रांड (Brand)</label>
+        <select class="item-brand"></select>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom:0;">
+      <div class="field-group" style="margin-bottom:0;">
+        <label>मात्रा / डिब्बे (+) (Qty)</label>
+        <input type="number" class="item-qty" value="1" min="1" oninput="calculateGrandTotal()">
+      </div>
+      <div class="field-group" style="margin-bottom:0;">
+        <label>प्रति पीस कीमत (Rate ₹)</label>
+        <input type="number" class="item-rate" placeholder="जैसे 350 या 2400" oninput="calculateGrandTotal()">
+      </div>
+    </div>
+  `;
+  container.appendChild(rowDiv);
+  updateBrandOptions(rowDiv.querySelector(".item-cat"));
+}
+
+function updateBrandOptions(catSelect) {
+  const row = catSelect.closest(".item-row");
+  const brandSelect = row.querySelector(".item-brand");
+  const catIdx = parseInt(catSelect.value) || 0;
+  
+  brandSelect.innerHTML = CATEGORIES[catIdx].brands.map(b => `<option value="${b}">${b}</option>`).join('');
+  calculateGrandTotal();
+}
+
+function calculateGrandTotal() {
+  let currentTotal = 0;
+  document.querySelectorAll(".item-row").forEach(row => {
+    const qty = parseFloat(row.querySelector(".item-qty").value) || 0;
+    const rate = parseFloat(row.querySelector(".item-rate").value) || 0;
+    currentTotal += (qty * rate);
+  });
+
+  const oldDue = parseFloat(document.getElementById("supOldDue").value) || 0;
+  const paidNow = parseFloat(document.getElementById("supPaidNow").value) || 0;
+  const grandTotal = currentTotal + oldDue;
+  const newDue = Math.max(0, grandTotal - paidNow);
+
+  document.getElementById("lblCurrentTotal").innerText = "₹" + currentTotal;
+  document.getElementById("lblOldDue").innerText = "₹" + oldDue;
+  document.getElementById("lblGrandTotal").innerText = "₹" + grandTotal;
+  document.getElementById("lblNewDue").innerText = "₹" + newDue;
+}
+
+function generateSupplierBill(e) {
+  e.preventDefault();
+  const name = document.getElementById("supName").value.trim();
+  const phone = document.getElementById("supPhone").value.trim();
+  const dateStr = document.getElementById("supDate").value;
+  const oldDue = parseFloat(document.getElementById("supOldDue").value) || 0;
+  const paidNow = parseFloat(document.getElementById("supPaidNow").value) || 0;
+  const payMode = document.getElementById("supPayMode").value;
+
+  let items = [];
+  let currentTotal = 0;
+
+  document.querySelectorAll(".item-row").forEach(row => {
+    const catSelect = row.querySelector(".item-cat");
+    const catName = CATEGORIES[catSelect.value].name;
+    const brandName = row.querySelector(".item-brand").value;
+    const qty = parseFloat(row.querySelector(".item-qty").value) || 0;
+    const rate = parseFloat(row.querySelector(".item-rate").value) || 0;
+    const total = qty * rate;
+
+    currentTotal += total;
+    items.push({ desc: `${catName} - ${brandName}`, qty, rate, total });
+  });
+
+  if (items.length === 0) {
+    alert("❌ कृपया कम से कम एक आइटम जोड़ें!");
+    return;
+  }
+
+  const grandTotal = currentTotal + oldDue;
+  const newDue = Math.max(0, grandTotal - paidNow);
+
+  const billId = "SUP-" + Date.now().toString().slice(-5);
+  const formattedDate = dateStr.split('-').reverse().join('/');
+
+  pendingSupplierData = {
+    billId, name, phone, dateStr: formattedDate, oldDue, currentTotal, grandTotal, paidNow, payMode, newDue, items
+  };
+
+  document.getElementById("rSupBillId").innerText = billId;
+  document.getElementById("rSupDate").innerText = formattedDate;
+  document.getElementById("rSupName").innerText = name;
+  document.getElementById("rSupPhone").innerText = phone;
+  
+  let tbodyHtml = "";
+  items.forEach(it => {
+    tbodyHtml += `
+      <tr style="border-bottom:1px dotted #ccc;">
+        <td style="padding:4px 2px;"><b>${it.desc}</b></td>
+        <td style="text-align:center; padding:4px 2px;">${it.qty}</td>
+        <td style="text-align:right; padding:4px 2px;">₹${it.rate}</td>
+        <td style="text-align:right; padding:4px 2px;">₹${it.total}</td>
+      </tr>`;
+  });
+  document.getElementById("rItemsTableBody").innerHTML = tbodyHtml;
+
+  document.getElementById("rCurrentTotal").innerText = "₹" + currentTotal;
+  document.getElementById("rOldDue").innerText = "₹" + oldDue;
+  document.getElementById("rGrandTotal").innerText = "₹" + grandTotal;
+  document.getElementById("rPaidNow").innerText = "₹" + paidNow;
+  document.getElementById("rPayMode").innerText = payMode;
+  document.getElementById("rNewDue").innerText = "₹" + newDue;
+
+  let itemsText = items.map(i => `• ${i.desc} (${i.qty} pcs @ ₹${i.rate}) = ₹${i.total}`).join('
+');
+  const waMsg = `📦 *5 BROTHER'S FITNESS CLUB*
+*Supplier Purchase Bill / Invoice*
+━━━━━━━━━━━━━━━━━━━━
+*Bill ID:* #${billId}
+*दिनांक:* ${formattedDate}
+*सप्लायर:* ${name} (${phone})
+
+📋 *खरीदे गए आइटम्स:*
+${itemsText}
+━━━━━━━━━━━━━━━━━━━━
+💰 *भुगतान व हिसाब:*
+• इस बार का बिल: ₹${currentTotal}
+• पुराना बकाया: ₹${oldDue}
+• कुल योग: ₹${grandTotal}
+• भुगतान किया (${payMode}): ₹${paidNow}
+• **नया शेष बकाया:** ₹${newDue}
+━━━━━━━━━━━━━━━━━━━━
+📍 5 Brother's Fitness Club, Unnao`;
+
+  document.getElementById("waSupBtn").onclick = () => window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(waMsg), "_blank");
+
+  document.getElementById("receiptModal").style.display = "flex";
+}
+
+function closeReceiptModal() {
+  document.getElementById("receiptModal").style.display = "none";
+  document.getElementById("formSupplierBill").reset();
+  document.getElementById("itemsContainer").innerHTML = "";
+  document.getElementById("supDate").value = new Date().toISOString().split('T')[0];
+  addItemRow();
+  calculateGrandTotal();
+}
+
+function downloadSupplierPDF() {
+  const element = document.getElementById("printableSupplierPage");
+  const billId = document.getElementById("rSupBillId").innerText || "SupplierBill";
+
+  html2canvas(element, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
+    const imgData = canvas.toDataURL("image/png");
+    let imgLink = document.createElement("a");
+    imgLink.download = "Supplier_" + billId + ".png";
+    imgLink.href = imgData;
+    imgLink.click();
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" });
+    const imgWidth = 130;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+    pdf.save("Supplier_" + billId + ".pdf");
+  });
+}
+</script>
+</body>
+</html>
