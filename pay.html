@@ -107,7 +107,6 @@ th{color:#ffcc00;}
 .receipt-owner-txt strong { display: block; font-size: 11px; color: #000; }
 .receipt-stamp-box { text-align: right; }
 .receipt-stamp-img { width: 95px; height: 95px; object-fit: contain; }
-  
 </style>
 </head>
 <body>
@@ -124,15 +123,40 @@ th{color:#ffcc00;}
     <div class="tab-btn" id="tabBtnAdmin" onclick="openAdminRecords()">📋 रजिस्टर व रिकॉर्ड्स</div>
   </div>
 
-      <!-- Admin Unlock Button for Plan & Fees -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; background:#181818; padding:6px 10px; border:1px solid #444; border-radius:6px;">
-        <span style="font-size:10.5px; color:#ffcc00; font-weight:bold;">🔒 प्लान और फीस लॉक हैं</span>
-        <button type="button" onclick="unlockPlanAndFeesByAdmin()" style="background:#222; border:1px solid #ffcc00; color:#ffcc00; font-size:10px; padding:3px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">
-          🔓 Admin Unlock (PIN: 5555)
-        </button>
-      </div>
-      
+  <div id="sectionFees">
+    <div class="field-group">
+      <label>🔍 सदस्य खोजें (Live Auto Search - नाम / मोबाइल)</label>
+      <input type="text" id="feeSearchInput" oninput="handleAutoSearch()" placeholder="टाइप करें (उदा. lala, 9936, ravi)...">
+    </div>
+
+    <div id="searchResultCard" style="display:none; background:#181818; border:1.5px solid #ffcc00; border-radius:10px; padding:12px; margin-bottom:12px;"></div>
+    <div id="lateWarningBox" class="late-warning"></div>
+
+    <!-- Admin Unlock Button for Plan, Fees & Joining Date -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; background:#181818; padding:6px 10px; border:1px solid #444; border-radius:6px;">
+      <span style="font-size:10.5px; color:#ffcc00; font-weight:bold;">🔒 प्लान, फीस और जॉइनिंग सुरक्षित हैं</span>
+      <button type="button" onclick="unlockPlanAndFeesByAdmin()" style="background:#222; border:1px solid #ffcc00; color:#ffcc00; font-size:10px; padding:3px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">
+        🔓 Admin Unlock
+      </button>
+    </div>
+
+    <form id="formGymFee" onsubmit="handleInitialSubmit(event)">
       <div class="row">
+        <div class="field-group">
+          <label>सदस्य का नाम <span>*</span></label>
+          <input type="text" id="mFeeName" required placeholder="पूरा नाम">
+        </div>
+        <div class="field-group">
+          <label>पिता का नाम</label>
+          <input type="text" id="mFeeFather" placeholder="पिता का नाम">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field-group">
+          <label>मोबाइल नंबर <span>*</span></label>
+          <input type="tel" id="mFeePhone" required placeholder="10 अंक मोबाइल">
+        </div>
         <div class="field-group">
           <label>श्रेणी (Member Category) <span>*</span></label>
           <select id="feeCategory" disabled onchange="updatePlanPrices()" style="opacity:0.7; cursor:not-allowed;">
@@ -140,22 +164,33 @@ th{color:#ffcc00;}
             <option value="job" selected>नौकरी / व्यापार (Job / Business)</option>
           </select>
         </div>
+      </div>
+
+      <div class="row">
         <div class="field-group">
           <label>प्लान चुनें (Plan Duration) <span>*</span></label>
           <select id="feeDuration" disabled onchange="calculateFinalAmount()" style="opacity:0.7; cursor:not-allowed;"></select>
+        </div>
+        <div class="field-group">
+          <label>प्लान शुल्क (₹) <span>*</span></label>
+          <input type="number" id="mFeeAmount" disabled style="color:#00ff99; font-weight:bold; opacity:0.7; cursor:not-allowed;">
         </div>
       </div>
 
       <div class="row">
         <div class="field-group">
-          <label>प्लान शुल्क (₹) <span>*</span></label>
-          <input type="number" id="mFeeAmount" disabled style="color:#00ff99; font-weight:bold; opacity:0.7; cursor:not-allowed;">
-        </div>
-        <div class="field-group">
           <label>जमा फीस (Manual Paid ₹) <span>*</span></label>
           <input type="number" id="mFeePaidAmount" disabled required oninput="handlePaidAmountChange()" style="color:#ffcc00; font-weight:bold; opacity:0.7; cursor:not-allowed;">
         </div>
-        
+        <div class="field-group">
+          <label>भुगतान माध्यम <span>*</span></label>
+          <select id="paymentMethod">
+            <option value="online">📱 ऑनलाइन (UPI / QR / Apps)</option>
+            <option value="cash">💵 नकद (Cash - Admin Verified)</option>
+          </select>
+        </div>
+      </div>
+
       <div class="field-group">
         <label class="checkbox-container">
           <input type="checkbox" id="chkSpecialDiscount" onchange="handlePaidAmountChange()">
@@ -166,7 +201,7 @@ th{color:#ffcc00;}
       <div class="row">
         <div class="field-group">
           <label>जॉइनिंग तिथि (Joining Date) [🔒 केवल एडमिन]</label>
-          <input type="date" id="mFeeJoinDate" readonly style="background:#111; color:#aaa; cursor:not-allowed;" title="यह केवल एडमिन द्वारा बदली जा सकती है">
+          <input type="date" id="mFeeJoinDate" disabled style="background:#111; color:#aaa; opacity:0.7; cursor:not-allowed;" title="यह केवल एडमिन द्वारा बदली जा सकती है">
         </div>
         <div class="field-group">
           <label>अंतिम भुगतान तिथि (Previous Payment)</label>
@@ -342,7 +377,7 @@ th{color:#ffcc00;}
       <p style="font-size:13px; color:#fff; font-weight:bold; margin-bottom:4px;">5 Brother's Fitness Club</p>
       <p style="font-size:11px; color:#aaa;">आपकी सदस्यता सक्रिय कर दी गई है। हार्ड वर्क और रिजल्ट्स जारी रखें!</p>
     </div>
-    <button type="button" onclick="proceedToReceiptFromHurray()" style="width:100%; background:#25D366; color:#000; border:none; padding:11px; border-radius:8px; font-weight:900; font-size:13px; cursor:pointer;">📄 रसीद देखें व डाउनलोड करें ➡️</button>
+        <button type="button" onclick="proceedToReceiptFromHurray()" style="width:100%; background:#25D366; color:#000; border:none; padding:11px; border-radius:8px; font-weight:900; font-size:13px; cursor:pointer;">📄 रसीद देखें व डाउनलोड करें ➡️</button>
   </div>
 </div>
 
@@ -355,15 +390,6 @@ th{color:#ffcc00;}
 
     <div id="printablePages">
       <div class="receipt-card">
-        <div class="receipt-watermark">5 Brother's Fitness Club</div>
-
-        <div class="receipt-header">
-          <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">PAGE 1 : OFFICIAL INVOICE</div>
-          <h2 style="font-size:16px; margin-top:4px; font-weight:900;">5 Brother's Fitness Club</h2>
-          <div style="font-size:10px; font-weight:bold; color:#555; margin-top:2px;">"100% असली और असरदार रिजल्ट"</div>
-          <p style="font-size:10px; color:#777; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
-        </div>
-
         <div class="receipt-watermark">5 Brother's Fitness Club</div>
 
         <div class="receipt-header">
@@ -387,7 +413,7 @@ th{color:#ffcc00;}
         <div class="r-row"><span>बकाया राशि:</span><b id="rDueFee" style="color:#ff3333;"></b></div>
         <div class="r-row"><span>वैधता / अगला भुगतान:</span><b id="rValidTill" style="color:#b37400;"></b></div>
         <div class="receipt-footer-stamp">
-        <div class="receipt-sign-box">
+          <div class="receipt-sign-box">
             <img src="https://i.ibb.co/mVtxCHkp/IMG-20261021-164158.jpg" alt="Signature" class="receipt-sign-img">
             <div class="receipt-owner-txt">
               <strong>Saurabh Singh Chandel</strong>
@@ -400,8 +426,6 @@ th{color:#ffcc00;}
         </div>
       </div>
     </div>
-    
-    </div>
 
     <div class="action-btns" data-html2canvas-ignore="true">
       <button type="button" class="dl-btn" id="dlBtn" onclick="downloadImageAndPDF()">📥 Image & PDF Download</button>
@@ -410,9 +434,8 @@ th{color:#ffcc00;}
     <button type="button" onclick="closeBillModalAndReset()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;" data-html2canvas-ignore="true">बंद करें (Reset)</button>
   </div>
 </div>
-
-<script>
-const ADMIN_PIN = "5555";
+ <script>
+const ADMIN_PIN =    ;
 let referralCount = 0;
 let referredList = [];
 let pendingPaymentData = null;
@@ -628,7 +651,7 @@ function getLateDaysDetails() {
   const joinDateVal = document.getElementById("mFeeJoinDate").value;
   const paidDateVal = document.getElementById("mFeePaidDate").value;
   const prevPaidVal = document.getElementById("mFeePrevPaidDate").value;
-    if (!joinDateVal || !paidDateVal) return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
+  if (!joinDateVal || !paidDateVal) return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
   
   const refDateStr = prevPaidVal || joinDateVal;
   const refD = new Date(refDateStr);
@@ -656,13 +679,40 @@ function checkLateStatus() {
   }
 }
 
+function unlockPlanAndFeesByAdmin() {
+  let pin = prompt("🔒 Admin Security PIN दर्ज करें (फीस, प्लान और जॉइनिंग तिथि अनलॉक करने के लिए):");
+  if (pin === ADMIN_PIN) {
+    document.getElementById("feeCategory").disabled = false;
+    document.getElementById("feeCategory").style.opacity = "1";
+    document.getElementById("feeCategory").style.cursor = "pointer";
+
+    document.getElementById("feeDuration").disabled = false;
+    document.getElementById("feeDuration").style.opacity = "1";
+    document.getElementById("feeDuration").style.cursor = "pointer";
+
+    document.getElementById("mFeeAmount").disabled = false;
+    document.getElementById("mFeeAmount").style.opacity = "1";
+
+    document.getElementById("mFeePaidAmount").disabled = false;
+    document.getElementById("mFeePaidAmount").style.opacity = "1";
+
+    document.getElementById("mFeeJoinDate").disabled = false;
+    document.getElementById("mFeeJoinDate").style.opacity = "1";
+    document.getElementById("mFeeJoinDate").style.cursor = "pointer";
+
+    alert("✅ Admin Lock खुल गया है! अब आप प्लान, फीस और जॉइनिंग तिथि बदल सकते हैं।");
+  } else if (pin !== null) {
+    alert("❌ गलत PIN!");
+  }
+}
+
 function handleInitialSubmit(e) {
   e.preventDefault();
   const name = document.getElementById("mFeeName").value.trim();
   const phone = document.getElementById("mFeePhone").value.trim();
   const father = document.getElementById("mFeeFather").value.trim() || "-";
   const cat = document.getElementById("feeCategory").value === "student" ? "विद्यार्थी" : "जॉब / व्यापार";
-  const durSelect = document.getElementById("feeDuration");
+    const durSelect = document.getElementById("feeDuration");
   const planText = durSelect.options[durSelect.selectedIndex].text;
   const months = parseInt(durSelect.options[durSelect.selectedIndex].getAttribute("data-months")) || 1;
   const planAmt = parseFloat(document.getElementById("mFeeAmount").value) || 0;
@@ -1144,30 +1194,7 @@ function closeBillModalAndReset() {
   renderRefTags();
   updatePlanPrices();
 }
-    function unlockPlanAndFeesByAdmin() {
-  let pin = prompt("🔒 Admin Security PIN दर्ज करें (फीस और प्लान अनलॉक करने के लिए):");
-  if (pin === ADMIN_PIN) {
-    document.getElementById("feeCategory").disabled = false;
-    document.getElementById("feeCategory").style.opacity = "1";
-    document.getElementById("feeCategory").style.cursor = "pointer";
-
-    document.getElementById("feeDuration").disabled = false;
-    document.getElementById("feeDuration").style.opacity = "1";
-    document.getElementById("feeDuration").style.cursor = "pointer";
-
-    document.getElementById("mFeeAmount").disabled = false;
-    document.getElementById("mFeeAmount").style.opacity = "1";
-
-    document.getElementById("mFeePaidAmount").disabled = false;
-    document.getElementById("mFeePaidAmount").style.opacity = "1";
-
-    alert("✅ Admin Lock खुल गया है! अब आप प्लान और फीस बदल सकते हैं।");
-  } else if (pin !== null) {
-    alert("❌ गलत PIN!");
-  }
-}
-</script>
-  
 </script>
 </body>
 </html>
+
