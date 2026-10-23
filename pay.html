@@ -626,6 +626,13 @@ function autoFillById(identifier) {
   const m = getMasterList().find(x => (x.id && x.id.toString() === identifier.toString()) || (x.phone && x.phone.toString() === identifier.toString()));
   if (!m) return;
 
+  // Sabhi locked fields ko temporary unlock karke data bharenge
+  document.getElementById("feeCategory").disabled = false;
+  document.getElementById("feeDuration").disabled = false;
+  document.getElementById("mFeeAmount").disabled = false;
+  document.getElementById("mFeePaidAmount").disabled = false;
+  document.getElementById("mFeeJoinDate").disabled = false;
+
   document.getElementById("mFeeName").value = m.name || "";
   let fatherName = m.father || m.parentName || "";
   document.getElementById("mFeeFather").value = (fatherName && fatherName !== "-") ? fatherName : "";
@@ -642,6 +649,13 @@ function autoFillById(identifier) {
   
   calculateFinalAmount();
   checkLateStatus();
+
+  // Data bharne ke baad wapas lock kar denge taaki koi bina PIN ke na badal sake
+  document.getElementById("feeCategory").disabled = true;
+  document.getElementById("feeDuration").disabled = true;
+  document.getElementById("mFeeAmount").disabled = true;
+  document.getElementById("mFeePaidAmount").disabled = true;
+  document.getElementById("mFeeJoinDate").disabled = true;
 
   document.getElementById("searchResultCard").style.display = "none";
   document.getElementById("feeSearchInput").value = m.name;
