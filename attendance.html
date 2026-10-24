@@ -578,8 +578,7 @@
     }
     box.style.display = "block";
   }
-
-  async function executeUniversalSearch() {
+async function executeUniversalSearch() {
   const query = document.getElementById("memberFilterInput").value.trim().toLowerCase();
   const dropdown = document.getElementById("searchDropdownNode");
 
@@ -588,10 +587,11 @@
     return;
   }
 
-  let allMembers = cachedMembersList;
-  if (!allMembers || allMembers.length === 0) {
-    allMembers = await fetchStoredMembers();
-  }
+  dropdown.style.display = "block";
+  dropdown.innerHTML = `<div style="color:#ffcc00; font-size:11px; text-align:center; padding:6px;">खोज रहे हैं...</div>`;
+
+  // Cloud aur local dono se fresh members ek sath fetch karo
+  const allMembers = await fetchStoredMembers();
 
   const matches = allMembers.filter(m => {
     if (!m) return false;
@@ -600,9 +600,8 @@
     return mName.includes(query) || mPhone.includes(query);
   });
 
-  dropdown.style.display = "block";
   if (matches.length > 0) {
-    dropdown.innerHTML = `<div style="font-size:10px; color:#ffcc00; margin-bottom:5px; font-weight:bold;">milte-julte sadasya (${matches.length}):</div>`;
+    dropdown.innerHTML = `<div style="font-size:10px; color:#ffcc00; margin-bottom:5px; font-weight:bold;">मिलते-जुलते सदस्य (${matches.length}):</div>`;
     matches.forEach(m => {
       const mStatus = m.manualStatus || 'Paid';
       const isPaid = (mStatus === 'Paid');
@@ -612,15 +611,15 @@
             <b style="color:#fff; font-size:12.5px;">${m.name}</b><br>
             <small style="color:#888;">${m.phone} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${mStatus.toUpperCase()}</span></small>
           </div>
-          <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:900; font-size:11px;">Load karein</button>
+          <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:900; font-size:11px;">लोड करें</button>
         </div>
       `;
     });
   } else {
-    dropdown.innerHTML = `<div style="color:#ff4444; font-size:11px; text-align:center; padding:8px;">Koi sadasya nahi mila. Naya jodein!</div>`;
+    dropdown.innerHTML = `<div style="color:#ff4444; font-size:11px; text-align:center; padding:8px;">कोई सदस्य नहीं मिला। नया जोड़ें!</div>`;
   }
 }
-  
+
     function openAddMemberModal() {
     document.getElementById("newMemberNameInput").value = "";
     document.getElementById("newMemberPhoneInput").value = "";
