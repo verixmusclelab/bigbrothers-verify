@@ -29,13 +29,9 @@ input,textarea{width:100%;background:#000;border:1px solid #444;border-radius:7p
 .q{font-size:12px;font-weight:700;margin-bottom:6px}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:99;display:flex;align-items:center;justify-content:center;padding:20px}
 .dg{background:#181818;border:1px solid var(--g);border-radius:12px;padding:14px;width:100%;max-width:340px;font-size:13px}
-.wl{position:fixed;inset:0;background:radial-gradient(circle at center,#2a2208,#050505);z-index:200;display:flex;align-items:center;justify-content:center;text-align:center;transition:opacity .5s}
-.wl.out{opacity:0}.wl div{animation:up 1s ease both}.wl i{display:block;font-style:normal;color:#bbb;letter-spacing:4px;font-size:12px;margin-bottom:8px}.wl b{color:var(--g);font-size:26px;text-transform:uppercase;text-shadow:0 0 18px rgba(255,204,0,.5)}.wl small{display:block;color:var(--m);margin-top:10px;font-size:11px}
-@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
-<div class="wl" id="wl"><div><i>WELCOME TO</i><b>5 Brother’s<br>Fitness Club</b><small>Supplier Bill &amp; Bakaya Portal</small></div></div>
 <div class="brand"><b>5 Brother’s Fitness Club</b><small>Supplier Bill &amp; Bakaya Portal</small></div>
 <div id="app"></div>
 <script>
@@ -58,14 +54,13 @@ key=()=>({date:dr.d,id:dr.eid||Infinity});
 
 function dlg(m,o={}){return new Promise(r=>{const x=document.createElement('div');x.className='ov';
 x.innerHTML=`<div class="dg"><div style="margin-bottom:10px;white-space:pre-line">${E(m)}</div>${o.i?`<input id="dgi" value="${E(o.v||'')}">`:''}<div class="row" style="justify-content:flex-end">${o.c===0?'':'<button id="dgc">रद्द</button>'}<button class="${o.d?'d':'p'}" id="dgo">${o.ok||'ठीक है'}</button></div></div>`;
-document.body.appendChild(x);const f=v=>{x.remove();r(v)};$('dgo').onclick=()=>f(o.i?$('dgi').value:true);if($('dgc'))$('dgc').onclick=()=>f(o.i?null:false);if(o.i)$('dgi').focus()})}
+document.body.appendChild(x);const f=v=>{x.remove();r(v)};$('dgo').onclick=()=>f(o.i?$('dgi'].value:true);if($('dgc'))$('dgc').onclick=()=>f(o.i?null:false);if(o.i)$('dgi').focus()})}
 const cf=m=>dlg(m,{d:1,ok:'हाँ, Delete'}),pr=(m,v)=>dlg(m,{i:1,v}),al=m=>dlg(m,{c:0});
 
 function rs(){if(pend){const s=sup();if(s)s.ev.push(pend);pend=null;sv()}}
 function go(v){rs();H.push([V,cur]);if(H.length>30)H.shift();V=v;R();scrollTo(0,0)}
 function bk(){
   rs();
-  // Agar bill2 (Page 2) par hain, toh seedha bill (Page 1) par le jao bina history stack fasaye
   if(V==='bill2'){V='bill';R();scrollTo(0,0);return;}
   const h=H.pop();
   if(h){V=h[0];cur=h[1]}else{V='home';cur=null}
@@ -224,14 +219,14 @@ return `<div style="overflow-x:auto;padding-bottom:6px">${c.kind==='C'?rcC(c):rc
 <div class="row">${c.id?`<button onclick="editEv(${c.id})">✏ बिल Edit</button><button class="d" onclick="delEv(${c.id})">🗑 बिल Delete</button>`:''}</div>`}
 async function mkF(){if(BL)return BL;if(!window.html2canvas||!window.jspdf)throw new Error('lib');const cv=await html2canvas($('rcpt'),{scale:2,backgroundColor:'#ffffff'}),w=cv.width/2,h=cv.height/2,
 pdf=new jspdf.jsPDF({unit:'px',format:[w+20,h+20],orientation:w>h?'l':'p'});pdf.addImage(cv.toDataURL('image/png'),'PNG',10,10,w,h);
-const png=await new Promise(r=>cv.toBlob(r,'image/png'));return BL={png,pdf:pdf.output('blob'),n:((RC.kind==='C'?RC.name:RC.sup.name)+'_'+RC.no).replace/[^\w\-]+/g,'_')}}
+const png=await new Promise(r=>cv.toBlob(r,'image/png'));return BL={png,pdf:pdf.output('blob'),n:((RC.kind==='C'?RC.name:RC.sup.name)+'_'+RC.no).replace(/[^\w\-]+/g,'_')}}
 async function dl(b,n){try{if(window.claude&&claude.use){const d=await claude.use('downloads');if(d){await d.save({filename:n,data:b});return}}}catch(e){if(e&&e.code==='declined')return}
 const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
 async function grab(){if(V!=='rc')return;try{const f=await mkF();await dl(f.png,f.n+'.png');await dl(f.pdf,f.n+'.pdf')}catch(e){al('Download नहीं हो पाया – internet check करके फिर कोशिश करें')}}
 async function shr(){try{const f=await mkF(),fs=[new File([f.png],f.n+'.png',{type:'image/png'}),new File([f.pdf],f.n+'.pdf',{type:'application/pdf'})];
 if(navigator.canShare&&navigator.canShare({files:fs}))await navigator.share({files:fs,title:'5 Brother’s Fitness Club – Bill'});else al('इस browser में share नहीं चलता – IMG/PDF download करके WhatsApp से भेजें')}catch(e){if(e&&e.name!=='AbortError')al('Share नहीं हो पाया – पहले Download करके भेजें')}
+}
 R();
-setTimeout(()=>{const w=$('wl');if(w){w.classList.add('out');setTimeout(()=>w.remove(),500)}},2400);$('wl').onclick=()=>$('wl').remove();
 </script>
 </body>
 </html>
