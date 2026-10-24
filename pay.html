@@ -462,6 +462,41 @@ async function syncListToCloud(list) {
   }
 }
 
+
+// Cloud ko source of truth maano: pehle cloud se sab members laao, phir sirf wahi local members
+// cloud par bhejo jo cloud me nahi hain. (Isse purana local data cloud ka naya data overwrite nahi karega.)
+async function loadMembersFromCloud() {
+  try {
+    const snap = await db.collection("members").get();
+    const cloud = [];
+    snap.forEach(d => cloud.push({ id: d.id, ...d.data() }));
+
+    const cloudIds = new Set(cloud.map(c => String(c.id)));
+    const cloudPhones = new Set(cloud.map(c => String(c.phone || "").trim()).filter(Boolean));
+
+    const local = getMasterList();
+    const localOnly = local.filter(m => {
+      if (!m || !m.name) return false;
+      const id = String(m.id || "");
+      const ph = String(m.phone || "").trim();
+      return !cloudIds.has(id) && !(ph && cloudPhones.has(ph));
+    });
+
+    const merged = [...cloud, ...localOnly];
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(merged));
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(merged));
+
+    if (localOnly.length) syncListToCloud(localOnly);
+
+    if (document.getElementById("adminTableBody")) {
+      try { renderAdminTable(); } catch (e) {}
+    }
+    console.log("Cloud se members load hue:", cloud.length, "| local-only upload:", localOnly.length);
+  } catch (err) {
+    console.error("Cloud se members load nahi hue:", err);
+  }
+}
+
 function persistList(list) {
   localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
   localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
@@ -557,7 +592,7 @@ function getMasterList() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  syncListToCloud(getMasterList());
+  loadMembersFromCloud();
   const today = todayStr();
   document.getElementById("mFeePaidDate").value = today;
   document.getElementById("mFeePrevPaidDate").value = today;
