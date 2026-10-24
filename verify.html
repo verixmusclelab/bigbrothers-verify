@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Official Brand Authenticity Portal - Big Brother's Fitness & Nutrition</title>
+<title>Official Brand Authenticity Portal - Big Daddy Fitness & Nutrition</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
 html, body { width: 100%; min-height: 100vh; background-color: #080808; }
@@ -16,52 +16,69 @@ body { background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%); col
 .card-heading { font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 12px; letter-spacing: 0.5px; }
 .code-input { width: 100%; padding: 13px; background: #000000; border: 1.5px solid #333333; border-radius: 10px; color: #ffffff; font-size: 18px; font-weight: bold; text-align: center; letter-spacing: 2px; text-transform: uppercase; outline: none; transition: border-color 0.25s, box-shadow 0.25s; }
 .code-input:focus { border-color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.3); }
-.verify-btn { width: 100%; padding: 13px; margin-top: 12px; background: #ffcc00; border: none; border-radius: 10px; color: #000000; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.35); }
+.verify-btn { width: 100%; padding: 13px; margin-top: 12px; background: #ffcc00; border: none; border-radius: 10px; color: #000000; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.35); transition: transform 0.1s, background 0.2s; }
+.verify-btn:active { transform: scale(0.98); }
 #resultBox { width: 100%; display: none; margin-bottom: 16px; }
-.badge-box { width: 100%; padding: 16px 14px; border-radius: 14px; text-align: center; }
+.badge-box { width: 100%; padding: 16px 14px; border-radius: 14px; text-align: center; animation: fadeIn 0.25s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 .badge-verified { background: rgba(0, 255, 100, 0.08); border: 1.5px solid #00ff66; box-shadow: 0 0 20px rgba(0, 255, 100, 0.25); }
 .badge-failed { background: rgba(255, 50, 50, 0.08); border: 1.5px solid #ff3333; box-shadow: 0 0 20px rgba(255, 50, 50, 0.25); }
 .badge-warning { background: rgba(255, 204, 0, 0.08); border: 1.5px solid #ffcc00; box-shadow: 0 0 20px rgba(255, 204, 0, 0.25); }
 .cert-wrapper { width: 100%; }
-.premium-cert-card { width: 100%; background: linear-gradient(145deg, #18150c 0%, #0d0d0d 100%); border: 1.5px solid #d4af37; border-radius: 16px; padding: 18px 14px; text-align: center; position: relative; }
-.cert-badge-ribbon { position: absolute; top: 10px; right: -28px; background: #ffcc00; color: #000; font-size: 8.5px; font-weight: 900; padding: 3px 28px; transform: rotate(45deg); }
-.cert-top-title { font-size: 11px; font-weight: 900; color: #d4af37; letter-spacing: 1.5px; margin-bottom: 5px; }
-.cert-partner-title { font-size: 18px; font-weight: 900; color: #ffffff; margin-bottom: 4px; }
-.cert-sub-verified { font-size: 11px; color: #00ff66; font-weight: 700; margin-bottom: 14px; }
+.premium-cert-card { width: 100%; background: linear-gradient(145deg, #18150c 0%, #0d0d0d 100%); border: 1.5px solid #d4af37; border-radius: 16px; padding: 18px 14px; box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15); position: relative; overflow: hidden; text-align: center; }
+.cert-badge-ribbon { position: absolute; top: 10px; right: -28px; background: #ffcc00; color: #000; font-size: 8.5px; font-weight: 900; padding: 3px 28px; transform: rotate(45deg); letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+.cert-top-title { font-size: 11px; font-weight: 900; color: #d4af37; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; }
+.cert-partner-title { font-size: 17px; font-weight: 900; color: #ffffff; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+.cert-sub-verified { font-size: 11px; color: #00ff66; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 14px; }
+.seals-container { display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 14px; }
+.seal-img { width: 68px; height: 68px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6)); }
 .cert-points-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
 .cert-point { background: rgba(255, 255, 255, 0.03); border: 1px solid #282828; border-radius: 8px; padding: 6px 4px; font-size: 10.5px; color: #ddd; font-weight: 600; }
-.footer-text { font-size: 11px; color: #666666; margin-top: 22px; text-align: center; }
+.cert-view-btn { display: inline-block; background: transparent; color: #ffcc00; border: 1px solid #ffcc00; padding: 7px 18px; border-radius: 20px; font-size: 10.5px; font-weight: 800; cursor: pointer; }
+.footer-text { font-size: 11px; color: #666666; margin-top: 22px; text-align: center; letter-spacing: 0.5px; }
 </style>
 </head>
 <body>
+
 <div class="main-container">
   <div class="brand-icon">👑</div>
   <h1 class="welcome-title" id="welcomeBrand">Welcome to<br>Product Verification Portal</h1>
   <p class="welcome-sub" id="welcomeSub">Enter the security code from your product scratch seal</p>
+
   <div class="verify-card">
     <div class="card-heading">Security Verification Card</div>
     <input type="text" id="scratchInput" class="code-input" placeholder="e.g. AFC-7F29K" maxlength="20" autocomplete="off" oninput="resetResultState()">
     <button type="button" class="verify-btn" onclick="runVerification()">VERIFY CODE</button>
   </div>
+
   <div id="resultBox"></div>
+
   <div class="cert-wrapper">
     <div class="premium-cert-card">
       <div class="cert-badge-ribbon">ORIGINAL</div>
       <div class="cert-top-title">OFFICIAL AUTHORIZED PARTNER</div>
-      <div class="cert-partner-title">Big BROTHER'S FITNESS & Nutrition </div>
+      <div class="cert-partner-title">Big Daddy Fitness & Nutrition</div>
       <div class="cert-sub-verified">✔ Officially Authorized Partner & Verified Dealer</div>
+      
       <div class="cert-points-grid">
         <div class="cert-point"><span>🛡️</span> Genuine Import</div>
         <div class="cert-point"><span>🔬</span> Lab-Tested Batch</div>
         <div class="cert-point"><span>🔒</span> Tamper-Proof</div>
         <div class="cert-point"><span>🤝</span> Direct Sourcing</div>
       </div>
+
+      <button type="button" class="cert-view-btn" onclick="alert('Certificate of Authorization for Big Daddy Fitness & Nutrition is active. All products sold are verified authentic.')">📜 VIEW PARTNER CERTIFICATE</button>
     </div>
   </div>
-  <div class="footer-text">&copy; Big Brother's Fitness & Nutrition | Authentic Nutrition Verification System</div>
+
+  <div class="footer-text">
+    &copy; Big Daddy Fitness & Nutrition | Authentic Nutrition Verification System
+  </div>
 </div>
+
 <script>
 const CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+
 function generateCodeToken(index, salt) {
   let num = (index * 9301 + 49297 + salt * 179) % 233280;
   let part = "";
@@ -72,8 +89,9 @@ function generateCodeToken(index, salt) {
   }
   return part;
 }
+
 const BRAND_PREFIXES = {
-  "AFC-": { brand: "AF CORE MASS", name: "Advanced Formulation Mass Gainer (900 Cal, 27g Protein, 157g Carbs, 2lbs/908g)", importer: "5 Brother's Fitness Club & Nutrition" },
+  "AFC-": { brand: "AF CORE MASS", name: "Advanced Formulation Mass Gainer (900 Cal, 27g Protein, 157g Carbs, 2lbs/908g)", importer: "Big Daddy Fitness & Nutrition" },
   "LBR-": { brand: "Labrada Nutrition", name: "100% Premium Whey / Mass Gainer", importer: "MusclePro Nutrition (MPN)" },
   "MB-":  { brand: "MuscleBlaze", name: "Biozyme Performance Whey", importer: "Bright Lifecare Pvt. Ltd." },
   "ON-":  { brand: "Optimum Nutrition (ON)", name: "Gold Standard 100% Whey", importer: "Glanbia Performance Nutrition" },
@@ -81,10 +99,11 @@ const BRAND_PREFIXES = {
   "GNC-": { brand: "GNC Pro Performance", name: "100% Whey & Creatine", importer: "Guardian Healthcare" },
   "WC-":  { brand: "Wellcore", name: "Pure Micronised Creatine", importer: "Wellcore Nutrition India" },
   "AIA-": { brand: "AS-IT-IS Nutrition", name: "Pure Whey Protein & Creatine", importer: "Asitis Biotech Pvt Ltd" },
-  "MSW-": { brand: "Muscle Size", name: "100% Whey Protein", importer: "5 Brother's Direct Import" },
-  "MGG-": { brand: "MG Pro", name: "Power Mass Gainer", importer: "5 Brother's Direct Import" },
-  "ACT-": { brand: "Active Shake", name: "Protein Formula", importer: "5 Brother's Direct Import" }
+  "MSW-": { brand: "Muscle Size", name: "100% Whey Protein", importer: "Big Daddy Direct Import" },
+  "MGG-": { brand: "MG Pro", name: "Power Mass Gainer", importer: "Big Daddy Direct Import" },
+  "ACT-": { brand: "Active Shake", name: "Protein Formula", importer: "Big Daddy Direct Import" }
 };
+
 function getProductInfo(inputCode) {
   let clean = inputCode.trim().toUpperCase();
   let matchedPrefix = "";
@@ -102,13 +121,20 @@ function getProductInfo(inputCode) {
     }
   }
   if (isValid) {
-    return { brand: BRAND_PREFIXES[matchedPrefix].brand, name: BRAND_PREFIXES[matchedPrefix].name, importer: BRAND_PREFIXES[matchedPrefix].importer, authorizedPartner: "5 Brother's Fitness Club" };
+    return {
+      brand: BRAND_PREFIXES[matchedPrefix].brand,
+      name: BRAND_PREFIXES[matchedPrefix].name,
+      importer: BRAND_PREFIXES[matchedPrefix].importer,
+      authorizedPartner: "Big Daddy Fitness & Nutrition"
+    };
   }
   return null;
 }
+
 function resetResultState() {
   document.getElementById("resultBox").style.display = "none";
 }
+
 function runVerification() {
   let code = document.getElementById("scratchInput").value.trim().toUpperCase();
   let resultBox = document.getElementById("resultBox");
@@ -130,7 +156,7 @@ function runVerification() {
     if (recordData.count > 3) {
       resultBox.innerHTML = `<div class="badge-box badge-warning"><b style="color:#ffcc00;">⚠️ DAILY LIMIT REACHED (3/3)</b><br><small style="color:#bbb;">Agle din yeh code apne aap refresh ho jayega.</small></div>`;
     } else {
-      resultBox.innerHTML = `<div class="badge-box badge-verified"><b style="color:#00ff66;">✔ 100% ORIGINAL & VERIFIED (${recordData.count}/3)</b><br><b style="color:#fff;">${productData.brand}</b><br><small style="color:#aaa;">${productData.name}</small><br><small style="color:#ffcc00;">Importer: ${productData.importer}</small></div>`;
+      resultBox.innerHTML = `<div class="badge-box badge-verified"><b style="color:#00ff66;">✔ 100% ORIGINAL & VERIFIED (${recordData.count}/3)</b><br><b style="color:#fff;">${productData.brand}</b><br><small style="color:#aaa;">${productData.name}</small><br><small style="color:#ffcc00;">Authorized Dealer: Big Daddy Fitness & Nutrition</small></div>`;
     }
   } else {
     resultBox.style.display = "block";
