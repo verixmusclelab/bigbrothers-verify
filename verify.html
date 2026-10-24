@@ -16,7 +16,7 @@ body { background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%); col
 .card-heading { font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 12px; letter-spacing: 0.5px; }
 .code-input { width: 100%; padding: 13px; background: #000000; border: 1.5px solid #333333; border-radius: 10px; color: #ffffff; font-size: 18px; font-weight: bold; text-align: center; letter-spacing: 2px; text-transform: uppercase; outline: none; transition: border-color 0.25s, box-shadow 0.25s; }
 .code-input:focus { border-color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.3); }
-.verify-btn { width: 100%; padding: 13px; margin-top: 12px; background: #ffcc00; border: none; border-radius: 10px; color: #000000; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.35); transition: transform 0.1s, background 0.2s; }
+.verify-btn { width: 100%; padding: 13px; margin-top: 12px; background: #ffcc00; border: none; border-radius: 10px; color: #000000; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.35); transition: transform 0.1s; }
 .verify-btn:active { transform: scale(0.98); }
 #resultBox { width: 100%; display: none; margin-bottom: 16px; }
 .badge-box { width: 100%; padding: 16px 14px; border-radius: 14px; text-align: center; animation: fadeIn 0.25s ease-in-out; }
@@ -34,7 +34,19 @@ body { background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%); col
 .seal-img { width: 68px; height: 68px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6)); }
 .cert-points-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
 .cert-point { background: rgba(255, 255, 255, 0.03); border: 1px solid #282828; border-radius: 8px; padding: 6px 4px; font-size: 10.5px; color: #ddd; font-weight: 600; }
-.cert-view-btn { display: inline-block; background: transparent; color: #ffcc00; border: 1px solid #ffcc00; padding: 7px 18px; border-radius: 20px; font-size: 10.5px; font-weight: 800; cursor: pointer; }
+.cert-view-btn { display: inline-block; background: transparent; color: #ffcc00; border: 1.5px solid #ffcc00; padding: 8px 18px; border-radius: 20px; font-size: 11px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s; }
+.cert-view-btn:active { background: #ffcc00; color: #000; }
+
+/* MODAL STYLES */
+.cert-modal { display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.92); align-items: center; justify-content: center; padding: 16px; }
+.modal-content-card { background: #ffffff; color: #111111; max-width: 450px; width: 100%; max-height: 85vh; overflow-y: auto; border-radius: 14px; padding: 22px 18px; text-align: center; border: 6px double #c59b27; box-shadow: 0 10px 40px rgba(0,0,0,0.8); position: relative; }
+.modal-close { position: absolute; top: 8px; right: 14px; font-size: 26px; font-weight: 900; color: #555555; cursor: pointer; }
+.modal-title-big { font-size: 17px; font-weight: 900; color: #946c0d; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
+.modal-auth-to { font-size: 10.5px; color: #555555; margin: 10px 0 2px 0; text-transform: uppercase; font-weight: bold; }
+.modal-center-name { font-size: 17px; font-weight: 900; color: #000000; text-transform: uppercase; border-bottom: 2px solid #c59b27; display: inline-block; padding-bottom: 3px; margin-bottom: 10px; }
+.brands-list-box { text-align: left; background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; margin-top: 10px; max-height: 220px; overflow-y: auto; }
+.brand-item { font-size: 11px; font-weight: 700; color: #222; padding: 4px 0; border-bottom: 1px dashed #ddd; display: flex; justify-content: space-between; }
+.brand-item span { color: #008833; font-weight: 800; }
 .footer-text { font-size: 11px; color: #666666; margin-top: 22px; text-align: center; letter-spacing: 0.5px; }
 </style>
 </head>
@@ -60,6 +72,28 @@ body { background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%); col
       <div class="cert-partner-title">Big Daddy Fitness & Nutrition</div>
       <div class="cert-sub-verified">✔ Officially Authorized Partner & Verified Dealer</div>
       
+      <div class="seals-container">
+        <svg class="seal-img" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="95" fill="#d4af37" stroke="#111" stroke-width="6"/>
+          <circle cx="100" cy="100" r="82" fill="#111" stroke="#d4af37" stroke-width="4"/>
+          <circle cx="100" cy="100" r="62" fill="#d4af37"/>
+          <text x="100" y="48" font-size="11" font-weight="900" fill="#d4af37" text-anchor="middle" letter-spacing="1">★ QUALITY ★</text>
+          <text x="100" y="105" font-size="34" font-weight="900" fill="#111" text-anchor="middle" font-family="Arial Black">GMP</text>
+          <text x="100" y="122" font-size="11" font-weight="900" fill="#111" text-anchor="middle" letter-spacing="1">CERTIFIED</text>
+          <text x="100" y="165" font-size="11" font-weight="900" fill="#d4af37" text-anchor="middle" letter-spacing="1">★ ASSURED ★</text>
+        </svg>
+
+        <svg class="seal-img" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="100,5 110,25 132,12 136,34 160,28 156,50 178,52 167,72 186,81 169,96 183,112 162,120 171,139 149,141 151,163 130,158 126,179 108,168 98,187 86,171 70,186 64,166 45,175 46,153 26,155 33,134 14,130 26,112 10,102 26,89 15,73 34,68 29,47 50,49 52,28 73,35 81,15 97,28" fill="#d4af37" stroke="#997a15" stroke-width="3"/>
+          <circle cx="100" cy="100" r="70" fill="#f3cf55" stroke="#997a15" stroke-width="4"/>
+          <circle cx="100" cy="100" r="54" fill="#d4af37"/>
+          <text x="100" y="58" font-size="10" font-weight="900" fill="#111" text-anchor="middle" letter-spacing="1">★ CERTIFIED ★</text>
+          <rect x="35" y="86" width="130" height="28" fill="#111" rx="4"/>
+          <text x="100" y="106" font-size="15" font-weight="900" fill="#d4af37" text-anchor="middle" letter-spacing="1">PARTNER</text>
+          <text x="100" y="136" font-size="9" font-weight="900" fill="#111" text-anchor="middle" letter-spacing="1">VERIFIED</text>
+        </svg>
+      </div>
+
       <div class="cert-points-grid">
         <div class="cert-point"><span>🛡️</span> Genuine Import</div>
         <div class="cert-point"><span>🔬</span> Lab-Tested Batch</div>
@@ -67,12 +101,54 @@ body { background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%); col
         <div class="cert-point"><span>🤝</span> Direct Sourcing</div>
       </div>
 
-      <button type="button" class="cert-view-btn" onclick="alert('Certificate of Authorization for Big Daddy Fitness & Nutrition is active. All products sold are verified authentic.')">📜 VIEW PARTNER CERTIFICATE</button>
+      <button type="button" class="cert-view-btn" onclick="openCertModal()">📜 VIEW FULL PARTNER CERTIFICATE</button>
     </div>
   </div>
 
   <div class="footer-text">
     &copy; Big Daddy Fitness & Nutrition | Authentic Nutrition Verification System
+  </div>
+</div>
+
+<!-- POPUP MODAL WITH ALL LISTED BRANDS -->
+<div id="certModal" class="cert-modal" onclick="closeCertModal(event)">
+  <div class="modal-content-card" onclick="event.stopPropagation()">
+    <span class="modal-close" onclick="closeCertModal()">&times;</span>
+    <div style="font-size:26px;">👑</div>
+    <div class="modal-title-big">Certificate of Authorization</div>
+    <div style="font-size:9px; letter-spacing:1px; color:#777; margin-top:2px;">OFFICIAL AUTHORIZED RETAIL NETWORK</div>
+    
+    <div class="modal-auth-to">This is to certify that</div>
+    <div class="modal-center-name">Big Daddy Fitness & Nutrition</div>
+    
+    <div style="font-size:10.5px; color:#444; line-height:1.4; margin-bottom:8px;">
+      is officially recognized as an Authorized Retail Partner and Verified Stockist for the following premier global and in-house nutrition brands:
+    </div>
+
+    <div class="brands-list-box">
+      <div class="brand-item">1. AF Core Mass <span>✔ Authorized</span></div>
+      <div class="brand-item">2. Labrada Nutrition <span>✔ Authorized</span></div>
+      <div class="brand-item">3. MuscleBlaze <span>✔ Authorized</span></div>
+      <div class="brand-item">4. Optimum Nutrition (ON) <span>✔ Authorized</span></div>
+      <div class="brand-item">5. MuscleTech <span>✔ Authorized</span></div>
+      <div class="brand-item">6. GNC Pro Performance <span>✔ Authorized</span></div>
+      <div class="brand-item">7. Wellcore <span>✔ Authorized</span></div>
+      <div class="brand-item">8. AS-IT-IS Nutrition <span>✔ Authorized</span></div>
+      <div class="brand-item">9. Muscle Size (MSW) <span>✔ Direct Brand</span></div>
+      <div class="brand-item">10. MG Pro Gainer (MGG) <span>✔ Direct Brand</span></div>
+      <div class="brand-item">11. Active Shake <span>✔ Direct Brand</span></div>
+    </div>
+
+    <div style="margin-top:14px; border-top:1px dashed #ccc; padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="text-align:left;">
+        <div style="font-size:8.5px; color:#777;">STATUS</div>
+        <div style="font-size:10.5px; font-weight:900; color:#008833;">Active Partner</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:8.5px; color:#777;">VERIFICATION</div>
+        <div style="font-size:10.5px; font-weight:900; color:#946c0d;">100% Genuine</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -133,6 +209,14 @@ function getProductInfo(inputCode) {
 
 function resetResultState() {
   document.getElementById("resultBox").style.display = "none";
+}
+
+function openCertModal() {
+  document.getElementById("certModal").style.display = "flex";
+}
+
+function closeCertModal(event) {
+  document.getElementById("certModal").style.display = "none";
 }
 
 function runVerification() {
