@@ -418,7 +418,57 @@ window.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("5BFC_MEMBERS", JSON.stringify(DEFAULT_MASTER_ROSTER));
   }
   renderAdminTable();
+  loadMembersFromCloud();
 });
+
+// Cloud ko source of truth maano: cloud ke saare members laao, aur jo members sirf is phone me hain
+// (cloud me nahi) unhe cloud par bhej do. Isse admission, fees aur attendance teeno me same log dikhte hain.
+async function loadMembersFromCloud() {
+  try {
+    const snap = await db.collection("members").get();
+    const cloud = [];
+    snap.forEach(d => cloud.push({ id: d.id, ...d.data() }));
+
+    const cloudIds = new Set(cloud.map(c => String(c.id)));
+    const cloudPhones = new Set(cloud.map(c => String(c.phone || "").trim()).filter(Boolean));
+
+    let local = [];
+    for (const key of ["5BFC_MEMBERS", "bbf_master_records_v4", "5bfc_admissions"]) {
+      try {
+        const rows = JSON.parse(localStorage.getItem(key) || "[]");
+        if (Array.isArray(rows)) local.push(...rows);
+      } catch (e) {}
+    }
+    const seen = new Set();
+    const localOnly = local.filter(m => {
+      if (!m || !m.name) return false;
+      const id = String(m.id || m.phone || "").trim();
+      const ph = String(m.phone || "").trim();
+      if (!id || seen.has(id)) return false;
+      seen.add(id);
+      return !cloudIds.has(id) && !(ph && cloudPhones.has(ph));
+    });
+
+    for (let i = 0; i < localOnly.length; i += 400) {
+      const batch = db.batch();
+      localOnly.slice(i, i + 400).forEach(m => {
+        const clean = JSON.parse(JSON.stringify(m));
+        clean.id = String(m.id || m.phone).trim();
+        if (!clean.manualStatus) clean.manualStatus = clean.status || "Paid";
+        batch.set(db.collection("members").doc(clean.id), clean, { merge: true });
+      });
+      await batch.commit();
+    }
+
+    const merged = [...cloud, ...localOnly];
+    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(merged));
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(merged));
+    renderAdminTable();
+    console.log("Admission: cloud se", cloud.length, "| local-only upload:", localOnly.length);
+  } catch (err) {
+    console.error("Cloud se members load nahi hue:", err);
+  }
+}
 
 async function searchAndDownloadAdmissionCard() {
   const query = document.getElementById("quickSearchInput").value.trim().toLowerCase();
@@ -808,6 +858,7 @@ function approveMemberPayment(id) {
     records[idx].dueFee = 0;
     localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
+    db.collection("members").doc(String(records[idx].id)).set(JSON.parse(JSON.stringify(records[idx])), { merge: true }).catch(e => console.error("Cloud sync failed:", e));
     
     activeReceiptMember = records[idx];
     downloadAdmissionCardNow(records[idx], 'hi');
@@ -847,6 +898,7 @@ function deleteMemberRecord(id) {
     let updatedRecords = records.filter(r => String(r.id) !== String(id));
     localStorage.setItem("5BFC_MEMBERS", JSON.stringify(updatedRecords));
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(updatedRecords));
+    db.collection("members").doc(String(id)).delete().catch(e => console.error("Cloud delete failed:", e));
     renderAdminTable();
     alert("🗑️ रिकॉर्ड सफलतापूर्वक डिलीट कर दिया गया है!");
   }
