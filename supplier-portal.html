@@ -63,7 +63,14 @@ const cf=m=>dlg(m,{d:1,ok:'हाँ, Delete'}),pr=(m,v)=>dlg(m,{i:1,v}),al=m=>d
 
 function rs(){if(pend){const s=sup();if(s)s.ev.push(pend);pend=null;sv()}}
 function go(v){rs();H.push([V,cur]);if(H.length>30)H.shift();V=v;R();scrollTo(0,0)}
-function bk(){rs();const h=H.pop();if(h){V=h[0];cur=h[1]}else{V='home';cur=null}R();scrollTo(0,0)}
+function bk(){
+  rs();
+  // Agar bill2 (Page 2) par hain, toh seedha bill (Page 1) par le jao bina history stack fasaye
+  if(V==='bill2'){V='bill';R();scrollTo(0,0);return;}
+  const h=H.pop();
+  if(h){V=h[0];cur=h[1]}else{V='home';cur=null}
+  R();scrollTo(0,0)
+}
 function hm(){rs();H=[];V='home';cur=null;R();scrollTo(0,0)}
 const nv=()=>`<div class="nav"><button class="p" onclick="hm()">🏠 Home</button><button onclick="bk()">⬅ Back</button>${cur?`<span class="m" style="flex:1;overflow:hidden;text-overflow:ellipsis">${E(sup()?sup().name:'')}</span><button onclick="go('led')">📂 पुराना</button><button onclick="go('bill')">🧾 नया बिल</button>`:''}</div>`;
 function R(){if(V!=='home'&&!sup()){V='home';cur=null}
@@ -120,15 +127,22 @@ function bill2_(){
     <div class="tot"><span>पेमेंट कुल</span><b class="ok">− ${M(pp)}</b></div>
   </div>
   <button class="p wide" onclick="mk()">📄 Bill Generate – Self / Supplier ${dr.eid?'(अपडेट)':''}</button>
-  <button class="wide" style="background:#10301c;color:var(--ok)" onclick="toCust()">🧑 Bill Generate – Customer</button>
+  <button class="wide" style="background:#10301c;color:var(--ok)" onclick="toCustFromBill2()">🧑 Bill Generate – Customer</button>
   <button class="wide" style="background:#333;color:#fff" onclick="bk()">⬅ पिछला Page (Items बदलें)</button>`
 }
 
-async function mk(){const s=sup(),it=dr.it.filter(i=>i.n.trim()&&N(i.q)>0&&N(i.r)>0).map(i=>({n:i.n.trim(),q:N(i.q),r:N(i.r)}));
-if(!it.length&&!dr.pays.length)return al('कम से कम एक product (qty + rate) या payment डालें');
-const noteElem = $('billNote'); if(noteElem) dr.note = noteElem.value;
-const e={id:dr.eid||uid(),t:'bill',date:dr.d,items:it,pays:dr.pays.map(p=>({d:p.d,a:N(p.a)})),note:dr.note||''},i=s.ev.findIndex(x=>x.id===e.id);
-if(i>=0)s.ev[i]=e;else s.ev.push(e);sv();dr=nd();RC=bd(s,e);BL=null;go('rc');setTimeout(grab,400)}
+async function mk(){
+  const s=sup(),it=dr.it.filter(i=>i.n.trim()&&N(i.q)>0&&N(i.r)>0).map(i=>({n:i.n.trim(),q:N(i.q),r:N(i.r)}));
+  if(!it.length&&!dr.pays.length)return al('कम से कम एक product (qty + rate) या payment डालें');
+  const noteElem = $('billNote'); if(noteElem) dr.note = noteElem.value;
+  const e={id:dr.eid||uid(),t:'bill',date:dr.d,items:it,pays:dr.pays.map(p=>({d:p.d,a:N(p.a)})),note:dr.note||''},i=s.ev.findIndex(x=>x.id===e.id);
+  if(i>=0)s.ev[i]=e;else s.ev.push(e);sv();dr=nd();RC=bd(s,e);BL=null;go('rc');setTimeout(grab,400)
+}
+
+function toCustFromBill2(){
+  const noteElem = $('billNote'); if(noteElem) dr.note = noteElem.value;
+  toCust();
+}
 
 /* ---------- OLD PRODUCTS / BILLS ---------- */
 function led_(){const s=sup(),b=bal(s),lp=lastPay(s.ev),f=F,ev=srt(s);F={};
@@ -154,9 +168,12 @@ function pvl(s,k){const L=[];let b=0,p=0;srt(s).filter(x=>x.date<k.date||(x.date
 function bd(s,e){const u=s.ev.filter(x=>x.date<e.date||(x.date===e.date&&x.id<=e.id));return{kind:'S',id:e.id,sup:s,no:'SUP-'+String(e.id).slice(-5),date:e.date,lines:e.items,pays:e.pays,prev:bef(s,e),pv:pvl(s,e),last:lastPay(u),title:'SUPPLIER PURCHASE INVOICE',note:e.note||''}}
 
 /* ---------- CUSTOMER BILL ---------- */
-async function toCust(){const L=dr.it.filter(i=>i.n.trim()&&N(i.q)>0&&N(i.r)>0).map(i=>({n:i.n.trim(),q:N(i.q),r:N(i.r)}));
-if(!L.length)return al('पहले नया माल (qty + rate) जोड़ें, फिर Customer bill बनाएँ');
-cu={lines:L,tax:[{n:'GST',p:18}],oth:'',name:'',ph:'',gu:'',paid:'',wd:T(new Date(Date.now()+15*864e5))};go('cust')}
+async function toCust(){
+  const L=dr.it.filter(i=>i.n.trim()&&N(i.q)>0&&N(i.r)>0).map(i=>({n:i.n.trim(),q:N(i.q),r:N(i.r)}));
+  if(!L.length)return al('पहले नया माल (qty + rate) जोड़ें, फिर Customer bill बनाएँ');
+  cu={lines:L,tax:[{n:'GST',p:18}],oth:'',name:'',ph:'',gu:'',paid:'',wd:T(new Date(Date.now()+15*864e5))};
+  go('cust');
+}
 function cc(){const base=sI(cu.lines),tx=cu.tax.map(t=>({n:t.n,p:N(t.p),a:base*N(t.p)/100})),oth=N(cu.oth),fin=base+tx.reduce((a,t)=>a+t.a,0)+oth,paid=N(cu.paid);return{base,tx,oth,fin,paid,due:fin-paid}}
 function cs_(){const c=cc();return `<div class="tot"><span>Supplier से खरीद मूल्य</span><b>${M(c.base)}</b></div>${c.tax.map(t=>`<div class="tot"><span>${E(t.n)} (${t.p}%)</span><b>+ ${M(t.a)}</b></div>`).join('')}${c.oth?`<div class="tot"><span>अन्य खर्च</span><b>+ ${M(c.oth)}</b></div>`:''}<div class="tot" style="border-top:1px solid #333;margin-top:3px;padding-top:6px"><span>कुल लागत (Final Cost)</span><b class="big">${M(c.fin)}</b></div><div class="tot"><span>जमा</span><b class="ok">${M(c.paid)}</b></div><div class="tot"><span>बकाया</span><b class="big ${c.due>0?'bad':'ok'}">${M(c.due)}</b></div>`}
 function CU(){cu.lines.forEach((i,k)=>{const e=$('cl'+k);if(e)e.textContent=M(i.q*i.r)});const c=cc();c.tx.forEach((t,k)=>{const e=$('tx'+k);if(e)e.textContent=M(t.a)});const e=$('cs');if(e)e.innerHTML=cs_()}
@@ -168,7 +185,7 @@ return `<div class="card"><h3>🧑 Customer की details</h3><input placeholde
 <div class="card" id="cs">${cs_()}</div>
 <button class="p wide" onclick="mkC()">🧑 Customer Bill बनाओ (IMG + PDF)</button>`}
 async function mkC(){if(!cu.name.trim())return al('Customer का नाम डालें');const c=cc();
-RC={kind:'C',sup:sup(),no:'5BFC-SUPP-'+String(Date.now()).slice(-4),date:T(),name:cu.name.trim(),ph:cu.ph,gu:cu.gu,lines:cu.lines,c,wd:cu.wd};BL=null;go('rc');setTimeout(grab,400)}
+RC={kind:'C',sup:sup(),no:'5BFC-SUPP-'+String(Date.now()).slice(-4),date:T(),name:cu.name.trim(),ph:cu.ph,gu:cu.gu,lines:cu.lines,c,wd:cu.wd,note:dr.note||''};BL=null;go('rc');setTimeout(grab,400)}
 
 /* ---------- RECEIPTS ---------- */
 const nf=x=>N(x).toLocaleString('en-IN'),
@@ -195,6 +212,7 @@ ${rr('Bill ID',`<span style="color:#b8860b">${c.no}</span>`)}${rr('प्रक�
 <div style="background:#f6faf6;border:1px solid #bfd8bf;border-radius:6px;padding:7px 8px;margin:8px 0;font-size:11px;line-height:1.5">इस supplement का माल <b>${E(s.name)}</b> (Supplier) से <b>₹${nf(k.base)}</b> में खरीदा गया है। नीचे टैक्स जोड़कर कुल लागत बनी है। इस पर <b>कोई मुनाफा (margin) नहीं</b> लिया जा रहा – सिर्फ़ लागत मूल्य लिया गया है।</div>
 ${rr('Supplier से खरीद मूल्य','₹'+nf(k.base))}${k.tx.map(t=>rr(E(t.n)+' ('+t.p+'%)','+ ₹'+nf(t.a))).join('')}${k.oth?rr('अन्य खर्च','+ ₹'+nf(k.oth)):''}${rr('कुल लागत (Final Cost)','₹'+nf(k.fin),'font-size:14px')}${rr('जमा','₹'+nf(k.paid),'color:green')}
 <div style="display:flex;justify-content:space-between;background:#ffecec;border:1px solid #f5b5b5;border-radius:6px;padding:8px;margin-top:6px;font-weight:900;color:#b00000"><span>बकाया राशि:</span><span>₹${nf(k.due)}</span></div>${k.due>0?rr('वादा तारीख:',D(c.wd),'color:#b8860b;font-weight:900'):'<div style="text-align:center;color:#1b5e20;font-weight:900;margin-top:6px">✔ पूरा भुगतान प्राप्त</div>'}
+${c.note?`<div style="background:#fcf8e3;border:1px solid #fbeed5;border-radius:6px;padding:6px 8px;margin:6px 0;font-size:11px;color:#8a6d3b"><b>नोट:</b> ${E(c.note)}</div>`:''}
 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:2px dashed #ccc;padding-top:8px"><div style="font-size:11px"><b>GSTIN:</b> ${E(S.gst)||'________________'}<div style="margin-top:14px;border-top:1px solid #111;padding-top:3px;font-weight:700">Authorized &amp; Certified</div><div style="font-size:10px;color:#555">5 Brother’s Fitness Club</div></div>${STAMP(c.date)}</div></div>
 <div style="background:#fff0f0;border:2px solid #d9534f;border-radius:14px;padding:12px;margin-top:8px"><div style="background:#d9534f;color:#fff;text-align:center;font-weight:900;padding:8px;border-radius:8px;font-size:13px">⚠️ पृष्ठ 2 : सप्लीमेंट उधारी नियम</div>
 <div style="margin:8px 0;line-height:1.5">"सप्लीमेंट बिना मार्जिन के, सिर्फ़ लागत पर इसलिए दिया जाता है ताकि आपकी प्रोग्रेस न रुके। तय समय में भुगतान न होने पर पेनल्टी देय होगी:"</div>
@@ -206,12 +224,12 @@ return `<div style="overflow-x:auto;padding-bottom:6px">${c.kind==='C'?rcC(c):rc
 <div class="row">${c.id?`<button onclick="editEv(${c.id})">✏ बिल Edit</button><button class="d" onclick="delEv(${c.id})">🗑 बिल Delete</button>`:''}</div>`}
 async function mkF(){if(BL)return BL;if(!window.html2canvas||!window.jspdf)throw new Error('lib');const cv=await html2canvas($('rcpt'),{scale:2,backgroundColor:'#ffffff'}),w=cv.width/2,h=cv.height/2,
 pdf=new jspdf.jsPDF({unit:'px',format:[w+20,h+20],orientation:w>h?'l':'p'});pdf.addImage(cv.toDataURL('image/png'),'PNG',10,10,w,h);
-const png=await new Promise(r=>cv.toBlob(r,'image/png'));return BL={png,pdf:pdf.output('blob'),n:((RC.kind==='C'?RC.name:RC.sup.name)+'_'+RC.no).replace(/[^\w\-]+/g,'_')}}
+const png=await new Promise(r=>cv.toBlob(r,'image/png'));return BL={png,pdf:pdf.output('blob'),n:((RC.kind==='C'?RC.name:RC.sup.name)+'_'+RC.no).replace/[^\w\-]+/g,'_')}}
 async function dl(b,n){try{if(window.claude&&claude.use){const d=await claude.use('downloads');if(d){await d.save({filename:n,data:b});return}}}catch(e){if(e&&e.code==='declined')return}
 const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
 async function grab(){if(V!=='rc')return;try{const f=await mkF();await dl(f.png,f.n+'.png');await dl(f.pdf,f.n+'.pdf')}catch(e){al('Download नहीं हो पाया – internet check करके फिर कोशिश करें')}}
 async function shr(){try{const f=await mkF(),fs=[new File([f.png],f.n+'.png',{type:'image/png'}),new File([f.pdf],f.n+'.pdf',{type:'application/pdf'})];
-if(navigator.canShare&&navigator.canShare({files:fs}))await navigator.share({files:fs,title:'5 Brother’s Fitness Club – Bill'});else al('इस browser में share नहीं चलता – IMG/PDF download करके WhatsApp से भेजें')}catch(e){if(e&&e.name!=='AbortError')al('Share नहीं हो पाया – पहले Download करके भेजें')}}
+if(navigator.canShare&&navigator.canShare({files:fs}))await navigator.share({files:fs,title:'5 Brother’s Fitness Club – Bill'});else al('इस browser में share नहीं चलता – IMG/PDF download करके WhatsApp से भेजें')}catch(e){if(e&&e.name!=='AbortError')al('Share नहीं हो पाया – पहले Download करके भेजें')}
 R();
 setTimeout(()=>{const w=$('wl');if(w){w.classList.add('out');setTimeout(()=>w.remove(),500)}},2400);$('wl').onclick=()=>$('wl').remove();
 </script>
