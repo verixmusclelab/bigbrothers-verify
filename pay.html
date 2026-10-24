@@ -6,6 +6,8 @@
 <title>5 Brother's Fitness Club - Fees Portal</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 
@@ -428,6 +430,44 @@ th{color:#ffcc00;}
 
 <script>
 const ADMIN_PIN = "5555";
+
+// --- FIREBASE CLOUD SYNC (taaki attendance kiosk par sabhi members dikhein) ---
+const firebaseConfig = {
+  apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",
+  authDomain: "brother-s-fitness-club.firebaseapp.com",
+  projectId: "brother-s-fitness-club",
+  storageBucket: "brother-s-fitness-club.firebasestorage.app",
+  messagingSenderId: "781489019006",
+  appId: "1:781489019006:web:4a230698f2195e7208202f"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+async function syncListToCloud(list) {
+  try {
+    const items = (list || []).filter(m => m && m.name && (m.id || m.phone));
+    for (let i = 0; i < items.length; i += 400) {
+      const batch = db.batch();
+      items.slice(i, i + 400).forEach(m => {
+        const clean = JSON.parse(JSON.stringify(m));
+        clean.id = String(m.id || m.phone).trim();
+        if (!clean.manualStatus) clean.manualStatus = clean.status || "Paid";
+        batch.set(db.collection("members").doc(clean.id), clean, { merge: true });
+      });
+      await batch.commit();
+    }
+    console.log("Cloud sync done:", items.length);
+  } catch (err) {
+    console.error("Cloud sync failed:", err);
+  }
+}
+
+function persistList(list) {
+  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
+  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+  syncListToCloud(list);
+}
+
 let referralCount = 0;
 let referredList = [];
 let pendingPaymentData = null;
@@ -517,6 +557,7 @@ function getMasterList() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  syncListToCloud(getMasterList());
   const today = todayStr();
   document.getElementById("mFeePaidDate").value = today;
   document.getElementById("mFeePrevPaidDate").value = today;
@@ -970,8 +1011,7 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
     });
   }
   
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+  persistList(list);
 
   const billId = "5BFC-" + Date.now().toString().slice(-4);
   document.getElementById("billId").innerText = billId;
@@ -1168,8 +1208,7 @@ function toggleStudentIdById(identifier) {
   if (idx < 0) return;
 
   list[idx].idSubmitted = !list[idx].idSubmitted;
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+  persistList(list);
   renderAdminTable();
 }
 
@@ -1186,8 +1225,7 @@ function toggleMemberPaidById(identifier) {
   list[idx].fees = nextStatus;
   list[idx].lastPaid = todayStr();
   
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+  persistList(list);
   renderAdminTable();
 }
 
@@ -1210,8 +1248,7 @@ function deleteMemberById(identifier) {
     m.payMode = "-";
     m.amount = 0;
     m.lastPaid = "";
-    localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-    localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+    persistList(list);
     alert(`✅ "${m.name}" की फीस स्थिति रद्द कर दी गई है (अब Pending है)।`);
     renderAdminTable();
   } else {
@@ -1265,8 +1302,7 @@ function handleManualAddSubmit(e) {
   };
 
   list.push(newMember);
-  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
-  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+  persistList(list);
   alert(`✅ नया सदस्य "${name}" सफलतापूर्वक जोड़ दिया गया है!`);
   closeAddMemberModal();
   renderAdminTable();
