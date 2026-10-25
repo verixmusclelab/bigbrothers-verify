@@ -238,7 +238,7 @@ function runVerification() {
     localStorage.setItem(recordKey, JSON.stringify(recordData));
     resultBox.style.display = "block";
     if (recordData.count > 3) {
-      resultBox.innerHTML = `<div class="badge-box badge-warning"><b style="color:#ffcc00;">⚠️ DAILY LIMIT REACHED (3/3)</b><br><small style="color:#bbb;">Agle din yeh code apne aap refresh ho jayega.</small></div>`;
+      resultBox.innerHTML = `<div class="badge-box badge-warning"><b style="color:#ffcc00;">⚠️ Code LIMIT REACHED (3/3)</b><br><small style="color:#bbb;">."⚠️This product security code has already been verified and reached its maximum usage limit."</small></div>`;
     } else {
       resultBox.innerHTML = `<div class="badge-box badge-verified"><b style="color:#00ff66;">✔ 100% ORIGINAL & VERIFIED (${recordData.count}/3)</b><br><b style="color:#fff;">${productData.brand}</b><br><small style="color:#aaa;">${productData.name}</small><br><small style="color:#ffcc00;">Authorized Dealer: Big Daddy Fitness & Nutrition</small></div>`;
     }
