@@ -25,7 +25,7 @@
     </div>
     <div style="display:flex; gap:6px;">
       <button onclick="exportMasterToCSV()" style="background:#00ff66; color:#000; font-size:11px; font-weight:bold; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;">📥 Excel Export</button>
-      <button onclick="addNewMemberPrompt()" style="background:#ffcc00; color:#000; font-size:11px; font-weight:bold; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;">➕ नया मेम्बर जोड़ें</button>
+      <button onclick="addNewMemberPrompt()" style="background:#ffcc00; color:#000; font-size:11px; font-weight:bold; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;">➕ नया मेम्बर</button>
     </div>
   </div>
 
@@ -52,52 +52,39 @@
       onchange="currentMasterPage=1; renderMasterTable()" 
       style="background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px;"
     >
-      <option value="latest">⭐ हाल ही में जुड़े (Latest First)</option>
-      <option value="oldest">पुराना रिकॉर्ड (Oldest First)</option>
+      <option value="latest">⭐ हाल ही में जुड़े (Latest)</option>
+      <option value="oldest">पुराना रिकॉर्ड (Oldest)</option>
     </select>
   </div>
 
-  <!-- DATE RANGE FILTER BAR -->
-  <div style="display:flex; gap:8px; margin-bottom:14px; align-items:center; background:#141414; padding:8px; border-radius:8px; border:1px solid #333; flex-wrap:wrap;">
-    <span style="font-size:11px; color:#ffcc00; font-weight:bold;">📅 दिनांक फिल्टर:</span>
-    <input type="date" id="filterStartDate" onchange="currentMasterPage=1; renderMasterTable()" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
+  <!-- DATE RANGE FILTER BAR WITH SUBMIT BUTTON -->
+  <div style="display:flex; gap:6px; margin-bottom:14px; align-items:center; background:#141414; padding:8px; border-radius:8px; border:1px solid #333; flex-wrap:wrap;">
+    <span style="font-size:11px; color:#ffcc00; font-weight:bold;">📅 दिनांक:</span>
+    <input type="date" id="filterStartDate" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
     <span style="font-size:11px; color:#aaa;">से</span>
-    <input type="date" id="filterEndDate" onchange="currentMasterPage=1; renderMasterTable()" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
-    <button onclick="resetDateFilter()" style="background:#333; color:#ffcc00; border:1px solid #555; padding:4px 8px; border-radius:6px; font-size:10px; cursor:pointer;">रीसेट</button>
+    <input type="date" id="filterEndDate" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
+    <button type="button" onclick="currentMasterPage=1; renderMasterTable()" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">🔍 खोजें</button>
+    <button type="button" onclick="resetDateFilter()" style="background:#333; color:#ffcc00; border:1px solid #555; padding:5px 8px; border-radius:6px; font-size:11px; cursor:pointer;">रीसेट</button>
   </div>
 
-  <!-- LIVE DATABASE TABLE -->
-  <div style="overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse; font-size:11px; text-align:left;">
-      <thead>
-        <tr style="background:#222; color:#ffcc00; border-bottom:2px solid #ffcc00;">
-          <th style="padding:8px;">ID / नाम</th>
-          <th style="padding:8px;">मोबाइल</th>
-          <th style="padding:8px;">प्लान / फीस</th>
-          <th style="padding:8px;">प्रवेश तिथि</th>
-          <th style="padding:8px;">स्टेटस</th>
-          <th style="padding:8px; text-align:center;">एक्शन (Controls)</th>
-        </tr>
-      </thead>
-      <tbody id="masterTableBody">
-        <!-- Dynamically Populated -->
-      </tbody>
-    </table>
+  <!-- MEMBERS LIST CONTAINER (CARD STYLE FOR MOBILE PERFECTION) -->
+  <div id="masterMembersList" style="display:flex; flex-direction:column; gap:8px;">
+    <!-- Dynamically Populated Cards -->
   </div>
 
   <!-- PAGINATION CONTROLS -->
   <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:10px; border-top:1px solid #333; font-size:11px;">
     <span id="paginationInfo" style="color:#aaa;">कुल रिकॉर्ड्स: 0</span>
     <div style="display:flex; gap:6px; align-items:center;">
-      <button onclick="changePage(-1)" id="prevBtn" style="background:#222; color:#fff; border:1px solid #444; padding:5px 10px; border-radius:6px; cursor:pointer;">⬅ पिछला</button>
+      <button type="button" onclick="changePage(-1)" id="prevBtn" style="background:#222; color:#fff; border:1px solid #444; padding:5px 10px; border-radius:6px; cursor:pointer;">⬅ पिछला</button>
       <span id="pageIndicator" style="color:#ffcc00; font-weight:bold; padding:0 4px;">1 / 1</span>
-      <button onclick="changePage(1)" id="nextBtn" style="background:#222; color:#fff; border:1px solid #444; padding:5px 10px; border-radius:6px; cursor:pointer;">अगला ➡</button>
+      <button type="button" onclick="changePage(1)" id="nextBtn" style="background:#222; color:#fff; border:1px solid #444; padding:5px 10px; border-radius:6px; cursor:pointer;">अगला ➡</button>
     </div>
   </div>
 
 </div>
 
-<!-- EDIT MEMBER MODAL (ADMISSION FORM STYLE) -->
+<!-- EDIT MEMBER MODAL -->
 <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:15px;">
   <div style="background:#141414; border:2px solid #ffcc00; border-radius:12px; width:100%; max-width:400px; padding:18px; box-sizing:border-box; max-height:90vh; overflow-y:auto;">
     <h3 style="color:#ffcc00; margin-top:0; font-size:15px; border-bottom:1px solid #333; padding-bottom:8px;">✏️ मेम्बर डिटेल्स एडिट करें</h3>
@@ -169,7 +156,7 @@ function resetDateFilter() {
 }
 
 function renderMasterTable() {
-  const tbody = document.getElementById("masterTableBody");
+  const container = document.getElementById("masterMembersList");
   const query = document.getElementById("masterSearchInput").value.trim().toLowerCase();
   const filter = document.getElementById("masterFilterStatus").value;
   const sortOrder = document.getElementById("masterSortOrder").value;
@@ -199,14 +186,14 @@ function renderMasterTable() {
     records = records.filter(m => m.joinDate && m.joinDate <= endDate);
   }
 
-  // 4. Sorting (Latest First / Recently Joined vs Oldest)
+  // 4. Sorting
   records.sort((a, b) => {
     let dateA = new Date(a.joinDate || a.id || 0);
     let dateB = new Date(b.joinDate || b.id || 0);
     if (sortOrder === "latest") {
-      return dateB - dateA; // Newest first
+      return dateB - dateA;
     } else {
-      return dateA - dateB; // Oldest first
+      return dateA - dateB;
     }
   });
 
@@ -215,11 +202,9 @@ function renderMasterTable() {
   if (currentMasterPage > totalPages) currentMasterPage = totalPages;
   if (currentMasterPage < 1) currentMasterPage = 1;
 
-  // Slice records for pagination (10 per page)
   const startIndex = (currentMasterPage - 1) * recordsPerPage;
   const paginatedRecords = records.slice(startIndex, startIndex + recordsPerPage);
 
-  // Update pagination info text
   document.getElementById("paginationInfo").innerText = `कुल रिकॉर्ड्स: ${totalRecords} (पेज ${currentMasterPage}/${totalPages})`;
   document.getElementById("pageIndicator").innerText = `${currentMasterPage} / ${totalPages}`;
   document.getElementById("prevBtn").disabled = currentMasterPage === 1;
@@ -228,37 +213,36 @@ function renderMasterTable() {
   document.getElementById("nextBtn").style.opacity = currentMasterPage === totalPages ? "0.4" : "1";
 
   if (paginatedRecords.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#666;">कोई रिकॉर्ड नहीं मिला</td></tr>`;
+    container.innerHTML = `<div style="text-align:center; padding:20px; color:#666; background:#111; border-radius:8px;">कोई रिकॉर्ड नहीं मिला</div>`;
     return;
   }
 
-  tbody.innerHTML = paginatedRecords.map(m => {
+  container.innerHTML = paginatedRecords.map(m => {
     const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid');
     return `
-      <tr style="border-bottom:1px solid #222; background:#111;">
-        <td style="padding:8px;">
-          <b style="color:#ffcc00;">${m.name}</b><br>
-          <span style="font-size:9.5px; color:#aaa;">${m.code || ('5BFC-' + m.id)}</span>
-        </td>
-        <td style="padding:8px; color:#ccc;">${m.phone}</td>
-        <td style="padding:8px;">
-          ${m.plan || 'General'}<br>
-          <span style="color:#00ff66; font-weight:bold;">₹${m.totalFee || 500}</span>
-        </td>
-        <td style="padding:8px; color:#aaa;">${m.joinDate || 'N/A'}</td>
-        <td style="padding:8px;">
-          <span style="background:${isPaid ? '#003311' : '#331100'}; color:${isPaid ? '#00ff66' : '#ff9900'}; padding:3px 6px; border-radius:4px; font-weight:bold; font-size:10px;">
+      <div style="background:#111; border:1px solid #222; border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+            <b style="color:#ffcc00; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${m.name}</b>
+            <span style="font-size:9px; color:#aaa; background:#1a1a1a; padding:1px 4px; border-radius:3px;">${m.code || ('5BFC-' + m.id)}</span>
+          </div>
+          <div style="font-size:10.5px; color:#ccc; display:flex; gap:10px; flex-wrap:wrap;">
+            <span>📞 ${m.phone}</span>
+            <span>💰 ₹${m.totalFee || 500} (${m.plan || 'General'})</span>
+            <span>📅 ${m.joinDate || 'N/A'}</span>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+          <span style="background:${isPaid ? '#003311' : '#331100'}; color:${isPaid ? '#00ff66' : '#ff9900'}; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:9.5px;">
             ${isPaid ? 'Paid' : 'Pending'}
           </span>
-        </td>
-        <td style="padding:8px; text-align:center;">
-          <div style="display:flex; gap:4px; justify-content:center; flex-wrap:wrap;">
-            ${!isPaid ? `<button type="button" onclick="masterApprove(${m.id})" style="background:#ffcc00; color:#000; border:none; padding:4px 6px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:9.5px;">✅ अप्रूव</button>` : ''}
-            <button type="button" onclick="masterEdit(${m.id})" style="background:#333; color:#fff; border:1px solid #555; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:9.5px;">✏️ एडिट</button>
-            <button type="button" onclick="masterDelete(${m.id})" style="background:#ff3333; color:#fff; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:9.5px;">🗑️ डिलीट</button>
+          <div style="display:flex; gap:4px;">
+            ${!isPaid ? `<button type="button" onclick="masterApprove(${m.id})" style="background:#ffcc00; color:#000; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">✅ अप्रूव</button>` : ''}
+            <button type="button" onclick="masterEdit(${m.id})" style="background:#333; color:#fff; border:1px solid #555; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:10px;">✏️ एडिट</button>
+            <button type="button" onclick="masterDelete(${m.id})" style="background:#ff3333; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:10px;">🗑️</button>
           </div>
-        </td>
-      </tr>
+        </div>
+      </div>
     `;
   }).join("");
 }
