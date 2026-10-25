@@ -59,7 +59,7 @@
 
   <!-- DATE RANGE FILTER BAR -->
   <div style="display:flex; gap:8px; margin-bottom:14px; align-items:center; background:#141414; padding:8px; border-radius:8px; border:1px solid #333; flex-wrap:wrap;">
-    <span style="font-size:11px; color:#ffcc00; font-weight:bold;">📅 दिनांक फिल्टर (Date Wise):</span>
+    <span style="font-size:11px; color:#ffcc00; font-weight:bold;">📅 दिनांक फिल्टर:</span>
     <input type="date" id="filterStartDate" onchange="currentMasterPage=1; renderMasterTable()" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
     <span style="font-size:11px; color:#aaa;">से</span>
     <input type="date" id="filterEndDate" onchange="currentMasterPage=1; renderMasterTable()" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
@@ -98,7 +98,7 @@
 </div>
 
 <!-- EDIT MEMBER MODAL (ADMISSION FORM STYLE) -->
-<div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; padding:15px;">
+<div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:15px;">
   <div style="background:#141414; border:2px solid #ffcc00; border-radius:12px; width:100%; max-width:400px; padding:18px; box-sizing:border-box; max-height:90vh; overflow-y:auto;">
     <h3 style="color:#ffcc00; margin-top:0; font-size:15px; border-bottom:1px solid #333; padding-bottom:8px;">✏️ मेम्बर डिटेल्स एडिट करें</h3>
     
@@ -106,40 +106,40 @@
     
     <div style="margin-bottom:10px;">
       <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">पूरा नाम</label>
-      <input type="text" id="editName" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+      <input type="text" id="editName" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; outline:none;">
     </div>
 
     <div style="margin-bottom:10px;">
       <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">मोबाइल नंबर</label>
-      <input type="tel" id="editPhone" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+      <input type="tel" id="editPhone" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; outline:none;">
     </div>
 
     <div style="margin-bottom:10px;">
       <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">प्लान / फीस विवरण</label>
-      <input type="text" id="editPlan" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+      <input type="text" id="editPlan" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; outline:none;">
     </div>
 
     <div style="margin-bottom:10px;">
       <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">कुल फीस (₹)</label>
-      <input type="number" id="editTotalFee" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+      <input type="number" id="editTotalFee" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; outline:none;">
     </div>
 
     <div style="margin-bottom:10px;">
       <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">प्रवेश तिथि (Join Date)</label>
-      <input type="date" id="editJoinDate" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+      <input type="date" id="editJoinDate" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; outline:none;">
     </div>
 
     <div style="margin-bottom:14px;">
       <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">स्टेटस (Fees Status)</label>
-      <select id="editStatus" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+      <select id="editStatus" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; outline:none;">
         <option value="Full Paid">Full Paid (Paid)</option>
         <option value="Pending">Pending</option>
       </select>
     </div>
 
     <div style="display:flex; gap:8px;">
-      <button onclick="saveEditedMember()" style="flex:1; background:#ffcc00; color:#000; border:none; padding:9px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">💾 सेव करें</button>
-      <button onclick="closeEditModal()" style="flex:1; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">❌ रद्द करें</button>
+      <button type="button" onclick="saveEditedMember()" style="flex:1; background:#ffcc00; color:#000; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">💾 सेव करें</button>
+      <button type="button" onclick="closeEditModal()" style="flex:1; background:#333; color:#fff; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">❌ रद्द करें</button>
     </div>
   </div>
 </div>
@@ -253,9 +253,9 @@ function renderMasterTable() {
         </td>
         <td style="padding:8px; text-align:center;">
           <div style="display:flex; gap:4px; justify-content:center; flex-wrap:wrap;">
-            ${!isPaid ? `<button onclick="masterApprove(${m.id})" style="background:#ffcc00; color:#000; border:none; padding:4px 6px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:9.5px;">✅ अप्रूव</button>` : ''}
-            <button onclick="masterEdit(${m.id})" style="background:#333; color:#fff; border:1px solid #555; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:9.5px;">✏️ एडिट</button>
-            <button onclick="masterDelete(${m.id})" style="background:#ff3333; color:#fff; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:9.5px;">🗑️ डिलीट</button>
+            ${!isPaid ? `<button type="button" onclick="masterApprove(${m.id})" style="background:#ffcc00; color:#000; border:none; padding:4px 6px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:9.5px;">✅ अप्रूव</button>` : ''}
+            <button type="button" onclick="masterEdit(${m.id})" style="background:#333; color:#fff; border:1px solid #555; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:9.5px;">✏️ एडिट</button>
+            <button type="button" onclick="masterDelete(${m.id})" style="background:#ff3333; color:#fff; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:9.5px;">🗑️ डिलीट</button>
           </div>
         </td>
       </tr>
@@ -298,7 +298,6 @@ function masterEdit(id) {
   let m = records.find(r => r.id === id);
   if (!m) return;
 
-  // Open Edit Modal with pre-filled details
   document.getElementById("editMemberId").value = m.id;
   document.getElementById("editName").value = m.name || "";
   document.getElementById("editPhone").value = m.phone || "";
