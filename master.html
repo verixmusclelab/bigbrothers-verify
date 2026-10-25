@@ -53,18 +53,17 @@
       style="background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px;"
     >
       <option value="latest">⭐ हाल ही में जुड़े (Latest First)</option>
-      <option value="oldest"> पुराना रिकॉर्ड (Oldest First)</option>
+      <option value="oldest">पुराना रिकॉर्ड (Oldest First)</option>
     </select>
   </div>
 
   <!-- DATE RANGE FILTER BAR -->
   <div style="display:flex; gap:8px; margin-bottom:14px; align-items:center; background:#141414; padding:8px; border-radius:8px; border:1px solid #333; flex-wrap:wrap;">
     <span style="font-size:11px; color:#ffcc00; font-weight:bold;">📅 दिनांक फिल्टर (Date Wise):</span>
-    <input type="date" id="filterStartDate" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
+    <input type="date" id="filterStartDate" onchange="currentMasterPage=1; renderMasterTable()" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
     <span style="font-size:11px; color:#aaa;">से</span>
-    <input type="date" id="filterEndDate" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
-    <button onclick="applyDateFilter()" style="background:#ffcc00; color:#000; border:1px solid #ffcc00; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">सबमिट</button>
-    <button onclick="resetDateFilter()" style="background:#333; color:#ffcc00; border:1px solid #555; padding:5px 8px; border-radius:6px; font-size:10px; cursor:pointer;">रीसेट</button>
+    <input type="date" id="filterEndDate" onchange="currentMasterPage=1; renderMasterTable()" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
+    <button onclick="resetDateFilter()" style="background:#333; color:#ffcc00; border:1px solid #555; padding:4px 8px; border-radius:6px; font-size:10px; cursor:pointer;">रीसेट</button>
   </div>
 
   <!-- LIVE DATABASE TABLE -->
@@ -98,6 +97,53 @@
 
 </div>
 
+<!-- EDIT MEMBER MODAL (ADMISSION FORM STYLE) -->
+<div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; padding:15px;">
+  <div style="background:#141414; border:2px solid #ffcc00; border-radius:12px; width:100%; max-width:400px; padding:18px; box-sizing:border-box; max-height:90vh; overflow-y:auto;">
+    <h3 style="color:#ffcc00; margin-top:0; font-size:15px; border-bottom:1px solid #333; padding-bottom:8px;">✏️ मेम्बर डिटेल्स एडिट करें</h3>
+    
+    <input type="hidden" id="editMemberId">
+    
+    <div style="margin-bottom:10px;">
+      <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">पूरा नाम</label>
+      <input type="text" id="editName" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">मोबाइल नंबर</label>
+      <input type="tel" id="editPhone" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">प्लान / फीस विवरण</label>
+      <input type="text" id="editPlan" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">कुल फीस (₹)</label>
+      <input type="number" id="editTotalFee" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">प्रवेश तिथि (Join Date)</label>
+      <input type="date" id="editJoinDate" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label style="font-size:10px; color:#aaa; display:block; margin-bottom:3px;">स्टेटस (Fees Status)</label>
+      <select id="editStatus" style="width:100%; background:#1c1c1c; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px;">
+        <option value="Full Paid">Full Paid (Paid)</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+
+    <div style="display:flex; gap:8px;">
+      <button onclick="saveEditedMember()" style="flex:1; background:#ffcc00; color:#000; border:none; padding:9px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">💾 सेव करें</button>
+      <button onclick="closeEditModal()" style="flex:1; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">❌ रद्द करें</button>
+    </div>
+  </div>
+</div>
+
 <script>
 let currentMasterPage = 1;
 const recordsPerPage = 10;
@@ -107,21 +153,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function getMasterRecords() {
-  // Different versions of the gym pages may save to either key.
-  try {
-    const primary = localStorage.getItem("5BFC_MEMBERS");
-    const legacy = localStorage.getItem("bbf_master_records_v4");
-    const parsedPrimary = primary ? JSON.parse(primary) : null;
-    const parsedLegacy = legacy ? JSON.parse(legacy) : null;
-    if (Array.isArray(parsedPrimary) && parsedPrimary.length) return parsedPrimary;
-    if (Array.isArray(parsedLegacy)) return parsedLegacy;
-    if (Array.isArray(parsedPrimary)) return parsedPrimary;
-    return [];
-  } catch (error) {
-    console.error("Master records read error:", error);
-    alert("डेटाबेस पढ़ने में समस्या हुई। पेज को दोबारा खोलें।");
-    return [];
-  }
+  return JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
 }
 
 function saveMasterRecords(records) {
@@ -129,24 +161,11 @@ function saveMasterRecords(records) {
   localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
 }
 
-function applyDateFilter() {
-  const startDate = document.getElementById("filterStartDate").value;
-  const endDate = document.getElementById("filterEndDate").value;
-  if (startDate && endDate && startDate > endDate) {
-    alert("शुरुआत की तारीख, अंतिम तारीख से आगे नहीं हो सकती।");
-    return;
-  }
-  currentMasterPage = 1;
-  renderMasterTable();
-  alert("✅ तारीख के अनुसार रिकॉर्ड सफलतापूर्वक फ़िल्टर हो गए।");
-}
-
 function resetDateFilter() {
   document.getElementById("filterStartDate").value = "";
   document.getElementById("filterEndDate").value = "";
   currentMasterPage = 1;
   renderMasterTable();
-  alert("✅ तारीख फ़िल्टर रीसेट हो गया।");
 }
 
 function renderMasterTable() {
@@ -252,62 +271,83 @@ function changePage(direction) {
 
 function masterApprove(id) {
   let records = getMasterRecords();
-  let idx = records.findIndex(r => String(r.id) === String(id));
+  let idx = records.findIndex(r => r.id === id);
   if (idx !== -1) {
     records[idx].status = "Full Paid";
     records[idx].fees = "Paid";
     records[idx].paidFee = records[idx].totalFee || 500;
     records[idx].dueFee = 0;
     saveMasterRecords(records);
+    alert("✅ फीस सफलतापूर्वक अप्रूव कर दी गई है!");
     renderMasterTable();
-    alert("✅ फीस सफलतापूर्वक अप्रूव हो गई है!");
-  } else {
-    alert("❌ रिकॉर्ड नहीं मिला। डेटाबेस दोबारा लोड करके देखें।");
   }
 }
 
 function masterDelete(id) {
   if (confirm("⚠️ क्या आप वाकई इस मेम्बर को हमेशा के लिए डिलीट करना चाहते हैं?")) {
     let records = getMasterRecords();
-    const beforeCount = records.length;
-    records = records.filter(r => String(r.id) !== String(id));
-    if (records.length === beforeCount) {
-      alert("❌ रिकॉर्ड नहीं मिला, इसलिए डिलीट नहीं हुआ।");
-      return;
-    }
+    records = records.filter(r => r.id !== id);
     saveMasterRecords(records);
     renderMasterTable();
-    alert("✅ रिकॉर्ड सफलतापूर्वक डिलीट हो गया है!");
+    alert("🗑️ रिकॉर्ड डिलीट हो गया है!");
   }
 }
 
 function masterEdit(id) {
   let records = getMasterRecords();
-  let m = records.find(r => String(r.id) === String(id));
-  if (!m) {
-    alert("❌ रिकॉर्ड नहीं मिला। डेटाबेस दोबारा लोड करके देखें।");
+  let m = records.find(r => r.id === id);
+  if (!m) return;
+
+  // Open Edit Modal with pre-filled details
+  document.getElementById("editMemberId").value = m.id;
+  document.getElementById("editName").value = m.name || "";
+  document.getElementById("editPhone").value = m.phone || "";
+  document.getElementById("editPlan").value = m.plan || "सामान्य (₹500)";
+  document.getElementById("editTotalFee").value = m.totalFee || 500;
+  document.getElementById("editJoinDate").value = m.joinDate || new Date().toISOString().split("T")[0];
+  document.getElementById("editStatus").value = (m.status === 'Full Paid' || m.fees === 'Paid') ? "Full Paid" : "Pending";
+
+  document.getElementById("editModal").style.display = "flex";
+}
+
+function closeEditModal() {
+  document.getElementById("editModal").style.display = "none";
+}
+
+function saveEditedMember() {
+  const id = parseInt(document.getElementById("editMemberId").value);
+  let records = getMasterRecords();
+  let m = records.find(r => r.id === id);
+  if (!m) return;
+
+  const newName = document.getElementById("editName").value.trim();
+  const newPhone = document.getElementById("editPhone").value.trim();
+  const newPlan = document.getElementById("editPlan").value.trim();
+  const newFee = parseInt(document.getElementById("editTotalFee").value) || 500;
+  const newDate = document.getElementById("editJoinDate").value;
+  const newStatus = document.getElementById("editStatus").value;
+
+  if (!newName || !newPhone) {
+    alert("नाम और मोबाइल नंबर भरना अनिवार्य है!");
     return;
   }
 
-  const newName = prompt("नया नाम दर्ज करें:", m.name);
-  if (newName === null) return;
-  const newPhone = prompt("नया मोबाइल नंबर दर्ज करें:", m.phone);
-  if (newPhone === null) return;
-  const newFee = prompt("कुल फीस दर्ज करें:", m.totalFee || 500);
-  if (newFee === null) return;
-
-  if (!newName.trim()) { alert("नाम खाली नहीं हो सकता।"); return; }
-  if (!/^\d{10}$/.test(newPhone.trim())) { alert("मोबाइल नंबर 10 अंकों का होना चाहिए।"); return; }
-  const parsedFee = Number(newFee);
-  if (!Number.isFinite(parsedFee) || parsedFee < 0) { alert("कृपया सही फीस दर्ज करें।"); return; }
-
-  m.name = newName.trim();
-  m.phone = newPhone.trim();
-  m.totalFee = parsedFee;
+  m.name = newName;
+  m.phone = newPhone;
+  m.plan = newPlan;
+  m.totalFee = newFee;
+  m.joinDate = newDate;
+  m.status = newStatus;
+  m.fees = newStatus === "Full Paid" ? "Paid" : "Pending";
+  if (newStatus === "Full Paid") {
+    m.paidFee = newFee;
+    m.dueFee = 0;
+  }
 
   saveMasterRecords(records);
+  closeEditModal();
   renderMasterTable();
-  alert("✅ रिकॉर्ड सफलतापूर्वक एडिट/अपडेट हो गया है!");
+  alert("✏️ मेम्बर की डिटेल्स सफलतापूर्वक अपडेट हो गई हैं!");
 }
 
 function addNewMemberPrompt() {
@@ -334,7 +374,7 @@ function addNewMemberPrompt() {
   let records = getMasterRecords();
   records.unshift(newMember);
   saveMasterRecords(records);
-  currentMasterPage = 1; // Jump to first page to see newly added member
+  currentMasterPage = 1;
   renderMasterTable();
   alert("🎉 नया मेम्बर सफलतापूर्वक जोड़ दिया गया है!");
 }
