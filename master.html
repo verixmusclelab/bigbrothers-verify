@@ -30,23 +30,40 @@
   </div>
 
   <!-- SEARCH & FILTER BAR -->
-  <div style="display:flex; gap:8px; margin-bottom:14px;">
+  <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
     <input 
       type="text" 
       id="masterSearchInput" 
       placeholder="नाम या मोबाइल नंबर से खोजें..." 
-      oninput="renderMasterTable()"
-      style="flex:1; background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px; outline:none;"
+      oninput="currentMasterPage=1; renderMasterTable()"
+      style="flex:1; min-width:180px; background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px; outline:none;"
     >
     <select 
       id="masterFilterStatus" 
-      onchange="renderMasterTable()" 
+      onchange="currentMasterPage=1; renderMasterTable()" 
       style="background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px;"
     >
-      <option value="ALL">सभी मेम्बर्स</option>
+      <option value="ALL">सभी स्टेटस</option>
       <option value="Paid">फुली पेड (Paid)</option>
       <option value="Pending">पेंडिंग फीस (Pending)</option>
     </select>
+    <select 
+      id="masterSortOrder" 
+      onchange="currentMasterPage=1; renderMasterTable()" 
+      style="background:#181818; border:1px solid #444; color:#fff; padding:9px; border-radius:8px; font-size:12px;"
+    >
+      <option value="latest">⭐ हाल ही में जुड़े (Latest First)</option>
+      <option value="oldest"> पुराना रिकॉर्ड (Oldest First)</option>
+    </select>
+  </div>
+
+  <!-- DATE RANGE FILTER BAR -->
+  <div style="display:flex; gap:8px; margin-bottom:14px; align-items:center; background:#141414; padding:8px; border-radius:8px; border:1px solid #333; flex-wrap:wrap;">
+    <span style="font-size:11px; color:#ffcc00; font-weight:bold;">📅 दिनांक फिल्टर (Date Wise):</span>
+    <input type="date" id="filterStartDate" onchange="currentMasterPage=1; renderMasterTable()" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
+    <span style="font-size:11px; color:#aaa;">से</span>
+    <input type="date" id="filterEndDate" onchange="currentMasterPage=1; renderMasterTable()" style="background:#181818; border:1px solid #444; color:#fff; padding:5px; border-radius:6px; font-size:11px;">
+    <button onclick="resetDateFilter()" style="background:#333; color:#ffcc00; border:1px solid #555; padding:4px 8px; border-radius:6px; font-size:10px; cursor:pointer;">रीसेट</button>
   </div>
 
   <!-- LIVE DATABASE TABLE -->
@@ -68,9 +85,22 @@
     </table>
   </div>
 
+  <!-- PAGINATION CONTROLS -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:10px; border-top:1px solid #333; font-size:11px;">
+    <span id="paginationInfo" style="color:#aaa;">कुल रिकॉर्ड्स: 0</span>
+    <div style="display:flex; gap:6px; align-items:center;">
+      <button onclick="changePage(-1)" id="prevBtn" style="background:#222; color:#fff; border:1px solid #444; padding:5px 10px; border-radius:6px; cursor:pointer;">⬅ पिछला</button>
+      <span id="pageIndicator" style="color:#ffcc00; font-weight:bold; padding:0 4px;">1 / 1</span>
+      <button onclick="changePage(1)" id="nextBtn" style="background:#222; color:#fff; border:1px solid #444; padding:5px 10px; border-radius:6px; cursor:pointer;">अगला ➡</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
+let currentMasterPage = 1;
+const recordsPerPage = 10;
+
 window.addEventListener("DOMContentLoaded", () => {
   renderMasterTable();
 });
@@ -84,17 +114,29 @@ function saveMasterRecords(records) {
   localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
 }
 
+function resetDateFilter() {
+  document.getElementById("filterStartDate").value = "";
+  document.getElementById("filterEndDate").value = "";
+  currentMasterPage = 1;
+  renderMasterTable();
+}
+
 function renderMasterTable() {
   const tbody = document.getElementById("masterTableBody");
   const query = document.getElementById("masterSearchInput").value.trim().toLowerCase();
   const filter = document.getElementById("masterFilterStatus").value;
+  const sortOrder = document.getElementById("masterSortOrder").value;
+  const startDate = document.getElementById("filterStartDate").value;
+  const endDate = document.getElementById("filterEndDate").value;
 
   let records = getMasterRecords();
 
+  // 1. Search filter
   if (query) {
     records = records.filter(m => (m.name && m.name.toLowerCase().includes(query)) || (m.phone && m.phone.includes(query)));
   }
 
+  // 2. Status filter
   if (filter !== "ALL") {
     records = records.filter(m => {
       const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid');
@@ -102,12 +144,48 @@ function renderMasterTable() {
     });
   }
 
-  if (records.length === 0) {
+  // 3. Date Range filter
+  if (startDate) {
+    records = records.filter(m => m.joinDate && m.joinDate >= startDate);
+  }
+  if (endDate) {
+    records = records.filter(m => m.joinDate && m.joinDate <= endDate);
+  }
+
+  // 4. Sorting (Latest First / Recently Joined vs Oldest)
+  records.sort((a, b) => {
+    let dateA = new Date(a.joinDate || a.id || 0);
+    let dateB = new Date(b.joinDate || b.id || 0);
+    if (sortOrder === "latest") {
+      return dateB - dateA; // Newest first
+    } else {
+      return dateA - dateB; // Oldest first
+    }
+  });
+
+  const totalRecords = records.length;
+  const totalPages = Math.ceil(totalRecords / recordsPerPage) || 1;
+  if (currentMasterPage > totalPages) currentMasterPage = totalPages;
+  if (currentMasterPage < 1) currentMasterPage = 1;
+
+  // Slice records for pagination (10 per page)
+  const startIndex = (currentMasterPage - 1) * recordsPerPage;
+  const paginatedRecords = records.slice(startIndex, startIndex + recordsPerPage);
+
+  // Update pagination info text
+  document.getElementById("paginationInfo").innerText = `कुल रिकॉर्ड्स: ${totalRecords} (पेज ${currentMasterPage}/${totalPages})`;
+  document.getElementById("pageIndicator").innerText = `${currentMasterPage} / ${totalPages}`;
+  document.getElementById("prevBtn").disabled = currentMasterPage === 1;
+  document.getElementById("prevBtn").style.opacity = currentMasterPage === 1 ? "0.4" : "1";
+  document.getElementById("nextBtn").disabled = currentMasterPage === totalPages;
+  document.getElementById("nextBtn").style.opacity = currentMasterPage === totalPages ? "0.4" : "1";
+
+  if (paginatedRecords.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#666;">कोई रिकॉर्ड नहीं मिला</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = records.map(m => {
+  tbody.innerHTML = paginatedRecords.map(m => {
     const isPaid = (m.status === 'Full Paid' || m.fees === 'Paid');
     return `
       <tr style="border-bottom:1px solid #222; background:#111;">
@@ -136,6 +214,12 @@ function renderMasterTable() {
       </tr>
     `;
   }).join("");
+}
+
+function changePage(direction) {
+  currentMasterPage += direction;
+  renderMasterTable();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function masterApprove(id) {
@@ -207,6 +291,7 @@ function addNewMemberPrompt() {
   let records = getMasterRecords();
   records.unshift(newMember);
   saveMasterRecords(records);
+  currentMasterPage = 1; // Jump to first page to see newly added member
   renderMasterTable();
   alert("🎉 नया मेम्बर सफलतापूर्वक जोड़ दिया गया है!");
 }
