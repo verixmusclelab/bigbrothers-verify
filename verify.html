@@ -53,7 +53,7 @@ body { background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%); col
 <body>
 
 <div class="main-container">
-  <div class="brand-icon">👑</div>
+  <div class="brand-icon</div>
   <h1 class="welcome-title" id="welcomeBrand">Welcome to<br>Product Verification Portal</h1>
   <p class="welcome-sub" id="welcomeSub">Enter the security code from your product scratch seal</p>
 
@@ -114,7 +114,7 @@ body { background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%); col
 <div id="certModal" class="cert-modal" onclick="closeCertModal(event)">
   <div class="modal-content-card" onclick="event.stopPropagation()">
     <span class="modal-close" onclick="closeCertModal()">&times;</span>
-    <div style="font-size:26px;">👑</div>
+    <div style="font-size:26px;</div>
     <div class="modal-title-big">Certificate of Authorization</div>
     <div style="font-size:9px; letter-spacing:1px; color:#777; margin-top:2px;">OFFICIAL AUTHORIZED RETAIL NETWORK</div>
     
@@ -238,7 +238,7 @@ function runVerification() {
     localStorage.setItem(recordKey, JSON.stringify(recordData));
     resultBox.style.display = "block";
     if (recordData.count > 3) {
-      resultBox.innerHTML = `<div class="badge-box badge-warning"><b style="color:#ffcc00;">⚠️ Code LIMIT REACHED (3/3)</b><br><small style="color:#bbb;">."⚠️This product security code has already been verified and reached its maximum usage limit."</small></div>`;
+      resultBox.innerHTML = `<div class="badge-box badge-warning"><b style="color:#ffcc00;">⚠️ Code LIMIT REACHED (2/2)</b><br><small style="color:#bbb;">."⚠️This product security code has already been verified and reached its maximum usage limit."</small></div>`;
     } else {
       resultBox.innerHTML = `<div class="badge-box badge-verified"><b style="color:#00ff66;">✔ 100% ORIGINAL & VERIFIED (${recordData.count}/3)</b><br><b style="color:#fff;">${productData.brand}</b><br><small style="color:#aaa;">${productData.name}</small><br><small style="color:#ffcc00;">Authorized Dealer: Big Daddy Fitness & Nutrition</small></div>`;
     }
