@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Price Admin – 5 Brother’s Fitness Club</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Roboto,Arial,sans-serif}
+body{background:#070707;color:#fff;max-width:560px;margin:0 auto;padding:8px 8px 60px;font-size:13px}
+.top{position:sticky;top:0;background:#070707;padding:6px 0;z-index:5}
+.brand{background:#14110a;border:1px solid #ffcc00;border-radius:10px;padding:8px;text-align:center;margin-bottom:6px}.brand b{color:#ffcc00;font-size:14px}.brand small{display:block;color:#8d8d8d;font-size:10px}
+input,select,textarea{width:100%;background:#000;border:1px solid #444;border-radius:7px;padding:7px;color:#fff;font-size:13px}
+button{cursor:pointer;border:0;border-radius:7px;font-weight:700;font-size:11px;padding:7px 10px;background:#232323;color:#fff}
+.p{background:#ffcc00;color:#000}.s{background:#10301c;color:#00e676}.d{background:#3a1515;color:#ff8a80}
+.row{display:flex;gap:5px;align-items:center;margin-bottom:5px}.row>*{min-width:0}
+.card{background:#141414;border:1px solid #2a2a2a;border-radius:10px;padding:8px;margin-bottom:6px}
+.pr{display:flex;gap:6px;align-items:center;cursor:pointer}.pr b{flex:1;font-size:12px}.m{color:#8d8d8d;font-size:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:#ffcc00;display:inline-block}
+.v{display:grid;grid-template-columns:70px 1fr 1fr 52px;gap:5px;align-items:center;margin-bottom:5px}.v input{padding:6px}
+.hd{color:#ffcc00;font-size:10px;font-weight:700}
+.ok{color:#00e676}.bad{color:#ff5252}
+#tt{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#ffcc00;color:#000;font-weight:700;padding:8px 16px;border-radius:20px;display:none;z-index:9}
+</style>
+</head>
+<body>
+<div class="brand"><b>5 Brother’s Fitness Club</b><small>Price &amp; Photo Admin</small></div>
+<div id="gate" class="card"><div class="m" style="margin-bottom:5px">Admin PIN डालें</div><div class="row"><input id="pin" type="password" inputmode="numeric" placeholder="PIN"><button class="p" onclick="unlock()">खोलो</button></div></div>
+<div id="app" style="display:none"></div>
+<div id="tt"></div>
+<script>
+const PIN='5555';
+firebase.initializeApp({apiKey:"AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",authDomain:"brother-s-fitness-club.firebaseapp.com",projectId:"brother-s-fitness-club",storageBucket:"brother-s-fitness-club.firebasestorage.app",messagingSenderId:"781489019006",appId:"1:781489019006:web:4a230698f2195e7208202f"});
+const db=firebase.firestore(),$=id=>document.getElementById(id),N=x=>Math.round(Number(x)||0),
+E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
+K=s=>String(s).replace(/[^a-z0-9]/gi,'_'),M=x=>'₹'+N(x).toLocaleString('en-IN');
+let B=[],W=[],O={},BL={},STAT=new Set(),studio=false,sq='',sTodo=true,sN=25,showBL=false,phs={},dirty=new Set(),opn=null,lock=true,q='',cat='',onlyEd=false;
+function tt(m){const t=$('tt');t.textContent=m;t.style.display='block';clearTimeout(tt.h);tt.h=setTimeout(()=>t.style.display='none',2200)}
+function unlock(){if($('pin').value!==PIN)return tt('गलत PIN');$('gate').style.display='none';$('app').style.display='block';init()}
+$('pin').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
+async function init(){$('app').innerHTML='<div class="m">Load हो रहा है…</div>';
+try{B=await(await fetch('products.json?'+Date.now())).json();const snap=await db.collection('price_overrides').get();snap.forEach(d=>O[d.id]=d.data());const bs=await db.collection('brand_logos').get();bs.forEach(d=>{const x=d.data();BL[x.name]=x.img})}catch(e){$('app').innerHTML='<div class="card bad">Load नहीं हुआ: '+E(e.message)+'<br><span class="m">price-admin.html और products.json एक ही folder में होनी चाहिए।</span></div>';return}
+try{const sp0=await(await fetch('product-photos.json?'+Date.now())).json();sp0.forEach(e=>(e.ids||[]).forEach(i=>STAT.add(i)))}catch(e){}
+W=B.map(p=>{const c=JSON.parse(JSON.stringify(p)),o=O[p.id];if(o){if(o.v)c.variants.forEach(v=>{const x=o.v[K(v.pack)];if(x){v.mrp=x.m;v.price=x.p}});}return c});R()}
+const base=id=>B.find(x=>x.id===id),ed=p=>{const b=base(p.id);return p.variants.some((v,i)=>v.mrp!==b.variants[i].mrp||v.price!==b.variants[i].price)||(phs[p.id]?phs[p.id].length>0:!!(O[p.id]&&O[p.id].np))};
+const FL=()=>W.filter(p=>(!cat||p.category===cat)&&(!onlyEd||ed(p))&&(!q||(p.name+' '+p.brand).toLowerCase().includes(q.toLowerCase())));
+function R(){if(studio){$('app').innerHTML=studio_();return}const L=FL(),cats=[...new Set(B.map(p=>p.category))];
+$('app').innerHTML=`<div class="top"><div class="row"><input placeholder="🔍 Product / brand खोजें" value="${E(q)}" oninput="q=this.value;clearTimeout(R.h);R.h=setTimeout(()=>{R();const i=$('app').querySelector('input');i.focus();i.setSelectionRange(1e4,1e4)},300)"></div><div class="row"><select onchange="cat=this.value;R()"><option value="">सभी category</option>${cats.map(c=>`<option ${c===cat?'selected':''}>${E(c)}</option>`).join('')}</select><label class="m" style="white-space:nowrap"><input type="checkbox" ${onlyEd?'checked':''} onchange="onlyEd=this.checked;R()" style="width:auto"> Edited</label></div>
+<div class="row"><label class="m"><input type="checkbox" ${lock?'checked':''} onchange="lock=this.checked" style="width:auto"> Flipkart बदले तो हमारा रेट भी उतना ही बदले (gap वही रहे)</label></div></div>
+<div class="card"><button class="p" style="width:100%;padding:11px;font-size:13px" onclick="studio=true;R()">📸 Photo Studio – saare products par photo lagao</button></div>
+<div class="card"><b style="color:#ffcc00;font-size:12px">⚡ Bulk – अभी दिख रहे ${L.length} products पर</b><div class="row" style="margin-top:6px"><select id="bt"><option value="m">Flipkart रेट</option><option value="p">हमारा रेट</option></select><select id="bo"><option value="+r">+ ₹</option><option value="-r">− ₹</option><option value="+p">+ %</option><option value="-p">− %</option></select><input id="bv" type="number" placeholder="value" style="width:80px"></div><div class="row"><button class="p" onclick="bulk()">Apply</button><button class="s" onclick="saveAll()">💾 Edited सब Save (${dirty.size})</button></div></div>
+<div class="card"><div class="row" style="margin:0"><b style="color:#ffcc00;font-size:12px;flex:1">🏷 Brand Logos (${[...new Set(B.map(p=>p.brand))].length} brands)</b><button onclick="showBL=!showBL;R()">${showBL?'बंद करो':'खोलो'}</button></div>${showBL?'<div class="m" style="margin:6px 0">हर brand का logo एक बार लगाओ – उस brand के सारे products पर वही दिखेगा।</div>'+[...new Set(B.map(p=>p.brand))].sort().map(b=>`<div class="hr"><span style="width:44px;height:44px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden">${BL[b]?`<img src="${BL[b]}" style="max-width:100%;max-height:100%">`:'<span class="m" style="color:#555">—</span>'}</span><span style="flex:1;font-size:12px">${E(b)}</span><label class="p" style="padding:7px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer">+ Logo<input type="file" accept="image/*" hidden onchange="upBL(this.dataset.b,this.files)" data-b="${E(b)}"></label>${BL[b]?`<button class="d" data-b="${E(b)}" onclick="delBL(this.dataset.b)">✕</button>`:''}</div>`).join(''):''}</div>
+${L.map(p=>`<div class="card"><div class="pr" onclick="tgl(${p.id})"><span class="m">#${p.id}</span><b>${E(p.name)}</b>${ed(p)?'<span class="dot"></span>':''}${dirty.has(p.id)?'<span class="bad m">unsaved</span>':''}</div>${opn===p.id?det(p):''}</div>`).join('')||'<div class="m">कोई product नहीं मिला</div>'}`}
+function det(p){return `<div style="margin-top:8px"><div class="v hd"><span>Pack</span><span>Flipkart ₹</span><span>हमारा ₹</span><span>Gap</span></div>${p.variants.map((v,i)=>`<div class="v"><span class="m">${E(v.pack)}</span><input type="number" value="${v.mrp}" onchange="setF(${p.id},${i},this.value)"><input type="number" value="${v.price}" onchange="setP(${p.id},${i},this.value)"><b class="${v.mrp-v.price>0?'ok':'bad'}">${M(v.mrp-v.price)}</b></div>`).join('')}
+<div class="m" style="margin:6px 0 3px">📷 Photos – जिन products की असली photo हो (phone से खींचें / gallery से चुनें, max 5)</div><div class="row" style="flex-wrap:wrap">${(phs[p.id]||[]).map((u,k)=>`<div style="position:relative"><img src="${u}" style="width:62px;height:62px;object-fit:cover;border-radius:6px"><button class="d" style="position:absolute;top:0;right:0;padding:1px 6px" onclick="delPh(${p.id},${k})">✕</button></div>`).join('')}<label class="p" style="padding:9px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer">+ Photo<input type="file" accept="image/*" multiple hidden onchange="addPh(${p.id},this.files)"></label></div>
+<div class="row" style="margin-top:6px"><button class="p" onclick="sp(${p.id})">💾 Save (live)</button><button class="d" onclick="rst(${p.id})">↺ Reset</button></div></div>`}
+const P=id=>W.find(x=>x.id===id);
+function setF(id,i,x){const v=P(id).variants[i],gap=v.mrp-v.price;v.mrp=N(x);if(lock)v.price=Math.max(0,v.mrp-gap);dirty.add(id);R()}
+function setP(id,i,x){P(id).variants[i].price=N(x);dirty.add(id);R()}
+function bulk(){const t=$('bt').value,o=$('bo').value,n=Number($('bv').value);if(!n)return tt('value डालें');
+FL().forEach(p=>{p.variants.forEach(v=>{const cur=v[t==='m'?'mrp':'price'],gap=v.mrp-v.price;let nv=o[1]==='r'?cur+(o[0]==='+'?n:-n):cur*(1+(o[0]==='+'?n:-n)/100);nv=Math.max(0,N(nv));
+if(t==='m'){v.mrp=nv;if(lock)v.price=Math.max(0,nv-gap)}else v.price=nv});dirty.add(p.id)});tt('Apply हो गया – अब Save करें');R()}
+async function upBL(b,fl){if(!fl.length)return;try{const u=await shrink(fl[0],320,.88);await db.collection('brand_logos').doc(K(b)).set({name:b,img:u});BL[b]=u;tt('✅ '+b+' logo live');R()}catch(e){tt('Logo save नहीं हुआ: '+e.message)}}
+async function delBL(b){try{await db.collection('brand_logos').doc(K(b)).delete();delete BL[b];tt('Logo हटाया');R()}catch(e){tt(e.message)}}
+
+/* ---------- PHOTO STUDIO ---------- */
+const nrm=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+const rcN=p=>{const m=String(p.rating_count||'').toUpperCase().replace(/[+,]/g,'').match(/([\d.]+)\s*([LKM]?)/);return m?parseFloat(m[1])*({L:1e5,K:1e3,M:1e6}[m[2]]||1):0};
+function groups(){const g={};B.forEach(p=>{const k=nrm(p.name);(g[k]=g[k]||{k,ids:[],rep:p,pop:0}).ids.push(p.id);g[k].pop=Math.max(g[k].pop,rcN(p))});return Object.values(g).sort((a,b)=>b.pop-a.pop)}
+const gDone=g=>g.ids.some(id=>STAT.has(id)||(O[id]&&((O[id].images&&O[id].images.length)||O[id].np)));
+const gThumb=g=>{for(const id of g.ids){const o=O[id];if(o&&o.images&&o.images[0])return o.images[0];if(o&&o.thumb)return o.thumb}return''};
+function studio_(){const G=groups(),done=G.filter(gDone).length;let L=G.filter(g=>(!sTodo||!gDone(g))&&(!sq||(g.rep.name+' '+g.rep.brand).toLowerCase().includes(sq.toLowerCase())));const tot=L.length;L=L.slice(0,sN);
+return `<div class="top"><div class="row"><button onclick="studio=false;R()">⬅ Back</button><b style="color:#ffcc00;flex:1;font-size:13px">📸 Photo Studio</b><span class="m">${done}/${G.length} products par photo</span></div><div class="row"><input placeholder="🔍 Product / brand" value="${E(sq)}" onchange="sq=this.value;sN=25;R()"><label class="m" style="white-space:nowrap"><input type="checkbox" ${sTodo?'checked':''} onchange="sTodo=this.checked;sN=25;R()" style="width:auto"> Bina photo wale</label></div></div>
+<div class="card m">Har product me: <b>🔍 Photo dhundo</b> dabao → Google me photo par long-press → <b>Copy image address</b> → neeche paste karo → Save. Ya <b>+ Gallery</b> se phone ki photo chuno. Ek hi naam wale products par photo apne aap lag jati hai.</div>
+${L.map(g=>{const th=gThumb(g),k=g.k,q2=encodeURIComponent(g.rep.name+' '+((g.rep.variants[0]||{}).pack||'')+' bottle');return `<div class="card"><div class="row"><div style="width:46px;height:46px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden">${th?`<img src="${E(th)}" style="max-width:100%;max-height:100%">`:'<span class="m" style="color:#555">—</span>'}</div><div style="flex:1;min-width:0"><b style="font-size:12px">${E(g.rep.name)}</b><div class="m">${E(g.rep.brand)} • ${g.ids.length} id${g.ids.length>1?'s':''}</div></div>${gDone(g)?'<span class="ok">✔</span>':''}</div>
+<div class="row" style="margin:6px 0"><a class="p" href="https://www.google.com/search?tbm=isch&q=${q2}" target="_blank" rel="noopener" style="text-decoration:none;padding:8px 10px;border-radius:7px;font-size:11px;font-weight:700">🔍 Photo dhundo</a><label class="s" style="padding:8px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer">+ Gallery<input type="file" accept="image/*" hidden onchange="upG('${k}',this.files)"></label>${th?`<button class="d" onclick="rmLink('${k}')">✕ Photo hatao</button>`:''}</div>
+<div class="row"><input id="lk_${k}" placeholder="Image link paste karo (https://...)" oninput="pvw('${k}')" style="margin:0"><button class="p" onclick="svLink('${k}')">Save</button></div><div id="pv_${k}" style="margin-top:5px"></div></div>`}).join('')||'<div class="card m">🎉 Sab products par photo lag gayi hai!</div>'}
+${tot>sN?`<button class="p" style="width:100%;padding:11px" onclick="sN+=25;R()">Aur dikhao (${tot-sN} baaki)</button>`:''}`}
+function pvw(k){const u=$('lk_'+k).value.trim();$('pv_'+k).innerHTML=u?`<img src="${E(u)}" style="height:70px;border-radius:6px;background:#fff" referrerpolicy="no-referrer" onerror="this.outerHTML='<span class=bad>❌ Ye link photo nahi khol raha</span>'">`:''}
+const gById=k=>groups().find(g=>g.k===k);
+async function svLink(k){const u=$('lk_'+k).value.trim(),g=gById(k);if(!/^https?:\/\/.{6,}/.test(u))return tt('Poora https:// wala link daalo');
+try{const b=db.batch(),ts=firebase.firestore.FieldValue.serverTimestamp();g.ids.forEach(id=>{b.set(db.collection('price_overrides').doc(String(id)),{name:base(id).name,images:[u],updated:ts},{merge:true});O[id]={...(O[id]||{}),images:[u]}});await b.commit();tt('✅ '+g.ids.length+' product par photo live');R()}catch(e){tt('Save nahi hua: '+e.message)}}
+async function rmLink(k){const g=gById(k);try{const b=db.batch(),del=firebase.firestore.FieldValue.delete();g.ids.forEach(id=>{b.set(db.collection('price_overrides').doc(String(id)),{images:del,thumb:del,np:del},{merge:true});b.delete(db.collection('product_photos').doc(String(id)));if(O[id]){delete O[id].images;delete O[id].thumb;delete O[id].np}});await b.commit();tt('Photo hata di');R()}catch(e){tt(e.message)}}
+async function upG(k,fl){if(!fl.length)return;const g=gById(k);try{tt('Photo upload ho rahi hai…');const u=await shrink(fl[0],800,.72),th=await thumb(u),b=db.batch(),ts=firebase.firestore.FieldValue.serverTimestamp();
+g.ids.forEach(id=>{b.set(db.collection('product_photos').doc(String(id)),{imgs:[u]});b.set(db.collection('price_overrides').doc(String(id)),{name:base(id).name,np:1,thumb:th,updated:ts},{merge:true});O[id]={...(O[id]||{}),np:1,thumb:th};delete phs[id]});await b.commit();tt('✅ '+g.ids.length+' product par photo live');R()}catch(e){tt('Upload nahi hua: '+e.message)}}
+function tgl(id){opn=opn===id?null:id;R();if(opn)loadPh(id)}
+async function loadPh(id){if(phs[id]!==undefined)return;phs[id]=[];if(O[id]&&O[id].np){try{const d=await db.collection('product_photos').doc(String(id)).get();if(d.exists)phs[id]=d.data().imgs||[]}catch(e){}}R()}
+async function shrink(f,max,q){const u=URL.createObjectURL(f),im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=u}),s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);return c.toDataURL('image/jpeg',q)}
+async function thumb(src){const i=await new Promise(r=>{const m=new Image();m.onload=()=>r(m);m.src=src}),s=240/Math.max(i.width,i.height),c=document.createElement('canvas');c.width=Math.round(i.width*s);c.height=Math.round(i.height*s);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(i,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.7)}
+async function addPh(id,fl){const a=phs[id]=phs[id]||[];for(const f of [...fl]){if(a.length>=5){tt('Max 5 photos');break}try{a.push(await shrink(f,800,.72))}catch(e){tt('Photo नहीं पढ़ी')}}dirty.add(id);R()}
+function delPh(id,i){phs[id].splice(i,1);dirty.add(id);R()}
+async function sp(id){const p=P(id),b=base(id),v={},sid=String(id);p.variants.forEach((x,i)=>{const y=b.variants[i];if(x.mrp!==y.mrp||x.price!==y.price)v[K(x.pack)]={m:x.mrp,p:x.price}});
+try{let ex={};const ph=phs[id],had=O[id]&&O[id].np;
+if(ph!==undefined){if(ph.length){ex={np:ph.length,thumb:await thumb(ph[0])};await db.collection('product_photos').doc(sid).set({imgs:ph})}else if(had)await db.collection('product_photos').doc(sid).delete()}else if(had)ex={np:O[id].np,thumb:O[id].thumb};
+const ref=db.collection('price_overrides').doc(sid);
+const imgs=(O[id]&&O[id].images)||[];
+if(!Object.keys(v).length&&!ex.np&&!imgs.length){await ref.delete();delete O[id]}else{const doc={name:p.name,v,...ex,...(imgs.length?{images:imgs}:{}),updated:firebase.firestore.FieldValue.serverTimestamp()};await ref.set(doc);O[id]=doc}
+dirty.delete(id);tt('✅ Live हो गया');R()}catch(e){tt('Save नहीं हुआ: '+e.message)}}
+async function saveAll(){const ids=[...dirty];if(!ids.length)return tt('कुछ edit नहीं हुआ');let n=0;for(const id of ids){await sp(id);n++}tt('✅ '+n+' products live')}
+function rst(id){const i=W.findIndex(x=>x.id===id);W[i]=JSON.parse(JSON.stringify(base(id)));phs[id]=[];dirty.add(id);R();tt('Reset – Save दबाएँ')}
+</script>
+</body>
+</html>
