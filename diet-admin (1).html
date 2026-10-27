@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Diet Orders – Admin</title>
+<style>body{background:#0b0b0b;color:#fff;font-family:system-ui,sans-serif;padding:14px;max-width:520px;margin:auto}h2{color:#ffcc00}.c{background:#161616;border:1px solid #333;border-radius:12px;padding:12px;margin:10px 0;font-size:14px;line-height:1.6}button{padding:11px;border:0;border-radius:8px;font-weight:800;width:49%;font-size:14px}input{width:100%;box-sizing:border-box;padding:11px;margin:4px 0;border-radius:8px;border:1px solid #444;background:#000;color:#fff;font-size:15px}.a{background:#3ddc84}.r{background:#ff5c5c}.y{background:#ffcc00;width:100%;margin-top:6px}.m{color:#aaa;font-size:12px}.e{color:#ff6b6b;font-size:13px;margin-top:8px}</style></head><body>
+<h2>🧾 Diet Orders – Payment जाँचें</h2><div class="m">अपने UPI app में UTR और रकम मिलाकर ही Approve करें।</div>
+<div id="lg" class="c" style="display:none"><b>Admin Login</b><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Password"><button class="y" onclick="login()">Login</button></div>
+<div id="st" class="m" style="margin-top:8px">⏳ Firebase load हो रहा है...</div><div id="l"></div>
+<script>
+const $=i=>document.getElementById(i),say=t=>$("st").innerHTML=t;
+const L=u=>new Promise((r,e)=>{const s=document.createElement("script");s.src=u;s.onload=r;s.onerror=()=>e(new Error("load nahi hua: "+u));document.head.appendChild(s)});
+async function login(){try{await firebase.auth().signInWithEmailAndPassword($("em").value.trim(),$("pw").value)}catch(e){say('<span class="e">Login नहीं हुआ ('+e.code+'). Email/Password सही डालें, और Firebase → Authentication में Email/Password चालू होना चाहिए।</span>')}}
+function go(){say("✅ Login हो गया। Pending orders:");firebase.firestore().collection("diet_orders").where("status","==","pending").onSnapshot(q=>{const l=$("l");l.innerHTML=q.empty?"कोई pending order नहीं":"";
+q.forEach(d=>{const o=d.data(),e=document.createElement("div");e.className="c";e.innerHTML=`<b>${o.n}</b> · ${o.mb}<br>${o.days} दिन · <b>₹${o.price}</b><br>UTR: <b>${o.utr}</b><br><span class="m">${new Date(o.t).toLocaleString()} · उम्र ${o.a}, BMI ${o.B}</span><br><button class="a">✅ Approve</button> <button class="r">❌ Reject</button>`;
+const [a,r]=e.querySelectorAll("button");a.onclick=()=>d.ref.update({status:"approved"});r.onclick=()=>d.ref.update({status:"rejected"});l.appendChild(e)})},e=>say('<span class="e">Orders नहीं खुल पाए ('+e.code+'). Firestore Rules में अपनी email लिखकर Publish करें।</span>'))}
+(async()=>{try{const V="https://www.gstatic.com/firebasejs/9.22.2/firebase-";await L(V+"app-compat.js");await L(V+"auth-compat.js");await L(V+"firestore-compat.js");
+firebase.initializeApp({apiKey:"AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",authDomain:"brother-s-fitness-club.firebaseapp.com",projectId:"brother-s-fitness-club"});
+say("Login करें");firebase.auth().onAuthStateChanged(u=>{$("lg").style.display=u?"none":"block";if(u)go()})}catch(e){say('<span class="e">'+e.message+' — internet / ad-blocker check करें।</span>')}})();
+</script></body></html>
