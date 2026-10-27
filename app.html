@@ -2,99 +2,167 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>5 Brother's Fitness Club — Main Menu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>5 Brother's Fitness Club - Main Menu</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffcc00">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    background:#050505;color:#fff;font-family:system-ui,-apple-system,sans-serif;
-    min-height:100vh;padding:16px;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
   }
-  .wrap{max-width:480px;margin:0 auto}
-  header{text-align:center;margin:12px 0 20px}
-  header h1{color:#ffcc00;font-size:18px;letter-spacing:.5px}
-  header p{color:#888;font-size:11px;margin-top:4px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  a.tile{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:8px;min-height:110px;padding:14px 10px;
-    background:#111;border:1.5px solid #333;border-radius:14px;
-    text-decoration:none;color:#fff;font-weight:700;font-size:12px;
-    transition:border-color .15s, transform .1s;
+  body {
+    background-color: #070707 !important;
+    color: #ffffff !important;
+    padding: 16px 12px 30px 12px !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    font-size: 16px !important;
   }
-  a.tile:active{transform:scale(.97)}
-  a.tile .ico{font-size:28px;line-height:1}
-  a.tile.gold{border-color:#ffcc00;background:#1a1600}
-  a.tile.green{border-color:#00ff66;background:#0a1a10}
-  a.tile.blue{border-color:#4db8ff;background:#0a1520}
-  a.tile.orange{border-color:#ff9900;background:#1a1000}
-  a.tile.red{border-color:#ff5555;background:#1a0808}
-  a.tile.wa{border-color:#25D366;background:#0a1a10}
-  .sub{font-size:10px;color:#888;font-weight:500;text-align:center}
-  footer{text-align:center;margin-top:24px;color:#555;font-size:10px}
+  .club-header {
+    background: linear-gradient(135deg, #221d0a 0%, #111111 100%);
+    border: 2px solid #ffcc00;
+    border-radius: 18px;
+    padding: 18px 14px;
+    text-align: center;
+    box-shadow: 0 4px 25px rgba(255, 204, 0, 0.2);
+    margin-bottom: 16px;
+  }
+  .club-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffcc00;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .club-subtitle {
+    font-size: 11px;
+    color: #ccc;
+    margin-top: 3px;
+  }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .menu-card {
+    background: #121212;
+    border: 1.5px solid #282828;
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.15s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+  .menu-card:active {
+    transform: scale(0.96);
+    border-color: #ffcc00;
+    background: #1c1910;
+  }
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .card-desc {
+    font-size: 10.5px;
+    color: #888;
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+  .card-admission { border-color: #ffcc00; background: linear-gradient(135deg, rgba(255,204,0,0.08) 0%, #121212 100%); }
+  .card-members { border-color: #00c8ff; }
+  .card-attendance { border-color: #00ff66; }
+  .card-master { border-color: #ff9900; }
+  .card-store { border-color: #9933ff; }
+  .card-verify { border-color: #00ff66; }
+  .card-pay { border-color: #ff3333; background: linear-gradient(135deg, rgba(255,51,51,0.08) 0%, #121212 100%); }
+
+  .footer-badge {
+    text-align: center;
+    font-size: 11px;
+    color: #666;
+    margin-top: 15px;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>5 BROTHER'S FITNESS CLUB</h1>
-    <p>उमराव खेड़ा, अकरमपुर, उन्नाव · 9140417259</p>
-    <p style="color:#ffcc00;margin-top:6px;font-weight:700;font-size:12px">मुख्य मेन्यू (Main Menu)</p>
-  </header>
 
-  <div class="grid">
-    <a class="tile gold" href="admission.html">
-      <span class="ico">📝</span>
-      Admission Form
-      <span class="sub">नया सदस्य / फॉर्म</span>
+  <div class="club-header">
+    <div class="club-title">👑 5 BROTHER'S FITNESS CLUB</div>
+    <div class="club-subtitle">उमराव खेड़ा, अकरमपुर, उन्नाव • 9140417259</div>
+    <div style="font-size: 11px; color: #ffcc00; font-weight: bold; margin-top: 4px;">मुख्य मेन्यू (Main Menu)</div>
+  </div>
+
+  <div class="menu-grid">
+    <!-- 1. Admission Form -->
+    <a href="admission.html" class="menu-card card-admission">
+      <div class="card-icon">📝</div>
+      <div class="card-title" style="color: #ffcc00;">Admission Form</div>
+      <div class="card-desc">नया सदस्य / फॉर्म</div>
     </a>
 
-    <a class="tile blue" href="Members_Portal.html">
-      <span class="ico">👥</span>
-      Members Portal
-      <span class="sub">Student · Job · Edit · Lock</span>
+    <!-- 2. Members Portal -->
+    <a href="members-portal.html" class="menu-card card-members">
+      <div class="card-icon">👥</div>
+      <div class="card-title" style="color: #00c8ff;">Members Portal</div>
+      <div class="card-desc">Student • Job • Edit • Lock</div>
     </a>
 
-    <a class="tile green" href="Fees_Portal_Fixed.html">
-      <span class="ico">💰</span>
-      Fees Portal
-      <span class="sub">फीस जमा / रसीद</span>
+    <!-- 3. Attendance -->
+    <a href="attendance.html" class="menu-card card-attendance">
+      <div class="card-icon">✅</div>
+      <div class="card-title" style="color: #00ff66;">Attendance</div>
+      <div class="card-desc">हाजिरी / Selfie</div>
     </a>
 
-    <a class="tile orange" href="Attendance_Kiosk_Fixed.html">
-      <span class="ico">✅</span>
-      Attendance
-      <span class="sub">हाजिरी / Selfie</span>
+    <!-- 4. Master Hub -->
+    <a href="master.html" class="menu-card card-master">
+      <div class="card-icon">📊</div>
+      <div class="card-title" style="color: #ff9900;">Master</div>
+      <div class="card-desc">Admin dashboard</div>
     </a>
 
-    <a class="tile" href="Master_Dashboard_Fixed.html">
-      <span class="ico">👑</span>
-      Master
-      <span class="sub">Admin dashboard</span>
+    <!-- 5. Supplement Store -->
+    <a href="store.html" class="menu-card card-store">
+      <div class="card-icon">🛒</div>
+      <div class="card-title" style="color: #9933ff;">Supplement Store</div>
+      <div class="card-desc">Products / Shop</div>
     </a>
 
-    <a class="tile" href="BigBrothers_Fitness_Store_Fixed.html">
-      <span class="ico">🛒</span>
-      Supplement Store
-      <span class="sub">Products / Shop</span>
+    <!-- 6. Product Verify -->
+    <a href="verify.html" class="menu-card card-verify">
+      <div class="card-icon">🔐</div>
+      <div class="card-title" style="color: #00ff66;">Product Verify</div>
+      <div class="card-desc">Code check</div>
     </a>
 
-    <a class="tile wa" href="verify.html">
-      <span class="ico">🔐</span>
-      Product Verify
-      <span class="sub">Code check</span>
-    </a>
-
-    <a class="tile red" href="pay.html">
-      <span class="ico">📲</span>
-      Pay / UPI
-      <span class="sub">Payment page</span>
+    <!-- 7. Pay / UPI (Fees option included) -->
+    <a href="pay.html" class="menu-card card-pay" style="grid-column: span 2;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;">
+        <div class="card-icon" style="margin-bottom: 0;">💳</div>
+        <div style="text-align: left;">
+          <div class="card-title" style="color: #ff4444; font-size: 15px;">Pay / UPI & Fees</div>
+          <div class="card-desc">ऑनलाइन भुगतान और फीस रसीद काउंटर</div>
+        </div>
+      </div>
     </a>
   </div>
 
-  <footer>
-    5 Brother's Fitness Club · Internal Use
-  </footer>
-</div>
+  <div class="footer-badge">5 Brother's Fitness Club • Internal Use</div>
+
 </body>
 </html>
