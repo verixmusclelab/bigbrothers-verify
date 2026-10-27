@@ -2,97 +2,107 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>5 Brother's Fitness Club — Main Menu</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
   body{
-    background: #0a0a0a;
-    color: #fff;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    text-align: center;
+    background:#050505;color:#fff;font-family:system-ui,-apple-system,sans-serif;
+    min-height:100vh;padding:16px;
   }
-  .splash-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    animation: fadeIn 1s ease-in-out;
+  .wrap{max-width:480px;margin:0 auto}
+  header{text-align:center;margin:12px 0 20px}
+  header h1{color:#ffcc00;font-size:18px;letter-spacing:.5px}
+  header p{color:#888;font-size:11px;margin-top:4px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  a.tile{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;min-height:110px;padding:14px 10px;
+    background:#111;border:1.5px solid #333;border-radius:14px;
+    text-decoration:none;color:#fff;font-weight:700;font-size:12px;
+    transition:border-color .15s, transform .1s;
   }
-  .crown{
-    font-size: 50px;
-    margin-bottom: 12px;
-    animation: bounce 1.2s infinite alternate;
-  }
-  h1{
-    color: #ffcc00;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-    text-shadow: 0 0 15px rgba(255,204,0,0.4);
-  }
-  .tagline{
-    color: #aaa;
-    font-size: 11px;
-    font-weight: 600;
-    background: rgba(255,204,0,0.1);
-    border: 1px solid rgba(255,204,0,0.3);
-    padding: 6px 14px;
-    border-radius: 20px;
-    margin-bottom: 25px;
-  }
-  .loader-bar{
-    width: 160px;
-    height: 4px;
-    background: #222;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-  }
-  .loader-fill{
-    position: absolute;
-    top: 0; left: 0; bottom: 0;
-    width: 0%;
-    background: linear-gradient(90deg, #ffcc00, #00ff66);
-    border-radius: 4px;
-    animation: loadProgress 2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  @keyframes bounce {
-    from { transform: translateY(0); }
-    to { transform: translateY(-8px); }
-  }
-  @keyframes loadProgress {
-    0% { width: 0%; }
-    100% { width: 100%; }
-  }
+  a.tile:active{transform:scale(.97)}
+  a.tile .ico{font-size:28px;line-height:1}
+  a.tile.gold{border-color:#ffcc00;background:#1a1600}
+  a.tile.green{border-color:#00ff66;background:#0a1a10}
+  a.tile.blue{border-color:#4db8ff;background:#0a1520}
+  a.tile.orange{border-color:#ff9900;background:#1a1000}
+  a.tile.red{border-color:#ff5555;background:#1a0808}
+  a.tile.wa{border-color:#25D366;background:#0a1a10}
+  .sub{font-size:10px;color:#888;font-weight:500;text-align:center}
+  footer{text-align:center;margin-top:24px;color:#555;font-size:10px}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <header>
+    <h1>5 BROTHER'S FITNESS CLUB</h1>
+    <p>उमराव खेड़ा, अकरमपुर, उन्नाव · 9140417259</p>
+    <p style="color:#ffcc00;margin-top:6px;font-weight:700;font-size:12px">मुख्य मेन्यू (Main Menu)</p>
+  </header>
 
-<div class="splash-container">
-  <div class="crown">👑🏋️‍♂️</div>
-  <h1>5 BROTHER'S FITNESS CLUB</h1>
-  <div class="tagline">"100% असली और असरदार रिजल्ट"</div>
-  <div class="loader-bar">
-    <div class="loader-fill"></div>
+  <div class="grid">
+    <!-- Admission Form -->
+    <a class="tile gold" href="admission.html">
+      <span class="ico">📝</span>
+      Admission Form
+      <span class="sub">नया सदस्य / फॉर्म</span>
+    </a>
+
+    <!-- Members Portal (Aapke screenshot ke mutabik 'supplier-portal.html' ya jo bhi ho) -->
+    <a class="tile blue" href="supplier-portal.html">
+      <span class="ico">👥</span>
+      Members Portal
+      <span class="sub">Student · Job · Edit · Lock</span>
+    </a>
+
+    <!-- Fees Portal -->
+    <a class="tile green" href="supplement-due.html">
+      <span class="ico">💰</span>
+      Fees Portal
+      <span class="sub">फीस जमा / रसीद</span>
+    </a>
+
+    <!-- Attendance (Screenshot ke mutabik 'attendance.html') -->
+    <a class="tile orange" href="attendance.html">
+      <span class="ico">✅</span>
+      Attendance
+      <span class="sub">हाजिरी / Selfie</span>
+    </a>
+
+    <!-- Master Dashboard (Screenshot ke mutabik 'Master_Dashboard_Fixed.html') -->
+    <a class="tile" href="Master_Dashboard_Fixed.html">
+      <span class="ico">👑</span>
+      Master
+      <span class="sub">Admin dashboard</span>
+    </a>
+
+    <!-- Supplement Store (Screenshot ke mutabik 'store.html') -->
+    <a class="tile" href="store.html">
+      <span class="ico">🛒</span>
+      Supplement Store
+      <span class="sub">Products / Shop</span>
+    </a>
+
+    <!-- Product Verify -->
+    <a class="tile wa" href="verify.html">
+      <span class="ico">🔐</span>
+      Product Verify
+      <span class="sub">Code check</span>
+    </a>
+
+    <!-- Pay / UPI (Screenshot ke mutabik 'pay.html') -->
+    <a class="tile red" href="pay.html">
+      <span class="ico">📲</span>
+      Pay / UPI
+      <span class="sub">Payment page</span>
+    </a>
   </div>
+
+  <footer>
+    5 Brother's Fitness Club · Internal Use
+  </footer>
 </div>
-
-<script>
-  // 2 सेकंड बाद यह ऑटोमैटिक store.html पर बड़े और सही साइज़ में चला जाएगा
-  setTimeout(() => {
-    window.location.replace("store.html");
-  }, 2000);
-</script>
-
 </body>
 </html>
