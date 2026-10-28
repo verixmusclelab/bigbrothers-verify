@@ -27,7 +27,7 @@
 </style>
 </head>
 <body>
-<div class="h">👑 5 BROTHER'S FITNESS CLUB<small>Umrao Kheda, Akbarpur, Unnao | Ph: 9140417259</small></div>
+<div class="h">👑 5 BROTHER'S FITNESS CLUB<small>Umrao Kheda, Akbarpur, Unnao | Ph: 9990954574</small></div>
 
 <!-- HOME -->
 <div id="step-home" class="c">
@@ -36,7 +36,7 @@
   <button onclick="nextStep(1)">🚀 शुरू करें (Start Now)</button>
 </div>
 
-<!-- STEP 1: Personal Details -->
+<!-- STEP 1 -->
 <div id="step-1" class="c hid">
   <div class="step-indicator">STEP 1 OF 4 : BASIC DETAILS</div>
   <h3>आपकी पहचान</h3>
@@ -46,7 +46,7 @@
   <button onclick="validateStep1()">अगला कदम (Next) ➔</button>
 </div>
 
-<!-- STEP 2: Body & Physical Stats -->
+<!-- STEP 2 -->
 <div id="step-2" class="c hid">
   <div class="step-indicator">STEP 2 OF 4 : BODY STATS & GOAL</div>
   <h3>शारीरिक बनावट और लक्ष्य</h3>
@@ -82,7 +82,7 @@
   <button onclick="validateStep2()">अगला कदम (Next) ➔</button>
 </div>
 
-<!-- STEP 3: Medical / Health Check -->
+<!-- STEP 3 -->
 <div id="step-3" class="c hid">
   <div class="step-indicator">STEP 3 OF 4 : HEALTH CHECK</div>
   <h3>हेल्थ और मेडिकल जानकारी</h3>
@@ -101,37 +101,25 @@
   <button onclick="validateStep3()">डाइट प्लान चुनें (Select Plan) ➔</button>
 </div>
 
-<!-- STEP 4: Plan Selection & Secure Payment -->
+<!-- STEP 4 -->
 <div id="step-4" class="c hid">
   <div class="step-indicator">STEP 4 OF 4 : SECURE PAYMENT & GENERATE</div>
   <h3>अपना डाइट प्लान चुनें</h3>
-  
-  <div class="pl" style="background:#181818;padding:10px;border-radius:8px;margin-bottom:8px">
-    <div><b>1 Week Diet Chart</b></div><b style="color:#ffcc00">₹100</b>
-  </div>
+  <div class="pl" style="background:#181818;padding:10px;border-radius:8px;margin-bottom:8px"><div><b>1 Week Diet Chart</b></div><b style="color:#ffcc00">₹100</b></div>
   <button onclick="initPay(7,100)">1 Week Plan चुनें</button>
-
-  <div class="pl" style="background:#181818;padding:10px;border-radius:8px;margin:12px 0 8px">
-    <div><b>14 Days Diet Chart</b></div><b style="color:#ffcc00">₹150</b>
-  </div>
+  <div class="pl" style="background:#181818;padding:10px;border-radius:8px;margin:12px 0 8px"><div><b>14 Days Diet Chart</b></div><b style="color:#ffcc00">₹150</b></div>
   <button onclick="initPay(14,150)">14 Days Plan चुनें</button>
-
-  <div class="pl" style="background:#181818;padding:10px;border-radius:8px;margin:12px 0 8px">
-    <div><b>1 Month Diet Chart</b></div><b style="color:#ffcc00">₹250</b>
-  </div>
+  <div class="pl" style="background:#181818;padding:10px;border-radius:8px;margin:12px 0 8px"><div><b>1 Month Diet Chart</b></div><b style="color:#ffcc00">₹250</b></div>
   <button onclick="initPay(30,250)">1 Month Plan चुनें</button>
-
-  <div class="quote" style="margin-top:14px">⚡ "सस्ती सलाह और गलत डाइट से बॉडी बर्बाद होती है। 5 Brother's Fitness Club का प्रोफेशनल डाइट चार्ट अपनाएं और असली बदलाव देखें!"</div>
+  <div class="quote" style="margin-top:14px">⚡ "सस्ती सलाह और गलत डाइट से बॉडी बर्बाद होती है। 5 Brother's Fitness Club का प्रोफेशनल डाइट चार्ट अपनाएं!"</div>
   <button class="g" onclick="prevStep(3)">⬅️ पीछे जाएं</button>
 </div>
 
-<!-- PAYMENT & SUBMISSION BOX -->
 <div id="pay" class="c hid"></div>
-
 <div style="margin-top:14px" class="dis">⚠️ यह जानकारी फिटनेस और जनरल वेलनेस के लिए है। किसी भी मेडिकल स्थिति में डॉक्टर की सलाह अवश्य लें।</div>
 
 <script>
-const $=i=>document.getElementById(i),GYM="9140417259",UPI="9140417259@okbizaxis",S={};
+const $=i=>document.getElementById(i),GYM="9990954574",UPI="9990954574@okbizaxis",S={};
 $("ft").innerHTML=[3,4,5,6,7].map(x=>`<option ${x==5?'selected':''} value="${x}">${x} फुट</option>`).join("");
 $("inc").innerHTML=[...Array(12).keys()].map(x=>`<option value="${x}">${x} इंच</option>`).join("");
 const fig=(w,b)=>`<svg viewBox="0 0 80 120"><circle cx="40" cy="14" r="10" fill="#ffcc00"/><ellipse cx="40" cy="${48}" rx="${w}" ry="26" fill="#ffcc00"/>${b?`<ellipse cx="40" cy="62" rx="${w+b}" ry="12" fill="#ffcc00"/>`:''}<rect x="${40-w/2-2}" y="72" width="${w/2}" height="40" rx="6" fill="#ffcc00"/><rect x="${42}" y="72" width="${w/2}" height="40" rx="6" fill="#ffcc00"/></svg>`;
@@ -211,7 +199,6 @@ async function watchOrder(id,d){
   });
 }
 
-// Check saved order
 try{
   const saved=JSON.parse(localStorage.getItem("dietOrder")||"null");
   if(saved){
@@ -224,7 +211,6 @@ try{
   }
 }catch(e){}
 
-// DIET DATA
 const ND={
   hi:{
     N:{v:["Poha + 1 गिलास दूध","Veg पराठा (2) + दही","बेसन चीला (3) + चटनी","दलिया + केला","ओट्स + दूध + फल","इडली (4) + सांभर","पनीर सैंडविच + दूध"],n:["अंडा भुर्जी (3 अंडे) + 2 रोटी","उबले अंडे (3) + दलिया","ऑमलेट (3 अंडे) + ब्राउन ब्रेड","अंडा पराठा + दही","ओट्स + 3 अंडे की सफेदी","पोहा + 3 उबले अंडे","चिकन सैंडविच + दूध"]},
@@ -248,20 +234,14 @@ function generateChart(d){
   const lang = S.lang || "hi", dict = ND[lang] || ND.hi, v = S.dp;
   const c = document.createElement("canvas"), W = 1000, H = 450 + d * 220, x = c.getContext("2d");
   c.width = W; c.height = H;
-  
-  // Background Theme
   x.fillStyle = "#070707"; x.fillRect(0, 0, W, H);
-  
-  // Header Banner
   x.fillStyle = "#ffcc00"; x.fillRect(0, 0, W, 140);
   x.fillStyle = "#000"; x.font = "bold 36px sans-serif"; x.fillText("5 BROTHER'S FITNESS CLUB", 30, 55);
   x.font = "20px sans-serif"; x.fillText("Umrao Kheda, Akbarpur, Unnao | Ph: " + GYM, 30, 90);
   x.font = "bold 22px sans-serif"; x.fillText((lang=="en"?(d+" Days Professional Diet Chart"):(d+" दिन का प्रोफेशनल डाइट चार्ट")), 30, 122);
   
-  // User Profile Box
   x.fillStyle = "#161616"; x.fillRect(30, 160, W - 60, 110);
   x.strokeStyle = "#ffcc00"; x.lineWidth = 2; x.strokeRect(30, 160, W - 60, 110);
-  
   x.fillStyle = "#ffcc00"; x.font = "bold 20px sans-serif";
   x.fillText(`Name: ${S.n}   |   Mob: ${S.mb}`, 50, 195);
   x.fillStyle = "#fff"; x.font = "18px sans-serif";
@@ -273,7 +253,6 @@ function generateChart(d){
     const idx = (i + Math.floor(i/7)) % 7;
     x.fillStyle = "#ffcc00"; x.fillRect(30, y - 30, W - 60, 36);
     x.fillStyle = "#000"; x.font = "bold 22px sans-serif"; x.fillText((lang=="en"?"Day ":"दिन ") + (i + 1), 45, y - 6);
-    
     x.fillStyle = "#fff"; x.font = "18px sans-serif";
     const meals = [
       [(lang=="en"?"Breakfast":"नाश्ता"), dict.N[v][idx]],
@@ -281,15 +260,11 @@ function generateChart(d){
       [(lang=="en"?"Evening Snack":"शाम का नाश्ता"), dict.SH[idx]],
       [(lang=="en"?"Dinner":"रात का खाना"), dict.R[v][idx]]
     ];
-    meals.forEach((m, j) => {
-      x.fillText(`${m[0]}: ${m[1]}`, 50, y + 28 + (j * 32));
-    });
+    meals.forEach((m, j) => { x.fillText(`${m[0]}: ${m[1]}`, 50, y + 28 + (j * 32)); });
     y += 210;
   }
-  
   x.fillStyle = "#aaa"; x.font = "16px sans-serif";
   x.fillText("Note: Roz 3-4 litre paani piyein aur workout ke baad proper nutrition lein. 5 Brother's Fitness Club.", 30, H - 20);
-  
   const a = document.createElement("a");
   a.download = `diet-${d}din-${S.n}.png`; a.href = c.toDataURL("image/png");
   $("out").innerHTML = `<img src="${a.href}" style="width:100%;margin-top:10px;border-radius:12px"><a class="b" download="${a.download}" href="${a.href}">⬇️ Download Diet Chart Image</a>`;
