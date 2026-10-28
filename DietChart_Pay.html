@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>5BFC — Diet Chart Payment</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#050505;color:#fff;font-family:system-ui,-apple-system,sans-serif;min-height:100vh;padding:14px}
+  .wrap{max-width:440px;margin:0 auto}
+  .card{background:#111;border:1.5px solid #ffcc00;border-radius:14px;padding:16px;margin-bottom:12px}
+  h1{color:#ffcc00;font-size:17px;text-align:center;margin-bottom:4px}
+  .muted{color:#888;font-size:11px;text-align:center}
+  label{display:block;font-size:11px;color:#aaa;margin:10px 0 4px}
+  input,select,textarea{
+    width:100%;background:#181818;border:1px solid #444;color:#fff;
+    padding:11px;border-radius:8px;font-size:14px;outline:none
+  }
+  input:focus,select:focus,textarea:focus{border-color:#ffcc00}
+  .btn{
+    width:100%;border:none;border-radius:10px;padding:14px;font-weight:800;
+    font-size:14px;cursor:pointer;margin-top:12px
+  }
+  .btn-gold{background:#ffcc00;color:#000}
+  .btn-green{background:#00ff66;color:#000}
+  .btn-wa{background:#25D366;color:#000}
+  .btn-dark{background:#333;color:#fff}
+  .price{
+    text-align:center;font-size:28px;font-weight:900;color:#00ff66;margin:8px 0
+  }
+  .row{display:flex;gap:8px}
+  .row>*{flex:1}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .top a{background:#ffcc00;color:#000;text-decoration:none;font-weight:700;font-size:11px;padding:6px 12px;border-radius:6px}
+  .chip{display:inline-block;background:#1a1a00;border:1px solid #ffcc00;color:#ffcc00;font-size:10px;padding:3px 8px;border-radius:20px;margin:2px}
+  .ok{display:none;background:#0a1a10;border:1px solid #00ff66;border-radius:12px;padding:16px;text-align:center;margin-top:12px}
+  .ok.show{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="app.html">⬅ Home</a>
+    <span style="color:#ffcc00;font-size:11px;font-weight:700">5 BROTHER'S FITNESS</span>
+  </div>
+
+  <div class="card">
+    <h1>🥗 Diet Chart Payment</h1>
+    <p class="muted">Custom / Ready diet chart · Payment ke baad owner ko turant WhatsApp alert</p>
+    <div class="price" id="priceShow">₹199</div>
+    <div style="text-align:center;margin-bottom:8px">
+      <span class="chip">Weight Gain</span>
+      <span class="chip">Weight Loss</span>
+      <span class="chip">Student</span>
+      <span class="chip">Veg</span>
+    </div>
+
+    <label>Diet Chart Type *</label>
+    <select id="dtype" onchange="updatePrice()">
+      <option value="199|Weight Gain Veg (7 Day)">Weight Gain Veg — 7 Day Chart — ₹199</option>
+      <option value="199|Weight Loss Veg (7 Day)">Weight Loss Veg — 7 Day Chart — ₹199</option>
+      <option value="299|Custom Personal Chart">Custom Personal Chart — ₹299</option>
+      <option value="99|Student Basic Chart">Student Basic Chart — ₹99</option>
+      <option value="0|Other / Ask Amount">Other (amount neeche likho)</option>
+    </select>
+
+    <label>Amount ₹ *</label>
+    <input type="number" id="amount" value="199" min="1">
+
+    <label>Customer Name *</label>
+    <input type="text" id="name" placeholder="Poora naam">
+
+    <label>WhatsApp Mobile *</label>
+    <input type="tel" id="phone" maxlength="10" placeholder="10 digit mobile" inputmode="numeric">
+
+    <label>Age / Goal (optional)</label>
+    <input type="text" id="goal" placeholder="e.g. 13 yr · Weight gain · 42 kg">
+
+    <label>Payment Mode *</label>
+    <select id="mode">
+      <option value="online">Online UPI</option>
+      <option value="cash">Cash at Gym</option>
+    </select>
+
+    <label>Note (optional)</label>
+    <textarea id="note" rows="2" placeholder="Koi khas baat..."></textarea>
+
+    <button class="btn btn-gold" onclick="payNow()">💳 Pay / Send Request</button>
+    <button class="btn btn-wa" onclick="payNow(true)">💬 Pay + Open WhatsApp to Owner</button>
+  </div>
+
+  <div class="card" style="border-color:#333">
+    <p class="muted" style="text-align:left;line-height:1.5">
+      <b style="color:#ffcc00">Kaise kaam karega:</b><br>
+      1. Customer details + amount bharega<br>
+      2. Button dabate hi <b>aapka WhatsApp</b> khulega (9140417259)<br>
+      3. Message me naam, number, chart type, amount sab hoga<br>
+      4. Aap dekh ke approve / chart bhej sakte ho
+    </p>
+  </div>
+
+  <div class="ok" id="okBox">
+    <div style="font-size:32px">✅</div>
+    <p style="color:#00ff66;font-weight:700;margin:8px 0">Request owner ko bhej di gayi</p>
+    <p class="muted">WhatsApp me message check karo · customer ko chart approve karke bhejo</p>
+    <button class="btn btn-dark" onclick="location.reload()">Naya form</button>
+  </div>
+</div>
+
+<script>
+const OWNER = "919140417259";
+
+function updatePrice(){
+  const v = document.getElementById("dtype").value;
+  const amt = parseInt(v.split("|")[0], 10);
+  if(amt > 0){
+    document.getElementById("amount").value = amt;
+    document.getElementById("priceShow").textContent = "₹" + amt;
+  }
+}
+
+function payNow(forceWa){
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim().replace(/\D/g,"").slice(-10);
+  const amount = document.getElementById("amount").value.trim();
+  const dtype = document.getElementById("dtype").value.split("|")[1] || "Diet Chart";
+  const mode = document.getElementById("mode").value;
+  const goal = document.getElementById("goal").value.trim();
+  const note = document.getElementById("note").value.trim();
+
+  if(!name){ alert("Naam likho"); return; }
+  if(phone.length !== 10){ alert("Sahi 10 digit mobile likho"); return; }
+  if(!amount || Number(amount) < 0){ alert("Amount likho"); return; }
+
+  const msg =
+`🥗 *DIET CHART PAYMENT ALERT*
+5 Brother's Fitness Club
+
+👤 Name: ${name}
+📞 Phone: ${phone}
+📦 Chart: ${dtype}
+💰 Amount: ₹${amount}
+💳 Mode: ${mode === "cash" ? "Cash at Gym" : "Online UPI"}
+🎯 Goal: ${goal || "-"}
+📝 Note: ${note || "-"}
+
+Please verify payment & send diet chart.
+— Auto alert from Diet Chart Pay page`;
+
+  // Save local log
+  try{
+    const logs = JSON.parse(localStorage.getItem("5BFC_DIET_PAY_LOGS") || "[]");
+    logs.unshift({name, phone, amount, dtype, mode, goal, note, at: new Date().toISOString()});
+    localStorage.setItem("5BFC_DIET_PAY_LOGS", JSON.stringify(logs.slice(0,100)));
+  }catch(e){}
+
+  // Always open owner WhatsApp with full details
+  const url = "https://wa.me/" + OWNER + "?text=" + encodeURIComponent(msg);
+  window.open(url, "_blank");
+
+  // If online, also try open UPI
+  if(mode === "online"){
+    setTimeout(function(){
+      window.location.href = "upi://pay?pa=9140417259@okbizaxis&pn=5BrothersGym&am=" + encodeURIComponent(amount) + "&cu=INR&tn=DietChart_" + encodeURIComponent(name);
+    }, 600);
+  }
+
+  document.getElementById("okBox").classList.add("show");
+  if(forceWa){ /* already opened */ }
+}
+</script>
+</body>
+</html>
