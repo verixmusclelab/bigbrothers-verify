@@ -233,90 +233,45 @@ const ND={
 };
 
 function generateChart(d){
-  const lang = S.lang || "hi", v = S.dp;
-  
-  const mealsList = [
-    {t: "सुबह उठते ही (5:30 - 6:00 AM)", f: "गुनगुना पानी", q: "1 गिलास (नींबू + शहद)", b: "मेटाबॉलिज्म बढ़ेगा, पाचन अच्छा रहेगा।"},
-    {t: "1. नाश्ता (7:00 - 8:00 AM)", f: v=='v'?"2-3 पराठे + दही":"अंडा भुर्जी (3) + 2 रोटी", q: v=='v'?"2 पराठे + 1 गिलास दूध + केला":"3 अंडे + दलिया + दूध", b: "ऊर्जा देगा, वजन बढ़ाने में मदद।"},
-    {t: "2. मिड मॉर्निंग (10:30 - 11:00 AM)", f: "स्प्राउट्स + फल", q: "1 कटोरी स्प्राउट्स + 1 केला", b: "प्रोटीन + कार्बोहाइड्रेट, लंबी एनर्जी।"},
-    {t: "3. दोपहर का खाना (1:00 - 2:00 PM)", f: "दाल + रोटी + सब्जी + चावल", q: "3-4 रोटी + 1 कटोरी दाल व सब्जी", b: "पूरा पोषण, मसल्स ग्रोथ के लिए।"},
-    {t: "4. शाम का नाश्ता (4:30 - 5:00 PM)", f: "दूध + केला + पीनट बटर", q: "1 गिलास दूध + 2 केला + 2 चम्मच बटर", b: "हाई कैलोरी + प्रोटीन, ताकत।"},
-    {t: "5. वर्कआउट के बाद (6:30 - 7:00 PM)", f: "पोस्ट-वर्कआउट मील", q: "1 गिलास दूध + 1 केला + किशमिश", b: "मसल रिकवरी, एनर्जी रीफिल।"},
-    {t: "6. रात का खाना (8:30 - 9:30 PM)", f: "हल्का डिनर + सलाद", q: "3 रोटी + पनीर/दाल + सब्जी + सलाद", b: "रात तक पोषण और अच्छी नींद।"},
-    {t: "7. सोने से पहले (10:00 - 10:30 PM)", f: "गुनगुना दूध + बादाम", q: "1 गिलास दूध + 5-7 बादाम", b: "अच्छी नींद, हॉर्मोन बैलेंस।"}
-  ];
-
-  const W = 1200, H = 1350;
-  const c = document.createElement("canvas"), x = c.getContext("2d");
+  const lang = S.lang || "hi", dict = ND[lang] || ND.hi, v = S.dp;
+  const c = document.createElement("canvas"), W = 1000, H = 450 + d * 220, x = c.getContext("2d");
   c.width = W; c.height = H;
-
-  // Background
-  x.fillStyle = "#0b0b0b"; x.fillRect(0, 0, W, H);
-
-  // Top Header Banner
+  x.fillStyle = "#070707"; x.fillRect(0, 0, W, H);
   x.fillStyle = "#ffcc00"; x.fillRect(0, 0, W, 140);
-  x.fillStyle = "#000"; x.font = "bold 46px sans-serif"; x.fillText("5 BROTHER'S FITNESS CLUB", 40, 65);
-  x.font = "22px sans-serif"; x.fillText("Umrao Kheda, Akrampur, Unnao  •  Ph: " + GYM, 40, 110);
-  x.fillStyle = "#fff"; x.font = "bold 20px sans-serif"; x.fillText("Uday Pratap Singh (Your Fitness Partner)", 750, 65);
-
-  // User Info & Goal Box
-  x.fillStyle = "#161616"; x.fillRect(40, 160, W - 80, 110);
-  x.strokeStyle = "#ffcc00"; x.lineWidth = 2; x.strokeRect(40, 160, W - 80, 110);
+  x.fillStyle = "#000"; x.font = "bold 36px sans-serif"; x.fillText("5 BROTHER'S FITNESS CLUB", 30, 55);
+  x.font = "20px sans-serif"; x.fillText("Umrao Kheda, Akbarpur, Unnao | Ph: " + GYM, 30, 90);
+  x.font = "bold 22px sans-serif"; x.fillText((lang=="en"?(d+" Days Professional Diet Chart"):(d+" दिन का प्रोफेशनल डाइट चार्ट")), 30, 122);
   
-  x.fillStyle = "#ffcc00"; x.font = "bold 22px sans-serif";
-  x.fillText(`Name: ${S.n}   |   Mobile: ${S.mb}`, 65, 200);
+  x.fillStyle = "#161616"; x.fillRect(30, 160, W - 60, 110);
+  x.strokeStyle = "#ffcc00"; x.lineWidth = 2; x.strokeRect(30, 160, W - 60, 110);
+  x.fillStyle = "#ffcc00"; x.font = "bold 20px sans-serif";
+  x.fillText(`Name: ${S.n}   |   Mob: ${S.mb}`, 50, 195);
   x.fillStyle = "#fff"; x.font = "18px sans-serif";
-  x.fillText(`Age: ${S.a} yrs   |   Weight: ${S.w} kg   |   Height: ${S.ft}'${S.ic}"   |   BMI: ${S.B} (${S.k.toUpperCase()})   |   Goal: ${S.goal || 'Weight Gain'}`, 65, 240);
+  x.fillText(`Age: ${S.a} yrs   |   Weight: ${S.w} kg   |   Height: ${S.ft}'${S.ic}"   |   BMI: ${S.B}`, 50, 225);
+  x.fillText(`Goal: ${S.goal}`, 50, 255);
 
-  // Section Title
-  x.fillStyle = "#ffcc00"; x.font = "bold 24px sans-serif";
-  x.fillText(`🔥 ${d} दिन का डाइट चार्ट (${v=='v' ? 'Veg' : 'Non-Veg'})`, 40, 305);
-
-  // Table Header
-  let y = 330;
-  x.fillStyle = "#ffcc00"; x.fillRect(40, y, W - 80, 45);
-  x.fillStyle = "#000"; x.font = "bold 18px sans-serif";
-  x.fillText("समय (Time)", 60, y + 28);
-  x.fillText("क्या खाएं (Food)", 330, y + 28);
-  x.fillText("कितना खाएं (Quantity)", 660, y + 28);
-  x.fillText("फायदा (Benefits)", 950, y + 28);
-
-  y += 45;
-  x.font = "16px sans-serif";
-  
-  mealsList.forEach((m, i) => {
-    x.fillStyle = i % 2 === 0 ? "#121212" : "#1a1a1a";
-    x.fillRect(40, y, W - 80, 85);
-    x.strokeStyle = "#282828"; x.strokeRect(40, y, W - 80, 85);
-
-    x.fillStyle = "#ffcc00"; x.font = "bold 16px sans-serif";
-    x.fillText(m.t, 55, y + 48);
-    x.fillStyle = "#fff"; x.font = "16px sans-serif";
-    x.fillText(m.f, 330, y + 48);
-    x.fillStyle = "#ccc"; x.font = "15px sans-serif";
-    x.fillText(m.q, 660, y + 48);
-    x.fillStyle = "#3ddc84"; x.font = "14px sans-serif";
-    x.fillText(m.b, 950, y + 48);
-
-    y += 85;
-  });
-
-  // Footer / Rules Box
-  y += 20;
-  x.fillStyle = "#161616"; x.fillRect(40, y, W - 80, 90);
-  x.strokeStyle = "#ffcc00"; x.strokeRect(40, y, W - 80, 90);
-  
-  x.fillStyle = "#ffcc00"; x.font = "bold 18px sans-serif";
-  x.fillText("📌 जरूरी बातें (Important Rules):", 60, y + 30);
-  x.fillStyle = "#fff"; x.font = "15px sans-serif";
-  x.fillText("• रोज कम से कम 3-4 लीटर पानी पिएं।  • जंक फूड, कोल्ड ड्रिंक और ज्यादा चीनी से बचें।  • 8-9 घंटे की गहरी नींद लें।", 60, y + 65);
-
+  let y = 305;
+  for(let i = 0; i < d; i++){
+    const idx = (i + Math.floor(i/7)) % 7;
+    x.fillStyle = "#ffcc00"; x.fillRect(30, y - 30, W - 60, 36);
+    x.fillStyle = "#000"; x.font = "bold 22px sans-serif"; x.fillText((lang=="en"?"Day ":"दिन ") + (i + 1), 45, y - 6);
+    x.fillStyle = "#fff"; x.font = "18px sans-serif";
+    const meals = [
+      [(lang=="en"?"Breakfast":"नाश्ता"), dict.N[v][idx]],
+      [(lang=="en"?"Lunch":"दोपहर का खाना"), dict.L[v][idx]],
+      [(lang=="en"?"Evening Snack":"शाम का नाश्ता"), dict.SH[idx]],
+      [(lang=="en"?"Dinner":"रात का खाना"), dict.R[v][idx]]
+    ];
+    meals.forEach((m, j) => { x.fillText(`${m[0]}: ${m[1]}`, 50, y + 28 + (j * 32)); });
+    y += 210;
+  }
+  x.fillStyle = "#aaa"; x.font = "16px sans-serif";
+  x.fillText("Note: Roz 3-4 litre paani piyein aur workout ke baad proper nutrition lein. 5 Brother's Fitness Club.", 30, H - 20);
   const a = document.createElement("a");
   a.download = `diet-${d}din-${S.n}.png`; a.href = c.toDataURL("image/png");
-  $("out").innerHTML = `<img src="${a.href}" style="width:100%;margin-top:10px;border-radius:12px"><a class="b" download="${a.download}" href="${a.href}">⬇️ Download Full Poster Diet Chart</a>`;
+  $("out").innerHTML = `<img src="${a.href}" style="width:100%;margin-top:10px;border-radius:12px"><a class="b" download="${a.download}" href="${a.href}">⬇️ Download Diet Chart Image</a>`;
   a.click();
 }
-  
 </script>
 </body>
 </html>
