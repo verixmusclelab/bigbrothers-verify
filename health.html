@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>5 Brother's Fitness Club - Lean Bulk Diet Portal</title>
+<style>
+:root{--y:#ffd60a;--bg:#0b0b0b;--c:#161616}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:12px;padding-bottom:32px;background:var(--bg);color:#fff;font-family:system-ui,'Noto Sans Devanagari',sans-serif;max-width:480px;margin:0 auto;min-height:100vh}
+.h{border:2px solid var(--y);background:linear-gradient(145deg,#2a2200,#141414);border-radius:14px;text-align:center;padding:14px;margin-bottom:12px}
+.h .brand{color:var(--y);font-weight:900;font-size:20px;letter-spacing:.5px}
+.h small{display:block;color:#ccc;font-size:11px;margin-top:4px}
+.c{background:var(--c);border:1.5px solid #3a3a3a;border-radius:14px;padding:14px;margin-bottom:12px}
+h3{margin:0 0 8px;color:var(--y);font-size:16px}
+.m{font-size:12px;color:#bbb;margin:10px 0 4px}
+.bi{font-size:11px;color:#888;margin:0 0 6px;line-height:1.35}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1.5px solid #555;background:#0d0d0d;color:#fff;font-size:15px}
+button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:#000;background:linear-gradient(135deg,#ffd60a,#e6b800);font-weight:900;border:0;border-radius:12px;padding:14px;margin-top:10px;font-size:15px;min-height:48px;cursor:pointer}
+.g{background:#222;color:#eee;border:1.5px solid #555}
+.hid{display:none!important}
+.r{display:flex;gap:8px}.r>*{flex:1}
+.bd{display:flex;gap:8px;flex-wrap:wrap}
+.bd button{background:#0d0d0d;color:#eee;border:1.5px solid #555;padding:12px 8px;font-size:13px;border-radius:10px;flex:1;min-width:42%;min-height:44px}
+.bd button.active{border-color:var(--y);background:#2a2200;color:var(--y);font-weight:800}
+.chk{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chk label{display:flex;align-items:center;gap:6px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:10px 12px;font-size:13px;flex:1 1 42%;min-height:44px}
+.chk input{width:18px;height:18px;margin:0}
+.quote{background:rgba(255,214,10,.1);border-left:4px solid var(--y);padding:10px;margin:10px 0;font-size:12px;color:#ffe566;border-radius:0 8px 8px 0;line-height:1.45}
+.step{text-align:center;font-size:11px;color:var(--y);font-weight:700;margin-bottom:8px}
+.counter{display:flex;align-items:center;gap:8px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:8px 10px;margin:6px 0}
+.counter span{flex:1;font-size:13px}
+.counter b{min-width:36px;text-align:center;color:var(--y);font-size:16px}
+.counter button{width:40px;min-height:40px;padding:0;margin:0;font-size:20px;border-radius:8px}
+.person-card{background:#0d0d0d;border:1px solid #444;border-radius:12px;padding:12px;margin:10px 0}
+.person-card h4{margin:0 0 8px;color:var(--y);font-size:14px}
+.supp-item{display:flex;justify-content:space-between;align-items:center;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:12px;margin:6px 0;min-height:48px}
+.supp-item.on{border-color:var(--y);background:#221d0a}
+#psy{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:16px}
+#psy.show{display:flex}
+#psy .box{background:#1a1600;border:2px solid var(--y);border-radius:16px;padding:18px;max-width:360px;width:100%;text-align:center}
+#psy .box p{color:#ffe566;font-size:13px;line-height:1.5;margin:0 0 12px;text-align:left}
+#payChoiceModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:16px}
+#payChoiceModal.show{display:flex}
+#payChoiceModal .modal-box{background:#141414;border:2px solid var(--y);border-radius:16px;padding:20px;max-width:380px;width:100%;text-align:center}
+.disc{font-size:10px;color:#888;line-height:1.4;margin-top:12px;border-top:1px solid #333;padding-top:10px}
+.spinner{border:4px solid #333;border-top:4px solid var(--y);border-radius:50%;width:36px;height:36px;animation:spin 1s linear infinite;margin:12px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="h"><div class="brand">5 BROTHER'S FITNESS CLUB</div><small>Umrao Kheda, Akbarpur, Unnao | Ph: 9990954574</small></div>
+
+<div id="step-home" class="c">
+  <h3>Lean Bulk Diet Plan<br>लीन बल्क डाइट प्लान</h3>
+  <div class="bi">Get your exact professional Lean Bulk diet plan built around your body and goals.<br>आपके शरीर और लक्ष्य के अनुसार सटीक लीन बल्क डाइट प्लान पाएँ।</div>
+  <button onclick="psyGo(1,'home')">Start / शुरू करें</button>
+</div>
+
+<div id="step-1" class="c hid">
+  <div class="step">STEP 1 of 3 · Basic Details / बुनियादी जानकारी</div>
+  <h3>Setup / सेटअप</h3>
+  <div class="m">Customer name and mobile number / ग्राहक का नाम और मोबाइल नंबर</div>
+  <input id="nm" placeholder="Full name / पूरा नाम">
+  <input id="mb" type="tel" maxlength="10" placeholder="Mobile number (10 digits) / मोबाइल नंबर">
+  <button onclick="val1()">Next / आगे</button>
+</div>
+
+<div id="step-2" class="c hid">
+  <div class="step">STEP 2 of 3 · Body Details / शारीरिक जानकारी</div>
+  <h3>Body Stats / शारीरिक माप</h3>
+  <div class="r">
+    <input type="number" id="age" placeholder="Age (years) / उम्र" value="25">
+    <input type="number" id="wt" placeholder="Weight (kg) / वज़न" value="71">
+  </div>
+  <div class="m">Height / ऊँचाई</div>
+  <div class="r">
+    <select id="ft"><option value="5" selected>5 ft</option><option value="6">6 ft</option></select>
+    <select id="ic"><option value="5" selected>5 in</option><option value="0">0 in</option></select>
+  </div>
+  <button class="g" onclick="go(1)">Back / पीछे</button>
+  <button onclick="val2()">Next / आगे</button>
+</div>
+
+<div id="step-3" class="c hid">
+  <div class="step">STEP 3 of 3 · Plan & Payment / प्लान और भुगतान</div>
+  <h3>Choose your plan / अपना प्लान चुनें</h3>
+  <button onclick="chooseSupp(false)">Diet plan only (Rs 250) / केवल डाइट प्लान</button>
+  <button onclick="chooseSupp(true)">Diet plan with supplements / सप्लीमेंट के साथ</button>
+  <div id="suppPick" class="hid sec">
+    <div class="supp-item" data-s="Whey Protein" onclick="togSupp(this)"><span>Whey Protein</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Mass Gainer" onclick="togSupp(this)"><span>Mass Gainer</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Creatine" onclick="togSupp(this)"><span>Creatine</span><span>+ Add</span></div>
+    <div class="m">Selected / चयनित: <b id="suppList" style="color:var(--y)">None</b></div>
+    <button onclick="goStore()">Open Store / स्टोर खोलें</button>
+  </div>
+  <div id="dietPlans" class="hid">
+    <button onclick="initPay(250)">Proceed to Payment / भुगतान करें</button>
+  </div>
+  <button class="g" onclick="go(2)">Back / पीछे</button>
+</div>
+
+<div id="pay" class="c hid"></div>
+<div id="psy"><div class="box"><p id="psyText"></p><button onclick="psyClose()">Continue / जारी रखें</button></div></div>
+
+<div id="payChoiceModal">
+  <div class="modal-box">
+    <h3 style="color:var(--y)">Select Payment Option / भुगतान विकल्प चुनें</h3>
+    <p style="font-size:13px;color:#ccc;margin:10px 0">Do you want to proceed with payment for Diet Chart and selected supplements?</p>
+    <button onclick="proceedPaymentWithSupplements()">Pay with Diet Chart & Supplements</button>
+    <button class="g" onclick="closePayChoiceModal()">Back to Store</button>
+  </div>
+</div>
+
+<script>
+const $=i=>document.getElementById(i);
+const EXPERT_WA="9990954574", UPI="9990954574@okbizaxis";
+const S={n:"",mb:"",a:25,w:71,ft:5,ic:5,supplements:[],price:250};
+
+function showPsy(key,next){ $("psyText").innerHTML="Let's build your professional Lean Bulk Diet Plan.<br>आइए आपका लीन बल्क डाइट प्लान तैयार करें।"; $("psy").classList.add("show"); window._psyNext=next; }
+function psyGo(s,k){ showPsy(k,function(){go(s)}); }
+function psyClose(){ $("psy").classList.remove("show"); if(window._psyNext){var f=window._psyNext; window._psyNext=null; f();} }
+function go(n){ document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")}); if($("step-"+n)) $("step-"+n).classList.remove("hid"); window.scrollTo(0,0); }
+
+function val1(){
+  var n=$("nm").value.trim(), mb=$("mb").value.trim();
+  if(!n||!/^\d{10}$/.test(mb)) return alert("कृपया नाम और 10 अंकों का सही मोबाइल नंबर भरें।");
+  S.n=n; S.mb=mb; go(2);
+}
+function val2(){
+  S.a=+$("age").value||25; S.w=+$("wt").value||71; S.ft=+$("ft").value||5; S.ic=+$("ic").value||5; go(3);
+}
+
+function chooseSupp(withS){
+  $("suppPick").classList.toggle("hid",!withS);
+  $("dietPlans").classList.toggle("hid",withS);
+}
+function togSupp(el){
+  var name=el.getAttribute("data-s"); el.classList.toggle("on");
+  if(el.classList.contains("on")){ if(S.supplements.indexOf(name)<0) S.supplements.push(name); el.querySelector("span:last-child").textContent="Added"; }
+  else { S.supplements=S.supplements.filter(function(x){return x!==name}); el.querySelector("span:last-child").textContent="+ Add"; }
+  $("suppList").textContent=S.supplements.length?S.supplements.join(", "):"None";
+}
+function goStore(){
+  var base="https://verixmusclelab.github.io/bigbrothers-verify/store.html";
+  var q="from=diet&name="+encodeURIComponent(S.n||"")+"&phone="+encodeURIComponent(S.mb||"")+"&items="+encodeURIComponent((S.supplements||[]).join(","));
+  window.location.href=base+(base.indexOf("?")>=0?"&":"?")+q;
+}
+
+window.onload=function(){
+  const params=new URLSearchParams(window.location.search);
+  if(params.get("returned")==="true" || params.get("storeItems")){
+    var items=params.get("storeItems");
+    if(items) S.supplements=items.split(",");
+    $("payChoiceModal").classList.add("show");
+  }
+};
+function closePayChoiceModal(){ $("payChoiceModal").classList.remove("show"); }
+function proceedPaymentWithSupplements(){ closePayChoiceModal(); initPay(500); }
+
+function initPay(price){
+  S.price=price;
+  document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+  $("pay").innerHTML="<h3>भुगतान विवरण (Payment Details)</h3>"+
+    "<div class='m'><b>ग्राहक:</b> "+S.n+" | <b>मोबाइल:</b> "+S.mb+"</div>"+
+    "<div class='m'><b>चुने गए प्रोडक्ट्स:</b> "+(S.supplements.length?S.supplements.join(", "):"केवल डाइट प्लान")+"</div>"+
+    "<div class='m' style='font-size:16px;color:var(--y);margin-top:8px'><b>कुल राशि: Rs "+price+"</b></div>"+
+    "<a class='b' href='upi://pay?pa="+UPI+"&pn=5BrothersFitness&am="+price+"&cu=INR&tn=LeanBulkDiet'>Pay Rs "+price+" via UPI</a>"+
+    "<div style='text-align:center;margin:10px 0'><img src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data="+encodeURIComponent("upi://pay?pa="+UPI+"&pn=5BrothersFitness&am="+price+"&cu=INR")+"' style='background:#fff;padding:8px;border-radius:12px;width:150px'></div>"+
+    "<input id='ut' inputmode='numeric' maxlength='12' placeholder='12 अंकों का UTR नंबर दर्ज करें'>"+
+    "<button onclick='subOrder()'>Order Submit करें & Lean Bulk Diet Chart डाउनलोड करें</button><div id='ps'></div><div id='out'></div>"+
+    "<button class='g' onclick='go(3)'>Back / पीछे</button>";
+  $("pay").classList.remove("hid");
+}
+
+function subOrder(){
+  var u=$("ut").value.trim();
+  if(!u||!/^\d{12}$/.test(u)) return alert("कृपया सही 12 अंकों का UTR नंबर दर्ज करें।");
+  $("ps").innerHTML='<div class="spinner"></div>';
+  setTimeout(function(){
+    $("ps").innerHTML="<div style='color:#3ddc84;font-weight:800;text-align:center'>✔ भुगतान सत्यापित! डाइट चार्ट जनरेट हो रहा है...</div>";
+    generateLeanBulkChart();
+  }, 1000);
+}
+
+/* ---------- EXACT LEAN BULK POSTER GENERATOR ---------- */
+function generateLeanBulkChart() {
+  const W = 1200, H = 1200;
+  const c = document.createElement("canvas"), x = c.getContext("2d");
+  c.width = W; c.height = H;
+
+  // Background
+  x.fillStyle = "#0b0b0b"; x.fillRect(0, 0, W, H);
+
+  // Top Header Banner
+  x.fillStyle = "#ffd60a"; x.fillRect(0, 0, W, 130);
+  x.fillStyle = "#000"; x.font = "bold 42px system-ui"; x.fillText("5 BROTHER'S FITNESS CLUB", 40, 55);
+  x.font = "18px system-ui"; x.fillText("Umrao Kheda, Akrampur, Unnao", 40, 95);
+
+  // Center Title & Subtitle in Header
+  x.textAlign = "center";
+  x.fillStyle = "#000"; x.font = "900 36px system-ui"; x.fillText("LEAN BULK DIET PLAN", W/2 + 50, 55);
+  x.font = "bold 16px system-ui"; x.fillText("मसल्स बढ़ाएं  |  पेट कंट्रोल में रखें  |  बजट में फिट", W/2 + 50, 90);
+
+  // Profile Box (Top Right)
+  x.fillStyle = "#141414"; x.fillRect(850, 15, 310, 105);
+  x.strokeStyle = "#000"; x.lineWidth = 2; x.strokeRect(850, 15, 310, 105);
+  x.textAlign = "left"; x.fillStyle = "#ffd60a"; x.font = "bold 14px system-ui";
+  x.fillText("आपका प्रोफाइल", 870, 35);
+  x.fillStyle = "#fff"; x.font = "13px system-ui";
+  x.fillText(`उम्र  : ${S.a} साल      वज़न : ${S.w} kg`, 870, 58);
+  x.fillText(`हाइट : ${S.ft}'${S.ic}\" (165 cm)   कमर : 34 इंच`, 870, 80);
+  x.fillText(`नाम : ${S.n || "Member"}`, 870, 102);
+
+  // Daily Nutrition Target Bar
+  let y = 145;
+  x.fillStyle = "#ffd60a"; x.fillRect(40, y, W - 80, 40);
+  x.fillStyle = "#000"; x.font = "bold 16px system-ui"; x.textAlign = "left";
+  x.fillText("Daily Nutrition Target", 60, y + 25);
+  x.font = "15px system-ui";
+  x.fillText("🔥 Calories : 2,200 - 2,300 kcal    💪 Protein : 125 - 135 g    🌾 Carbs : 270 - 290 g    💧 Fat : 55 - 65 g", 260, y + 25);
+
+  function drawMealCard(startY, mealTitle, timeSlot, itemsLeft, itemsRight, proteinText, benefits) {
+    x.fillStyle = "#161616"; x.fillRect(40, startY, W - 80, 185);
+    x.strokeStyle = "#333"; x.lineWidth = 1.5; x.strokeRect(40, startY, W - 80, 185);
+
+    x.fillStyle = "#ffd60a"; x.fillRect(40, startY, W - 80, 32);
+    x.fillStyle = "#000"; x.font = "bold 16px system-ui"; x.textAlign = "left";
+    x.fillText(mealTitle, 55, startY + 22);
+    x.font = "bold 14px system-ui";
+    x.fillText(timeSlot, 330, startY + 22);
+
+    x.fillStyle = "#fff"; x.font = "15px system-ui";
+    let ix = 60, iy = startY + 65;
+    itemsLeft.forEach((it, i) => { x.fillText("• " + it, ix, iy + (i * 26)); });
+    let iix = 360;
+    itemsRight.forEach((it, i) => { x.fillText("• " + it, iix, iy + (i * 26)); });
+
+    x.fillStyle = "#b8860b"; x.fillRect(60, startY + 140, 180, 30);
+    x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui"; x.textAlign = "center";
+    x.fillText(proteinText, 150, startY + 160);
+
+    x.fillStyle = "#111"; x.fillRect(780, startY + 45, 360, 128);
+    x.strokeStyle = "#ffd60a"; x.strokeRect(780, startY + 45, 360, 128);
+    x.textAlign = "left"; x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
+    x.fillText("✔ क्यों ज़रूरी?", 800, startY + 70);
+    x.fillStyle = "#ccc"; x.font = "14px system-ui";
+    benefits.forEach((b, i) => { x.fillText("▶ " + b, 800, startY + 98 + (i * 22)); });
+  }
+
+  // Meal 1
+  drawMealCard(200, "MEAL 1 – सुबह (Breakfast)", "7:00 - 8:00 AM", 
+    ["सत्तू", "दूध", "दूध", "सबी तवस"], 
+    ["सत्तू - 80 ग्राम", "दूध - 250 ml", "केला - 1 (मध्यम आकार)", "मूंगफली - 10 ग्राम"], 
+    "लगभग 30 g Protein", 
+    ["हाई प्रोटीन + अच्छी कार्बोहाइड्रेट", "दिनभर ऊर्जा", "मसल्स रिकवरी की शुरुआत"]
+  );
+
+  // Meal 2
+  drawMealCard(395, "MEAL 2 – दोपहर (Lunch)", "12:30 - 2:00 PM", 
+    ["सोया चंक्स", "दाल", "दूध", "मौसमी सब्जी", "सत्तू"], 
+    ["सोया चंक्स - 50 ग्राम (सूखा वजन)", "दाल - 50 ग्राम (सूखा वजन)", "गेहूं की रोटी - 2", "चावल - 50 ग्राम (कच्चा वजन)", "मौसमी सब्जी - 150 ग्राम", "दही - 100 ग्राम"], 
+    "लगभग 50 g Protein", 
+    ["मसल्स के लिए हाई प्रोटीन", "ऊर्जा के लिए कार्ब्स", "विटामिन और मिनरल्स"]
+  );
+
+  // Meal 3
+  drawMealCard(590, "MEAL 3 – शाम / रात (Dinner)", "7:30 - 9:00 PM", 
+    ["दूध", "सोया चंक्स", "दाल", "दही वजन"], 
+    ["दूध - 250 ml", "भुना चना - 50 ग्राम", "गेहूं की रोटी - 2", "दही - 100 ग्राम", "मौसमी सब्जी - 150 ग्राम"], 
+    "लगभग 35 g Protein", 
+    ["रात में मसल्स रिकवरी", "प्रोटीन सप्लाई", "हड्डियों के लिए कैल्शियम"]
+  );
+
+  // Bottom Section
+  y = 795;
+  // Nutrition Summary
+  x.fillStyle = "#161616"; x.fillRect(40, y, 310, 200);
+  x.strokeStyle = "#ffd60a"; x.strokeRect(40, y, 310, 200);
+  x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui"; x.textAlign = "left";
+  x.fillText("Daily Nutrition (अनुमानित)", 60, y + 28);
+  x.fillStyle = "#fff"; x.font = "14px system-ui";
+  x.fillText("🔥 Calories  : 2,200 - 2,300 kcal", 60, y + 65);
+  x.fillText("💪 Protein   : 115 - 125 g", 60, y + 98);
+  x.fillText("🌾 Carbs     : 280 - 300 g", 60, y + 131);
+  x.fillText("💧 Fat       : 55 - 65 g", 60, y + 164);
+
+  // Monthly Samagri Box
+  x.fillStyle = "#161616"; x.fillRect(365, y, 460, 200);
+  x.strokeStyle = "#ffd60a"; x.strokeRect(365, y, 460, 200);
+  x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
+  x.fillText("मासिक सामग्री (लगभग)", 385, y + 28);
+  x.fillStyle = "#fff"; x.font = "13px system-ui";
+  x.fillText("• सत्तू          : 2.4 kg        • आटा         : 3.6 kg", 385, y + 60);
+  x.fillText("• सोया चंक्स  : 1.5 kg        • चावल       : 1.5 kg", 385, y + 88);
+  x.fillText("• दाल           : 1.5 kg        • दही         : 6 kg", 385, y + 116);
+  x.fillText("• दूध           : 15 लीटर      • केला        : 30", 385, y + 144);
+  x.fillText("• भुना चना   : 1.5 kg        • मूंगफली    : 300 g", 385, y + 172);
+
+  x.fillStyle = "#ffd60a"; x.fillRect(385, y + 148, 420, 42);
+  x.fillStyle = "#000"; x.font = "bold 14px system-ui"; x.textAlign = "center";
+  x.fillText("₹2,500 – ₹3,200 / महीना  (अनुमानित अतिरिक्त खर्च)", 595, y + 174);
+
+  // 3 Niyam Box
+  x.fillStyle = "#161616"; x.fillRect(840, y, 320, 200);
+  x.strokeStyle = "#ffd60a"; x.strokeRect(840, y, 320, 200);
+  x.textAlign = "left"; x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
+  x.fillText("3 ज़रूरी नियम", 860, y + 28);
+  x.fillStyle = "#fff"; x.font = "13px system-ui";
+  x.fillText("▶ सोया अच्छी तरह भिगोकर और पकाकर खाएं।", 860, y + 75);
+  x.fillText("▶ रोजाना 7-8 घंटे नींद लें।", 860, y + 115);
+  x.fillText("▶ हर सप्ताह सुबह खाली पेट वजन लें।", 860, y + 155);
+
+  // Footer Banner
+  y = 1015;
+  x.fillStyle = "#ffd60a"; x.fillRect(40, y, W - 80, 50);
+  x.fillStyle = "#000"; x.font = "bold 20px system-ui"; x.textAlign = "center";
+  x.fillText("खाना सही + मेहनत सही  =  रिजल्ट पक्का", W/2, y + 32);
+
+  x.fillStyle = "#888"; x.font = "14px system-ui";
+  x.fillText("– 5 Brother's Fitness Club –", W/2, y + 85);
+
+  const a = document.createElement("a");
+  a.download = `Lean-Bulk-Diet-${S.n || 'Member'}.png`;
+  a.href = c.toDataURL("image/png");
+  if ($("out")) {
+    $("out").innerHTML = `<div style='color:#3ddc84;font-weight:700;margin-top:10px'>✔ Lean Bulk Diet Chart तैयार है</div><img src='${a.href}' style='width:100%;border-radius:12px;margin-top:8px'><a class='b' download='${a.download}' href='${a.href}'>⬇️ Download Lean Bulk Diet Chart</a>`;
+  }
+  a.click();
+}
+</script>
+</body>
+</html>
