@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Dietician Xpert</title>
+<style>
+:root{--y:#ffd60a;--bg:#0b0b0b;--c:#161616}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:12px;padding-bottom:32px;background:var(--bg);color:#fff;font-family:system-ui,'Noto Sans Devanagari',sans-serif;max-width:480px;margin:0 auto;min-height:100vh}
+.h{border:2px solid var(--y);background:linear-gradient(145deg,#2a2200,#141414);border-radius:14px;text-align:center;padding:14px;margin-bottom:12px}
+.h .brand{color:var(--y);font-weight:900;font-size:20px;letter-spacing:.5px}
+.h small{display:block;color:#ccc;font-size:11px;margin-top:4px}
+.c{background:var(--c);border:1.5px solid #3a3a3a;border-radius:14px;padding:14px;margin-bottom:12px}
+h3{margin:0 0 8px;color:var(--y);font-size:16px}
+.m{font-size:12px;color:#bbb;margin:10px 0 4px}
+.bi{font-size:11px;color:#888;margin:0 0 6px;line-height:1.35}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1.5px solid #555;background:#0d0d0d;color:#fff;font-size:15px}
+button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:#000;background:linear-gradient(135deg,#ffd60a,#e6b800);font-weight:900;border:0;border-radius:12px;padding:14px;margin-top:10px;font-size:15px;min-height:48px;cursor:pointer}
+.g{background:#222;color:#eee;border:1.5px solid #555}
+.hid{display:none!important}
+.r{display:flex;gap:8px}.r>*{flex:1}
+.bd{display:flex;gap:8px;flex-wrap:wrap}
+.bd button{background:#0d0d0d;color:#eee;border:1.5px solid #555;padding:12px 8px;font-size:13px;border-radius:10px;flex:1;min-width:42%;min-height:44px}
+.bd button.active{border-color:var(--y);background:#2a2200;color:var(--y);font-weight:800}
+.chk{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chk label{display:flex;align-items:center;gap:6px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:10px 12px;font-size:13px;flex:1 1 42%;min-height:44px}
+.chk input{width:18px;height:18px;margin:0}
+.quote{background:rgba(255,214,10,.1);border-left:4px solid var(--y);padding:10px;margin:10px 0;font-size:12px;color:#ffe566;border-radius:0 8px 8px 0;line-height:1.45}
+.step{text-align:center;font-size:11px;color:var(--y);font-weight:700;margin-bottom:8px}
+.counter{display:flex;align-items:center;gap:8px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:8px 10px;margin:6px 0}
+.counter span{flex:1;font-size:13px}
+.counter b{min-width:36px;text-align:center;color:var(--y);font-size:16px}
+.counter button{width:40px;min-height:40px;padding:0;margin:0;font-size:20px;border-radius:8px}
+.photo-box{display:flex;gap:10px;align-items:center;margin:8px 0;border:1.5px dashed #555;border-radius:12px;padding:10px;background:#0d0d0d}
+.photo-box img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:2px solid var(--y)}
+.okt{color:#3ddc84;font-size:12px;font-weight:700}
+.sec{border-top:1px solid #333;margin-top:12px;padding-top:10px}
+.bmi-box{background:#0d0d0d;border:1.5px solid #555;border-radius:12px;padding:12px;margin:10px 0}
+.bmi-box.low{border-color:#42a5f5}.bmi-box.ok{border-color:#3ddc84}.bmi-box.high{border-color:#ff7043}.bmi-box.ob{border-color:#ff3333}
+.bmi-num{font-size:28px;font-weight:900;color:var(--y)}
+.person-card{background:#0d0d0d;border:1px solid #444;border-radius:12px;padding:12px;margin:10px 0}
+.person-card h4{margin:0 0 8px;color:var(--y);font-size:14px}
+.supp-item{display:flex;justify-content:space-between;align-items:center;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:12px;margin:6px 0;min-height:48px}
+.supp-item.on{border-color:var(--y);background:#221d0a}
+#psy{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:16px}
+#psy.show{display:flex}
+#psy .box{background:#1a1600;border:2px solid var(--y);border-radius:16px;padding:18px;max-width:360px;width:100%;text-align:center}
+#psy .box p{color:#ffe566;font-size:13px;line-height:1.5;margin:0 0 12px;text-align:left}
+#payChoiceModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:16px}
+#payChoiceModal.show{display:flex}
+#payChoiceModal .modal-box{background:#141414;border:2px solid var(--y);border-radius:16px;padding:20px;max-width:380px;width:100%;text-align:center}
+.disc{font-size:10px;color:#888;line-height:1.4;margin-top:12px;border-top:1px solid #333;padding-top:10px}
+.spinner{border:4px solid #333;border-top:4px solid var(--y);border-radius:50%;width:36px;height:36px;animation:spin 1s linear infinite;margin:12px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.choice-grid>*{min-width:0}
+.pending-box{background:#171300;border:2px solid var(--y);border-radius:14px;padding:14px;text-align:center;margin-top:12px}.pending-box .timer{font-size:28px;color:var(--y);font-weight:900}.legal{font-size:12px;line-height:1.55;color:#ffe9a3;border:2px solid #9b7d00;background:#211b00;padding:12px;border-radius:10px;margin-top:14px;font-weight:700}
+@media(max-width:480px){body{width:100%;padding:10px;overflow-x:hidden}.c{width:100%;padding:12px}.bd{display:grid;grid-template-columns:1fr 1fr}.bd button{width:100%;min-width:0}.r{display:grid;grid-template-columns:1fr 1fr;gap:7px}.r>*{min-width:0}.counter{min-height:54px}.counter button{flex:0 0 42px}.photo-box{align-items:flex-start;flex-wrap:wrap}button,.b{font-size:16px}.h .brand{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="h"><div class="brand">DIETICIAN XPERT</div><small>Personalised Nutrition Guidance · व्यक्तिगत डाइट मार्गदर्शन</small></div>
+
+<div id="step-home" class="c">
+  <h3>Your personalised diet plan<br>आपका व्यक्तिगत डाइट प्लान</h3>
+  <div class="bi">Get a diet plan built around your body, lifestyle and goals.<br>आपके शरीर, जीवनशैली और लक्ष्य के अनुसार डाइट प्लान पाएँ।</div>
+  <div class="quote">Every lasting change begins with a first step. Tap Start to build your plan.<br>हर स्थायी बदलाव पहले कदम से शुरू होता है। अपना प्लान बनाने के लिए "शुरू करें" दबाएँ।</div>
+  <button onclick="psyGo(1,'home')">Start / शुरू करें</button>
+</div>
+
+<div id="step-1" class="c hid">
+  <div class="step">STEP 1 of 5 · Basic Details / बुनियादी जानकारी</div>
+  <h3>Setup / सेटअप</h3>
+  <div class="m">Gender / लिंग</div>
+  <div class="bd">
+    <button type="button" class="active" id="gM" onclick="setGender('M')">Male / पुरुष</button>
+    <button type="button" id="gF" onclick="setGender('F')">Female / महिला</button>
+  </div>
+  <div class="m">Who is this plan for? (select one or more) / यह प्लान किसके लिए है?</div>
+  <div class="bi">You will enter age, height and weight separately for each person selected.<br>चुने गए प्रत्येक व्यक्ति की उम्र, ऊँचाई और वज़न अलग से भरी जाएगी।</div>
+  <div class="chk" id="forWhom">
+    <label><input type="checkbox" value="Self" checked onchange="rebuildPersons()"> Self / स्वयं</label>
+    <label><input type="checkbox" value="Wife" onchange="rebuildPersons()"> Wife / पत्नी</label>
+    <label><input type="checkbox" value="Husband" onchange="rebuildPersons()"> Husband / पति</label>
+    <label><input type="checkbox" value="Father" onchange="rebuildPersons()"> Father / पिता</label>
+    <label><input type="checkbox" value="Mother" onchange="rebuildPersons()"> Mother / माता</label>
+    <label><input type="checkbox" value="Senior" onchange="rebuildPersons()"> Senior / वरिष्ठ</label>
+    <label><input type="checkbox" value="Brother" onchange="rebuildPersons()"> Brother / भाई</label>
+    <label><input type="checkbox" value="Sister" onchange="rebuildPersons()"> Sister / बहन</label>
+    <label><input type="checkbox" value="Boyfriend" onchange="rebuildPersons()"> Boyfriend / बॉयफ्रेंड</label>
+    <label><input type="checkbox" value="Girlfriend" onchange="rebuildPersons()"> Girlfriend / गर्लफ्रेंड</label>
+    <label><input type="checkbox" value="Relative" onchange="rebuildPersons()"> Relative / रिश्तेदार</label>
+  </div>
+  <div class="m">Customer name and mobile number / ग्राहक का नाम और मोबाइल नंबर</div>
+  <input id="nm" placeholder="Full name / पूरा नाम">
+  <input id="mb" type="tel" maxlength="10" placeholder="Mobile number (10 digits) / मोबाइल नंबर">
+  <div class="m">Photo (optional) / फोटो (वैकल्पिक)</div>
+  <div class="photo-box">
+    <div><input type="file" accept="image/*" onchange="previewPhoto(this)"><div id="photoOk" class="okt hid">Photo added / फोटो जुड़ गई</div></div>
+    <img id="photoPrev" class="hid" alt="">
+  </div>
+  <button class="g" onclick="go(0)">Back to Home / होम पर वापस</button>
+  <button onclick="val1()">Next / आगे</button>
+</div>
+
+<div id="step-2" class="c hid">
+  <div class="step">STEP 2 of 5 · Body Details / शारीरिक जानकारी</div>
+  <h3>Details for each member / प्रत्येक सदस्य की जानकारी</h3>
+  <div class="bi">Enter age, weight and height for every member. BMI is calculated automatically.<br>प्रत्येक सदस्य की उम्र, वज़न और ऊँचाई भरें। BMI अपने-आप निकल जाएगा।</div>
+  <div id="personsBox"></div>
+  <div class="m">Diet type / आहार का प्रकार</div>
+  <div class="bd">
+    <button type="button" class="active" id="dV" onclick="setDiet('v')">Vegetarian / शाकाहारी</button>
+    <button type="button" id="dN" onclick="setDiet('n')">Non-Vegetarian / मांसाहारी</button>
+  </div>
+  <div class="m">Desired physique / शारीरिक लक्ष्य</div>
+  <div class="bd">
+    <button type="button" class="active" id="lF" onclick="setLook('Fit')">Fit</button>
+    <button type="button" id="lM" onclick="setLook('Muscular')">Muscular</button>
+    <button type="button" id="lX" onclick="setLook('Monster')">Bulk / Heavy</button>
+  </div>
+  <div id="suppHint" class="quote">Fit: balanced diet with basic protein guidance.</div>
+  <div class="m">Main goal / मुख्य लक्ष्य</div>
+  <select id="goal">
+    <option value="Stay Fit">Stay Fit / फिट रहना</option>
+    <option value="Muscle Building">Muscle Building / मसल्स बनाना</option>
+    <option value="Fat Loss">Fat Loss / वज़न घटाना</option>
+    <option value="Bulking">Weight Gain (Bulking) / वज़न बढ़ाना</option>
+    <option value="Healthy Lifestyle">Healthy Lifestyle / स्वस्थ जीवनशैली</option>
+  </select>
+  <div class="m">Diet chart language / डाइट चार्ट की भाषा</div>
+  <select id="lang"><option value="hi">Hindi / हिन्दी</option><option value="en">English</option></select>
+  <div class="sec">
+    <div class="m"><b style="color:var(--y)">Do you go to the gym? / क्या आप जिम जाते हैं?</b></div>
+    <div class="bd">
+      <button type="button" id="gymYes" onclick="setGym(true)">Yes / हाँ</button>
+      <button type="button" id="gymNo" class="active" onclick="setGym(false)">No / नहीं</button>
+    </div>
+    <div id="gymExtra" class="hid">
+      <div class="counter"><span>Days per week / सप्ताह में दिन</span><button type="button" class="g" onclick="chg('gymDays',-1)">−</button><b id="gymDays">3</b><button type="button" class="g" onclick="chg('gymDays',1)">+</button></div>
+      <div class="m">Body measurements in inches, 0–50 (optional) / माप इंच में (वैकल्पिक)</div>
+      <div class="counter"><span>Biceps / बाइसेप्स</span><button type="button" class="g" onclick="chg('mBiceps',-1)">−</button><b id="mBiceps">0</b><button type="button" class="g" onclick="chg('mBiceps',1)">+</button></div>
+      <div class="counter"><span>Chest / छाती</span><button type="button" class="g" onclick="chg('mChest',-1)">−</button><b id="mChest">0</b><button type="button" class="g" onclick="chg('mChest',1)">+</button></div>
+      <div class="counter"><span>Shoulder / कंधा</span><button type="button" class="g" onclick="chg('mShoulder',-1)">−</button><b id="mShoulder">0</b><button type="button" class="g" onclick="chg('mShoulder',1)">+</button></div>
+      <div class="counter"><span>Thigh / जांघ</span><button type="button" class="g" onclick="chg('mThigh',-1)">−</button><b id="mThigh">0</b><button type="button" class="g" onclick="chg('mThigh',1)">+</button></div>
+      <div class="counter"><span>Waist / कमर (inch)</span><button type="button" class="g" onclick="chg('mWaist',-1)">−</button><b id="mWaist">0</b><button type="button" class="g" onclick="chg('mWaist',1)">+</button></div>
+    </div>
+  </div>
+  <div id="femaleBox" class="sec hid">
+    <div class="m">Are you pregnant? / क्या आप गर्भवती हैं?</div>
+    <div class="bd"><button type="button" onclick="S.pregnant='Yes';mark(this)">Yes / हाँ</button><button type="button" class="active" onclick="S.pregnant='No';mark(this)">No / नहीं</button></div>
+    <div class="m">Any PCOD, thyroid or menstrual issue? / PCOD, थायरॉइड या मासिक धर्म संबंधी समस्या?</div>
+    <div class="bd"><button type="button" onclick="S.femaleIssue='Yes';mark(this)">Yes / हाँ</button><button type="button" class="active" onclick="S.femaleIssue='No';mark(this)">No / नहीं</button></div>
+    <div class="quote">If you have any medical condition, please confirm the plan with your doctor.<br>किसी भी चिकित्सीय स्थिति में कृपया डॉक्टर से परामर्श अवश्य लें।</div>
+  </div>
+  <button class="g" onclick="go(1)">Back / पीछे</button>
+  <button onclick="val2()">Next / आगे</button>
+</div>
+
+<div id="step-3" class="c hid">
+  <div class="step">STEP 3 of 5 · Lifestyle / जीवनशैली</div>
+  <h3>Habits / आदतें</h3>
+  <div class="quote">सही जानकारी से safer और useful plan बनेगा। अगर आप कोई चीज नहीं लेते, तो “नहीं” चुनें।</div>
+  <div class="counter"><span>Cigarettes per day / प्रतिदिन सिगरेट</span><button type="button" class="g" onclick="chg('cigDay',-1)">−</button><b id="cigDay">0</b><button type="button" class="g" onclick="chg('cigDay',1)">+</button></div>
+  <div class="counter"><span>Cigarettes per week / हफ्ते में सिगरेट</span><button type="button" class="g" onclick="chg('smokeWeek',-1)">−</button><b id="smokeWeek">0</b><button type="button" class="g" onclick="chg('smokeWeek',1)">+</button></div>
+  <div class="m">Paan/tobacco/masala per day / पान-तंबाकू-मसाला प्रतिदिन</div><input id="paanManual" type="number" min="0" placeholder="Quantity per day / रोज की मात्रा" oninput="S.paanDay=+this.value||0;track()">
+  <div class="m">Paan/tobacco per week / हफ्ते में कुल मात्रा</div><div class="r"><input id="paanWeekManual" type="number" min="0" placeholder="Weekly quantity / साप्ताहिक मात्रा" oninput="S.paanWeek=+this.value||0;track()"><select id="paanPackSize" onchange="S.paanPackSize=+this.value;track()"><option value="10">10 pack</option><option value="20">20 pack</option><option value="50">50 pack</option><option value="0">Other/manual</option></select></div>
+  <div class="m">Beer / बीयर</div><div class="r"><select id="beerMl" onchange="S.beerMl=+this.value;track()"><option value="0">Never / नहीं पीता</option><option value="100">100 ml</option><option value="250">250 ml</option><option value="330">330 ml</option><option value="500">500 ml</option><option value="750">750 ml</option><option value="1000">1000 ml</option></select><select id="beerFreq" onchange="S.beerFreq=this.value;track()"><option value="Never">Never / कभी नहीं</option><option value="Sometimes">Sometimes / कभी-कभी</option><option value="Weekly">Weekly / हफ्ते में</option><option value="Daily">Daily / रोज</option></select></div>
+  <div class="counter"><span>Beer quantity per week / हफ्ते में मात्रा</span><button type="button" class="g" onclick="chg('beerWeek',-1)">−</button><b id="beerWeek">0</b><button type="button" class="g" onclick="chg('beerWeek',1)">+</button></div>
+  <div class="m">Other alcohol / अन्य शराब</div><div class="bd"><button type="button" class="active" onclick="S.alcFreq='Never';mark(this)">Never / कभी नहीं</button><button type="button" onclick="S.alcFreq='Sometimes';mark(this)">Sometimes / कभी-कभी</button><button type="button" onclick="S.alcFreq='Weekly';mark(this)">Weekly / हफ्ते में</button></div>
+  <button class="g" onclick="go(2)">Back / पीछे</button><button onclick="psyGo(4,'habits')">Next / आगे</button>
+</div>
+
+<div id="step-4" class="c hid">
+  <div class="step">STEP 4 of 5 · Medical History / स्वास्थ्य इतिहास</div>
+  <h3>Health / स्वास्थ्य</h3>
+  <select id="hq" onchange="document.getElementById('hx').classList.toggle('hid',this.value!='y')">
+    <option value="n">No medical condition / कोई बीमारी नहीं</option>
+    <option value="y">Yes, I have a condition / हाँ, बीमारी है</option>
+  </select>
+  <div id="hx" class="hid">
+    <input id="bm" placeholder="Medical condition / बीमारी का नाम"><input id="dw" placeholder="Current medicines / वर्तमान दवाइयाँ">
+  </div>
+  <div class="sec">
+    <div class="m">Any surgery or long hospital stay? / कोई ऑपरेशन या लंबा अस्पताल प्रवास?</div>
+    <div class="bd">
+      <button type="button" id="opYes" onclick="setOp(true)">Yes / हाँ</button>
+      <button type="button" id="opNo" class="active" onclick="setOp(false)">No / नहीं</button>
+    </div>
+  </div>
+  <button class="g" onclick="go(3)">Back / पीछे</button>
+  <button onclick="val4()">Next / आगे</button>
+</div>
+
+<div id="step-5" class="c hid">
+  <div class="step">STEP 5 of 5 · Plan and Payment / प्लान और भुगतान</div>
+  <h3>Choose your plan / अपना प्लान चुनें</h3>
+  <div id="budgetBox" class="hid">
+    <div class="counter"><span>Monthly budget (Rs) / मासिक बजट</span><button type="button" class="g" onclick="chg('budget',-500)">−</button><b id="budget">2000</b><button type="button" class="g" onclick="chg('budget',500)">+</button></div>
+  </div>
+  <div id="planSuggest" class="quote"></div>
+  <div id="priceInfo" class="quote"></div>
+  <button onclick="chooseSupp(false)">Diet plan only / केवल डाइट प्लान</button>
+  <button onclick="chooseSupp(true)">Diet plan with supplements / सप्लीमेंट के साथ</button>
+  <div id="suppPick" class="hid sec">
+    <div class="supp-item" data-s="Whey Protein" onclick="togSupp(this)"><span>Whey Protein</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Mass Gainer" onclick="togSupp(this)"><span>Mass Gainer</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Multivitamin" onclick="togSupp(this)"><span>Multivitamin</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Creatine" onclick="togSupp(this)"><span>Creatine</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Pre-workout" onclick="togSupp(this)"><span>Pre-workout</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Peanut Butter" onclick="togSupp(this)"><span>Peanut Butter</span><span>+ Add</span></div>
+    <div class="m">Selected / चयनित: <b id="suppList" style="color:var(--y)">None</b></div>
+    <button onclick="goStore()">Open Store / स्टोर खोलें</button><div class="m">Store में products add करने के बाद वापस आने पर cart items यहाँ payment में दिखेंगे.</div>
+  </div>
+  <div id="dietPlans" class="hid">
+    <button onclick="payWithPlan(7,100)">1 Week (7 days) · Rs 100 per person</button>
+    <button onclick="payWithPlan(14,150)">2 Weeks (14 days) · Rs 150 per person</button>
+    <button onclick="payWithPlan(30,250)">1 Month (30 days) · Rs 250 per person</button>
+  </div>
+  <button class="g" onclick="go(4)">Back / पीछे</button>
+</div>
+
+<div id="pay" class="c hid"></div>
+<div id="psy"><div class="box"><p id="psyText"></p><button onclick="psyClose()">Continue / जारी रखें</button></div></div>
+<div id="payChoiceModal">
+  <div class="modal-box">
+    <h3 style="color:var(--y)">Select Payment Option / भुगतान विकल्प चुनें</h3>
+    <p style="font-size:13px;color:#ccc;margin:10px 0">Do you want to proceed with payment for Diet Chart and selected supplements?</p>
+    <button onclick="proceedPaymentWithSupplements()">Pay with Diet Chart & Supplements</button>
+    <button class="g" onclick="closePayChoiceModal()">Back to Store</button>
+  </div>
+</div>
+
+<script>
+const $=i=>document.getElementById(i);
+const EXPERT_WA="9140417259", UPI="9990954574@okbizaxis";
+const FF="system-ui,'Noto Sans Devanagari','Mangal',sans-serif";
+function storeUrl(){
+  return "https://verixmusclelab.github.io/bigbrothers-verify/store.html";
+}
+const S={gender:'M',members:['Self'],persons:{},diet:'v',look:'Fit',gym:false,gymDays:3,
+  cigDay:0,cigMon:0,paanDay:0,beerMon:0,alcMon:0,op:false,budget:2000,photo:'',supplements:[],
+  pregnant:'No',femaleIssue:'No',mBiceps:0,mChest:0,mShoulder:0,mThigh:0,mWaist:0,smokeWeek:0,paanWeek:0,paanPackSize:10,beerMl:0,beerWeek:0,beerFreq:'Never',alcFreq:'Never'};
+const counts={gymDays:3,cigDay:0,cigMon:0,paanDay:0,beerMon:0,alcMon:0,budget:2000,mBiceps:0,mChest:0,mShoulder:0,mThigh:0,mWaist:0,smokeWeek:0,paanWeek:0,beerMl:0,beerWeek:0};
+const limits={gymDays:[1,7],cigDay:[0,40],cigMon:[0,30],paanDay:[0,20],beerMon:[0,30],alcMon:[0,30],budget:[500,15000],mBiceps:[0,50],mChest:[0,60],mShoulder:[0,70],mThigh:[0,70],mWaist:[0,80],smokeWeek:[0,300],paanWeek:[0,100],beerMl:[0,1000],beerWeek:[0,30]};
+const MEM_HI={Self:"स्वयं",Wife:"पत्नी",Husband:"पति",Father:"पिता",Mother:"माता",Senior:"वरिष्ठ नागरिक",Brother:"भाई",Sister:"बहन",Boyfriend:"बॉयफ्रेंड",Girlfriend:"गर्लफ्रेंड",Relative:"रिश्तेदार"};
+const GOAL_HI={"Stay Fit":"फिट रहना","Muscle Building":"मसल्स बनाना","Fat Loss":"वज़न घटाना","Bulking":"वज़न बढ़ाना","Healthy Lifestyle":"स्वस्थ जीवनशैली"};
+const LOOK_HI={Fit:"फिट",Muscular:"मस्कुलर",Monster:"बल्क / हेवी"};
+const PSY={
+  home:"Every lasting change begins with a first step. Let's build your plan.\n\nहर स्थायी बदलाव पहले कदम से शुरू होता है। चलिए, आपका प्लान बनाते हैं।",
+  after1:"Thank you. Your basic details have been recorded.\n\nधन्यवाद। आपकी बुनियादी जानकारी दर्ज हो गई है।",
+  after2:"Body details recorded. Your plan will be matched to each member's BMI.\n\nशारीरिक जानकारी दर्ज हो गई है। प्लान हर सदस्य के BMI के अनुसार बनेगा।",
+  habits:"Accurate lifestyle information helps us build a safer plan.\n\nसही जानकारी से अधिक सुरक्षित प्लान बनाया जा सकता है।",
+  medical:"Accurate health information leads to safer diet guidance.\n\nसही स्वास्थ्य जानकारी से सुरक्षित डाइट मार्गदर्शन मिलता है।",
+  pay:"Final step: please complete your payment to receive the diet chart.\n\nअंतिम चरण: डाइट चार्ट पाने के लिए कृपया भुगतान पूरा करें।"
+};
+const DISC_HI="यह डाइट चार्ट आपके द्वारा दी गई जानकारी के आधार पर तैयार किया गया है। गलत, अधूरी या छुपाई गई जानकारी से होने वाली समस्या के लिए हम जिम्मेदार नहीं होंगे। सही जानकारी दें। यह AI-assisted general nutrition guidance है, medical treatment या डॉक्टर की सलाह का replacement नहीं है। किसी बीमारी, pregnancy, allergy या दवा की स्थिति में डॉक्टर/dietitian से सलाह लें। यह डाइट मार्गदर्शन केवल आपके द्वारा दी गई जानकारी पर आधारित है और चिकित्सा उपचार नहीं है। गर्भावस्था, किसी बीमारी या नियमित दवा की स्थिति में कृपया डॉक्टर से सलाह लें। गलत जानकारी के कारण होने वाले परिणामों के लिए Dietician Xpert उत्तरदायी नहीं है।";
+const DISC_EN="This diet chart is prepared from the information you provide. We are not responsible for problems caused by incorrect, incomplete or hidden information. This is AI-assisted general nutrition guidance, not medical treatment or a replacement for a doctor/dietitian. Consult a doctor for illness, pregnancy, allergy or medicines. This diet guidance is based solely on the information you provided and is not medical treatment. If you are pregnant, have a medical condition or take regular medication, please consult a doctor. Dietician Xpert is not liable for outcomes arising from inaccurate information.";
+
+function bmiCat(b){
+  if(!b) return {en:"—",hi:"—"};
+  if(b<18.5) return {en:"Underweight",hi:"कम वज़न"};
+  if(b<25) return {en:"Normal",hi:"सामान्य"};
+  if(b<30) return {en:"Overweight",hi:"अधिक वज़न"};
+  return {en:"Obese",hi:"मोटापा"};
+}
+function bmiMsg(bmi){
+  if(!bmi||bmi<=0) return {cls:"",hi:"",en:""};
+  if(bmi<18.5) return {cls:"low",en:"Underweight. Higher risk of low energy, weak immunity and bone loss. A calorie- and protein-rich diet is recommended.",hi:"वज़न सामान्य से कम है। कमज़ोरी, कम रोग-प्रतिरोधक क्षमता और हड्डियों के कमज़ोर होने का जोखिम रहता है। अधिक कैलोरी व प्रोटीन वाला आहार आवश्यक है।"};
+  if(bmi<25) return {cls:"ok",en:"Healthy range. This plan supports maintaining your weight and reaching your goal with consistency.",hi:"BMI सामान्य सीमा में है। नियमितता के साथ यह प्लान आपके लक्ष्य में सहायक होगा।"};
+  if(bmi<30) return {cls:"high",en:"Overweight. Higher risk of abdominal fat and raised blood pressure. Portion-controlled carbohydrates with adequate protein will help.",hi:"वज़न सामान्य से अधिक है। पेट की चर्बी और ब्लड प्रेशर का जोखिम बढ़ सकता है। संतुलित कार्ब्स और पर्याप्त प्रोटीन लाभकारी रहेगा।"};
+  return {cls:"ob",en:"Obese range. Higher risk of diabetes, hypertension and joint strain. Please consult a doctor alongside a structured diet.",hi:"मोटापे की श्रेणी। शुगर, ब्लड प्रेशर और जोड़ों पर दबाव का जोखिम अधिक है। संरचित डाइट के साथ डॉक्टर से सलाह अवश्य लें।"};
+}
+function calcBMI(w,ft,inc){
+  if(!w||w<10) return 0;
+  var cm=(ft*12+(inc||0))*2.54; if(cm<50) return 0;
+  return Math.round((w/Math.pow(cm/100,2))*10)/10;
+}
+
+function rebuildPersons(){
+  var mem=Array.prototype.slice.call(document.querySelectorAll("#forWhom input:checked")).map(function(x){return x.value});
+  if(!mem.length) mem=["Self"];
+  S.members=mem;
+  var box=$("personsBox"); if(!box) return;
+  box.innerHTML="";
+  mem.forEach(function(m){
+    if(!S.persons[m]) S.persons[m]={age:"",wt:"",ft:5,inc:0,bmi:0};
+    var p=S.persons[m];
+    var div=document.createElement("div");
+    div.className="person-card";
+    div.innerHTML="<h4>"+m+" / "+(MEM_HI[m]||m)+"</h4>"+
+      "<div class='r'><input type='number' placeholder='Age (years) / उम्र' data-m='"+m+"' data-f='age' value='"+(p.age||"")+"' oninput='onPersonInput(this)'>"+
+      "<input type='number' placeholder='Weight (kg) / वज़न' data-m='"+m+"' data-f='wt' value='"+(p.wt||"")+"' oninput='onPersonInput(this)'></div>"+
+      "<div class='m'>Height / ऊँचाई</div><div class='r'>"+
+      "<select data-m='"+m+"' data-f='ft' onchange='onPersonInput(this)'>"+[3,4,5,6,7].map(function(x){return "<option value='"+x+"'"+(Number(p.ft)===x?" selected":"")+">"+x+" ft</option>"}).join("")+"</select>"+
+      "<select data-m='"+m+"' data-f='inc' onchange='onPersonInput(this)'>"+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(x){return "<option value='"+x+"'"+(Number(p.inc)===x?" selected":"")+">"+x+" in</option>"}).join("")+"</select></div>"+
+      "<div class='bmi-box' id='bmi_"+m+"'><div class='m'>BMI (automatic) / BMI (अपने-आप)</div><div class='bmi-num' id='bmiN_"+m+"'>—</div><div class='bi' id='bmiT_"+m+"'>Enter age, weight and height.<br>उम्र, वज़न और ऊँचाई भरें।</div></div>";
+    box.appendChild(div);
+    updateBMICard(m);
+  });
+}
+function onPersonInput(el){
+  var m=el.getAttribute("data-m"), f=el.getAttribute("data-f");
+  if(!S.persons[m]) S.persons[m]={};
+  S.persons[m][f]=el.value;
+  updateBMICard(m);
+}
+function updateBMICard(m){
+  var p=S.persons[m]||{}; var b=calcBMI(+p.wt,+p.ft,+p.inc); p.bmi=b; S.persons[m]=p;
+  var box=$("bmi_"+m), num=$("bmiN_"+m), txt=$("bmiT_"+m);
+  if(!box) return;
+  var msg=bmiMsg(b), cat=bmiCat(b);
+  box.className="bmi-box "+(msg.cls||"");
+  num.textContent=b?(b+" · "+cat.en+" / "+cat.hi):"—";
+  num.style.fontSize=b?"18px":"28px";
+  txt.innerHTML=b?(msg.en+"<br>"+msg.hi):"Enter age, weight and height.<br>उम्र, वज़न और ऊँचाई भरें।";
+}
+
+let _psyNext=null;
+function showPsy(key,next){ $("psyText").innerHTML=(PSY[key]||PSY.home).replace(/\n/g,"<br>"); $("psy").classList.add("show"); _psyNext=next; }
+function psyGo(step,key){ showPsy(key,function(){go(step)}); }
+function psyClose(){ $("psy").classList.remove("show"); if(_psyNext){var f=_psyNext;_psyNext=null;f();} }
+function track(){ try{ localStorage.setItem("dxDraft",JSON.stringify({S:S,t:Date.now()})); }catch(e){} }
+function go(n){
+  document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+  var id=n===0?"step-home":("step-"+n);
+  if($(id)) $(id).classList.remove("hid");
+  if(n===2) rebuildPersons();
+  track(); window.scrollTo(0,0);
+}
+function chg(k,d){ var L=limits[k]||[0,99]; counts[k]=Math.max(L[0],Math.min(L[1],(counts[k]||0)+d)); S[k]=counts[k]; if($(k)) $(k).textContent=counts[k]; }
+function mark(btn){ btn.parentNode.querySelectorAll("button").forEach(function(b){b.classList.remove("active")}); btn.classList.add("active"); }
+function setGender(g){ S.gender=g; $("gM").classList.toggle("active",g==="M"); $("gF").classList.toggle("active",g==="F"); $("femaleBox").classList.toggle("hid",g!=="F"); }
+function setDiet(v){ S.diet=v; $("dV").classList.toggle("active",v==="v"); $("dN").classList.toggle("active",v==="n"); }
+function setLook(v){
+  S.look=v; ["lF","lM","lX"].forEach(function(id){$(id).classList.remove("active")});
+  $(v==="Fit"?"lF":v==="Muscular"?"lM":"lX").classList.add("active");
+  $("suppHint").textContent=v==="Fit"?"Fit: balanced diet with basic protein guidance.":v==="Muscular"?"Muscular: higher protein; whey and creatine can be considered.":"Bulk / Heavy: higher-calorie diet focused on weight gain.";
+  $("budgetBox").classList.toggle("hid",v==="Fit");
+}
+function setGym(y){ S.gym=y; $("gymYes").classList.toggle("active",y); $("gymNo").classList.toggle("active",!y); $("gymExtra").classList.toggle("hid",!y); }
+function setOp(y){ S.op=y; $("opYes").classList.toggle("active",y); $("opNo").classList.toggle("active",!y); }
+function previewPhoto(inp){ var f=inp.files&&inp.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(e){ S.photo=e.target.result; $("photoPrev").src=S.photo; $("photoPrev").classList.remove("hid"); $("photoOk").classList.remove("hid"); }; r.readAsDataURL(f); }
+function personCount(){ return Math.max(1,(S.members||[]).length); }
+
+function val1(){
+  var n=$("nm").value.trim(), mb=$("mb").value.trim();
+  if(!n||!/^\d{10}$/.test(mb)) return alert("Please enter your full name and a valid 10-digit mobile number.\nकृपया अपना पूरा नाम और 10 अंकों का सही मोबाइल नंबर भरें।");
+  S.members=Array.prototype.slice.call(document.querySelectorAll("#forWhom input:checked")).map(function(x){return x.value});
+  if(!S.members.length) return alert("Please select at least one member.\nकृपया कम से कम एक सदस्य चुनें।");
+  S.n=n; S.mb=mb;
+  showPsy("after1",function(){go(2)});
+}
+function val2(){
+  var ok=true;
+  (S.members||[]).forEach(function(m){
+    var p=S.persons[m]||{};
+    if(!p.age||!p.wt) ok=false;
+    p.bmi=calcBMI(+p.wt,+p.ft,+p.inc); S.persons[m]=p;
+  });
+  if(!ok) return alert("Please enter age and weight for every member.\nकृपया प्रत्येक सदस्य की उम्र और वज़न भरें।");
+  var first=S.members[0], p=S.persons[first]||{};
+  S.a=+p.age; S.w=+p.wt; S.ft=+p.ft; S.ic=+p.inc; S.B=p.bmi;
+  S.goal=$("goal").value; S.lang=$("lang").value;
+  showPsy("after2",function(){go(3)});
+}
+function val4(){
+  var y=$("hq").value==="y";
+  if(y&&(!$("bm").value.trim())) return alert("Please enter the medical condition.\nकृपया बीमारी का नाम लिखें।");
+  S.hasDisease=y; S.disease=$("bm").value.trim(); S.medicine=$("dw").value.trim();
+  $("planSuggest").textContent="Physique: "+S.look+" · Goal: "+S.goal+" · Members: "+S.members.join(", ");
+  $("priceInfo").textContent="Price = plan rate × "+personCount()+" person(s) / कीमत = प्लान की दर × "+personCount()+" व्यक्ति";
+  $("budgetBox").classList.toggle("hid",S.look==="Fit");
+  showPsy("medical",function(){go(5)});
+}
+function chooseSupp(withS){ S.withSupp=withS; $("suppPick").classList.toggle("hid",!withS); $("dietPlans").classList.toggle("hid",withS); }
+function togSupp(el){
+  var name=el.getAttribute("data-s"); el.classList.toggle("on");
+  if(el.classList.contains("on")){ if(S.supplements.indexOf(name)<0) S.supplements.push(name); el.querySelector("span:last-child").textContent="Added"; }
+  else { S.supplements=S.supplements.filter(function(x){return x!==name}); el.querySelector("span:last-child").textContent="+ Add"; }
+  $("suppList").textContent=S.supplements.length?S.supplements.join(", "):"None"; track();
+}
+function goStore(){
+  track();
+  var base=storeUrl();
+  var q="from=diet&name="+encodeURIComponent(S.n||"")+"&phone="+encodeURIComponent(S.mb||"")+"&items="+encodeURIComponent((S.supplements||[]).join(","))+"&members="+encodeURIComponent((S.members||[]).join(","))+"&returnTo="+encodeURIComponent(location.href.split("?")[0]);
+  window.location.href=base+(base.indexOf("?")>=0?"&":"?")+q;
+}
+function closePayChoiceModal(){ $("payChoiceModal").classList.remove("show"); }
+function proceedPaymentWithSupplements(){
+  closePayChoiceModal();
+  go(5); chooseSupp(true);
+}
+window.addEventListener("load",function(){
+  try{
+    var params=new URLSearchParams(window.location.search);
+    if(params.get("returned")==="true" || params.get("storeItems") || params.get("storeCart")){
+      var items=params.get("storeItems");
+      if(items){ S.supplements=items.split(",").filter(Boolean); $("suppList").textContent=S.supplements.length?S.supplements.join(", "):"None"; }
+      try{ S.storeCart=JSON.parse(params.get("storeCart")||"[]"); }catch(e){ S.storeCart=[]; }
+      S.supplementTotal=+(params.get("storeTotal")||0);
+      if(S.storeCart&&S.storeCart.length){ S.supplements=S.storeCart.map(function(x){return x.name+" ("+x.pack+", "+x.flavour+") × "+x.qty+" = ₹"+(x.price*x.qty)}); $("suppList").textContent=S.supplements.join(", "); }
+      $("payChoiceModal").classList.add("show");
+    }
+  }catch(e){}
+});
+
+function initPay(days,base,overrideTotal){
+  var pc=personCount(), total=overrideTotal||base*pc;
+  S.days=days; S.priceBase=base; S.price=total; S.personCount=pc;
+  showPsy("pay",function(){
+    document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+    $("pay").innerHTML="<h3>"+days+" days · "+pc+" × Rs "+base+" = <b style='color:var(--y)'>Rs "+total+"</b></h3>"+
+      "<div class='m'>Members / सदस्य: "+S.members.join(", ")+"</div>"+
+      "<div class='m'><b>Supplements / सप्लीमेंट्स:</b> "+((S.supplements&&S.supplements.length)?S.supplements.join(", "):"None / कोई नहीं")+"</div>"+
+      "<div class='quote'><b>Diet plan + supplement total:</b> ₹"+total+"</div>"+
+      "<a class='b' href='upi://pay?pa="+UPI+"&pn=DieticianXpert&am="+total+"&cu=INR&tn=Diet'>Pay Rs "+total+" via UPI / UPI से भुगतान करें</a>"+
+      "<div style='text-align:center;margin:10px 0'><img src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data="+encodeURIComponent("upi://pay?pa="+UPI+"&pn=DieticianXpert&am="+total+"&cu=INR")+"' style='background:#fff;padding:8px;border-radius:12px;width:150px'></div>"+
+      "<input id='ut' inputmode='numeric' maxlength='12' placeholder='UTR number (12 digits) / UTR नंबर'>"+
+      "<div class='m'>Payment screenshot (optional) / भुगतान का स्क्रीनशॉट (वैकल्पिक)</div>"+
+      "<input id='ss' type='file' accept='image/*'>"+
+      "<button onclick='subOrder()'>Submit order and get receipt / ऑर्डर जमा करें</button><div id='ps'></div><div id='out'></div>"+
+      "<button class='g' onclick='go(5)'>Back / पीछे</button>"+
+      "<div class='disc'><b>EN:</b> "+DISC_EN+"<br><br><b>HI:</b> "+DISC_HI+"</div>";
+    $("pay").classList.remove("hid");
+  });
+}
+function payWithPlan(days,base){
+  var cartTotal=+(S.supplementTotal||0), planTotal=base*personCount();
+  initPay(days,base,planTotal+cartTotal);
+}
+
+var _db;
+function DB(){ return _db||(_db=(async function(){
+  function L(u){return new Promise(function(r,e){var t=document.createElement("script");t.src=u;t.onload=r;t.onerror=e;document.head.appendChild(t)})}
+  await L("https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js");
+  await L("https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js");
+  if(!firebase.apps.length) firebase.initializeApp({apiKey:"AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",projectId:"brother-s-fitness-club"});
+  return firebase.firestore();
+})()); }
+function shrinkImg(file){return new Promise(function(res){var fr=new FileReader();fr.onload=function(ev){var im=new Image();im.onload=function(){var M=800,r=Math.min(1,M/Math.max(im.width,im.height));var c=document.createElement("canvas");c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",0.5))};im.src=ev.target.result};fr.readAsDataURL(file)})}
+function expertMsg(o){
+  return "Dietician Xpert Order%0AName: "+(o.n||"")+"%0APhone: "+(o.mb||"")+"%0AMembers: "+(o.members||[]).join(", ")+"%0AAmount: Rs "+(o.price||"")+"%0AUTR: "+(o.utr||"")+"%0AItems: "+((o.supplements||[]).join(", ")||"None");
+}
+
+async function subOrder(){
+  var u=$("ut").value.trim(), file=$("ss");
+  if(!u||!(file.files&&file.files[0])) return alert("Please enter the UTR number or upload a payment screenshot.\nकृपया UTR नंबर भरें या भुगतान का स्क्रीनशॉट अपलोड करें।");
+  if(u&&!/^\d{12}$/.test(u)) return alert("UTR must be exactly 12 digits.\nUTR नंबर 12 अंकों का होना चाहिए।");
+  $("ps").innerHTML='<div class="spinner"></div>';
+  var ss=""; if(file.files&&file.files[0]) ss=await shrinkImg(file.files[0]);
+  var id=Array.from(crypto.getRandomValues(new Uint8Array(12))).map(function(x){return x.toString(16).padStart(2,"0")}).join("");
+  var o=Object.assign({},S,{utr:u||"SCREENSHOT",ss:ss,status:"pending",t:Date.now(),brand:"Dietician Xpert"});
+  try{
+    var db=await DB();
+    await db.collection("diet_orders").doc(id).set(JSON.parse(JSON.stringify(o,function(k,v){return v===undefined?"":v})));
+    localStorage.setItem("dxOrder",JSON.stringify({id:id,d:S.days,S:S}));
+    makeReceipt(o); window.__orderId=id; localStorage.setItem("dxOrder",JSON.stringify({id:id,d:S.days,S:S}));
+    $("ps").innerHTML="<div style='color:#3ddc84;font-weight:800;text-align:center'>Payment receipt तैयार है. Chart admin approval के बाद मिलेगा.</div>"+
+      "<a class='b' target='_blank' href='https://wa.me/91"+EXPERT_WA+"?text="+expertMsg(o)+"'>Send to Diet Expert Team / WhatsApp</a>";
+    watchApproval(id); window.__lastOrder=o;
+  }catch(e){
+    makeReceipt(o); window.__orderId=id;
+    $("ps").innerHTML="<div style='color:#ffcc00;text-align:center'>Receipt तैयार है. Internet/Firebase issue के कारण approval pending है.</div>"+
+      "<a class='b' target='_blank' href='https://wa.me/91"+EXPERT_WA+"?text="+expertMsg(o)+"'>Send to Diet Expert Team / WhatsApp</a>";
+    watchApproval(id);
+  }
+}
+
+let approvalTimer=null, approvalStarted=0;
+function watchApproval(id){
+  if(approvalTimer) clearInterval(approvalTimer); approvalStarted=Date.now();
+  function check(){
+    var box=$("ps"); if(!box||!id)return;
+    var left=Math.max(0,600000-(Date.now()-approvalStarted)); var mm=String(Math.floor(left/60000)).padStart(2,"0"), ss=String(Math.floor(left/1000)%60).padStart(2,"0");
+    var timer=document.getElementById("approvalTimer"); if(timer)timer.textContent=mm+":"+ss;
+    firebase.firestore().collection("diet_orders").doc(id).get().then(function(doc){
+      if(!doc.exists)return; var o=doc.data();
+      if(o.status==="approved"){
+        clearInterval(approvalTimer); window.__approved=true;
+        box.innerHTML="<div class='ok'>✅ Payment approved by Diet Expert Team.</div><div class='pending-box'><b>Your Diet Chart is ready</b><button class='y' onclick='generateAllCharts()'>Download Your Diet Chart Now</button></div>";
+      }else if(o.status==="rejected"){
+        clearInterval(approvalTimer); box.innerHTML="<div class='e'>Payment rejected: "+(o.rejectReason||"Please contact Diet Expert Team")+"</div>";
+      }
+    }).catch(function(){});
+    if(left<=0){clearInterval(approvalTimer);var t=document.getElementById("approvalTimer");if(t)t.textContent="Time window ended";}
+  }
+  $("ps").innerHTML+="<div class='pending-box'><div class='timer' id='approvalTimer'>10:00</div><b>⌛ Payment confirmation pending</b><div class='m'>Admin approval के बाद ही Diet Chart download होगा.</div></div>";
+  check(); approvalTimer=setInterval(check,10000);
+}
+
+function makeReceipt(o){
+  var c=document.createElement("canvas"), W=800, H=1000, x=c.getContext("2d");
+  c.width=W; c.height=H;
+  x.fillStyle="#0b0b0b"; x.fillRect(0,0,W,H);
+  x.strokeStyle="#ffd60a"; x.lineWidth=4; x.strokeRect(20,20,W-40,H-40);
+  x.fillStyle="#ffd60a"; x.font="900 28px "+FF; x.textAlign="center"; x.fillText("DIETICIAN XPERT",W/2,70);
+  x.fillStyle="#fff"; x.font="16px "+FF; x.fillText("PAYMENT RECEIPT / भुगतान रसीद",W/2,100);
+  x.textAlign="left"; x.font="15px "+FF;
+  var y=150, lines=["Date: "+new Date().toLocaleString(),"Name: "+(o.n||""),"Mobile: "+(o.mb||""),"Members: "+(o.members||[]).join(", "),"Plan: "+(o.days||"")+" days × "+(o.personCount||1)+" person(s) = Rs "+(o.price||""),"UTR: "+(o.utr||""),"Supplements: "+((o.supplements||[]).join(", ")||"None")];
+  lines.forEach(function(t){ x.fillStyle="#eee"; x.fillText(t,50,y); y+=32; });
+  y+=20; x.fillStyle="#888"; x.font="12px "+FF;
+  var words=(DISC_EN+" | "+DISC_HI).split(/\s+/), line="";
+  words.forEach(function(w){ var t=line?line+" "+w:w; if(x.measureText(t).width>W-100){ x.fillText(line,50,y); y+=18; line=w; } else line=t; });
+  if(line) x.fillText(line,50,y);
+  var url=c.toDataURL("image/png");
+  if($("out")) $("out").innerHTML="<img src='"+url+"' style='width:100%;border-radius:12px;margin-top:10px;border:1px solid #554500'><a class='b' download='DX-Receipt.png' href='"+url+"'>Download Receipt / रसीद डाउनलोड करें</a>";
+  var a=document.createElement("a"); a.download="DX-Receipt.png"; a.href=url; a.click();
+}
+
+function generateAllCharts(){
+  if(!window.__approved) return alert("Diet Chart admin approval के बाद ही उपलब्ध होगा।");
+  (S.members||["Self"]).forEach(function(m,i){
+    setTimeout(function(){ generateChartFor(m, S.days||7); }, i*600);
+  });
+}
+
+/* ---------- Meal data (English + Hindi) ---------- */
+var MEALS={
+  v:{
+    en:{
+      N:["Poha, milk and banana","Vegetable paratha with curd","Besan chilla with chutney","Daliya with banana and nuts","Oats with milk and fruit","Idli with sambar","Paneer sandwich"],
+      L:["Dal, 2 roti, vegetables and salad","Rajma, rice and curd","Chole, roti and salad","Paneer bhurji and roti","Soya curry and roti","Kadhi and rice","Khichdi, curd and vegetables"],
+      S:["Fruit and a handful of peanuts","Roasted chana","Curd and banana","Sprouts salad","Buttermilk and fruit","Roasted chana","Curd and fruit"],
+      R:["Dal, roti and vegetables","Paneer and roti","Vegetable soup and toast","Soya vegetable and roti","Dal and rice","Moong chilla","Bottle gourd dal and roti"]
+    },
+    hi:{
+      N:["पोहा, दूध और केला","सब्ज़ी पराठा और दही","बेसन चीला और चटनी","दलिया, केला और मेवे","ओट्स, दूध और फल","इडली और सांभर","पनीर सैंडविच"],
+      L:["दाल, 2 रोटी, सब्ज़ी और सलाद","राजमा, चावल और दही","छोले, रोटी और सलाद","पनीर भुर्जी और रोटी","सोया करी और रोटी","कढ़ी और चावल","खिचड़ी, दही और सब्ज़ी"],
+      S:["फल और मुट्ठी भर मूंगफली","भुना चना","दही और केला","अंकुरित अनाज का सलाद","छाछ और फल","भुना चना","दही और फल"],
+      R:["दाल, रोटी और सब्ज़ी","पनीर और रोटी","वेज सूप और टोस्ट","सोया सब्ज़ी और रोटी","दाल और चावल","मूंग चीला","लौकी की दाल और रोटी"]
+    }
+  },
+  n:{
+    en:{
+      N:["Egg bhurji and 2 roti","3 boiled eggs and daliya","Omelette and bread","Egg paratha and curd","Oats and 2 eggs","Poha and 2 eggs","Chicken sandwich"],
+      L:["Chicken curry, roti and salad","Dal, 2 eggs and roti","Fish, rice and vegetables","Chicken tikka and roti","Egg curry and rice","Chicken pulao and raita","Dal, chicken and salad"],
+      S:["Milk and banana","Roasted chana","Milk with almonds","Fruit and peanuts","Boiled egg","Sprouts","Curd and fruit"],
+      R:["Grilled chicken and vegetables","Egg curry and roti","Chicken soup and toast","Chicken vegetable and roti","Dal and eggs","Chicken salad","Chicken and dal"]
+    },
+    hi:{
+      N:["एग भुर्जी और 2 रोटी","3 उबले अंडे और दलिया","ऑमलेट और ब्रेड","एग पराठा और दही","ओट्स और 2 अंडे","पोहा और 2 अंडे","चिकन सैंडविच"],
+      L:["चिकन करी, रोटी और सलाद","दाल, 2 अंडे और रोटी","मछली, चावल और सब्ज़ी","चिकन टिक्का और रोटी","एग करी और चावल","चिकन पुलाव और रायता","दाल, चिकन और सलाद"],
+      S:["दूध और केला","भुना चना","बादाम वाला दूध","फल और मूंगफली","उबला अंडा","अंकुरित अनाज","दही और फल"],
+      R:["ग्रिल्ड चिकन और सब्ज़ी","एग करी और रोटी","चिकन सूप और टोस्ट","चिकन सब्ज़ी और रोटी","दाल और अंडे","चिकन सलाद","चिकन और दाल"]
+    }
+  }
+};
+
+function wrapTxt(x,t,maxW){
+  var words=String(t).split(" "), lines=[], cur="";
+  words.forEach(function(w){
+    var tt=cur?cur+" "+w:w;
+    if(x.measureText(tt).width>maxW&&cur){ lines.push(cur); cur=w; } else cur=tt;
+  });
+  if(cur) lines.push(cur);
+  return lines.length?lines:[""];
+}
+
+/* ---------- PAGE 1: customer details ---------- */
+function drawProfilePage(x,W,member,p,photo,hi){
+  var gold="#ffd60a";
+  function T(en,h){ return hi?h:en; }
+  function rr(xx,yy,ww,hh,r){x.beginPath();x.moveTo(xx+r,yy);x.arcTo(xx+ww,yy,xx+ww,yy+hh,r);x.arcTo(xx+ww,yy+hh,xx,yy+hh,r);x.arcTo(xx,yy+hh,xx,yy,r);x.arcTo(xx,yy,xx+ww,yy,r);x.closePath();}
+  function yn(v){ return v?T("Yes","हाँ"):T("No","नहीं"); }
+  function memName(m){ return hi?(MEM_HI[m]||m):m; }
+
+  x.fillStyle="#0a0a0a"; x.fillRect(0,0,W,3000);
+  x.textAlign="center"; x.fillStyle=gold; x.font="900 44px "+FF; x.fillText("DIETICIAN XPERT",W/2,64);
+  x.fillStyle="#fff"; x.font="bold 24px "+FF; x.fillText(T("CUSTOMER PROFILE","ग्राहक प्रोफ़ाइल"),W/2,104);
+  x.fillStyle="#bbb"; x.font="14px "+FF; x.fillText(T("Details submitted by the customer","ग्राहक द्वारा दी गई जानकारी"),W/2,130);
+  x.strokeStyle=gold; x.lineWidth=2; x.beginPath(); x.moveTo(48,148); x.lineTo(W-48,148); x.stroke();
+
+  // summary card
+  var sy=168, sh=170, b=p.bmi||0, cat=bmiCat(b);
+  x.fillStyle="#141100"; rr(48,sy,W-96,sh,14); x.fill();
+  x.strokeStyle=gold; x.lineWidth=2; rr(48,sy,W-96,sh,14); x.stroke();
+  var tx=72;
+  if(photo){
+    x.save(); rr(68,sy+15,140,140,12); x.clip(); x.drawImage(photo,68,sy+15,140,140); x.restore();
+    x.strokeStyle=gold; x.lineWidth=2; rr(68,sy+15,140,140,12); x.stroke();
+    tx=232;
+  }
+  x.textAlign="left";
+  x.fillStyle="#fff"; x.font="bold 30px "+FF; x.fillText(String(S.n||"").slice(0,26),tx,sy+48);
+  x.fillStyle="#ddd"; x.font="17px "+FF;
+  x.fillText(T("Mobile: ","मोबाइल: ")+(S.mb||"—"),tx,sy+82);
+  x.fillText(T("Plan for: ","प्लान किसके लिए: ")+memName(member),tx,sy+110);
+  x.fillStyle=gold; x.font="bold 20px "+FF;
+  x.fillText("BMI "+(b||"—")+"  ·  "+(hi?cat.hi:cat.en),tx,sy+144);
+
+  var y=sy+sh+30;
+
+  function cell(cx,cy,cw,label,value){
+    x.font="600 17px "+FF;
+    var lines=wrapTxt(x,value,cw-28);
+    var h=62+(lines.length-1)*24;
+    return {cx:cx,cy:cy,cw:cw,label:label,lines:lines,h:h};
+  }
+  function drawCell(c,h){
+    x.fillStyle="#141414"; rr(c.cx,c.cy,c.cw,h,10); x.fill();
+    x.strokeStyle="#333"; x.lineWidth=1.5; rr(c.cx,c.cy,c.cw,h,10); x.stroke();
+    x.fillStyle=gold; x.font="bold 12px "+FF; x.textAlign="left"; x.fillText(c.label.toUpperCase(),c.cx+14,c.cy+22);
+    x.fillStyle="#fff"; x.font="600 17px "+FF;
+    c.lines.forEach(function(l,k){ x.fillText(l,c.cx+14,c.cy+47+k*24); });
+  }
+  function section(title,items){
+    x.fillStyle=gold; x.font="bold 18px "+FF; x.textAlign="left"; x.fillText(title,48,y+4);
+    x.fillStyle="#444"; x.fillRect(48,y+14,W-96,1.5);
+    y+=30;
+    var i=0;
+    while(i<items.length){
+      var it=items[i], nx=items[i+1];
+      if(it[2]||!nx||nx[2]){
+        var c=cell(48,y,W-96,it[0],it[1]); drawCell(c,c.h); y+=c.h+10; i++;
+      } else {
+        var a=cell(48,y,(W-96-12)/2,it[0],it[1]), d=cell(48+(W-96-12)/2+12,y,(W-96-12)/2,nx[0],nx[1]);
+        var h=Math.max(a.h,d.h); drawCell(a,h); drawCell(d,h); y+=h+10; i+=2;
+      }
+    }
+    y+=14;
+  }
+
+  var ht=(p.ft||"—")+" ft "+(p.inc||0)+" in";
+  var cm=p.ft?Math.round(((+p.ft)*12+(+p.inc||0))*2.54):0;
+  section(T("PERSONAL INFORMATION","व्यक्तिगत जानकारी"),[
+    [T("Full name","पूरा नाम"),S.n||"—"],
+    [T("Mobile number","मोबाइल नंबर"),S.mb||"—"],
+    [T("Plan for","प्लान किसके लिए"),memName(member)],
+    [T("All members in this order","इस ऑर्डर के सभी सदस्य"),(S.members||[]).map(memName).join(", ")],
+    [T("Gender","लिंग"),S.gender==="F"?T("Female","महिला"):T("Male","पुरुष")],
+    [T("Date","दिनांक"),new Date().toLocaleDateString("en-GB")]
+  ]);
+  section(T("BODY DETAILS","शारीरिक जानकारी"),[
+    [T("Age","उम्र"),(p.age||"—")+T(" years"," वर्ष")],
+    [T("Weight","वज़न"),(p.wt||"—")+" kg"],
+    [T("Height","ऊँचाई"),ht+(cm?" ("+cm+" cm)":"")],
+    ["BMI",(b||"—")+" · "+(hi?cat.hi:cat.en)]
+  ]);
+  var bm=bmiMsg(b);
+  if(bm.en){ section(T("BMI ASSESSMENT","BMI मूल्यांकन"),[[T("What it means","इसका अर्थ"),hi?bm.hi:bm.en,true]]); }
+
+  var goalTxt=hi?(GOAL_HI[S.goal]||S.goal||"—"):(S.goal||"—");
+  var gi=[
+    [T("Diet type","आहार का प्रकार"),S.diet==="v"?T("Vegetarian","शाकाहारी"):T("Non-Vegetarian","मांसाहारी")],
+    [T("Desired physique","शारीरिक लक्ष्य"),hi?(LOOK_HI[S.look]||S.look):(S.look==="Monster"?"Bulk / Heavy":S.look)],
+    [T("Main goal","मुख्य लक्ष्य"),goalTxt],
+    [T("Gym","जिम"),S.gym?(yn(true)+" · "+S.gymDays+T(" days per week"," दिन प्रति सप्ताह")):yn(false)]
+  ];
+  if(S.look!=="Fit") gi.push([T("Monthly budget","मासिक बजट"),"Rs "+S.budget]);
+  gi.push([T("Supplements selected","चुने गए सप्लीमेंट"),(S.supplements&&S.supplements.length)?S.supplements.join(", "):T("None","कोई नहीं"),true]);
+  section(T("GOALS AND PREFERENCES","लक्ष्य और पसंद"),gi);
+
+  if(S.gym&&(S.mBiceps||S.mChest||S.mShoulder||S.mThigh)){
+    section(T("BODY MEASUREMENTS (INCHES)","शरीर के माप (इंच)"),[
+      [T("Biceps","बाइसेप्स"),S.mBiceps||"—"],
+      [T("Chest","छाती"),S.mChest||"—"],
+      [T("Shoulder","कंधा"),S.mShoulder||"—"],
+      [T("Thigh","जांघ"),S.mThigh||"—"]
+    ]);
+  }
+
+  section(T("LIFESTYLE HABITS","जीवनशैली की आदतें"),[
+    [T("Cigarettes per day","प्रतिदिन सिगरेट"),S.cigDay],
+    [T("Smoking days per month","महीने में धूम्रपान के दिन"),S.cigMon],
+    [T("Paan / tobacco per day","प्रतिदिन पान-तंबाकू"),S.paanDay],
+    [T("Beer per month","महीने में बीयर"),S.beerMon],
+    [T("Alcohol per month","महीने में शराब"),S.alcMon]
+  ]);
+
+  var mi=[
+    [T("Medical condition","बीमारी"),S.hasDisease?(S.disease||T("Yes","हाँ")):T("None reported","कोई नहीं बताई")],
+    [T("Current medicines","वर्तमान दवाइयाँ"),S.hasDisease?(S.medicine||T("Not mentioned","नहीं बताई")):T("None","कोई नहीं")],
+    [T("Surgery / long hospital stay","ऑपरेशन / लंबा अस्पताल प्रवास"),yn(S.op),true]
+  ];
+  if(S.gender==="F"){
+    mi.push([T("Pregnant","गर्भवती"),yn(S.pregnant==="Yes")]);
+    mi.push([T("PCOD / thyroid / menstrual issue","PCOD / थायरॉइड / मासिक धर्म समस्या"),yn(S.femaleIssue==="Yes")]);
+  }
+  section(T("MEDICAL HISTORY","स्वास्थ्य इतिहास"),mi);
+
+  section(T("PLAN AND PAYMENT","प्लान और भुगतान"),[
+    [T("Plan duration","प्लान की अवधि"),(S.days||7)+T(" days"," दिन")],
+    [T("Number of persons","व्यक्तियों की संख्या"),S.personCount||personCount()],
+    [T("Amount","राशि"),"Rs "+(S.price||"—")],
+    [T("UTR / payment reference","UTR / भुगतान संदर्भ"),(window.__lastOrder&&window.__lastOrder.utr)||"—"]
+  ]);
+
+  // disclaimer
+  x.fillStyle="#888"; x.font="12px "+FF; x.textAlign="left";
+  wrapTxt(x,hi?DISC_HI:DISC_EN,W-96).forEach(function(l){ x.fillText(l,48,y+6); y+=18; });
+  y+=30;
+  return y;
+}
+
+/* ---------- Full document: page 1 profile + page 2 diet chart ---------- */
+function generateChartFor(member,d){
+  if(S.photo){
+    var im=new Image();
+    im.onload=function(){ renderChart(member,d,im); };
+    im.onerror=function(){ renderChart(member,d,null); };
+    im.src=S.photo;
+  } else renderChart(member,d,null);
+}
+
+function renderChart(member,d,photo){
+  var p=S.persons[member]||{age:S.a,wt:S.w,ft:S.ft,inc:S.ic,bmi:S.B};
+  var v=S.diet||"v";
+  var hi=(S.lang||"hi")==="hi";
+  var gold="#ffd60a", W=1080;
+  function T(en,h){ return hi?h:en; }
+  function memName(m){ return hi?(MEM_HI[m]||m):m; }
+  var title=(d===14)?T("2-WEEK PLAN (14 DAYS)","2 सप्ताह का प्लान (14 दिन)"):(d===7)?T("1-WEEK PLAN (7 DAYS)","1 सप्ताह का प्लान (7 दिन)"):(d===30)?T("1-MONTH PLAN (30 DAYS)","1 महीने का प्लान (30 दिन)"):(d+T("-DAY PLAN"," दिन का प्लान"));
+  var set=MEALS[v][hi?"hi":"en"], N=set.N, L=set.L, Sx=set.S, R=set.R;
+
+  // page 1 on a tall temporary canvas, then cropped
+  var pc=document.createElement("canvas"); pc.width=W; pc.height=3000;
+  var px=pc.getContext("2d");
+  var pageH=drawProfilePage(px,W,member,p,photo,hi);
+
+  var dayH=168, bandH=70, headH=330, footH=130;
+  var H=pageH+bandH+headH+d*dayH+footH;
+  var c=document.createElement("canvas"); c.width=W; c.height=H;
+  var x=c.getContext("2d");
+  function rr(xx,yy,ww,hh,r){x.beginPath();x.moveTo(xx+r,yy);x.arcTo(xx+ww,yy,xx+ww,yy+hh,r);x.arcTo(xx+ww,yy+hh,xx,yy+hh,r);x.arcTo(xx,yy+hh,xx,yy,r);x.arcTo(xx,yy,xx+ww,yy,r);x.closePath();}
+
+  x.fillStyle="#0a0a0a"; x.fillRect(0,0,W,H);
+  x.drawImage(pc,0,0,W,pageH,0,0,W,pageH);
+
+  // page break band
+  var oy=pageH;
+  x.fillStyle=gold; x.fillRect(0,oy,W,bandH);
+  x.fillStyle="#000"; x.font="900 24px "+FF; x.textAlign="center";
+  x.fillText(T("PAGE 2 · PERSONAL DIET CHART","पृष्ठ 2 · व्यक्तिगत डाइट चार्ट"),W/2,oy+44);
+
+  // chart header
+  var hy=oy+bandH;
+  x.fillStyle=gold; x.font="900 40px "+FF; x.fillText("DIETICIAN XPERT",W/2,hy+55);
+  x.fillStyle="#fff"; x.font="bold 26px "+FF; x.fillText(title,W/2,hy+95);
+  x.fillStyle="#ccc"; x.font="14px "+FF;
+  x.fillText(T("Prepared for ","तैयार किया गया: ")+(S.n||"")+" ("+memName(member)+")  ·  "+T("Personalised nutrition guidance","व्यक्तिगत पोषण मार्गदर्शन"),W/2,hy+122);
+
+  // quick profile strip
+  var b=p.bmi||0, cat=bmiCat(b);
+  x.fillStyle="#121212"; rr(36,hy+140,W-72,84,10); x.fill();
+  x.strokeStyle=gold; x.lineWidth=2; rr(36,hy+140,W-72,84,10); x.stroke();
+  x.textAlign="left"; x.fillStyle="#fff"; x.font="15px "+FF;
+  x.fillText(T("Age ","उम्र ")+(p.age||"—")+"  ·  "+T("Weight ","वज़न ")+(p.wt||"—")+" kg  ·  "+T("Height ","ऊँचाई ")+(p.ft||"—")+"'"+(p.inc||0)+'"  ·  BMI '+(b||"—")+" ("+(hi?cat.hi:cat.en)+")",50,hy+170);
+  x.fillText(T("Goal: ","लक्ष्य: ")+(hi?(GOAL_HI[S.goal]||S.goal):S.goal)+"  ·  "+T("Diet: ","आहार: ")+(v==="v"?T("Vegetarian","शाकाहारी"):T("Non-Vegetarian","मांसाहारी")),50,hy+198);
+
+  // nutrition targets
+  var bm=b||22;
+  var kcal=bm>=30?"1700–1900":bm>=25?"1800–2000":bm<18.5?"2400–2700":"2000–2300";
+  var prot=bm>=25?"110–130 g":"125–145 g";
+  x.fillStyle="#1a1600"; rr(36,hy+238,W-72,76,8); x.fill();
+  x.strokeStyle=gold; x.lineWidth=2; rr(36,hy+238,W-72,76,8); x.stroke();
+  x.fillStyle=gold; x.font="bold 14px "+FF; x.fillText(T("DAILY NUTRITION TARGET","दैनिक पोषण लक्ष्य"),50,hy+262);
+  x.fillStyle="#fff"; x.font="15px "+FF;
+  x.fillText(T("Calories ","कैलोरी ")+kcal+" kcal",50,hy+296);
+  x.fillText(T("Protein ","प्रोटीन ")+prot,330,hy+296);
+  x.fillText(T("Carbs ","कार्ब्स ")+"220–290 g",560,hy+296);
+  x.fillText(T("Fat ","फैट ")+"50–65 g",820,hy+296);
+
+  // days
+  var labels=[T("Breakfast","नाश्ता"),T("Lunch","दोपहर का भोजन"),T("Snack","स्नैक"),T("Dinner","रात का भोजन")];
+  var top=hy+headH;
+  for(var i=0;i<d;i++){
+    var idx=i%7, y=top+i*dayH;
+    x.fillStyle=gold; x.fillRect(36,y,W-72,34);
+    x.fillStyle="#000"; x.font="900 16px "+FF; x.textAlign="left";
+    x.fillText(T("DAY ","दिन ")+(i+1),50,y+23);
+    var meals=[N[idx],L[idx],Sx[idx],R[idx]];
+    meals.forEach(function(m,j){
+      var cy=y+42+j*30;
+      x.fillStyle=j%2?"#141414":"#1a1a1a"; x.fillRect(36,cy,W-72,28);
+      x.fillStyle=gold; x.font="bold 12px "+FF; x.fillText(labels[j],50,cy+19);
+      x.fillStyle="#fff"; x.font="14px "+FF; x.fillText(m,190,cy+19);
+    });
+  }
+
+  // footer
+  var fy=top+d*dayH+24;
+  x.fillStyle="#888"; x.font="11px "+FF; x.textAlign="left";
+  wrapTxt(x,hi?DISC_HI:DISC_EN,W-80).forEach(function(l){ x.fillText(l,40,fy); fy+=16; });
+  x.fillStyle=gold; x.font="bold 14px "+FF; x.textAlign="center";
+  x.fillText(T("Right nutrition + consistent effort = visible results · Dietician Xpert","सही पोषण + नियमित मेहनत = बेहतर परिणाम · Dietician Xpert"),W/2,fy+30);
+
+  var url=c.toDataURL("image/png");
+  var fname="DX-"+d+"Day-"+member+".png";
+  if($("out")) $("out").innerHTML+="<div style='margin-top:10px;color:var(--y);font-weight:700'>"+member+" · "+d+" days</div><img src='"+url+"' style='width:100%;border-radius:10px;border:1px solid #554500'><a class='b' download='"+fname+"' href='"+url+"'>Download chart for "+member+"</a>";
+  var a=document.createElement("a"); a.download=fname; a.href=url; a.click();
+}
+
+rebuildPersons();
+try{
+  var saved=JSON.parse(localStorage.getItem("dxOrder")||"null");
+  if(saved){ Object.assign(S,saved.S||{}); window.__orderId=saved.id; document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+    $("pay").innerHTML="<h3>Saved order / सहेजा गया ऑर्डर</h3><div id='ps'></div><div id='out'></div><button class='g' onclick='localStorage.removeItem(\"dxOrder\");location.reload()'>Start a new order / नया ऑर्डर शुरू करें</button>";
+    $("pay").classList.remove("hid"); if(saved.id) watchApproval(saved.id);
+  }
+}catch(e){}
+</script>
+</body>
+</html>
