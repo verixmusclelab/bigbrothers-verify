@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>5 Brother's Fitness Club - Diet & Store Portal</title>
+<style>
+:root{--y:#ffd60a;--bg:#0b0b0b;--c:#161616}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:12px;padding-bottom:32px;background:var(--bg);color:#fff;font-family:system-ui,'Noto Sans Devanagari',sans-serif;max-width:480px;margin:0 auto;min-height:100vh}
+.h{border:2px solid var(--y);background:linear-gradient(145deg,#2a2200,#141414);border-radius:14px;text-align:center;padding:14px;margin-bottom:12px}
+.h .brand{color:var(--y);font-weight:900;font-size:20px;letter-spacing:.5px}
+.h small{display:block;color:#ccc;font-size:11px;margin-top:4px}
+.c{background:var(--c);border:1.5px solid #3a3a3a;border-radius:14px;padding:14px;margin-bottom:12px}
+h3{margin:0 0 8px;color:var(--y);font-size:16px}
+.m{font-size:12px;color:#bbb;margin:10px 0 4px}
+.bi{font-size:11px;color:#888;margin:0 0 6px;line-height:1.35}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1.5px solid #555;background:#0d0d0d;color:#fff;font-size:15px;outline:none}
+input:focus,select:focus{border-color:var(--y)}
+button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:#000;background:linear-gradient(135deg,#ffd60a,#e6b800);font-weight:900;border:0;border-radius:12px;padding:14px;margin-top:10px;font-size:15px;min-height:48px;cursor:pointer}
+.g{background:#222;color:#eee;border:1.5px solid #555}
+.hid{display:none!important}
+.r{display:flex;gap:8px}.r>*{flex:1}
+.bd{display:flex;gap:8px;flex-wrap:wrap}
+.bd button{background:#0d0d0d;color:#eee;border:1.5px solid #555;padding:12px 8px;font-size:13px;border-radius:10px;flex:1;min-width:42%;min-height:44px}
+.bd button.active{border-color:var(--y);background:#2a2200;color:var(--y);font-weight:800}
+.chk{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chk label{display:flex;align-items:center;gap:6px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:10px 12px;font-size:13px;flex:1 1 42%;min-height:44px}
+.chk input{width:18px;height:18px;margin:0}
+.step{text-align:center;font-size:11px;color:var(--y);font-weight:700;margin-bottom:8px}
+.person-card{background:#0d0d0d;border:1px solid #444;border-radius:12px;padding:12px;margin:10px 0}
+.person-card h4{margin:0 0 8px;color:var(--y);font-size:14px}
+#payChoiceModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:16px}
+#payChoiceModal.show{display:flex}
+#payChoiceModal .modal-box{background:#141414;border:2px solid var(--y);border-radius:16px;padding:20px;max-width:380px;width:100%;text-align:center}
+.pending-box{background:#171300;border:2px solid var(--y);border-radius:14px;padding:14px;text-align:center;margin-top:12px}
+.spinner{border:4px solid #333;border-top:4px solid var(--y);border-radius:50%;width:36px;height:36px;animation:spin 1s linear infinite;margin:12px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="h">
+  <div class="brand">5 BROTHER'S FITNESS CLUB</div>
+  <small>Umrao Kheda, Akrampur, Unnao | Ph: 9990954574</small>
+</div>
+
+<!-- Home Step -->
+<div id="step-home" class="c">
+  <h3>Customized Diet Plan Generator<br>व्यक्तिगत डाइट प्लान जनरेटर</h3>
+  <div class="bi">Get a custom diet plan based strictly on your body stats and goals.</div>
+  <button onclick="go(1)">Start / शुरू करें</button>
+</div>
+
+<!-- Step 1: Basic Details & Members -->
+<div id="step-1" class="c hid">
+  <div class="step">STEP 1 of 4 · Basic Details</div>
+  <h3>Setup / सेटअप</h3>
+  <div class="m">Gender / लिंग</div>
+  <div class="bd">
+    <button type="button" class="active" id="gM" onclick="setGender('M')">Male / पुरुष</button>
+    <button type="button" id="gF" onclick="setGender('F')">Female / महिला</button>
+  </div>
+  <div class="m">Who is this plan for?</div>
+  <div class="chk" id="forWhom">
+    <label><input type="checkbox" value="Self" checked onchange="rebuildPersons()"> Self / स्वयं</label>
+    <label><input type="checkbox" value="Wife" onchange="rebuildPersons()"> Wife / पत्नी</label>
+    <label><input type="checkbox" value="Husband" onchange="rebuildPersons()"> Husband / पति</label>
+    <label><input type="checkbox" value="Father" onchange="rebuildPersons()"> Father / पिता</label>
+    <label><input type="checkbox" value="Mother" onchange="rebuildPersons()"> Mother / माता</label>
+  </div>
+  <div class="m">Customer Name & Mobile Number</div>
+  <input id="nm" placeholder="Full name / पूरा नाम">
+  <input id="mb" type="tel" maxlength="10" placeholder="Mobile number (10 digits)">
+  <button class="g" onclick="go(0)">Back / पीछे</button>
+  <button onclick="val1()">Next / आगे</button>
+</div>
+
+<!-- Step 2: Body Details -->
+<div id="step-2" class="c hid">
+  <div class="step">STEP 2 of 4 · Body Stats</div>
+  <h3>Member Details / सदस्य की जानकारी</h3>
+  <div id="personsBox"></div>
+  <div class="m">Diet Type / आहार का प्रकार</div>
+  <div class="bd">
+    <button type="button" class="active" id="dV" onclick="setDiet('v')">Vegetarian / शाकाहारी</button>
+    <button type="button" id="dN" onclick="setDiet('n')">Non-Veg / मांसाहारी</button>
+  </div>
+  <div class="m">Primary Fitness Goal</div>
+  <select id="goal">
+    <option value="Fat Loss">Fat Loss & Lean (वज़न घटाना)</option>
+    <option value="Stay Fit">Stay Fit & Tone (फिट रहना)</option>
+    <option value="Muscle Building">Muscle Building (मसल्स बनाना)</option>
+    <option value="Bulking">Heavy Bulking / Mass Gain (वज़न बढ़ाना)</option>
+  </select>
+  <button class="g" onclick="go(1)">Back / पीछे</button>
+  <button onclick="val2()">Next / आगे</button>
+</div>
+
+<!-- Step 3: Lifestyle & Medical -->
+<div id="step-3" class="c hid">
+  <div class="step">STEP 3 of 4 · Lifestyle & Health</div>
+  <h3>Habits & History</h3>
+  <div class="m">Medical Condition</div>
+  <select id="hq">
+    <option value="n">No medical condition / कोई बीमारी नहीं</option>
+    <option value="y">Yes, I have a condition / हाँ, बीमारी है</option>
+  </select>
+  <button class="g" onclick="go(2)">Back / पीछे</button>
+  <button onclick="go(4)">Next / आगे</button>
+</div>
+
+<!-- Step 4: Plan Duration & Payment -->
+<div id="step-4" class="c hid">
+  <div class="step">STEP 4 of 4 · Plan Duration & Payment</div>
+  <h3>Select Plan Duration / प्लान अवधि चुनें</h3>
+  
+  <div class="m">Duration / समय सीमा:</div>
+  <select id="planDuration" onchange="updatePlanPrice()">
+    <option value="7">7 Days Plan (7 दिन) - ₹150</option>
+    <option value="25" selected>25 Days Plan (25 दिन) - ₹500</option>
+    <option value="30">1 Month Plan (1 महीना) - ₹750</option>
+  </select>
+
+  <div class="m" style="margin-top:12px;">Plan Amount: <b id="planPriceDisplay" style="color:var(--y)">₹500</b></div>
+
+  <button onclick="chooseSupp(false)" style="margin-top:12px;">Proceed with Diet Plan Only / केवल डाइट प्लान</button>
+  <button onclick="chooseSupp(true)">Diet plan with store supplements / सप्लीमेंट के साथ</button>
+  
+  <div id="suppPick" class="hid sec" style="margin-top:12px; border-top:1px solid #333; padding-top:10px;">
+    <div class="m">Selected items from Store: <b id="suppList" style="color:var(--y)">None</b></div>
+    <div class="m">Total Supplement Cost: <b id="suppTotalText" style="color:var(--y)">₹0</b></div>
+    <button onclick="goStore()" style="background:#007bff; color:#fff;">🛒 Open Store / स्टोर खोलें (Add Products)</button>
+  </div>
+
+  <button class="g" onclick="go(3)">Back / पीछे</button>
+</div>
+
+<!-- Payment Screen -->
+<div id="pay" class="c hid"></div>
+
+<!-- Store Return Modal -->
+<div id="payChoiceModal">
+  <div class="modal-box">
+    <h3 style="color:var(--y)">Store Cart Synchronized!</h3>
+    <p style="font-size:13px;color:#ccc;margin:10px 0" id="modalCartSummary">Products added successfully.</p>
+    <button onclick="proceedPaymentWithSupplements()">Proceed to Combined Payment</button>
+    <button class="g" onclick="closePayChoiceModal()">Back to Store</button>
+  </div>
+</div>
+
+<script>
+const $=i=>document.getElementById(i);
+const EXPERT_WA="9990954574", UPI="9990954574@okbizaxis";
+function storeUrl(){ return "https://verixmusclelab.github.io/bigbrothers-verify/store.html"; }
+
+const S={gender:'M',members:['Self'],persons:{},diet:'v',goal:'Bulking',duration:25,basePrice:500,supplements:[],supplementTotal:0,price:500};
+
+function updatePlanPrice(){
+  let dur = $("planDuration").value;
+  S.duration = parseInt(dur);
+  if(dur === "7") S.basePrice = 150;
+  else if(dur === "25") S.basePrice = 500;
+  else if(dur === "30") S.basePrice = 750;
+  $("planPriceDisplay").textContent = "₹" + S.basePrice;
+}
+
+function rebuildPersons(){
+  var mem=Array.prototype.slice.call(document.querySelectorAll("#forWhom input:checked")).map(function(x){return x.value});
+  if(!mem.length) mem=["Self"]; S.members=mem;
+  var box=$("personsBox"); if(!box) return; box.innerHTML="";
+  mem.forEach(function(m){
+    if(!S.persons[m]) S.persons[m]={age:25,wt:70,ft:5,inc:5};
+    var p=S.persons[m];
+    var div=document.createElement("div"); div.className="person-card";
+    div.innerHTML="<h4>"+m+"</h4>" +
+      "<div class='r'><input type='number' placeholder='Age' value='"+p.age+"' data-m='"+m+"' data-f='age' oninput='onPersonInput(this)'><input type='number' placeholder='Weight (kg)' value='"+p.wt+"' data-m='"+m+"' data-f='wt' oninput='onPersonInput(this)'></div>" +
+      "<div class='m'>Height</div><div class='r'><select data-m='"+m+"' data-f='ft' onchange='onPersonInput(this)'><option value='5' "+(p.ft==5?"selected":"")+">5 ft</option><option value='6' "+(p.ft==6?"selected":"")+">6 ft</option></select><select data-m='"+m+"' data-f='inc' onchange='onPersonInput(this)'><option value='5' "+(p.inc==5?"selected":"")+">5 in</option><option value='0' "+(p.inc==0?"selected":"")+">0 in</option></select></div>";
+    box.appendChild(div);
+  });
+}
+function onPersonInput(el){
+  var m=el.getAttribute("data-m"), f=el.getAttribute("data-f");
+  if(!S.persons[m]) S.persons[m]={}; S.persons[m][f]=el.value;
+}
+
+function go(n){
+  document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+  if($("step-"+n)) $("step-"+n).classList.remove("hid");
+  if(n===2) rebuildPersons();
+  if(n===4) updatePlanPrice();
+  window.scrollTo(0,0);
+}
+
+function setGender(g){
+  S.gender=g;
+  $("gM").classList.toggle("active", g==='M');
+  $("gF").classList.toggle("active", g==='F');
+}
+
+function val1(){
+  var n=$("nm").value.trim(), mb=$("mb").value.trim();
+  if(!n||!/^\d{10}$/.test(mb)) return alert("कृपया सही नाम और 10 अंकों का मोबाइल नंबर भरें।");
+  S.n=n; S.mb=mb; go(2);
+}
+
+function val2(){
+  var first=S.members[0]||'Self';
+  var p=S.persons[first]||{age:25,wt:70,ft:5,inc:5};
+  S.a=+p.age||25; S.w=+p.wt||70; S.ft=+p.ft||5; S.ic=+p.inc||5;
+  S.goal=$("goal").value; go(3);
+}
+
+function setDiet(v){
+  S.diet=v;
+  $("dV").classList.toggle("active", v==='v');
+  $("dN").classList.toggle("active", v==='n');
+}
+
+function chooseSupp(withS){
+  if(withS){
+    $("suppPick").classList.remove("hid");
+  } else {
+    initPay(S.basePrice);
+  }
+}
+
+function goStore(){
+  var base=storeUrl();
+  var q="from=diet&name="+encodeURIComponent(S.n||"")+"&phone="+encodeURIComponent(S.mb||"")+"&returnTo="+encodeURIComponent(location.href.split("?")[0]);
+  window.location.href=base+(base.indexOf("?")>=0?"&":"?")+q;
+}
+
+function closePayChoiceModal(){ $("payChoiceModal").classList.remove("show"); }
+
+function proceedPaymentWithSupplements(){
+  closePayChoiceModal();
+  let combinedTotal = S.basePrice + (S.supplementTotal || 0);
+  initPay(combinedTotal);
+}
+
+window.addEventListener("load", function(){
+  try {
+    var params = new URLSearchParams(location.search);
+    if(params.get("returned")==="true" || params.get("storeCart")) {
+      try { S.storeCart = JSON.parse(params.get("storeCart")||"[]"); } catch(e){ S.storeCart = []; }
+      S.supplementTotal = +(params.get("storeTotal")||0);
+      if(S.storeCart && S.storeCart.length) {
+        S.supplements = S.storeCart.map(function(x){ return x.name+" ("+x.pack+", "+x.flavour+") × "+x.qty+" = ₹"+(x.price*x.qty); });
+        $("suppList").textContent = S.supplements.join(", ");
+        $("suppTotalText").textContent = "₹" + S.supplementTotal;
+      }
+      $("modalCartSummary").innerHTML = "<b>Selected Products:</b> " + (S.supplements.join(", ") || "None") + "<br><b>Total Supplement Cost:</b> ₹" + S.supplementTotal;
+      $("payChoiceModal").classList.add("show");
+      chooseSupp(true);
+      go(4);
+    }
+    
+    var saved = JSON.parse(localStorage.getItem("dxOrder")||"null");
+    if(saved && saved.id) {
+      document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+      renderPaymentScreen(saved.price, saved.id, saved.time);
+      watchApproval(saved.id);
+    }
+  } catch(e){}
+});
+
+function initPay(totalPrice){
+  S.price = totalPrice;
+  renderPaymentScreen(totalPrice, null, null);
+}
+
+function renderPaymentScreen(totalPrice, existingId, existingTime){
+  document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+  let itemsList = S.supplements && S.supplements.length ? S.supplements.join(", ") : "केवल डाइट प्लान (Diet Plan Only)";
+  let orderId = existingId || ("5BFC-" + new Date().toISOString().slice(2,10).replace(/-/g,"") + "-" + Math.floor(1000+Math.random()*9000));
+  let orderTime = existingTime || new Date().toLocaleString();
+
+  $("pay").innerHTML = `<h3>भुगतान विवरण & संयुक्त बिल (Combined Bill)</h3>` +
+    `<div class='m'><b>Order ID:</b> <span style='color:var(--y)'>${orderId}</span> | <b>Date/Time:</b> ${orderTime}</div>` +
+    `<div class='m'><b>ग्राहक:</b> ${S.n || "Member"} | <b>मोबाइल:</b> ${S.mb || "—"}</div>` +
+    `<div class='m'><b>अवधि (Duration):</b> ${S.duration} Days | <b>लक्ष्य:</b> ${S.goal}</div>` +
+    `<div class='m'><b>डाइट प्लान शुल्क:</b> ₹${S.basePrice}</div>` +
+    `<div class='m'><b>चुने गए प्रोडक्ट्स:</b> ${itemsList}</div>` +
+    `<div class='m' style='font-size:17px;color:var(--y);margin-top:10px'><b>कुल देय राशि (Total Payable): Rs ${totalPrice}</b></div>` +
+    `<a class='b' href='upi://pay?pa=${UPI}&pn=5BrothersFitness&am=${totalPrice}&cu=INR&tn=${orderId}'>Pay Rs ${totalPrice} via UPI</a>` +
+    `<div style='text-align:center;margin:10px 0'><img src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent("upi://pay?pa="+UPI+"&pn=5BrothersFitness&am="+totalPrice+"&cu=INR")}' style='background:#fff;padding:8px;border-radius:12px;width:150px'></div>` +
+    `<input id='ut' inputmode='numeric' maxlength='12' placeholder='12 अंकों का UTR नंबर दर्ज करें'>` +
+    `<button onclick='subOrder("${orderId}", "${orderTime}", ${totalPrice})'>Submit Order & Track Status / आर्डर जमा करें</button>` +
+    `<div id='ps'></div><div id='out'></div>` +
+    `<button class='g' onclick='go(4)'>Back / पीछे</button>`;
+  $("pay").classList.remove("hid");
+}
+
+var _db;
+function DB(){ return _db||(_db=(async function(){
+  function L(u){return new Promise(function(r,e){var t=document.createElement("script");t.src=u;t.onload=r;t.onerror=e;document.head.appendChild(t)})}
+  await L("https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js");
+  await L("https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js");
+  if(!firebase.apps.length) firebase.initializeApp({apiKey:"AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",projectId:"brother-s-fitness-club"});
+  return firebase.firestore();
+})()); }
+
+async function subOrder(orderId, orderTime, totalPrice){
+  var u = $("ut").value.trim();
+  if(!u || !/^\d{12}$/.test(u)) return alert("कृपया सही 12 अंकों का UTR नंबर दर्ज करें।");
+  $("ps").innerHTML = '<div class="spinner"></div>';
+  
+  var o = Object.assign({}, S, { orderId: orderId, orderTime: orderTime, utr: u, status: "pending", price: totalPrice, t: Date.now() });
+  try {
+    var db = await DB();
+    await db.collection("diet_orders").doc(orderId).set(JSON.parse(JSON.stringify(o, function(k,v){return v===undefined?"":v})));
+    localStorage.setItem("dxOrder", JSON.stringify({id: orderId, time: orderTime, price: totalPrice, S: S}));
+    
+    let msg = `*5 Brother's Fitness Club - New Order*%0A*Order ID:* ${orderId}%0A*Duration:* ${S.duration} Days%0A*Goal:* ${S.goal}%0A*Name:* ${S.n}%0A*Phone:* ${S.mb}%0A*Total Amount:* Rs ${totalPrice}%0A*UTR:* ${u}`;
+    let waUrl = `https://wa.me/91${EXPERT_WA}?text=${msg}`;
+
+    $("ps").innerHTML = `<div style='color:#3ddc84;font-weight:800;text-align:center;margin-bottom:10px'>✔ आर्डर सेव हो गया! WhatsApp पर एक्सपर्ट को भेजें:</div>` +
+      `<a class='b' href='${waUrl}' target='_blank'>📲 Send Order to Health Expert on WhatsApp</a>`;
+    
+    watchApproval(orderId);
+  } catch(e) {
+    $("ps").innerHTML = "<div style='color:#ffcc00;text-align:center'>Order saved locally. Please send UTR on WhatsApp.</div>";
+    watchApproval(orderId);
+  }
+}
+
+let approvalTimer = null;
+function watchApproval(orderId){
+  if(approvalTimer) clearInterval(approvalTimer);
+  function check(){
+    DB().then(db => {
+      db.collection("diet_orders").doc(orderId).get().then(function(doc){
+        if(!doc.exists) return;
+        var o = doc.data();
+        if(o.status === "approved"){
+          clearInterval(approvalTimer);
+          window.__approved = true;
+          $("ps").innerHTML = `<div class='pending-box' style='border-color:#3ddc84'>` +
+            `<b style='color:#3ddc84; font-size:18px;'>✅ Payment Approved! / भुगतान स्वीकृत!</b><br>` +
+            `<div class='m'>Order ID: ${orderId} (${o.orderTime})</div>` +
+            `<button onclick='generateCustomDietChart()' style='background:#3ddc84;color:#000;margin-top:10px'>⬇️ Download Your Custom Diet Chart</button>` +
+            `</div>`;
+        } else {
+          $("ps").innerHTML = `<div class='pending-box'>` +
+            `<div class='m'>Order ID: ${orderId}</div>` +
+            `<b>⌛ Payment confirmation pending / अनुमोदन प्रतीक्षित</b><br>` +
+            `<div class='m'>Admin approval के बाद ही Diet Chart download होगा।</div>` +
+            `<button class='g' onclick='localStorage.removeItem("dxOrder"); location.reload();' style='margin-top:10px'>Start New Order / नया आर्डर शुरू करें</button>` +
+            `</div>`;
+        }
+      }).catch(function(){});
+    });
+  }
+  check();
+  approvalTimer = setInterval(check, 10000);
+}
+
+function generateCustomDietChart() {
+  const W = 1200, H = 1300;
+  const c = document.createElement("canvas"), x = c.getContext("2d");
+  c.width = W; c.height = H;
+
+  x.fillStyle = "#0b0b0b"; x.fillRect(0, 0, W, H);
+
+  x.fillStyle = "#ffd60a"; x.fillRect(0, 0, W, 140);
+  x.fillStyle = "#000"; x.font = "bold 38px system-ui"; x.fillText("5 BROTHER'S FITNESS CLUB", 40, 50);
+  x.font = "16px system-ui"; x.fillText("Umrao Kheda, Akrampur, Unnao | Ph: 9990954574", 40, 80);
+
+  x.textAlign = "left";
+  x.fillStyle = "#000"; x.font = "bold 24px system-ui"; x.fillText(`CUSTOMIZED DIET PLAN (${S.duration} Days)`, 40, 115);
+
+  x.fillStyle = "#141414"; x.fillRect(840, 15, 330, 110);
+  x.strokeStyle = "#000"; x.lineWidth = 2; x.strokeRect(840, 15, 330, 110);
+  x.fillStyle = "#ffd60a"; x.font = "bold 14px system-ui";
+  x.fillText("कस्टम मेंबर प्रोफाइल", 860, 38);
+  x.fillStyle = "#fff"; x.font = "13px system-ui";
+  x.fillText(`नाम : ${S.n || "Member"}`, 860, 60);
+  x.fillText(`उम्र : ${S.a} साल | वज़न : ${S.w} kg`, 860, 82);
+  x.fillText(`अवधि : ${S.duration} Days`, 860, 104);
+
+  let y = 155;
+  x.fillStyle = "#ffd60a"; x.fillRect(40, y, W - 80, 40);
+  x.fillStyle = "#000"; x.font = "bold 16px system-ui"; x.textAlign = "left";
+  x.fillText("Calculated Daily Target", 60, y + 25);
+  let baseCalories = S.w * 32, targetProtein = Math.round(S.w * 1.8), targetCarbs = Math.round(baseCalories * 0.45 / 4), targetFat = Math.round(baseCalories * 0.25 / 9);
+  x.font = "15px system-ui";
+  x.fillText(`🔥 Calories: ~${Math.round(baseCalories)} kcal    💪 Protein: ~${targetProtein}g    🌾 Carbs: ~${targetCarbs}g`, 300, y + 25);
+
+    function drawMealCard(startY, mealTitle, timeSlot, itemsLeft, itemsRight, proteinText, benefits) {
+    x.fillStyle = "#161616"; x.fillRect(40, startY, W - 80, 185);
+    x.strokeStyle = "#333"; x.lineWidth = 1.5; x.strokeRect(40, startY, W - 80, 185);
+
+    x.fillStyle = "#ffd60a"; x.fillRect(40, startY, W - 80, 32);
+    x.fillStyle = "#000"; x.font = "bold 16px system-ui"; x.textAlign = "left";
+    x.fillText(mealTitle, 55, startY + 22);
+    x.font = "bold 14px system-ui";
+    x.fillText(timeSlot, 330, startY + 22);
+
+    x.fillStyle = "#fff"; x.font = "15px system-ui";
+    let ix = 60, iy = startY + 65;
+    itemsLeft.forEach((it, i) => { x.fillText("• " + it, ix, iy + (i * 26)); });
+    let iix = 360;
+    itemsRight.forEach((it, i) => { x.fillText("• " + it, iix, iy + (i * 26)); });
+
+    x.fillStyle = "#b8860b"; x.fillRect(60, startY + 140, 180, 30);
+    x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui"; x.textAlign = "center";
+    x.fillText(proteinText, 150, startY + 160);
+
+    x.fillStyle = "#111"; x.fillRect(780, startY + 45, 360, 128);
+    x.strokeStyle = "#ffd60a"; x.strokeRect(780, startY + 45, 360, 128);
+    x.textAlign = "left"; x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
+    x.fillText("✔ क्यों ज़रूरी?", 800, startY + 70);
+    x.fillStyle = "#ccc"; x.font = "14px system-ui";
+    benefits.forEach((b, i) => { x.fillText("▶ " + b, 800, startY + 98 + (i * 22)); });
+  }
+
+  let bfastLeft = S.diet === 'v' ? ["सत्तू / ओट्स", "दूध", "केला"] : ["उबले अंडे (3)", "ब्रेड / दलिया", "केला"];
+  let bfastRight = S.diet === 'v' ? [`सत्तू - ${Math.round(S.w*1.1)}g`, "दूध - 250ml", "केला - 1"] : ["अंडे - 3 पीस", "दलिया - 50g", "दूध - 200ml"];
+  let lunchLeft = S.diet === 'v' ? ["सोया चंक्स", "दाल", "रोटी"] : ["चिकन / पनीर", "दाल", "चावल"];
+  let lunchRight = S.diet === 'v' ? [`सोया - 50g`, "दाल - 50g", "रोटी - 2", "दही - 100g"] : [`चिकन - 100g`, "चावल - 100g", "दाल - 50g", "सलाद"];
+  let dinnerLeft = ["दूध", "रोटी / चावल", "दही"];
+  let dinnerRight = ["दूध - 250ml", `रोटी - 2`, "दही या सलाद - 100g"];
+
+  drawMealCard(210, "MEAL 1 – सुबह (Breakfast)", "7:00 - 8:00 AM", bfastLeft, bfastRight, `लगभग ${Math.round(targetProtein*0.3)}g Protein`, ["बॉडी एनर्जी रिस्टोर", "मसल्स प्रोटेक्शन", "बेहतर पाचन"]);
+  drawMealCard(405, "MEAL 2 – दोपहर (Lunch)", "12:30 - 2:00 PM", lunchLeft, lunchRight, `लगभग ${Math.round(targetProtein*0.4)}g Protein`, ["मसल्स ग्रोथ", "एनर्जी लेवल हाई रखना", "ज़रूरी न्यूट्रिएंट्स"]);
+  drawMealCard(600, "MEAL 3 – रात (Dinner)", "7:30 - 9:00 PM", dinnerLeft, dinnerRight, `लगभग ${Math.round(targetProtein*0.3)}g Protein`, ["रात भर मसल्स रिकवरी", "बेहतर नींद और आराम", "बॉडी रिपेयर"]);
+
+  y = 805;
+  x.fillStyle = "#161616"; x.fillRect(40, y, 310, 200);
+  x.strokeStyle = "#ffd60a"; x.strokeRect(40, y, 310, 200);
+  x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui"; x.textAlign = "left";
+  x.fillText("Custom Target Summary", 60, y + 28);
+  x.fillStyle = "#fff"; x.font = "14px system-ui";
+  x.fillText(`🔥 Calories : ~${Math.round(baseCalories)} kcal`, 60, y + 65);
+  x.fillText(`💪 Protein  : ~${targetProtein} g`, 60, y + 98);
+  x.fillText(`🌾 Carbs    : ~${targetCarbs} g`, 60, y + 131);
+  x.fillText(`💧 Fat      : ~${targetFat} g`, 60, y + 164);
+
+  x.fillStyle = "#161616"; x.fillRect(365, y, 460, 200);
+  x.strokeStyle = "#ffd60a"; x.strokeRect(365, y, 460, 200);
+  x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
+  x.fillText("Selected Supplements & Addons", 385, y + 28);
+  x.fillStyle = "#fff"; x.font = "13px system-ui";
+  x.fillText(`• Plan (${S.duration} Days) : ₹${S.basePrice}`, 385, y + 60);
+  x.fillText("• Addons: " + (S.supplements && S.supplements.length ? S.supplements.join(", ") : "None"), 385, y + 95);
+
+  x.fillStyle = "#ffd60a"; x.fillRect(385, y + 148, 420, 42);
+  x.fillStyle = "#000"; x.font = "bold 14px system-ui"; x.textAlign = "center";
+  x.fillText("कुल भुगतान (Total): Rs " + S.price, 595, y + 174);
+
+  x.fillStyle = "#161616"; x.fillRect(840, y, 320, 200);
+  x.strokeStyle = "#ffd60a"; x.strokeRect(840, y, 320, 200);
+  x.textAlign = "left"; x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
+  x.fillText("ज़रूरी नियम", 860, y + 28);
+  x.fillStyle = "#fff"; x.font = "13px system-ui";
+  x.fillText("▶ प्रतिदिन 3-4 लीटर पानी पिएं।", 860, y + 75);
+  x.fillText("▶ रोजाना 7-8 घंटे की गहरी नींद लें।", 860, y + 115);
+  x.fillText("▶ हर 10 दिन बाद वजन मापें।", 860, y + 155);
+
+  y = 1025;
+  x.fillStyle = "#ffd60a"; x.fillRect(40, y, W - 80, 50);
+  x.fillStyle = "#000"; x.font = "bold 20px system-ui"; x.textAlign = "center";
+  x.fillText("सही डाइट + हार्ड वर्क = 100% रिजल्ट", W/2, y + 32);
+
+  x.fillStyle = "#888"; x.font = "14px system-ui";
+  x.fillText("– 5 Brother's Fitness Club (Unnao) –", W/2, y + 85);
+
+  const a = document.createElement("a");
+  a.download = `Custom-Diet-${S.n || 'Member'}.png`;
+  a.href = c.toDataURL("image/png");
+  if ($("out")) {
+    $("out").innerHTML = `<div style='color:#3ddc84;font-weight:700;margin-top:10px'>✔ Custom Diet Chart Ready</div><img src='${a.href}' style='width:100%;border-radius:12px;margin-top:8px'><a class='b' download='${a.download}' href='${a.href}'>⬇️ Download Custom Diet Chart</a>`;
+  }
+  a.click();
+}
+</script>
+</body>
+</html>
