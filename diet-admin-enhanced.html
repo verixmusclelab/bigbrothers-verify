@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diet Orders – Admin Approval</title>
+<style>
+:root{--y:#ffcc00;--bg:#0b0b0b;--c:#161616;--line:#333;--green:#3ddc84;--red:#ff5c5c;--blue:#55aaff}
+*{box-sizing:border-box}body{background:var(--bg);color:#fff;font-family:system-ui,sans-serif;padding:14px;max-width:620px;margin:auto}h2{color:var(--y);margin:8px 0}h3{margin:0 0 8px;color:var(--y)}.c{background:var(--c);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0;font-size:14px;line-height:1.55}.m{color:#aaa;font-size:12px}.e{color:#ff6b6b;font-size:13px;margin-top:8px}.w{background:#3a1d00;border:1px solid #ff9900;color:#ffb84d;border-radius:8px;padding:6px 8px;margin:6px 0;font-size:13px;font-weight:700}.ok{background:#12351f;border:1px solid var(--green);color:#9affbd;border-radius:8px;padding:6px 8px;margin:6px 0;font-size:13px;font-weight:700}.status{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800}.pending{background:#493700;color:#ffd85c}.approved{background:#12351f;color:#76f09b}.rejected{background:#421a1a;color:#ff9999}button{padding:11px 10px;border:0;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;margin-top:6px}.a{background:var(--green);color:#000}.r{background:var(--red);color:#000}.y{background:var(--y);color:#000;width:100%}.g{background:#292929;color:#fff;border:1px solid #555}.wa{background:#27d366;color:#000}.full{width:100%}.half{width:49%}input,select{width:100%;box-sizing:border-box;padding:11px;margin:6px 0;border-radius:8px;border:1px solid #444;background:#000;color:#fff;font-size:15px}.filters{display:grid;grid-template-columns:1fr 1fr;gap:7px}.filters input,.filters select{margin:0}.ss{max-width:100%;border-radius:8px;margin-top:6px;border:1px solid #444;cursor:zoom-in}.row{display:flex;gap:7px;flex-wrap:wrap}.row>*{flex:1;min-width:120px}.tabs{display:flex;gap:7px;margin:10px 0}.tabs button{flex:1;margin:0}.tabs button.active{outline:2px solid var(--y)}.empty{text-align:center;color:#aaa;padding:18px}.smallbtn{font-size:12px;padding:8px}.history-title{display:flex;justify-content:space-between;gap:8px;align-items:center}.notice{position:sticky;top:5px;z-index:5;background:#251e00;border:1px solid var(--y);border-radius:10px;padding:9px;margin:8px 0;color:#ffe98a;display:none}
+</style>
+</head>
+<body>
+<div id="lockScreen" class="c" style="text-align:center;margin-top:40px;border-color:var(--y)">
+  <h3>🔒 Admin PIN Required</h3><div class="m">कृपया 4 अंकों का Admin PIN दर्ज करें</div>
+  <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+  <button class="y" onclick="checkPin()">Unlock Panel</button><div id="pinError" class="e"></div>
+</div>
+<div id="adminContent" style="display:none">
+  <h2>🧾 Diet Orders – Admin Panel</h2>
+  <div class="m">Payment को UPI app के UTR और amount से मिलाकर ही approve करें.</div>
+  <div id="notice" class="notice"></div>
+  <div id="st" class="m">⏳ Orders load हो रहे हैं...</div>
+  <div class="c">
+    <div class="history-title"><b>Payment overview</b><span id="counts" class="m"></span></div>
+    <div class="tabs"><button id="pendingTab" class="y active" onclick="setTab('pending')">Pending</button><button id="historyTab" class="g" onclick="setTab('history')">Complete History</button></div>
+    <div class="filters"><input id="search" placeholder="Name / mobile / UTR search"><select id="statusFilter"><option value="all">All status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+    <button class="g full" onclick="loadCustomerHistory()">Search this customer's history</button>
+  </div>
+  <div id="customerHistory" class="c" style="display:none"></div>
+  <div id="l"></div>
+</div>
+<script>
+const $=i=>document.getElementById(i),say=t=>$("st").innerHTML=t;
+const EXPERT_WA="9140417259";
+let AC=null,pendingNow=0,allRows=[],activeTab="pending",firstSnapshot=true,unsubscribe=null;
+const L=u=>new Promise((r,e)=>{const s=document.createElement("script");s.src=u;s.onload=r;s.onerror=()=>e(new Error("load nahi hua: "+u));document.head.appendChild(s)});
+const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function checkPin(){const pin=$("pinInput").value.trim();if(pin==="5555"){$("lockScreen").style.display="none";$('adminContent').style.display="block";initAudio();try{if("Notification"in window&&Notification.permission==="default")Notification.requestPermission()}catch(e){}initFirebase()}else{$("pinError").innerText="❌ गलत PIN!";$('pinInput').value=""}}
+$("pinInput").addEventListener("keypress",e=>{if(e.key==="Enter")checkPin()});
+function initAudio(){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+function beep(){try{if(!AC)return;if(AC.state==="suspended")AC.resume();[0,.25,.5].forEach(t=>{let o=AC.createOscillator(),g=AC.createGain();o.frequency.value=880;g.gain.value=.25;o.connect(g);g.connect(AC.destination);o.start(AC.currentTime+t);o.stop(AC.currentTime+t+.15)})}catch(e){}try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}}
+setInterval(()=>{if(pendingNow>0)beep()},30000);
+function formatDate(t){return t?new Date(t).toLocaleString("en-IN"):"Date unavailable"}
+function orderItems(o){return (o.supplements&&o.supplements.length)?o.supplements.join(", "):"None"}
+function statusBadge(s){return `<span class="status ${esc(s||'pending')}">${esc((s||'pending').toUpperCase())}</span>`}
+function whatsapp(o){let text=`Diet order update%0AName: ${encodeURIComponent(o.n||'')}%0AMobile: ${encodeURIComponent(o.mb||'')}%0AStatus: ${encodeURIComponent(o.status||'')}%0APlan: ${encodeURIComponent((o.days||'')+' days')}%0AAmount: ${encodeURIComponent(o.price||'')}%0AUTR: ${encodeURIComponent(o.utr||'')}`;return `https://wa.me/91${EXPERT_WA}?text=${text}`}
+function setTab(tab){activeTab=tab;$("pendingTab").className=tab==='pending'?"y active":"g";$("historyTab").className=tab==='history'?"y active":"g";renderOrders()}
+["search","statusFilter"].forEach(id=>$(id).addEventListener("input",renderOrders));
+function renderOrders(){let q=$("search").value.trim().toLowerCase(), sf=$("statusFilter").value;let rows=allRows.filter(x=>(activeTab==='pending'?x.o.status==='pending':x.o.status!=='pending'));rows=rows.filter(x=>sf==='all'||x.o.status===sf);if(q)rows=rows.filter(x=>JSON.stringify(x.o).toLowerCase().includes(q));rows.sort((a,b)=>(b.o.t||0)-(a.o.t||0));$("counts").textContent=`Pending: ${pendingNow} · Total: ${allRows.length}`;let l=$("l");l.innerHTML="";if(!rows.length){l.innerHTML=`<div class="c empty">${activeTab==='pending'?'कोई pending order नहीं है.':'Complete history में कोई record नहीं मिला.'}</div>`;return}rows.forEach(x=>l.appendChild(orderCard(x.ref,x.o)))}
+function orderCard(ref,o){let e=document.createElement("div");e.className="c";let ss=o.ss?`<br><img class="ss" src="${esc(o.ss)}" alt="Payment screenshot" onclick="window.open(this.src,'_blank')">`:"";let dup=o.dupUtr?`<div class="w">⚠️ यह UTR पहले use हो चुका है.</div>`:"";let members=(o.members||[]).join(", ")||"Self";let actions="";if(o.status==='pending')actions=`<div class="row"><button class="a" onclick="approve('${ref.id}')">✅ Approve</button><button class="r" onclick="rejectOrder('${ref.id}')">❌ Reject</button></div>`;else actions=`<div class="row"><a class="b wa" href="${whatsapp(o)}" target="_blank">WhatsApp customer</a><button class="g" onclick="loadCustomerHistory('${esc(o.mb||'')}')">Customer history</button></div>`;e.innerHTML=`<div class="history-title"><b>${esc(o.n||'Unknown')}</b>${statusBadge(o.status)}</div><div class="m">Mobile: ${esc(o.mb||'—')} · Date: ${formatDate(o.t)}</div><hr style="border-color:#333"><b>Members:</b> ${esc(members)}<br><b>Plan:</b> ${esc(o.days||'—')} days · <b>Amount:</b> ₹${esc(o.price||'—')}<br><b>Goal:</b> ${esc(o.goal||'General')}<br><b>Supplements:</b> ${esc(orderItems(o))}<br><b>UTR:</b> ${esc(o.utr||'—')}${dup}${ss}<br><span class="m">Age: ${esc(o.a||'—')} · BMI: ${esc(o.B||'—')} · Last update: ${formatDate(o.approvedAt||o.rejectedAt||o.t)}</span>${actions}`;return e}
+async function approve(id){if(!confirm('Is payment UTR और amount मिल गया है? Approve करें?'))return;try{await firebase.firestore().collection('diet_orders').doc(id).update({status:'approved',approvedAt:Date.now(),approvedBy:'admin'});showNotice('Payment approved. Customer side approval status update हो जाएगा.')}catch(e){alert(e.message)}}
+async function rejectOrder(id){let reason=prompt('Reject reason लिखें (optional):','Payment verify नहीं हुआ');try{await firebase.firestore().collection('diet_orders').doc(id).update({status:'rejected',rejectReason:reason||'',rejectedAt:Date.now(),rejectedBy:'admin'});showNotice('Order rejected.')}catch(e){alert(e.message)}}
+function showNotice(t){let n=$("notice");n.textContent=t;n.style.display='block';setTimeout(()=>n.style.display='none',5000)}
+function loadCustomerHistory(mobile){let mb=mobile||$("search").value.trim();if(!mb){alert('पहले mobile number search box में लिखें.');return}let rows=allRows.filter(x=>String(x.o.mb||'')===String(mb));let box=$("customerHistory");box.style.display='block';if(!rows.length){box.innerHTML=`<b>Customer history</b><div class="m">${esc(mb)} के लिए record नहीं मिला.</div>`;return}rows.sort((a,b)=>(b.o.t||0)-(a.o.t||0));box.innerHTML=`<b>Customer history: ${esc(mb)}</b>`+rows.map(x=>`<div class="c"><b>${esc(x.o.n||'')}</b> · ${statusBadge(x.o.status)}<br>${esc(x.o.days||'—')} days · ₹${esc(x.o.price||'—')} · ${formatDate(x.o.t)}<br>Supplements: ${esc(orderItems(x.o))}</div>`).join('')}
+function showNewOrder(o){showNotice(`🔔 New payment: ${o.n||'Customer'} · ₹${o.price||''} · UTR ${o.utr||''}`);beep();try{if('Notification'in window&&Notification.permission==='granted')new Notification('New Diet Payment',{body:`${o.n||''} · ₹${o.price||''} · UTR ${o.utr||''}`})}catch(e){}}
+function loadOrders(){say('✅ Orders live mode में load हो रहे हैं...');unsubscribe=firebase.firestore().collection('diet_orders').onSnapshot(q=>{let previousPending=pendingNow;allRows=[];q.forEach(x=>allRows.push({ref:x.ref,o:x.data()}));pendingNow=allRows.filter(x=>x.o.status==='pending').length;document.title=pendingNow?`(${pendingNow}) Diet Orders – Approve`:'Diet Orders – Admin Approval';if(!firstSnapshot&&pendingNow>previousPending){q.docChanges().forEach(c=>{if(c.type==='added'&&c.doc.data().status==='pending')showNewOrder(c.doc.data())})}firstSnapshot=false;renderOrders()},err=>say(`<span class="e">Orders load error: ${esc(err.message)} (Firestore Rules check करें)</span>`))}
+async function initFirebase(){try{const V='https://www.gstatic.com/firebasejs/9.22.2/firebase-';await L(V+'app-compat.js');await L(V+'firestore-compat.js');if(!firebase.apps.length)firebase.initializeApp({apiKey:'AIzaSyA9z1gXZDB0lJxyHV9x2vWeb0Ees7z-g',authDomain:'brother-s-fitness-club.firebaseapp.com',projectId:'brother-s-fitness-club'});loadOrders()}catch(e){say(`<span class="e">${esc(e.message)} — internet / ad-blocker check करें.</span>`)}}
+</script>
+</body>
+</html>
