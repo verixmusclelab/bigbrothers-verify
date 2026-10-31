@@ -31,10 +31,6 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
 .sec{border-top:1px solid #333;margin-top:12px;padding-top:10px}
 .person-card{background:#0d0d0d;border:1px solid #444;border-radius:12px;padding:12px;margin:10px 0}
 .person-card h4{margin:0 0 8px;color:var(--y);font-size:14px}
-#psy{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:16px}
-#psy.show{display:flex}
-#psy .box{background:#1a1600;border:2px solid var(--y);border-radius:16px;padding:18px;max-width:360px;width:100%;text-align:center}
-#psy .box p{color:#ffe566;font-size:13px;line-height:1.5;margin:0 0 12px;text-align:left}
 #payChoiceModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:16px}
 #payChoiceModal.show{display:flex}
 #payChoiceModal .modal-box{background:#141414;border:2px solid var(--y);border-radius:16px;padding:20px;max-width:380px;width:100%;text-align:center}
@@ -67,8 +63,8 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
     <label><input type="checkbox" value="Mother" onchange="rebuildPersons()"> Mother / माता</label>
   </div>
   <div class="m">Customer name and mobile number</div>
-  <input id="nm" placeholder="Full name / पूरा नाम">
-  <input id="mb" type="tel" maxlength="10" placeholder="Mobile number (10 digits)">
+  <input id="nm" placeholder="Full name / पूरा नाम" oninput="S.n=this.value;saveDraft()">
+  <input id="mb" type="tel" maxlength="10" placeholder="Mobile number (10 digits)" oninput="S.mb=this.value;saveDraft()">
   <button class="g" onclick="go(0)">Back / पीछे</button>
   <button onclick="val1()">Next / आगे</button>
 </div>
@@ -82,18 +78,12 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
     <button type="button" class="active" id="dV" onclick="setDiet('v')">Vegetarian / शाकाहारी</button>
     <button type="button" id="dN" onclick="setDiet('n')">Non-Vegetarian / मांसाहारी</button>
   </div>
-  <div class="m">Desired physique</div>
-  <div class="bd">
-    <button type="button" class="active" id="lF" onclick="setLook('Fit')">Fit</button>
-    <button type="button" id="lM" onclick="setLook('Muscular')">Muscular</button>
-    <button type="button" id="lX" onclick="setLook('Monster')">Bulk / Heavy</button>
-  </div>
   <div class="m">Main goal</div>
-  <select id="goal">
+  <select id="goal" onchange="S.goal=this.value;saveDraft()">
     <option value="Stay Fit">Stay Fit / फिट रहना</option>
     <option value="Muscle Building">Muscle Building / मसल्स बनाना</option>
     <option value="Fat Loss">Fat Loss / वज़न घटाना</option>
-    <option value="Bulking">Weight Gain (Bulking) / वज़न बढ़ाना</option>
+    <option value="Bulking" selected>Weight Gain (Bulking) / वज़न बढ़ाना</option>
   </select>
   <button class="g" onclick="go(1)">Back / पीछे</button>
   <button onclick="val2()">Next / आगे</button>
@@ -119,7 +109,7 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
   <button onclick="val4()">Next / आगे</button>
 </div>
 
-<!-- Step 5: Duration & Payment Options with Next/Back Navigation -->
+<!-- Step 5: Duration & Payment Options -->
 <div id="step-5" class="c hid">
   <div class="step">STEP 5 of 5 · Plan Duration & Payment</div>
   <h3>Select Plan Duration / प्लान अवधि चुनें</h3>
@@ -164,8 +154,24 @@ const EXPERT_WA="9140417259", UPI="9990954574@okbizaxis";
 const FF="system-ui,'Noto Sans Devanagari',sans-serif";
 function storeUrl(){ return "https://verixmusclelab.github.io/bigbrothers-verify/store.html"; }
 
-const S={gender:'M',members:['Self'],persons:{},diet:'v',goal:'Bulking',duration:25,basePrice:500,supplements:[],supplementTotal:0,price:500,storeCart:[]};
-const counts={cigDay:0};
+let S = {gender:'M', members:['Self'], persons:{}, diet:'v', goal:'Bulking', duration:25, basePrice:500, supplements:[], supplementTotal:0, price:500, storeCart:[]};
+
+function saveDraft(){
+  try{ localStorage.setItem("dxDraftData", JSON.stringify(S)); }catch(e){}
+}
+
+function loadDraft(){
+  try{
+    let saved = localStorage.getItem("dxDraftData");
+    if(saved){
+      let parsed = JSON.parse(saved);
+      Object.assign(S, parsed);
+      if($("nm")) $("nm").value = S.n || "";
+      if($("mb")) $("mb").value = S.mb || "";
+      if($("goal")) $("goal").value = S.goal || "Bulking";
+    }
+  }catch(e){}
+}
 
 function updatePlanPrice(){
   let dur = $("planDuration").value;
@@ -174,6 +180,7 @@ function updatePlanPrice(){
   else if(dur === "25") S.basePrice = 500;
   else if(dur === "30") S.basePrice = 750;
   $("planPriceDisplay").textContent = "₹" + S.basePrice;
+  saveDraft();
 }
 
 function calcBMI(w,ft,inc){
@@ -194,18 +201,19 @@ function rebuildPersons(){
     var div=document.createElement("div");
     div.className="person-card";
     div.innerHTML="<h4>"+m+"</h4>"+
-      "<div class='r'><input type='number' placeholder='Age' data-m='"+m+"' data-f='age' value='"+p.age+"' oninput='onPersonInput(this)'>"+
-      "<input type='number' placeholder='Weight (kg)' data-m='"+m+"' data-f='wt' value='"+p.wt+"' oninput='onPersonInput(this)'></div>"+
+      "<div class='r'><input type='number' placeholder='Age' data-m='"+m+"' data-f='age' value='"+p.age+"' oninput='onPersonInput(this)'><input type='number' placeholder='Weight (kg)' data-m='"+m+"' data-f='wt' value='"+p.wt+"' oninput='onPersonInput(this)'></div>"+
       "<div class='m'>Height</div><div class='r'>"+
-      "<select data-m='"+m+"' data-f='ft' onchange='onPersonInput(this)'><option value='5'>5 ft</option><option value='6'>6 ft</option></select>"+
-      "<select data-m='"+m+"' data-f='inc' onchange='onPersonInput(this)'><option value='0'>0 in</option><option value='5'>5 in</option></select></div>";
+      "<select data-m='"+m+"' data-f='ft' onchange='onPersonInput(this)'><option value='5' "+(p.ft==5?"selected":"")+">5 ft</option><option value='6' "+(p.ft==6?"selected":"")+">6 ft</option></select>"+
+      "<select data-m='"+m+"' data-f='inc' onchange='onPersonInput(this)'><option value='0' "+(p.inc==0?"selected":"")+">0 in</option><option value='5' "+(p.inc==5?"selected":"")+">5 in</option></select></div>";
     box.appendChild(div);
   });
+  saveDraft();
 }
 function onPersonInput(el){
   var m=el.getAttribute("data-m"), f=el.getAttribute("data-f");
   if(!S.persons[m]) S.persons[m]={};
   S.persons[m][f]=el.value;
+  saveDraft();
 }
 
 function go(n){
@@ -216,24 +224,22 @@ function go(n){
   if(n===5) updatePlanPrice();
   window.scrollTo(0,0);
 }
-function chg(k,d){ counts[k]=Math.max(0,(counts[k]||0)+d); S[k]=counts[k]; if($(k)) $(k).textContent=counts[k]; }
-function setGender(g){ S.gender=g; $("gM").classList.toggle("active",g==="M"); $("gF").classList.toggle("active",g==="F"); }
-function setDiet(v){ S.diet=v; $("dV").classList.toggle("active",v==="v"); $("dN").classList.toggle("active",v==="n"); }
-function setLook(v){ S.look=v; }
+function chg(k,d){ S[k]=Math.max(0,(S[k]||0)+d); if($(k)) $(k).textContent=S[k]; saveDraft(); }
+function setGender(g){ S.gender=g; $("gM").classList.toggle("active",g==="M"); $("gF").classList.toggle("active",g==="F"); saveDraft(); }
+function setDiet(v){ S.diet=v; $("dV").classList.toggle("active",v==="v"); $("dN").classList.toggle("active",v==="n"); saveDraft(); }
 
 function val1(){
   var n=$("nm").value.trim(), mb=$("mb").value.trim();
   if(!n||!/^\d{10}$/.test(mb)) return alert("कृपया सही नाम और 10 अंकों का मोबाइल नंबर भरें।");
-  S.n=n; S.mb=mb; go(2);
+  S.n=n; S.mb=mb; saveDraft(); go(2);
 }
 function val2(){
   var first=S.members[0], p=S.persons[first]||{age:25,wt:70,ft:5,inc:0};
   S.a=+p.age||25; S.w=+p.wt||70; S.ft=+p.ft||5; S.ic=+p.inc||0; S.B=calcBMI(S.w,S.ft,S.ic);
-  S.goal=$("goal").value; go(3);
+  S.goal=$("goal").value; saveDraft(); go(3);
 }
 function val4(){
-  S.goal=$("goal").value;
-  go(5);
+  S.goal=$("goal").value; saveDraft(); go(5);
 }
 function chooseSupp(withS){
   S.withSupp=withS;
@@ -245,6 +251,7 @@ function proceedWithDietOnly(){
   payWithPlan(S.duration, S.basePrice);
 }
 function goStore(){
+  saveDraft();
   var base=storeUrl();
   var q="from=diet&name="+encodeURIComponent(S.n||"")+"&phone="+encodeURIComponent(S.mb||"")+"&returnTo="+encodeURIComponent(location.href.split("?")[0]);
   window.location.href=base+(base.indexOf("?")>=0?"&":"?")+q;
@@ -258,6 +265,7 @@ function proceedPaymentWithSupplements(){
 }
 
 window.addEventListener("load",function(){
+  loadDraft();
   try{
     var params=new URLSearchParams(window.location.search);
     if(params.get("returned")==="true" || params.get("storeCart")){
@@ -457,6 +465,6 @@ function generateCustomDietChart() {
   }
   a.click();
 }
-</script>
+  </script>
 </body>
 </html>
