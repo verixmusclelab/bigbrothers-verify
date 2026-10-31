@@ -1,5 +1,60 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>5 Brother's Fitness Club - Diet Portal</title>
+<style>
+:root{--y:#ffd60a;--bg:#0b0b0b;--c:#161616}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:12px;padding-bottom:32px;background:var(--bg);color:#fff;font-family:system-ui,'Noto Sans Devanagari',sans-serif;max-width:480px;margin:0 auto;min-height:100vh}
+.h{border:2px solid var(--y);background:linear-gradient(145deg,#2a2200,#141414);border-radius:14px;text-align:center;padding:14px;margin-bottom:12px}
+.h .brand{color:var(--y);font-weight:900;font-size:20px;letter-spacing:.5px}
+.h small{display:block;color:#ccc;font-size:11px;margin-top:4px}
+.c{background:var(--c);border:1.5px solid #3a3a3a;border-radius:14px;padding:14px;margin-bottom:12px}
+h3{margin:0 0 8px;color:var(--y);font-size:16px}
+.m{font-size:12px;color:#bbb;margin:10px 0 4px}
+.bi{font-size:11px;color:#888;margin:0 0 6px;line-height:1.35}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1.5px solid #555;background:#0d0d0d;color:#fff;font-size:15px}
+button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:#000;background:linear-gradient(135deg,#ffd60a,#e6b800);font-weight:900;border:0;border-radius:12px;padding:14px;margin-top:10px;font-size:15px;min-height:48px;cursor:pointer}
+.g{background:#222;color:#eee;border:1.5px solid #555}
+.hid{display:none!important}
+.r{display:flex;gap:8px}.r>*{flex:1}
+.bd{display:flex;gap:8px;flex-wrap:wrap}
+.bd button{background:#0d0d0d;color:#eee;border:1.5px solid #555;padding:12px 8px;font-size:13px;border-radius:10px;flex:1;min-width:42%;min-height:44px}
+.bd button.active{border-color:var(--y);background:#2a2200;color:var(--y);font-weight:800}
+.chk{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chk label{display:flex;align-items:center;gap:6px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:10px 12px;font-size:13px;flex:1 1 42%;min-height:44px}
+.chk input{width:18px;height:18px;margin:0}
+.step{text-align:center;font-size:11px;color:var(--y);font-weight:700;margin-bottom:8px}
+.sec{border-top:1px solid #333;margin-top:12px;padding-top:10px}
+.person-card{background:#0d0d0d;border:1px solid #444;border-radius:12px;padding:12px;margin:10px 0}
+.person-card h4{margin:0 0 8px;color:var(--y);font-size:14px}
+.pending-box{background:#171300;border:2px solid var(--y);border-radius:14px;padding:14px;text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="h">
+  <div class="brand">5 BROTHER'S FITNESS CLUB</div>
+  <small>Umrao Kheda, Akrampur, Unnao | Ph: 9990954574</small>
+</div>
+
+<!-- Home Step with Lookup / Resume Portal -->
+<div id="step-home" class="c">
+  <h3>Your Personalised Diet Plan<br>आपका व्यक्तिगत डाइट प्लान</h3>
+  <div class="bi">Get a custom high-protein diet plan built for gym members and urban lifestyle.</div>
+  <button onclick="go(1)">Start / नया प्लान शुरू करें</button>
+  
+  <div class="sec" style="margin-top:16px;">
+    <div class="m" style="color:var(--y);font-weight:700;">🔍 Track Existing Order / Download Chart</div>
+    <div class="bi">Enter Mobile No or Order ID to check status or download diet chart.</div>
+    <input id="lookupInput" placeholder="Mobile Number or Order ID">
+    <button class="g" onclick="lookupExistingOrder()">Check Status / स्टेटस देखें</button>
+  </div>
+</div>
+
 <!-- Step 1: Basic Details -->
-<div id="step-1" class="c">
+<div id="step-1" class="c hid">
   <div class="step">STEP 1 of 5 · Basic Details</div>
   <h3>Setup / सेटअप</h3>
   <div class="m">Gender / लिंग</div>
@@ -25,7 +80,7 @@
 </div>
 
 <!-- Step 2: Body Details -->
-<div id="step-2" class="c">
+<div id="step-2" class="c hid">
   <div class="step">STEP 2 of 5 · Body Details</div>
   <h3>Member Details / सदस्य की शारीरिक जानकारी</h3>
   <div class="bi">प्रत्येक सदस्य की सही उम्र, वज़न और ऊँचाई दर्ज करें ताकि बिल्कुल सटीक कैलोरी और प्रोटीन कैलकुलेट हो सके।</div>
@@ -134,7 +189,7 @@
 
   <div class="m" style="margin-top:14px;">Select Option / विकल्प चुनें:</div>
   <button onclick="proceedWithDietOnly()">Proceed with Diet Plan Only / केवल डाइट प्लान</button>
-  <button onclick="proceedWithDietOnly()">Proceed with Supplement / सप्लीमेंट के साथ आगे बढ़ाएं</button>
+  <button onclick="proceedWithDietOnly()">Proceed with Supplement / सप्लीमेंट के साथ</button>
 
   <div class="r" style="margin-top:16px;">
     <button class="g" onclick="go(4)">Back / पीछे</button>
@@ -359,7 +414,7 @@ function watchApproval(id){
         if(!doc.exists)return; var o=doc.data();
         if(o.status==="approved"){
           clearInterval(approvalTimer); window.__approved=true;
-          $("ps").innerHTML="<div class='pending-box' style='border-color:#3ddc84'><b style='color:#3ddc84;font-size:18px;'>✅ Payment Approved!</b><br><button onclick='generateCustomDietChart()' style='background:#3ddc84;color:#000;margin-top:10px'>⬇️ Download Custom Diet Chart Now</button></div>";
+            $("ps").innerHTML="<div class='pending-box' style='border-color:#3ddc84'><b style='color:#3ddc84;font-size:18px;'>✅ Payment Approved!</b><br><button onclick='generateCustomDietChart()' style='background:#3ddc84;color:#000;margin-top:10px'>⬇️ Download Custom Diet Chart Now</button></div>";
         }else{
           $("ps").innerHTML="<div class='pending-box'><div class='timer'>Order ID: "+id+"</div><b>⌛ Payment confirmation pending</b><div class='m'>Admin approval के बाद ही Diet Chart download होगा।</div></div>";
         }
@@ -493,8 +548,6 @@ function generateCustomDietChart() {
   }
   a.click();
 }
-  </script>
+</script>
 </body>
 </html>
-
-
