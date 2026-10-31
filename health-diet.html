@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>5 Brother's Fitness Club - Diet & Store Portal</title>
+<title>5 Brother's Fitness Club - Diet Portal</title>
 <style>
 :root{--y:#ffd60a;--bg:#0b0b0b;--c:#161616}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -26,26 +26,34 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
 .chk{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
 .chk label{display:flex;align-items:center;gap:6px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:10px 12px;font-size:13px;flex:1 1 42%;min-height:44px}
 .chk input{width:18px;height:18px;margin:0}
-.quote{background:rgba(255,214,10,.1);border-left:4px solid var(--y);padding:10px;margin:10px 0;font-size:12px;color:#ffe566;border-radius:0 8px 8px 0;line-height:1.45}
 .step{text-align:center;font-size:11px;color:var(--y);font-weight:700;margin-bottom:8px}
 .sec{border-top:1px solid #333;margin-top:12px;padding-top:10px}
 .person-card{background:#0d0d0d;border:1px solid #444;border-radius:12px;padding:12px;margin:10px 0}
 .person-card h4{margin:0 0 8px;color:var(--y);font-size:14px}
-#payChoiceModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:16px}
-#payChoiceModal.show{display:flex}
-#payChoiceModal .modal-box{background:#141414;border:2px solid var(--y);border-radius:16px;padding:20px;max-width:380px;width:100%;text-align:center}
-.pending-box{background:#171300;border:2px solid var(--y);border-radius:14px;padding:14px;text-align:center;margin-top:12px}.pending-box .timer{font-size:28px;color:var(--y);font-weight:900}
+.pending-box{background:#171300;border:2px solid var(--y);border-radius:14px;padding:14px;text-align:center;margin-top:12px}
 </style>
 </head>
 <body>
-<div class="h"><div class="brand">5 BROTHER'S FITNESS CLUB</div><small>Umrao Kheda, Akrampur, Unnao | Ph: 9990954574</small></div>
-
-<div id="step-home" class="c">
-  <h3>Your personalised diet plan<br>आपका व्यक्तिगत डाइट प्लान</h3>
-  <div class="bi">Get a diet plan built around your body, lifestyle and goals.</div>
-  <button onclick="go(1)">Start / शुरू करें</button>
+<div class="h">
+  <div class="brand">5 BROTHER'S FITNESS CLUB</div>
+  <small>Umrao Kheda, Akrampur, Unnao | Ph: 9990954574</small>
 </div>
 
+<!-- Home Step with Lookup / Resume Portal -->
+<div id="step-home" class="c">
+  <h3>Your Personalised Diet Plan<br>आपका व्यक्तिगत डाइट प्लान</h3>
+  <div class="bi">Get a custom high-protein diet plan built for gym members and urban lifestyle.</div>
+  <button onclick="go(1)">Start / नया प्लान शुरू करें</button>
+  
+  <div class="sec" style="margin-top:16px;">
+    <div class="m" style="color:var(--y);font-weight:700;">🔍 Track Existing Order / Download Chart</div>
+    <div class="bi">Enter Mobile No or Order ID to check status or download diet chart.</div>
+    <input id="lookupInput" placeholder="Mobile Number or Order ID">
+    <button class="g" onclick="lookupExistingOrder()">Check Status / स्टेटस देखें</button>
+  </div>
+</div>
+
+<!-- Step 1: Basic Details -->
 <div id="step-1" class="c hid">
   <div class="step">STEP 1 of 5 · Basic Details</div>
   <h3>Setup / सेटअप</h3>
@@ -54,7 +62,7 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
     <button type="button" class="active" id="gM" onclick="setGender('M')">Male / पुरुष</button>
     <button type="button" id="gF" onclick="setGender('F')">Female / महिला</button>
   </div>
-  <div class="m">Who is this plan for?</div>
+  <div class="m">Who is this plan for? / किसके लिए है?</div>
   <div class="chk" id="forWhom">
     <label><input type="checkbox" value="Self" checked onchange="rebuildPersons()"> Self / स्वयं</label>
     <label><input type="checkbox" value="Wife" onchange="rebuildPersons()"> Wife / पत्नी</label>
@@ -62,51 +70,107 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
     <label><input type="checkbox" value="Father" onchange="rebuildPersons()"> Father / पिता</label>
     <label><input type="checkbox" value="Mother" onchange="rebuildPersons()"> Mother / माता</label>
   </div>
-  <div class="m">Customer name and mobile number</div>
+  <div class="m">Customer Name & Mobile Number</div>
   <input id="nm" placeholder="Full name / पूरा नाम" oninput="S.n=this.value;saveDraft()">
   <input id="mb" type="tel" maxlength="10" placeholder="Mobile number (10 digits)" oninput="S.mb=this.value;saveDraft()">
-  <button class="g" onclick="go(0)">Back / पीछे</button>
-  <button onclick="val1()">Next / आगे</button>
+  <div class="r" style="margin-top:10px;">
+    <button class="g" onclick="go(0)">Back / पीछे</button>
+    <button onclick="val1()">Next / आगे</button>
+  </div>
 </div>
 
+<!-- Step 2: Body Details -->
 <div id="step-2" class="c hid">
   <div class="step">STEP 2 of 5 · Body Details</div>
-  <h3>Member Details / सदस्य की जानकारी</h3>
+  <h3>Member Details / सदस्य की शारीरिक जानकारी</h3>
+  <div class="bi">प्रत्येक सदस्य की सही उम्र, वज़न और ऊँचाई दर्ज करें ताकि बिल्कुल सटीक कैलोरी और प्रोटीन कैलकुलेट हो सके।</div>
   <div id="personsBox"></div>
-  <div class="m">Diet type / आहार का प्रकार</div>
+  <div class="m">Diet Type / आहार का प्रकार</div>
   <div class="bd">
     <button type="button" class="active" id="dV" onclick="setDiet('v')">Vegetarian / शाकाहारी</button>
     <button type="button" id="dN" onclick="setDiet('n')">Non-Vegetarian / मांसाहारी</button>
   </div>
-  <div class="m">Main goal</div>
+  <div class="m">Main Goal / मुख्य लक्ष्य</div>
   <select id="goal" onchange="S.goal=this.value;saveDraft()">
     <option value="Stay Fit">Stay Fit / फिट रहना</option>
     <option value="Muscle Building">Muscle Building / मसल्स बनाना</option>
     <option value="Fat Loss">Fat Loss / वज़न घटाना</option>
     <option value="Bulking" selected>Weight Gain (Bulking) / वज़न बढ़ाना</option>
   </select>
-  <button class="g" onclick="go(1)">Back / पीछे</button>
-  <button onclick="val2()">Next / आगे</button>
+  <div class="r" style="margin-top:10px;">
+    <button class="g" onclick="go(1)">Back / पीछे</button>
+    <button onclick="val2()">Next / आगे</button>
+  </div>
 </div>
 
+<!-- Step 3: Detailed Lifestyle & Habits -->
 <div id="step-3" class="c hid">
-  <div class="step">STEP 3 of 5 · Lifestyle</div>
-  <h3>Habits / आदतें</h3>
-  <div class="counter"><span>Cigarettes per day</span><button type="button" class="g" onclick="chg('cigDay',-1)">−</button><b id="cigDay">0</b><button type="button" class="g" onclick="chg('cigDay',1)">+</button></div>
-  <button class="g" onclick="go(2)">Back / पीछे</button>
-  <button onclick="go(4)">Next / आगे</button>
+  <div class="step">STEP 3 of 5 · Lifestyle & Habits</div>
+  <h3>Habits / जीवनशैली और आदतें</h3>
+  <div class="bi">क्या आप इनमें से किसी चीज़ का सेवन करते हैं?</div>
+
+  <div class="chk">
+    <label style="flex:1 1 100%"><input type="checkbox" id="chkSmoke" onchange="toggleHabitSection('smokeSec', this.checked)"> Smoking / सिगरेट / तंबाकू धूम्रपान</label>
+  </div>
+  <div id="smokeSec" class="hid" style="background:#0d0d0d;padding:10px;border-radius:8px;margin-bottom:8px;">
+    <div class="m">कितने समय से पीते हैं?</div>
+    <select id="smokeDur" onchange="saveDraft()">
+      <option value="<1 year">1 साल से कम</option>
+      <option value="1-3 years">1 से 3 साल</option>
+      <option value=">3 years">3 साल से अधिक</option>
+    </select>
+    <div class="m">प्रतिदिन कितनी सिगरेट / बीड़ी?</div>
+    <input type="number" id="smokeDaily" placeholder="जैसे: 5" oninput="saveDraft()">
+  </div>
+
+  <div class="chk">
+    <label style="flex:1 1 100%"><input type="checkbox" id="chkAlc" onchange="toggleHabitSection('alcSec', this.checked)"> Drink Alcohol / शराब / बीयर</label>
+  </div>
+  <div id="alcSec" class="hid" style="background:#0d0d0d;padding:10px;border-radius:8px;margin-bottom:8px;">
+    <div class="m">कितने समय से ले रहे हैं?</div>
+    <select id="alcDur" onchange="saveDraft()">
+      <option value="<1 year">1 साल से कम</option>
+      <option value="1-3 years">1 से 3 साल</option>
+      <option value=">3 years">3 साल से अधिक</option>
+    </select>
+    <div class="m">मात्रा (ml या peg)?</div>
+    <input type="text" id="alcQty" placeholder="जैसे: 330ml weekly" oninput="saveDraft()">
+  </div>
+
+  <div class="chk">
+    <label style="flex:1 1 100%"><input type="checkbox" id="chkMasala" onchange="toggleHabitSection('masalaSec', this.checked)"> Gutkha / Masala / पान मसाला</label>
+  </div>
+  <div id="masalaSec" class="hid" style="background:#0d0d0d;padding:10px;border-radius:8px;margin-bottom:8px;">
+    <div class="m">कितने समय से खा रहे हैं?</div>
+    <select id="masalaDur" onchange="saveDraft()">
+      <option value="<1 year">1 साल से कम</option>
+      <option value="1-3 years">1 से 3 साल</option>
+      <option value=">3 years">3 साल से अधिक</option>
+    </select>
+    <div class="m">प्रतिदिन कितने पैकेट?</div>
+    <input type="number" id="masalaDaily" placeholder="जैसे: 3 packets" oninput="saveDraft()">
+  </div>
+
+  <div class="r" style="margin-top:14px;">
+    <button class="g" onclick="go(2)">Back / पीछे</button>
+    <button onclick="go(4)">Next / आगे</button>
+  </div>
 </div>
 
+<!-- Step 4: Medical History -->
 <div id="step-4" class="c hid">
   <div class="step">STEP 4 of 5 · Medical History</div>
-  <h3>Health / स्वास्थ्य</h3>
-  <select id="hq" onchange="document.getElementById('hx').classList.toggle('hid',this.value!='y')">
+  <h3>Health / स्वास्थ्य इतिहास</h3>
+  <div class="m">कोई पुरानी बीमारी या समस्या?</div>
+  <select id="hq" onchange="document.getElementById('hx').classList.toggle('hid',this.value!='y');saveDraft()">
     <option value="n">No medical condition / कोई बीमारी नहीं</option>
     <option value="y">Yes, I have a condition / हाँ, बीमारी है</option>
   </select>
-  <div id="hx" class="hid"><input id="bm" placeholder="Medical condition"></div>
-  <button class="g" onclick="go(3)">Back / पीछे</button>
-  <button onclick="val4()">Next / आगे</button>
+  <div id="hx" class="hid"><input id="bm" placeholder="बीमारी का नाम लिखें" oninput="saveDraft()"></div>
+  <div class="r" style="margin-top:10px;">
+    <button class="g" onclick="go(3)">Back / पीछे</button>
+    <button onclick="val4()">Next / आगे</button>
+  </div>
 </div>
 
 <!-- Step 5: Duration & Payment Options -->
@@ -125,39 +189,31 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
 
   <div class="m" style="margin-top:14px;">Select Option / विकल्प चुनें:</div>
   <button onclick="proceedWithDietOnly()">Proceed with Diet Plan Only / केवल डाइट प्लान</button>
-  <button onclick="chooseSupp(true)">Diet plan with store supplements / सप्लीमेंट के साथ</button>
-  
-  <div id="suppPick" class="hid sec" style="margin-top:12px; border-top:1px solid #333; padding-top:10px;">
-    <div class="m">Selected items from Store: <b id="suppList" style="color:var(--y)">None</b></div>
-    <div class="m">Total Supplement Cost: <b id="suppTotalText" style="color:var(--y)">₹0</b></div>
-    <button onclick="goStore()" style="background:#007bff; color:#fff;">🛒 Open Store / स्टोर खोलें (Add Products)</button>
-  </div>
+  <button onclick="goStore()" style="background:#007bff; color:#fff;">🛒 Add Supplements from Store / स्टोर से सप्लीमेंट जोड़ें</button>
 
-  <button class="g" onclick="go(4)" style="margin-top:16px;">Back / पीछे</button>
+  <div class="r" style="margin-top:14px;">
+    <button class="g" onclick="go(4)">Back / पीछे</button>
+    <button onclick="go(4)">Next / आगे</button>
+  </div>
 </div>
 
+<!-- Payment Screen -->
 <div id="pay" class="c hid"></div>
-
-<!-- Large Popup Modal for Store Return & Combined Payment Confirmation -->
-<div id="payChoiceModal">
-  <div class="modal-box">
-    <h3 style="color:var(--y)">🛒 Store Cart Synchronized! / स्टोर कार्ट सिंक हो गया</h3>
-    <p style="font-size:13px;color:#ccc;margin:10px 0" id="modalCartSummary">Products added successfully.</p>
-    <button onclick="proceedPaymentWithSupplements()" style="background:#25D366;color:#000;font-weight:900;">Pay with Diet Chart & Supplements</button>
-    <button class="g" onclick="closePayChoiceModal()">Back to Store / स्टोर पर वापस जाएं</button>
-  </div>
-</div>
 
 <script>
 const $=i=>document.getElementById(i);
 const EXPERT_WA="9140417259", UPI="9990954574@okbizaxis";
-const FF="system-ui,'Noto Sans Devanagari',sans-serif";
 function storeUrl(){ return "https://verixmusclelab.github.io/bigbrothers-verify/store.html"; }
 
 let S = {gender:'M', members:['Self'], persons:{}, diet:'v', goal:'Bulking', duration:25, basePrice:500, supplements:[], supplementTotal:0, price:500, storeCart:[]};
 
 function saveDraft(){
-  try{ localStorage.setItem("dxDraftData", JSON.stringify(S)); }catch(e){}
+  try{
+    S.n = $("nm") ? $("nm").value : S.n;
+    S.mb = $("mb") ? $("mb").value : S.mb;
+    S.goal = $("goal") ? $("goal").value : S.goal;
+    localStorage.setItem("dxDraftData", JSON.stringify(S));
+  }catch(e){}
 }
 
 function loadDraft(){
@@ -196,23 +252,29 @@ function rebuildPersons(){
   var box=$("personsBox"); if(!box) return;
   box.innerHTML="";
   mem.forEach(function(m){
-    if(!S.persons[m]) S.persons[m]={age:25,wt:70,ft:5,inc:0,bmi:0};
+    if(!S.persons[m]) S.persons[m]={age:"",wt:"",ft:5,inc:0,bmi:0};
     var p=S.persons[m];
     var div=document.createElement("div");
     div.className="person-card";
     div.innerHTML="<h4>"+m+"</h4>"+
-      "<div class='r'><input type='number' placeholder='Age' data-m='"+m+"' data-f='age' value='"+p.age+"' oninput='onPersonInput(this)'><input type='number' placeholder='Weight (kg)' data-m='"+m+"' data-f='wt' value='"+p.wt+"' oninput='onPersonInput(this)'></div>"+
-      "<div class='m'>Height</div><div class='r'>"+
-      "<select data-m='"+m+"' data-f='ft' onchange='onPersonInput(this)'><option value='5' "+(p.ft==5?"selected":"")+">5 ft</option><option value='6' "+(p.ft==6?"selected":"")+">6 ft</option></select>"+
-      "<select data-m='"+m+"' data-f='inc' onchange='onPersonInput(this)'><option value='0' "+(p.inc==0?"selected":"")+">0 in</option><option value='5' "+(p.inc==5?"selected":"")+">5 in</option></select></div>";
+      "<div class='r'><input type='number' placeholder='Age (उम्र)' data-m='"+m+"' data-f='age' value='"+p.age+"' oninput='onPersonInput(this)'><input type='number' placeholder='Weight kg (वज़न)' data-m='"+m+"' data-f='wt' value='"+p.wt+"' oninput='onPersonInput(this)'></div>"+
+      "<div class='m'>Height (ऊँचाई)</div><div class='r'>"+
+      "<select data-m='"+m+"' data-f='ft' onchange='onPersonInput(this)'><option value='3'>3 ft</option><option value='4'>4 ft</option><option value='5' selected>5 ft</option><option value='6'>6 ft</option><option value='7'>7 ft</option></select>"+
+      "<select data-m='"+m+"' data-f='inc' onchange='onPersonInput(this)'>"+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(x){return "<option value='"+x+"'>"+x+" in</option>"}).join("")+"</select></div>";
     box.appendChild(div);
   });
   saveDraft();
 }
+
 function onPersonInput(el){
   var m=el.getAttribute("data-m"), f=el.getAttribute("data-f");
   if(!S.persons[m]) S.persons[m]={};
   S.persons[m][f]=el.value;
+  saveDraft();
+}
+
+function toggleHabitSection(id, show){
+  $(id).classList.toggle("hid", !show);
   saveDraft();
 }
 
@@ -224,7 +286,7 @@ function go(n){
   if(n===5) updatePlanPrice();
   window.scrollTo(0,0);
 }
-function chg(k,d){ S[k]=Math.max(0,(S[k]||0)+d); if($(k)) $(k).textContent=S[k]; saveDraft(); }
+
 function setGender(g){ S.gender=g; $("gM").classList.toggle("active",g==="M"); $("gF").classList.toggle("active",g==="F"); saveDraft(); }
 function setDiet(v){ S.diet=v; $("dV").classList.toggle("active",v==="v"); $("dN").classList.toggle("active",v==="n"); saveDraft(); }
 
@@ -233,30 +295,37 @@ function val1(){
   if(!n||!/^\d{10}$/.test(mb)) return alert("कृपया सही नाम और 10 अंकों का मोबाइल नंबर भरें।");
   S.n=n; S.mb=mb; saveDraft(); go(2);
 }
+
 function val2(){
-  var first=S.members[0], p=S.persons[first]||{age:25,wt:70,ft:5,inc:0};
+  var ok=true;
+  S.members.forEach(function(m){
+    var p = S.persons[m] || {};
+    if(!p.age || !p.wt) ok=false;
+  });
+  if(!ok) return alert("कृपया प्रत्येक सदस्य की उम्र और वज़न सही से भरें।");
+  var first=S.members[0], p=S.persons[first]||{};
   S.a=+p.age||25; S.w=+p.wt||70; S.ft=+p.ft||5; S.ic=+p.inc||0; S.B=calcBMI(S.w,S.ft,S.ic);
   S.goal=$("goal").value; saveDraft(); go(3);
 }
+
 function val4(){
-  S.goal=$("goal").value; saveDraft(); go(5);
+  saveDraft(); go(5);
 }
-function chooseSupp(withS){
-  S.withSupp=withS;
-  $("suppPick").classList.toggle("hid",!withS);
-  if(!withS) proceedWithDietOnly();
-}
+
 function proceedWithDietOnly(){
   updatePlanPrice();
   payWithPlan(S.duration, S.basePrice);
 }
+
 function goStore(){
   saveDraft();
   var base=storeUrl();
   var q="from=diet&name="+encodeURIComponent(S.n||"")+"&phone="+encodeURIComponent(S.mb||"")+"&returnTo="+encodeURIComponent(location.href.split("?")[0]);
   window.location.href=base+(base.indexOf("?")>=0?"&":"?")+q;
 }
+
 function closePayChoiceModal(){ $("payChoiceModal").classList.remove("show"); }
+
 function proceedPaymentWithSupplements(){
   closePayChoiceModal();
   updatePlanPrice();
@@ -273,12 +342,10 @@ window.addEventListener("load",function(){
       S.supplementTotal=+(params.get("storeTotal")||0);
       if(S.storeCart&&S.storeCart.length){
         S.supplements=S.storeCart.map(function(x){return x.name+" ("+x.pack+", "+x.flavour+") × "+x.qty+" = ₹"+(x.price*x.qty)});
-        $("suppList").textContent=S.supplements.join(", ");
-        $("suppTotalText").textContent="₹"+S.supplementTotal;
       }
       $("modalCartSummary").innerHTML="<b>Selected Products:</b> "+(S.supplements.join(", ")||"None")+"<br><b>Total Supplement Cost:</b> ₹"+S.supplementTotal;
       $("payChoiceModal").classList.add("show");
-      go(5); chooseSupp(true);
+      go(5); updatePlanPrice();
     }
   }catch(e){}
 });
@@ -299,11 +366,13 @@ function initPay(days,base,overrideTotal){
     "<button class='g' onclick='go(5)'>Back / पीछे</button>";
   $("pay").classList.remove("hid");
 }
+
 function payWithPlan(days,base){
   var cartTotal=+(S.supplementTotal||0);
-  S.days=days; S.basePrice=base+cartTotal;
+  S.days=days; S.basePrice=base;
   initPay(days,base,base+cartTotal);
 }
+
 function personCount(){ return Math.max(1,(S.members||[]).length); }
 
 var _db;
@@ -315,156 +384,153 @@ function DB(){ return _db||(_db=(async function(){
   return firebase.firestore();
 })()); }
 
-async function subOrder(){
-  var u=$("ut").value.trim();
-  if(!u||!/^\d{12}$/.test(u)) return alert("कृपया सही 12 अंकों का UTR नंबर दर्ज करें।");
-  $("ps").innerHTML='<div class="spinner"></div>';
-  var id="5BFC-"+Date.now().toString().slice(-6)+"-"+Math.floor(1000+Math.random()*9000);
-  var o=Object.assign({},S,{orderId:id,utr:u,status:"pending",t:Date.now()});
+async function lookupExistingOrder(){
+  var val = $("lookupInput").value.trim();
+  if(!val) return alert("कृपया मोबाइल नंबर या Order ID दर्ज करें।");
+  $("step-home").insertAdjacentHTML("beforeend", "<div id='lookupMsg' style='color:var(--y);text-align:center;margin-top:10px;'>⏳ Searching order...</div>");
   try{
-    var db=await DB();
-    await db.collection("diet_orders").doc(id).set(JSON.parse(JSON.stringify(o,function(k,v){return v===undefined?"":v})));
-    localStorage.setItem("dxOrder",JSON.stringify({id:id,d:S.days,S:S}));
-    $("ps").innerHTML="<div style='color:#3ddc84;font-weight:800;text-align:center'>✔ आर्डर सेव हो गया!</div>"+
-      "<a class='b' target='_blank' href='https://wa.me/91"+EXPERT_WA+"?text=Order%20ID:%20"+id+"%20UTR:%20"+u+"'>Send to Expert on WhatsApp</a>";
-    watchApproval(id);
+    var db = await DB();
+    var snap = await db.collection("diet_orders").where("mb", "==", val).get();
+    if(snap.empty){
+      var doc = await db.collection("diet_orders").doc(val).get();
+      if(doc.exists){
+        handleFoundOrder(doc.id, doc.data());
+        return;
+      }
+      $("lookupMsg").innerHTML = "<div style='color:#ff5c5c'>कोई रिकॉर्ड नहीं मिला।</div>";
+      return;
+    }
+    var doc = snap.docs[0];
+    handleFoundOrder(doc.id, doc.data());
   }catch(e){
-    $("ps").innerHTML="<div style='color:#ffcc00;text-align:center'>Order saved locally.</div>";
-    watchApproval(id);
+    $("lookupMsg").innerHTML = "<div style='color:#ff5c5c'>खोजने में त्रुटि हुई।</div>";
   }
-}
-
-let approvalTimer=null;
-function watchApproval(id){
-  if(approvalTimer) clearInterval(approvalTimer);
-  function check(){
-    DB().then(db=>{
-      db.collection("diet_orders").doc(id).get().then(function(doc){
-        if(!doc.exists)return; var o=doc.data();
-        if(o.status==="approved"){
-          clearInterval(approvalTimer); window.__approved=true;
-          $("ps").innerHTML="<div class='pending-box' style='border-color:#3ddc84'><b style='color:#3ddc84;font-size:18px;'>✅ Payment Approved!</b><br><button onclick='generateCustomDietChart()' style='background:#3ddc84;color:#000;margin-top:10px'>⬇️ Download Custom Diet Chart Now</button></div>";
-        }else{
-          $("ps").innerHTML="<div class='pending-box'><div class='timer'>Order ID: "+id+"</div><b>⌛ Payment confirmation pending</b><div class='m'>Admin approval के बाद ही Diet Chart download होगा।</div></div>";
-        }
-      });
-    });
-  }
-  check(); approvalTimer=setInterval(check,10000);
-}
-
-/* Professional Canvas Diet Chart Generator */
+  /* Professional Canvas Diet Chart Generator (Urban Gym Friendly + Timing + Supplements + Foods to Avoid) */
 function generateCustomDietChart() {
-  const W = 1200, H = 1300;
+  const W = 1200, H = 1500;
   const c = document.createElement("canvas"), x = c.getContext("2d");
   c.width = W; c.height = H;
 
   x.fillStyle = "#0b0b0b"; x.fillRect(0, 0, W, H);
 
+  // Header
   x.fillStyle = "#ffd60a"; x.fillRect(0, 0, W, 140);
   x.fillStyle = "#000"; x.font = "bold 38px system-ui"; x.fillText("5 BROTHER'S FITNESS CLUB", 40, 50);
   x.font = "16px system-ui"; x.fillText("Umrao Kheda, Akrampur, Unnao | Ph: 9990954574", 40, 80);
-  x.font = "bold 22px system-ui"; x.fillText("CUSTOMIZED DIET PLAN ("+S.duration+" Days)", 40, 115);
+  x.font = "bold 22px system-ui"; x.fillText("CUSTOMIZED HIGH-PROTEIN GYM DIET ("+S.duration+" Days)", 40, 115);
 
+  // Profile Box
   x.fillStyle = "#141414"; x.fillRect(840, 15, 330, 110);
   x.strokeStyle = "#000"; x.lineWidth = 2; x.strokeRect(840, 15, 330, 110);
   x.fillStyle = "#ffd60a"; x.font = "bold 14px system-ui"; x.fillText("कस्टम मेंबर प्रोफाइल", 860, 38);
   x.fillStyle = "#fff"; x.font = "13px system-ui";
   x.fillText(`नाम : ${S.n || "Member"}`, 860, 60);
-  x.fillText(`उम्र : ${S.a} साल | वज़न : ${S.w} kg`, 860, 82);
+  x.fillText(`उम्र : ${S.a || 25} साल | वज़न : ${S.w || 70} kg`, 860, 82);
   x.fillText(`लक्ष्य : ${S.goal}`, 860, 104);
 
+  // Daily Nutrition Target Bar
   let y = 155;
   x.fillStyle = "#ffd60a"; x.fillRect(40, y, W - 80, 40);
   x.fillStyle = "#000"; x.font = "bold 16px system-ui"; x.textAlign = "left";
-    x.fillText("Calculated Daily Nutrition Target", 60, y + 25);
-  let baseCalories = S.w * 32, targetProtein = Math.round(S.w * 1.8), targetCarbs = Math.round(baseCalories * 0.45 / 4), targetFat = Math.round(baseCalories * 0.25 / 9);
+  x.fillText("Calculated Daily Nutrition Target (Gym Standards)", 60, y + 25);
+  let baseCalories = (S.w || 70) * 32, targetProtein = Math.round((S.w || 70) * 2.0), targetCarbs = Math.round(baseCalories * 0.45 / 4), targetFat = Math.round(baseCalories * 0.25 / 9);
   x.font = "15px system-ui";
-  x.fillText(`🔥 Calories: ~${Math.round(baseCalories)} kcal    💪 Protein: ~${targetProtein}g    🌾 Carbs: ~${targetCarbs}g`, 340, y + 25);
+  x.fillText(`🔥 Calories: ~${Math.round(baseCalories)} kcal    💪 Protein: ~${targetProtein}g (Whey/Eggs/Paneer)`, 380, y + 25);
 
   function drawMealCard(startY, mealTitle, timeSlot, itemsLeft, itemsRight, proteinText, benefits) {
-    x.fillStyle = "#161616"; x.fillRect(40, startY, W - 80, 185);
-    x.strokeStyle = "#333"; x.lineWidth = 1.5; x.strokeRect(40, startY, W - 80, 185);
+    x.fillStyle = "#161616"; x.fillRect(40, startY, W - 80, 175);
+    x.strokeStyle = "#333"; x.lineWidth = 1.5; x.strokeRect(40, startY, W - 80, 175);
 
-    x.fillStyle = "#ffd60a"; x.fillRect(40, startY, W - 80, 32);
+    x.fillStyle = "#ffd60a"; x.fillRect(40, startY, W - 80, 30);
     x.fillStyle = "#000"; x.font = "bold 16px system-ui"; x.textAlign = "left";
-    x.fillText(mealTitle, 55, startY + 22);
-    x.font = "bold 14px system-ui"; x.fillText(timeSlot, 330, startY + 22);
+    x.fillText(mealTitle, 55, startY + 21);
+    x.font = "bold 14px system-ui"; x.fillText(timeSlot, 350, startY + 21);
 
     x.fillStyle = "#fff"; x.font = "15px system-ui";
-    let ix = 60, iy = startY + 65;
-    itemsLeft.forEach((it, i) => { x.fillText("• " + it, ix, iy + (i * 26)); });
+    let ix = 60, iy = startY + 60;
+    itemsLeft.forEach((it, i) => { x.fillText("• " + it, ix, iy + (i * 24)); });
     let iix = 360;
-    itemsRight.forEach((it, i) => { x.fillText("• " + it, iix, iy + (i * 26)); });
+    itemsRight.forEach((it, i) => { x.fillText("• " + it, iix, iy + (i * 24)); });
 
-    x.fillStyle = "#b8860b"; x.fillRect(60, startY + 140, 180, 30);
-    x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui"; x.textAlign = "center";
-    x.fillText(proteinText, 150, startY + 160);
+    x.fillStyle = "#b8860b"; x.fillRect(60, startY + 132, 180, 28);
+    x.fillStyle = "#ffd60a"; x.font = "bold 14px system-ui"; x.textAlign = "center";
+    x.fillText(proteinText, 150, startY + 151);
 
-    x.fillStyle = "#111"; x.fillRect(780, startY + 45, 360, 128);
-    x.strokeStyle = "#ffd60a"; x.strokeRect(780, startY + 45, 360, 128);
-    x.textAlign = "left"; x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
-    x.fillText("✔ क्यों ज़रूरी?", 800, startY + 70);
-    x.fillStyle = "#ccc"; x.font = "14px system-ui";
-    benefits.forEach((b, i) => { x.fillText("▶ " + b, 800, startY + 98 + (i * 22)); });
+    x.fillStyle = "#111"; x.fillRect(780, startY + 40, 360, 120);
+    x.strokeStyle = "#ffd60a"; x.strokeRect(780, startY + 40, 360, 120);
+    x.textAlign = "left"; x.fillStyle = "#ffd60a"; x.font = "bold 14px system-ui";
+    x.fillText("✔ क्यों ज़रूरी?", 800, startY + 65);
+    x.fillStyle = "#ccc"; x.font = "13px system-ui";
+    benefits.forEach((b, i) => { x.fillText("▶ " + b, 800, startY + 90 + (i * 20)); });
   }
 
-  let bfastLeft = S.diet === 'v' ? ["सत्तू / ओट्स", "दूध", "केला"] : ["उबले अंडे (3)", "ब्रेड / दलिया", "केला"];
-  let bfastRight = S.diet === 'v' ? [`सत्तू - ${Math.round(S.w*1.1)}g`, "दूध - 250ml", "केला - 1"] : ["अंडे - 3 पीस", "दलिया - 50g", "दूध - 200ml"];
-  let lunchLeft = S.diet === 'v' ? ["सोया चंक्स", "दाल", "रोटी"] : ["चिकन / पनीर", "दाल", "चावल"];
-  let lunchRight = S.diet === 'v' ? [`सोया - 50g`, "दाल - 50g", "रोटी - 2", "दही - 100g"] : [`चिकन - 100g`, "चावल - 100g", "दाल - 50g", "सलाद"];
-  let dinnerLeft = ["दूध", "रोटी / चावल", "दही"];
-  let dinnerRight = ["दूध - 250ml", `रोटी - 2`, "दही या सलाद - 100g"];
+  // Urban / Gym Friendly Meals with local city availability (Oats, Peanut butter, Milk, Paneer, Eggs, Whey)
+  let m1Left = ["उबले अंडे / पनीर", "हाई-प्रोटीन ओट्स / दलिया", "केला"];
+  let m1Right = S.diet === 'v' ? ["पनीर - 100g या दूध - 300ml", "ओट्स / दलिया - 60g", "केला - 2 पीस + Peanut Butter 1 चम्मच"] : ["अंडे - 4 पीस (Whole)", "ओट्स / दलिया - 50g", "केला - 2 पीस"];
+  
+  let m2Left = ["दाल / सोया चंक्स", "रोटी / चावल", "दही / सलाद"];
+  let m2Right = S.diet === 'v' ? ["सोया चंक्स - 50g", "दाल - 1 कटोरी + 2 रोटी", "चावल - 1 कटोरी + दही 100g"] : ["चिकन ब्रेस्ट - 120g या पनीर", "चावल - 100g", "दाल - 1 कटोरी + सलाद"];
 
-  drawMealCard(210, "MEAL 1 – सुबह (Breakfast)", "7:00 - 8:00 AM", bfastLeft, bfastRight, `लगभग ${Math.round(targetProtein*0.3)}g Protein`, ["बॉडी एनर्जी रिस्टोर", "मसल्स प्रोटेक्शन", "बेहतर पाचन"]);
-  drawMealCard(405, "MEAL 2 – दोपहर (Lunch)", "12:30 - 2:00 PM", lunchLeft, lunchRight, `लगभग ${Math.round(targetProtein*0.4)}g Protein`, ["मसल्स ग्रोथ", "एनर्जी लेवल हाई रखना", "ज़रूरी न्यूट्रिएंट्स"]);
-  drawMealCard(600, "MEAL 3 – रात (Dinner)", "7:30 - 9:00 PM", dinnerLeft, dinnerRight, `लगभग ${Math.round(targetProtein*0.3)}g Protein`, ["रात भर मसल्स रिकवरी", "बेहतर नींद और आराम", "बॉडी रिपेयर"]);
+  let m3Left = ["प्री-वर्कआउट स्नैक (Gym)", "कॉफी / ब्लैक कॉफी", "ड्राई फ्रूट्स"];
+  let m3Right = ["ब्लैक कॉफी / ग्रीन टी - 1 कप", "भीगे बादाम / अखरोट", "Creatine - 5g (Optional)"];
 
-  y = 805;
-  x.fillStyle = "#161616"; x.fillRect(40, y, 310, 200);
-  x.strokeStyle = "#ffd60a"; x.strokeRect(40, y, 310, 200);
+  let m4Left = ["डिनर (Post-Workout / Night)", "दूध या पनीर", "रोटी / सब्ज़ी"];
+  let m4Right = ["Whey Protein Scoop - 1 (अगर हो)", "दूध - 300ml (वार्म)", "रोटी - 2 + हरी सब्ज़ी / सलाद"];
+
+  drawMealCard(205, "MEAL 1 – सुबह (Breakfast)", "7:00 - 8:00 AM", m1Left, m1Right, `लगभग ${Math.round(targetProtein*0.35)}g Protein`, ["एनर्जी रिस्टोर", "मसल्स रिकवरी", "दिन की शुरुआत"]);
+  drawMealCard(390, "MEAL 2 – दोपहर (Lunch)", "1:00 - 2:00 PM", m2Left, m2Right, `लगभग ${Math.round(targetProtein*0.35)}g Protein`, ["मसल्स मास ग्रोथ", "फुल एनर्जी", "संतुलित न्यूट्रिशन"]);
+  drawMealCard(575, "MEAL 3 – शाम (Pre-Workout Snack)", "5:00 - 5:30 PM", m3Left, m3Right, "वर्कआउट फोकस", ["स्टैमिना बढ़ाना", "पंप और स्ट्रेंथ", "फोकस"]);
+  drawMealCard(760, "MEAL 4 – रात (Dinner & Recovery)", "8:30 - 9:30 PM", m4Left, m4Right, `लगभग ${Math.round(targetProtein*0.3)}g Protein`, ["रात भर मसल्स रिपेयर", "गहरी नींद", "डाइजेशन"]);
+
+  y = 955;
+  x.fillStyle = "#161616"; x.fillRect(40, y, 350, 180);
+  x.strokeStyle = "#ffd60a"; x.strokeRect(40, y, 350, 180);
   x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui"; x.textAlign = "left";
-  x.fillText("Custom Target Summary", 60, y + 28);
-  x.fillStyle = "#fff"; x.font = "14px system-ui";
-  x.fillText(`🔥 Calories : ~${Math.round(baseCalories)} kcal`, 60, y + 65);
-  x.fillText(`💪 Protein  : ~${targetProtein} g`, 60, y + 98);
+  x.fillText("Gym Supplements & Rules", 60, y + 28);
+  x.fillStyle = "#fff"; x.font = "13px system-ui";
+  x.fillText("• Multivitamin: 1 गोली रोज़ाना (नाश्ते के बाद)", 60, y + 60);
+  x.fillText("• Whey Protein: 1 स्कूप (वर्कआउट के बाद)", 60, y + 90);
+  x.fillText("• Creatine: 5g प्रतिदिन (पानी के साथ)", 60, y + 120);
+  x.fillText("• पानी: रोज़ाना 3-4 लीटर ज़रूर पिएं", 60, y + 150);
 
-  x.fillStyle = "#161616"; x.fillRect(365, y, 460, 200);
-  x.strokeStyle = "#ffd60a"; x.strokeRect(365, y, 460, 200);
+  x.fillStyle = "#3a1d00"; x.fillRect(410, y, 370, 180);
+  x.strokeStyle = "#ff9900"; x.strokeRect(410, y, 370, 180);
+  x.fillStyle = "#ffd85c"; x.font = "bold 15px system-ui";
+  x.fillText("❌ क्या नहीं खाना चाहिए (Avoid)", 430, y + 28);
+  x.fillStyle = "#fff"; x.font = "13px system-ui";
+  x.fillText("▶ बाहर का जंक फूड, समोसा, बर्गर, पिज़्ज़ा", 430, y + 60);
+  x.fillText("▶ कोल्ड ड्रिंक, सोडा और पैकेज्ड शुगर जूस", 430, y + 90);
+  x.fillText("▶ अत्यधिक तला-भुना और बाजार की तली मिठाइयाँ", 430, y + 120);
+  x.fillText("▶ स्मोकिंग और अल्कोहल (मसल्स ग्रोथ रोकते हैं)", 430, y + 150);
+
+  x.fillStyle = "#161616"; x.fillRect(795, y, 365, 180);
+  x.strokeStyle = "#ffd60a"; x.strokeRect(795, y, 365, 180);
   x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
-  x.fillText("Selected Supplements & Addons", 385, y + 28);
+  x.fillText("Selected Addons & Total", 815, y + 28);
   x.fillStyle = "#fff"; x.font = "13px system-ui";
-  x.fillText(`• Plan (${S.duration} Days) : ₹${S.basePrice}`, 385, y + 60);
-  x.fillText("• Addons: " + (S.supplements && S.supplements.length ? S.supplements.join(", ") : "None"), 385, y + 95);
+  x.fillText(`• Plan (${S.duration} Days) : ₹${S.basePrice}`, 815, y + 60);
+  x.fillText("• Addons: " + (S.supplements && S.supplements.length ? S.supplements.join(", ") : "None"), 815, y + 95);
 
-  x.fillStyle = "#ffd60a"; x.fillRect(385, y + 148, 420, 42);
+  x.fillStyle = "#ffd60a"; x.fillRect(815, y + 128, 325, 38);
   x.fillStyle = "#000"; x.font = "bold 14px system-ui"; x.textAlign = "center";
-  x.fillText("कुल भुगतान (Total): Rs " + S.price, 595, y + 174);
+  x.fillText("कुल भुगतान (Total): Rs " + S.price, 977, y + 152);
 
-  x.fillStyle = "#161616"; x.fillRect(840, y, 320, 200);
-  x.strokeStyle = "#ffd60a"; x.strokeRect(840, y, 320, 200);
-  x.textAlign = "left"; x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
-  x.fillText("ज़रूरी नियम", 860, y + 28);
-  x.fillStyle = "#fff"; x.font = "13px system-ui";
-  x.fillText("▶ प्रतिदिन 3-4 लीटर पानी पिएं।", 860, y + 75);
-  x.fillText("▶ रोजाना 7-8 घंटे की गहरी नींद लें।", 860, y + 115);
-
-  y = 1025;
-  x.fillStyle = "#ffd60a"; x.fillRect(40, y, W - 80, 50);
-  x.fillStyle = "#000"; x.font = "bold 20px system-ui"; x.textAlign = "center";
-  x.fillText("सही डाइट + हार्ड वर्क = 100% रिजल्ट", W/2, y + 32);
+  y = 1155;
+  x.fillStyle = "#ffd60a"; x.fillRect(40, y, W - 80, 48);
+  x.fillStyle = "#000"; x.font = "bold 18px system-ui"; x.textAlign = "center";
+  x.fillText("सही डाइट + हार्ड वर्क = 100% रिजल्ट", W/2, y + 30);
 
   x.fillStyle = "#888"; x.font = "14px system-ui";
-  x.fillText("– 5 Brother's Fitness Club (Unnao) –", W/2, y + 85);
+  x.fillText("– 5 Brother's Fitness Club (Unnao) –", W/2, y + 80);
 
   const a = document.createElement("a");
-  a.download = `Custom-Diet-${S.n || 'Member'}.png`;
+  a.download = `Custom-Gym-Diet-${S.n || 'Member'}.png`;
   a.href = c.toDataURL("image/png");
   if ($("out")) {
     $("out").innerHTML = `<div style='color:#3ddc84;font-weight:700;margin-top:10px'>✔ Custom Diet Chart Ready</div><img src='${a.href}' style='width:100%;border-radius:12px;margin-top:8px'><a class='b' download='${a.download}' href='${a.href}'>⬇️ Download Custom Diet Chart</a>`;
   }
   a.click();
 }
-  </script>
+</script>
 </body>
 </html>
