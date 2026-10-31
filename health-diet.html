@@ -1,60 +1,5 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>5 Brother's Fitness Club - Diet Portal</title>
-<style>
-:root{--y:#ffd60a;--bg:#0b0b0b;--c:#161616}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;padding:12px;padding-bottom:32px;background:var(--bg);color:#fff;font-family:system-ui,'Noto Sans Devanagari',sans-serif;max-width:480px;margin:0 auto;min-height:100vh}
-.h{border:2px solid var(--y);background:linear-gradient(145deg,#2a2200,#141414);border-radius:14px;text-align:center;padding:14px;margin-bottom:12px}
-.h .brand{color:var(--y);font-weight:900;font-size:20px;letter-spacing:.5px}
-.h small{display:block;color:#ccc;font-size:11px;margin-top:4px}
-.c{background:var(--c);border:1.5px solid #3a3a3a;border-radius:14px;padding:14px;margin-bottom:12px}
-h3{margin:0 0 8px;color:var(--y);font-size:16px}
-.m{font-size:12px;color:#bbb;margin:10px 0 4px}
-.bi{font-size:11px;color:#888;margin:0 0 6px;line-height:1.35}
-input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1.5px solid #555;background:#0d0d0d;color:#fff;font-size:15px}
-button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:#000;background:linear-gradient(135deg,#ffd60a,#e6b800);font-weight:900;border:0;border-radius:12px;padding:14px;margin-top:10px;font-size:15px;min-height:48px;cursor:pointer}
-.g{background:#222;color:#eee;border:1.5px solid #555}
-.hid{display:none!important}
-.r{display:flex;gap:8px}.r>*{flex:1}
-.bd{display:flex;gap:8px;flex-wrap:wrap}
-.bd button{background:#0d0d0d;color:#eee;border:1.5px solid #555;padding:12px 8px;font-size:13px;border-radius:10px;flex:1;min-width:42%;min-height:44px}
-.bd button.active{border-color:var(--y);background:#2a2200;color:var(--y);font-weight:800}
-.chk{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
-.chk label{display:flex;align-items:center;gap:6px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:10px 12px;font-size:13px;flex:1 1 42%;min-height:44px}
-.chk input{width:18px;height:18px;margin:0}
-.step{text-align:center;font-size:11px;color:var(--y);font-weight:700;margin-bottom:8px}
-.sec{border-top:1px solid #333;margin-top:12px;padding-top:10px}
-.person-card{background:#0d0d0d;border:1px solid #444;border-radius:12px;padding:12px;margin:10px 0}
-.person-card h4{margin:0 0 8px;color:var(--y);font-size:14px}
-.pending-box{background:#171300;border:2px solid var(--y);border-radius:14px;padding:14px;text-align:center;margin-top:12px}
-</style>
-</head>
-<body>
-<div class="h">
-  <div class="brand">5 BROTHER'S FITNESS CLUB</div>
-  <small>Umrao Kheda, Akrampur, Unnao | Ph: 9990954574</small>
-</div>
-
-<!-- Home Step with Lookup / Resume Portal -->
-<div id="step-home" class="c">
-  <h3>Your Personalised Diet Plan<br>आपका व्यक्तिगत डाइट प्लान</h3>
-  <div class="bi">Get a custom high-protein diet plan built for gym members and urban lifestyle.</div>
-  <button onclick="go(1)">Start / नया प्लान शुरू करें</button>
-  
-  <div class="sec" style="margin-top:16px;">
-    <div class="m" style="color:var(--y);font-weight:700;">🔍 Track Existing Order / Download Chart</div>
-    <div class="bi">Enter Mobile No or Order ID to check status or download diet chart.</div>
-    <input id="lookupInput" placeholder="Mobile Number or Order ID">
-    <button class="g" onclick="lookupExistingOrder()">Check Status / स्टेटस देखें</button>
-  </div>
-</div>
-
 <!-- Step 1: Basic Details -->
-<div id="step-1" class="c hid">
+<div id="step-1" class="c">
   <div class="step">STEP 1 of 5 · Basic Details</div>
   <h3>Setup / सेटअप</h3>
   <div class="m">Gender / लिंग</div>
@@ -80,7 +25,7 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
 </div>
 
 <!-- Step 2: Body Details -->
-<div id="step-2" class="c hid">
+<div id="step-2" class="c">
   <div class="step">STEP 2 of 5 · Body Details</div>
   <h3>Member Details / सदस्य की शारीरिक जानकारी</h3>
   <div class="bi">प्रत्येक सदस्य की सही उम्र, वज़न और ऊँचाई दर्ज करें ताकि बिल्कुल सटीक कैलोरी और प्रोटीन कैलकुलेट हो सके।</div>
@@ -193,8 +138,14 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
 
   <div class="r" style="margin-top:14px;">
     <button class="g" onclick="go(4)">Back / पीछे</button>
-    <button onclick="go(4)">Next / आगे</button>
+    <button onclick="proceedWithDietOnly()">Next / आगे</button>
   </div>
+</div>
+
+<div class="r" style="margin-top:16px;">
+    <button class="g" onclick="go(5)">Back / पीछे</button>
+    <button onclick="dietplanWithsuppliment()">Next / आगे</button>
+</div>
 </div>
 
 <!-- Payment Screen -->
@@ -203,9 +154,8 @@ button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:
 <script>
 const $=i=>document.getElementById(i);
 const EXPERT_WA="9140417259", UPI="9990954574@okbizaxis";
-function storeUrl(){ return "https://verixmusclelab.github.io/bigbrothers-verify/store.html"; }
 
-let S = {gender:'M', members:['Self'], persons:{}, diet:'v', goal:'Bulking', duration:25, basePrice:500, supplements:[], supplementTotal:0, price:500, storeCart:[]};
+let S = {gender:'M', members:['Self'], persons:{}, diet:'v', goal:'Bulking', duration:25, basePrice:500, price:500};
 
 function saveDraft(){
   try{
@@ -317,47 +267,16 @@ function proceedWithDietOnly(){
   payWithPlan(S.duration, S.basePrice);
 }
 
-function goStore(){
-  saveDraft();
-  var base=storeUrl();
-  var q="from=diet&name="+encodeURIComponent(S.n||"")+"&phone="+encodeURIComponent(S.mb||"")+"&returnTo="+encodeURIComponent(location.href.split("?")[0]);
-  window.location.href=base+(base.indexOf("?")>=0?"&":"?")+q;
-}
-
-function closePayChoiceModal(){ $("payChoiceModal").classList.remove("show"); }
-
-function proceedPaymentWithSupplements(){
-  closePayChoiceModal();
-  updatePlanPrice();
-  let combinedTotal = S.basePrice + (S.supplementTotal || 0);
-  payWithPlan(S.duration, combinedTotal);
-}
-
 window.addEventListener("load",function(){
   loadDraft();
-  try{
-    var params=new URLSearchParams(window.location.search);
-    if(params.get("returned")==="true" || params.get("storeCart")){
-      try{ S.storeCart=JSON.parse(params.get("storeCart")||"[]"); }catch(e){ S.storeCart=[]; }
-      S.supplementTotal=+(params.get("storeTotal")||0);
-      if(S.storeCart&&S.storeCart.length){
-        S.supplements=S.storeCart.map(function(x){return x.name+" ("+x.pack+", "+x.flavour+") × "+x.qty+" = ₹"+(x.price*x.qty)});
-      }
-      $("modalCartSummary").innerHTML="<b>Selected Products:</b> "+(S.supplements.join(", ")||"None")+"<br><b>Total Supplement Cost:</b> ₹"+S.supplementTotal;
-      $("payChoiceModal").classList.add("show");
-      go(5); updatePlanPrice();
-    }
-  }catch(e){}
 });
 
-function initPay(days,base,overrideTotal){
-  var pc=personCount(), total=overrideTotal||base;
-  S.days=days; S.basePrice=base; S.price=total; S.personCount=pc;
+function initPay(days,base){
+  var total=base;
+  S.days=days; S.basePrice=base; S.price=total;
   document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
-  let itemsList = S.supplements && S.supplements.length ? S.supplements.join(", ") : "केवल डाइट प्लान (Diet Plan Only)";
-  $("pay").innerHTML="<h3>भुगतान विवरण & संयुक्त बिल (Combined Bill)</h3>"+
-    "<div class='m'><b>डाइट प्लान शुल्क:</b> ₹"+(S.basePrice-(S.supplementTotal||0))+" ("+days+" Days)</div>"+
-    "<div class='m'><b>चुने गए प्रोडक्ट्स (Store Addons):</b> "+itemsList+"</div>"+
+  $("pay").innerHTML="<h3>भुगतान विवरण (Payment Details)</h3>"+
+    "<div class='m'><b>डाइट प्लान शुल्क ("+days+" Days):</b> ₹"+total+"</div>"+
     "<div class='m' style='font-size:17px;color:var(--y);margin-top:10px'><b>कुल देय राशि (Total Payable): Rs "+total+"</b></div>"+
     "<a class='b' href='upi://pay?pa="+UPI+"&pn=5BrothersFitness&am="+total+"&cu=INR&tn=Diet'>Pay Rs "+total+" via UPI</a>"+
     "<div style='text-align:center;margin:10px 0'><img src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data="+encodeURIComponent("upi://pay?pa="+UPI+"&pn=5BrothersFitness&am="+total+"&cu=INR")+"' style='background:#fff;padding:8px;border-radius:12px;width:150px'></div>"+
@@ -368,12 +287,9 @@ function initPay(days,base,overrideTotal){
 }
 
 function payWithPlan(days,base){
-  var cartTotal=+(S.supplementTotal||0);
   S.days=days; S.basePrice=base;
-  initPay(days,base,base+cartTotal);
+  initPay(days,base);
 }
-
-function personCount(){ return Math.max(1,(S.members||[]).length); }
 
 var _db;
 function DB(){ return _db||(_db=(async function(){
@@ -405,7 +321,61 @@ async function lookupExistingOrder(){
   }catch(e){
     $("lookupMsg").innerHTML = "<div style='color:#ff5c5c'>खोजने में त्रुटि हुई।</div>";
   }
-  /* Professional Canvas Diet Chart Generator (Urban Gym Friendly + Timing + Supplements + Foods to Avoid) */
+}
+
+function handleFoundOrder(id, o){
+  $("lookupInput").value = "";
+  document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+  S.n = o.n; S.mb = o.mb; S.duration = o.days || 25; S.w = o.w || 70; S.goal = o.goal || "Bulking"; S.diet = o.diet || "v";
+  
+  if(o.status === "approved"){
+    $("pay").innerHTML = `<div class='pending-box' style='border-color:#3ddc84'><b style='color:#3ddc84;font-size:18px;'>✅ Payment Approved!</b><br><div class='m'>Order ID: ${id}</div><button onclick='generateCustomDietChart()' style='background:#3ddc84;color:#000;margin-top:10px'>⬇️ Download Custom Diet Chart Now</button></div><button class='g' onclick='location.reload()'>Home / होम</button>`;
+  } else {
+    $("pay").innerHTML = `<div class='pending-box'><div class='timer'>Order ID: ${id}</div><b>⌛ Payment status: Pending</b><div class='m'>Admin approval के बाद ही Diet Chart download होगा।</div></div><button class='g' onclick='location.reload()'>Home / होम</button>`;
+  }
+  $("pay").classList.remove("hid");
+  window.__lastOrder = o;
+}
+
+async function subOrder(){
+  var u=$("ut").value.trim();
+  if(!u||!/^\d{12}$/.test(u)) return alert("कृपया सही 12 अंकों का UTR नंबर दर्ज करें।");
+  $("ps").innerHTML='<div class="spinner"></div>';
+  var id="5BFC-"+Date.now().toString().slice(-6)+"-"+Math.floor(1000+Math.random()*9000);
+  var o=Object.assign({},S,{orderId:id,utr:u,status:"pending",t:Date.now()});
+  try{
+    var db=await DB();
+    await db.collection("diet_orders").doc(id).set(JSON.parse(JSON.stringify(o,function(k,v){return v===undefined?"":v})));
+    localStorage.setItem("dxOrder",JSON.stringify({id:id,d:S.days,S:S}));
+    $("ps").innerHTML="<div style='color:#3ddc84;font-weight:800;text-align:center'>✔ आर्डर सेव हो गया!</div>"+
+      "<a class='b' target='_blank' href='https://wa.me/91"+EXPERT_WA+"?text=Order%20ID:%20"+id+"%20UTR:%20"+u+"'>Send to Expert on WhatsApp</a>";
+    watchApproval(id);
+  }catch(e){
+    $("ps").innerHTML="<div style='color:#ffcc00;text-align:center'>Order saved locally.</div>";
+    watchApproval(id);
+  }
+}
+
+let approvalTimer=null;
+function watchApproval(id){
+  if(approvalTimer) clearInterval(approvalTimer);
+  function check(){
+    DB().then(db=>{
+      db.collection("diet_orders").doc(id).get().then(function(doc){
+        if(!doc.exists)return; var o=doc.data();
+        if(o.status==="approved"){
+          clearInterval(approvalTimer); window.__approved=true;
+          $("ps").innerHTML="<div class='pending-box' style='border-color:#3ddc84'><b style='color:#3ddc84;font-size:18px;'>✅ Payment Approved!</b><br><button onclick='generateCustomDietChart()' style='background:#3ddc84;color:#000;margin-top:10px'>⬇️ Download Custom Diet Chart Now</button></div>";
+        }else{
+          $("ps").innerHTML="<div class='pending-box'><div class='timer'>Order ID: "+id+"</div><b>⌛ Payment confirmation pending</b><div class='m'>Admin approval के बाद ही Diet Chart download होगा।</div></div>";
+        }
+      });
+    });
+  }
+  check(); approvalTimer=setInterval(check,10000);
+}
+
+/* Professional Canvas Diet Chart Generator */
 function generateCustomDietChart() {
   const W = 1200, H = 1500;
   const c = document.createElement("canvas"), x = c.getContext("2d");
@@ -464,7 +434,6 @@ function generateCustomDietChart() {
     benefits.forEach((b, i) => { x.fillText("▶ " + b, 800, startY + 90 + (i * 20)); });
   }
 
-  // Urban / Gym Friendly Meals with local city availability (Oats, Peanut butter, Milk, Paneer, Eggs, Whey)
   let m1Left = ["उबले अंडे / पनीर", "हाई-प्रोटीन ओट्स / दलिया", "केला"];
   let m1Right = S.diet === 'v' ? ["पनीर - 100g या दूध - 300ml", "ओट्स / दलिया - 60g", "केला - 2 पीस + Peanut Butter 1 चम्मच"] : ["अंडे - 4 पीस (Whole)", "ओट्स / दलिया - 50g", "केला - 2 पीस"];
   
@@ -506,10 +475,9 @@ function generateCustomDietChart() {
   x.fillStyle = "#161616"; x.fillRect(795, y, 365, 180);
   x.strokeStyle = "#ffd60a"; x.strokeRect(795, y, 365, 180);
   x.fillStyle = "#ffd60a"; x.font = "bold 15px system-ui";
-  x.fillText("Selected Addons & Total", 815, y + 28);
+  x.fillText("Plan Summary", 815, y + 28);
   x.fillStyle = "#fff"; x.font = "13px system-ui";
   x.fillText(`• Plan (${S.duration} Days) : ₹${S.basePrice}`, 815, y + 60);
-  x.fillText("• Addons: " + (S.supplements && S.supplements.length ? S.supplements.join(", ") : "None"), 815, y + 95);
 
   x.fillStyle = "#ffd60a"; x.fillRect(815, y + 128, 325, 38);
   x.fillStyle = "#000"; x.font = "bold 14px system-ui"; x.textAlign = "center";
@@ -531,6 +499,8 @@ function generateCustomDietChart() {
   }
   a.click();
 }
-</script>
+  </script>
 </body>
 </html>
+
+
