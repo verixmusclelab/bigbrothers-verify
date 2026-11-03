@@ -1,0 +1,160 @@
+<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Store Orders Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0c0c0c;color:#eee;font-family:Arial,sans-serif;font-size:14px}
+.w{max-width:900px;margin:auto;padding:12px}h1{color:#ffcc00;font-size:19px;margin:6px 0}
+.tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}.tabs button,.bt{background:#222;color:#ddd;border:1px solid #444;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer}
+.tabs button.on{background:#ffcc00;color:#000}.card{background:#161616;border:1px solid #333;border-radius:12px;padding:12px;margin:10px 0}
+.row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.m{color:#999;font-size:12px}.big{font-size:18px;font-weight:800;color:#ffcc00}
+.bt.g{background:#25d366;color:#000;border:0}.bt.r{background:#c0392b;color:#fff;border:0}.bt.b{background:#2563eb;color:#fff;border:0}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:800}.pending{background:#665200;color:#ffe066}.approved{background:#0b4d1e;color:#6dff9a}.rejected{background:#5b1515;color:#ff9a9a}.dup{background:#7a1fa2;color:#fff}
+input,select{background:#1f1f1f;color:#fff;border:1px solid #444;border-radius:8px;padding:9px;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid #2a2a2a;padding:6px;text-align:left}th{color:#ffcc00}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.st{background:#161616;border:1px solid #333;border-radius:10px;padding:10px}.st b{display:block;font-size:20px;color:#ffcc00}
+#mod{display:none;position:fixed;inset:0;background:#000d;z-index:9;overflow:auto;padding:12px}#mod .in{max-width:520px;margin:auto;background:#161616;border:1px solid #ffcc00;border-radius:14px;padding:14px}
+#mod img{width:100%;border-radius:10px;margin:8px 0}.hid{display:none}
+#lock{max-width:320px;margin:20vh auto;text-align:center}#lock input{width:100%;margin:10px 0;text-align:center;font-size:20px}
+</style></head><body>
+<div id="lock"><h1>🔒 Store Orders Admin</h1><input id="pin" type="password" inputmode="numeric" placeholder="PIN"><button class="bt b" style="width:100%" onclick="unlock()">Open</button></div>
+<div class="w hid" id="app">
+<h1>🛒 Store Orders — Big Brothers Fitness</h1>
+<div class="tabs"><button id="t_pending" class="on" onclick="tab('pending')">Pending <span id="pc"></span></button><button id="t_all" onclick="tab('all')">All Orders</button><button id="t_report" onclick="tab('report')">Monthly Report</button><button class="bt" onclick="load()">🔄</button></div>
+<div id="filters" class="hid row" style="gap:6px;margin-bottom:6px"><input id="q" placeholder="Search naam / phone / UTR / ID" oninput="render()" style="flex:1"><select id="sf" onchange="render()"><option value="">All status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+<div id="mrow" class="hid row" style="gap:6px;margin-bottom:6px"><select id="mon" onchange="render()"></select><button class="bt" onclick="csv()">⬇️ CSV</button><button class="bt" onclick="backup()">⬇️ Full backup (JSON)</button></div>
+<div id="list"></div></div>
+<div id="mod"><div class="in" id="modin"></div></div>
+<script>
+/* ===== shared: Firestore REST + receipts ===== */
+var FSB='https://firestore.googleapis.com/v1/projects/brother-s-fitness-club/databases/(default)/documents/store_orders';
+function fsVal(v){ if(typeof v==='number') return Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v}; if(typeof v==='boolean') return {booleanValue:v}; return {stringValue:String(v==null?'':v)}; }
+function fsEnc(o){ var f={}; Object.keys(o).forEach(function(k){f[k]=fsVal(o[k])}); return {fields:f}; }
+function fsDec(d){ var o={},f=d.fields||{}; Object.keys(f).forEach(function(k){ var v=f[k]; o[k]=v.stringValue!==undefined?v.stringValue:v.integerValue!==undefined?Number(v.integerValue):v.doubleValue!==undefined?v.doubleValue:v.booleanValue!==undefined?v.booleanValue:''; }); return o; }
+async function fsSet(id,o){ var r=await fetch(FSB+'/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(fsEnc(o))}); if(!r.ok) throw new Error('save '+r.status); }
+async function fsGet(id){ var r=await fetch(FSB+'/'+id); if(r.status===404) return null; if(!r.ok) throw new Error('get '+r.status); return fsDec(await r.json()); }
+async function fsPatch(id,o){ var q=Object.keys(o).map(function(k){return 'updateMask.fieldPaths='+k}).join('&'); var r=await fetch(FSB+'/'+id+'?'+q,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(fsEnc(o))}); if(!r.ok) throw new Error('patch '+r.status); }
+async function fsList(){ var out=[],tok=''; do{ var r=await fetch(FSB+'?pageSize=300'+(tok?'&pageToken='+encodeURIComponent(tok):'')); if(!r.ok) throw new Error('list '+r.status); var j=await r.json(); (j.documents||[]).forEach(function(d){out.push(fsDec(d))}); tok=j.nextPageToken||''; }while(tok); return out; }
+
+function orderItems(o){ try{ return JSON.parse(o.itemsJson||'[]'); }catch(e){ return o.items||[]; } }
+
+/* mode: 'pay' = Payment Receipt, 'order' = Order Invoice (items, price, discount) */
+function drawReceipt(o,mode){
+  var items=orderItems(o), W=900, P=44, F="'Segoe UI',Arial,'Noto Sans Devanagari',sans-serif";
+  var rs=function(n){return '₹'+Number(n||0).toLocaleString('en-IN');};
+  var fmt=function(ms){ if(!ms) return '-'; var d=new Date(ms); return d.toLocaleDateString('en-GB')+'  '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}); };
+  function run(ctx,draw){
+    var y=0;
+    function T(s,x,yy,sz,w,col,al){ if(!draw) return; ctx.font=(w||'400')+' '+sz+'px '+F; ctx.fillStyle=col||'#111'; ctx.textAlign=al||'left'; ctx.fillText(s,x,yy); }
+    function wrap(s,maxW,sz,w){ ctx.font=(w||'400')+' '+sz+'px '+F; var words=String(s).split(' '),lines=[],cur=''; words.forEach(function(wd){ var t=cur?cur+' '+wd:wd; if(ctx.measureText(t).width>maxW&&cur){lines.push(cur);cur=wd;}else cur=t; }); if(cur) lines.push(cur); return lines; }
+    function ln(yy,dash){ if(!draw) return; ctx.strokeStyle=dash?'#333':'#ccc'; ctx.lineWidth=dash?3:2; ctx.setLineDash(dash?[12,9]:[2,5]); ctx.beginPath(); ctx.moveTo(P,yy); ctx.lineTo(W-P,yy); ctx.stroke(); ctx.setLineDash([]); }
+    function kv(k,v,col){ var ls=wrap(v,W-2*P-300,24,'700'); T(k,P,y,24,'400','#444'); ls.forEach(function(l,i){T(l,W-P,y+i*30,24,'700',col||'#111','right');}); y+=Math.max(1,ls.length)*30+8; ln(y-14,false); y+=8; }
+    y=70;
+    if(draw){ ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,99999); ctx.fillStyle='#ffcc00'; ctx.fillRect(0,0,W,16); }
+    T(mode==='pay'?'PAYMENT RECEIPT':'ORDER INVOICE',W/2,y,26,'800','#111','center'); y+=58;
+    T("Big Brothers Fitness",W/2,y,50,'800','#111','center'); y+=40;
+    T("5BFC SUPPLEMENT STORE • UNNAO",W/2,y,22,'600','#555','center'); y+=32;
+    T("100% Authentic Supplements • Flipkart se Sasta",W/2,y,20,'400','#888','center'); y+=34;
+    ln(y,true); y+=44;
+    kv('Order ID',o.id,'#a06a00');
+    if(mode==='pay'){
+      kv('Payment Confirmed',fmt(o.approvedAt));
+      kv('Customer',o.name); kv('Mobile',o.phone);
+      kv('Payment Mode',o.isCod?(o.payMethod+' (50% Advance)'):o.payMethod);
+      kv('UTR / Ref No.',o.utr);
+      kv('Order Total',rs(o.totalAmt));
+      kv('Amount Paid',rs(o.payAmount),'#0a7a0a');
+      kv('Baki (Delivery Par)',rs(o.remaining||0),o.remaining?'#d11':'#111');
+      kv('Status',o.isCod?'ADVANCE RECEIVED ✅':'PAYMENT RECEIVED ✅','#0a7a0a');
+    } else {
+      kv('Order Date & Time',fmt(o.createdAt));
+      kv('Customer',o.name); kv('Mobile',o.phone);
+      kv('Delivery Address',o.addr+', '+o.city+' - '+o.pin);
+      y+=10; T('ORDERED ITEMS',P,y,24,'800','#a06a00'); y+=18; ln(y,true); y+=40;
+      items.forEach(function(it,i){
+        var ls=wrap((i+1)+'. '+it.name,W-2*P-190,24,'700');
+        ls.forEach(function(l,j){ T(l,P,y+j*30,24,'700','#111'); });
+        T(rs(it.price*it.qty),W-P,y,24,'800','#111','right'); y+=ls.length*30;
+        var sub=[it.pack,it.flavour].filter(Boolean).join(' • ')+'  |  '+rs(it.price)+' × '+it.qty+'  (Flipkart: '+rs(it.mrp)+')';
+        wrap(sub,W-2*P,20,'400').forEach(function(l){ T(l,P,y,20,'400','#666'); y+=26; });
+        y+=10; ln(y-6,false); y+=14;
+      });
+      y+=6;
+      kv('Flipkart Price Total',rs(o.mrpTotal));
+      kv('Store Price Total',rs(o.totalAmt));
+      kv('Aapka Discount / Bachat','- '+rs(o.totalSaved),'#0a7a0a');
+      kv('Total Order Amount',rs(o.totalAmt));
+      kv('Payment',o.isCod?('COD: Advance '+rs(o.payAmount)+' paid, Baki '+rs(o.remaining)):('Full Paid via '+o.payMethod),'#0a7a0a');
+      kv('Delivery','1 Week ke andar doorstep');
+    }
+    y+=14; ln(y,true); y+=40;
+    T('Original product guaranteed. Parcel kholte time unboxing video zaroor banayein.',W/2,y,19,'400','#777','center'); y+=32;
+    T('Saurabh Singh Chandel — Owner',W/2,y,24,'800','#111','center'); y+=30;
+    T('WhatsApp / Call: 9990954574',W/2,y,20,'400','#666','center'); y+=44;
+    return y;
+  }
+  var c=document.createElement('canvas'); c.width=W; c.height=100; var h=run(c.getContext('2d'),false);
+  c.height=Math.ceil(h); run(c.getContext('2d'),true); return c;
+}
+function downloadReceiptImg(o,mode){
+  var c=drawReceipt(o,mode);
+  c.toBlob(function(b){ var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='BBF-'+(mode==='pay'?'Payment-Receipt-':'Order-Invoice-')+o.id+'.png'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},3000); },'image/png');
+}
+function downloadBothReceipts(o){ downloadReceiptImg(o,'pay'); setTimeout(function(){downloadReceiptImg(o,'order');},700); }
+
+var PIN='5555',ALL=[],T='pending',MON='',pollT=null;
+function $(i){return document.getElementById(i);}
+function rs(n){return '₹'+Number(n||0).toLocaleString('en-IN');}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fdt(ms){if(!ms)return'-';var d=new Date(ms);return d.toLocaleDateString('en-GB')+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});}
+function unlock(){ if($('pin').value===PIN){ try{sessionStorage.setItem('soOK','1');}catch(e){} start(); } else alert('Galat PIN'); }
+function start(){ $('lock').classList.add('hid'); $('app').classList.remove('hid'); load(); if(pollT) clearInterval(pollT); pollT=setInterval(load,20000); }
+try{ if(sessionStorage.getItem('soOK')==='1') start(); }catch(e){}
+async function load(){ try{ ALL=(await fsList()).sort(function(a,b){return (b.submittedAt||b.createdAt||0)-(a.submittedAt||a.createdAt||0);}); }catch(e){ $('list').innerHTML='<div class="card">Data load nahi hua: '+esc(e.message)+'</div>'; return; } ALL=ALL.filter(function(o){return o.status!=='draft';}); monthOpts(); render(); }
+function monthOpts(){ var set={}; ALL.forEach(function(o){ set[o.ym||ymOf(o.createdAt)]=1; }); var k=Object.keys(set).sort().reverse(); var cur=$('mon').value||k[0]||''; $('mon').innerHTML='<option value="">Sab mahine</option>'+k.map(function(m){return '<option value="'+m+'"'+(m===cur?' selected':'')+'>'+m+'</option>';}).join(''); }
+function ymOf(ms){var d=new Date(ms||Date.now());return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2);}
+function tab(t){ T=t; ['pending','all','report'].forEach(function(x){$('t_'+x).classList.toggle('on',x===t);}); $('filters').classList.toggle('hid',t!=='all'); $('mrow').classList.toggle('hid',t==='pending'); render(); }
+function dupUtr(o){ return ALL.some(function(x){return x.id!==o.id&&x.utr&&x.utr===o.utr;}); }
+function cardH(o){
+  var it=orderItems(o), d=dupUtr(o);
+  return '<div class="card"><div class="row"><div><b>'+esc(o.name)+'</b> <span class="tag '+o.status+'">'+o.status.toUpperCase()+'</span>'+(d?' <span class="tag dup">DUPLICATE UTR</span>':'')+'<div class="m">'+esc(o.id)+' · '+fdt(o.submittedAt||o.createdAt)+' · '+esc(o.phone)+'</div></div><div style="text-align:right"><div class="big">'+rs(o.payAmount)+'</div><div class="m">'+esc(o.payMethod)+(o.isCod?' · COD advance':'')+'</div></div></div>'+
+  '<div class="m" style="margin:6px 0">'+it.map(function(x){return esc(x.name)+' ×'+x.qty;}).join(', ')+'</div><div class="m">UTR: <b style="color:#fff">'+esc(o.utr)+'</b> · Total order '+rs(o.totalAmt)+'</div>'+
+  '<div class="row" style="gap:6px;margin-top:8px"><button class="bt b" onclick="detail(\''+o.id+'\')">🔍 Screenshot + Details</button>'+
+  (o.status!=='approved'?'<button class="bt g" onclick="approve(\''+o.id+'\')">✅ Approve</button>':'<button class="bt" onclick="resend(\''+o.id+'\')">📤 Resend receipt</button>')+
+  (o.status==='pending'?'<button class="bt r" onclick="reject(\''+o.id+'\')">❌ Reject</button>':'')+'</div></div>';
+}
+function render(){
+  var P=ALL.filter(function(o){return o.status==='pending';}); $('pc').textContent=P.length?'('+P.length+')':''; document.title=(P.length?'('+P.length+') ':'')+'Store Orders Admin';
+  var h='';
+  if(T==='pending'){ h=P.length?P.map(cardH).join(''):'<div class="card m">Koi pending payment nahi.</div>'; }
+  else if(T==='all'){ var q=$('q').value.toLowerCase(),sf=$('sf').value,m=$('mon').value; var L=ALL.filter(function(o){ return (!sf||o.status===sf)&&(!m||(o.ym||ymOf(o.createdAt))===m)&&(!q||(o.name+o.phone+o.utr+o.id).toLowerCase().indexOf(q)>=0); }); h='<div class="m">'+L.length+' orders</div>'+(L.length?L.map(cardH).join(''):'<div class="card m">Kuch nahi mila.</div>'); }
+  else h=report();
+  $('list').innerHTML=h;
+}
+function report(){
+  var m=$('mon').value, L=ALL.filter(function(o){return o.status==='approved'&&(!m||(o.ym||ymOf(o.createdAt))===m);});
+  var rec=0,tot=0,sav=0,prod={},cust={},day={};
+  L.forEach(function(o){ rec+=o.payAmount; tot+=o.totalAmt; sav+=o.totalSaved||0; var k=o.phone+'|'+o.name; cust[k]=cust[k]||{n:o.name,p:o.phone,c:0,a:0,t:0}; cust[k].c++; cust[k].a+=o.payAmount; cust[k].t+=o.totalAmt;
+    var dk=new Date(o.approvedAt||o.createdAt).toLocaleDateString('en-GB'); day[dk]=(day[dk]||0)+o.payAmount;
+    orderItems(o).forEach(function(x){ var pk=x.name+(x.pack?' ('+x.pack+')':''); prod[pk]=prod[pk]||{q:0,a:0}; prod[pk].q+=x.qty; prod[pk].a+=x.price*x.qty; }); });
+  var h='<div class="grid"><div class="st">Approved orders<b>'+L.length+'</b></div><div class="st">Payment received<b>'+rs(rec)+'</b></div><div class="st">Total order value<b>'+rs(tot)+'</b></div><div class="st">Discount diya<b>'+rs(sav)+'</b></div></div>';
+  h+='<div class="card"><b>Product-wise</b><table><tr><th>Product</th><th>Qty</th><th>Amount</th></tr>'+Object.keys(prod).sort(function(a,b){return prod[b].a-prod[a].a;}).map(function(k){return '<tr><td>'+esc(k)+'</td><td>'+prod[k].q+'</td><td>'+rs(prod[k].a)+'</td></tr>';}).join('')+'</table></div>';
+  h+='<div class="card"><b>Customer-wise</b><table><tr><th>Customer</th><th>Orders</th><th>Paid</th></tr>'+Object.keys(cust).sort(function(a,b){return cust[b].a-cust[a].a;}).map(function(k){var c=cust[k];return '<tr><td>'+esc(c.n)+'<br><span class="m">'+esc(c.p)+'</span></td><td>'+c.c+'</td><td>'+rs(c.a)+'</td></tr>';}).join('')+'</table></div>';
+  h+='<div class="card"><b>Din-wise received</b><table>'+Object.keys(day).map(function(k){return '<tr><td>'+k+'</td><td>'+rs(day[k])+'</td></tr>';}).join('')+'</table></div>';
+  return h;
+}
+function find(id){return ALL.filter(function(o){return o.id===id;})[0];}
+function detail(id){
+  var o=find(id), it=orderItems(o);
+  $('modin').innerHTML='<div class="row"><b>'+esc(o.id)+'</b><button class="bt" onclick="closeMod()">✖</button></div><img src="'+o.shot+'" alt="screenshot">'+
+   '<div class="m">UTR</div><div class="big">'+esc(o.utr)+'</div><div class="m">Paid: <b style="color:#fff">'+rs(o.payAmount)+'</b> ('+esc(o.payMethod)+') · Total '+rs(o.totalAmt)+(o.isCod?' · Baki '+rs(o.remaining):'')+'</div>'+
+   '<div class="m" style="margin-top:8px">'+esc(o.name)+' · '+esc(o.phone)+'<br>'+esc(o.addr)+', '+esc(o.city)+' - '+esc(o.pin)+'</div>'+
+   '<table style="margin-top:8px">'+it.map(function(x){return '<tr><td>'+esc(x.name)+'<br><span class="m">'+esc([x.pack,x.flavour].filter(Boolean).join(', '))+'</span></td><td>'+x.qty+' × '+rs(x.price)+'</td></tr>';}).join('')+'</table>'+
+   '<div class="row" style="gap:6px;margin-top:10px"><button class="bt g" onclick="approve(\''+id+'\')">✅ Approve</button><button class="bt r" onclick="reject(\''+id+'\')">❌ Reject</button><button class="bt" onclick="downloadBothReceipts(find(\''+id+'\'))">⬇️ Receipts</button><a class="bt" style="text-decoration:none" target="_blank" href="https://wa.me/91'+String(o.phone).replace(/\D/g,'').slice(-10)+'">WhatsApp</a></div>';
+  $('mod').style.display='block';
+}
+function closeMod(){ $('mod').style.display='none'; }
+async function approve(id){ var o=find(id); if(dupUtr(o)&&!confirm('Ye UTR pehle bhi use hua hai. Phir bhi approve?')) return; try{ await fsPatch(id,{status:'approved',approvedAt:Date.now(),rejectReason:''}); closeMod(); load(); }catch(e){ alert('Save nahi hua: '+e.message); } }
+async function reject(id){ var r=prompt('Reject ka reason (customer ko dikhega):','Payment receive nahi hua / screenshot sahi nahi'); if(r===null) return; try{ await fsPatch(id,{status:'rejected',rejectReason:r}); closeMod(); load(); }catch(e){ alert('Save nahi hua: '+e.message); } }
+async function resend(id){ try{ await fsPatch(id,{resendAt:Date.now()}); alert('Customer ke page par receipt dobara download hogi.'); load(); }catch(e){ alert('Save nahi hua'); } }
+function dl(name,txt,type){ var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+function csv(){ var m=$('mon').value; var rows=[['OrderID','Date','Customer','Phone','Address','Items','Total','Paid','Discount','Mode','UTR','Status']]; ALL.filter(function(o){return !m||(o.ym||ymOf(o.createdAt))===m;}).forEach(function(o){ rows.push([o.id,fdt(o.createdAt),o.name,o.phone,o.addr+' '+o.city+' '+o.pin,orderItems(o).map(function(x){return x.name+' x'+x.qty;}).join('; '),o.totalAmt,o.payAmount,o.totalSaved,o.payMethod,o.utr,o.status]); }); dl('store-orders'+(m?'-'+m:'')+'.csv','﻿'+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n'),'text/csv'); }
+function backup(){ dl('store-orders-backup.json',JSON.stringify(ALL.map(function(o){var c=Object.assign({},o);delete c.shot;return c;}),null,1),'application/json'); }
+</script></body></html>
