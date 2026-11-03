@@ -9,27 +9,22 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "1 lb (454g) · ~15 serv",
-        "price": 2125,
-        "mrp": 2499
+        "pack": "1 kg · ~33 servings",
+        "price": 4599,
+        "mrp": 5199
       },
       {
-        "pack": "2 lb (907g) · ~29 serv",
-        "price": 3526,
-        "mrp": 4299
-      },
-      {
-        "pack": "5 lb (2.27kg) · ~73 serv",
-        "price": 7380,
-        "mrp": 8999
+        "pack": "2 kg · ~66 servings",
+        "price": 8799,
+        "mrp": 9999
       }
     ],
     "flavours": [
-      "Chocolate",
-      "Vanilla",
+      "Double Rich Chocolate",
+      "Vanilla Ice Cream",
+      "Chocolate Peanut Butter",
       "Cookies & Cream",
-      "Mango",
-      "Strawberry"
+      "Extreme Milk Chocolate"
     ],
     "images": [],
     "imgStem": "on-gold-standard",
@@ -37,7 +32,7 @@
   },
   {
     "id": "mb-biozyme",
-    "name": "MuscleBlaze Biozyme Whey Protein",
+    "name": "MuscleBlaze Biozyme Performance Whey",
     "brand": "MuscleBlaze",
     "fullBrand": "MuscleBlaze",
     "category": "Whey Protein",
@@ -45,20 +40,20 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "1 kg · ~33 serv",
-        "price": 2624,
-        "mrp": 3199
+        "pack": "1 kg · ~33 servings",
+        "price": 2799,
+        "mrp": 3349
       },
       {
-        "pack": "2 kg · ~66 serv",
-        "price": 4920,
-        "mrp": 5999
+        "pack": "2 kg · ~66 servings",
+        "price": 5299,
+        "mrp": 6299
       }
     ],
     "flavours": [
-      "Rich Milk Chocolate",
+      "Rich Chocolate",
       "Café Mocha",
-      "Curcumin Mango"
+      "Magical Mango"
     ],
     "images": [],
     "imgStem": "mb-biozyme",
@@ -75,13 +70,13 @@
     "variants": [
       {
         "pack": "1 kg",
-        "price": 2296,
-        "mrp": 2799
+        "price": 1899,
+        "mrp": 2299
       },
       {
         "pack": "2 kg",
-        "price": 4264,
-        "mrp": 5199
+        "price": 3499,
+        "mrp": 4199
       }
     ],
     "flavours": [
@@ -102,19 +97,14 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "1 lb (454g)",
-        "price": 1699,
-        "mrp": 1999
+        "pack": "1 kg",
+        "price": 2199,
+        "mrp": 2699
       },
       {
-        "pack": "2 lb (907g)",
-        "price": 2460,
-        "mrp": 2999
-      },
-      {
-        "pack": "4 lb",
-        "price": 4510,
-        "mrp": 5499
+        "pack": "2 kg",
+        "price": 4099,
+        "mrp": 4999
       }
     ],
     "flavours": [
@@ -129,7 +119,7 @@
   },
   {
     "id": "rule1-whey",
-    "name": "Rule 1 Whey Blend",
+    "name": "Rule 1 Proteins R1 Whey Blend",
     "brand": "Rule 1",
     "fullBrand": "Rule 1",
     "category": "Whey Protein",
@@ -137,19 +127,19 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "2 lb",
-        "price": 3526,
-        "mrp": 4299
+        "pack": "1 kg",
+        "price": 3499,
+        "mrp": 4199
       },
       {
-        "pack": "5 lb",
-        "price": 7380,
-        "mrp": 8999
+        "pack": "2 kg",
+        "price": 6499,
+        "mrp": 7799
       }
     ],
     "flavours": [
       "Chocolate Fudge",
-      "Vanilla",
+      "Vanilla Cream",
       "Cookies & Cream"
     ],
     "images": [],
@@ -158,7 +148,7 @@
   },
   {
     "id": "labrada-whey",
-    "name": "Labrada 100% Whey",
+    "name": "Labrada 100% Whey Protein",
     "brand": "Labrada",
     "fullBrand": "Labrada",
     "category": "Whey Protein",
@@ -166,14 +156,14 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "2 lb (907g)",
-        "price": 2870,
-        "mrp": 3499
+        "pack": "1 kg",
+        "price": 2499,
+        "mrp": 2999
       },
       {
-        "pack": "4.5 lb",
-        "price": 5330,
-        "mrp": 6499
+        "pack": "2 kg",
+        "price": 4699,
+        "mrp": 5599
       }
     ],
     "flavours": [
@@ -187,7 +177,7 @@
   },
   {
     "id": "asitis-atom",
-    "name": "AS-IT-IS Atom Whey Protein",
+    "name": "AS-IT-IS ATOM Whey Protein",
     "brand": "AS-IT-IS",
     "fullBrand": "AS-IT-IS",
     "category": "Whey Protein",
@@ -195,19 +185,21 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "1 kg",
-        "price": 1699,
-        "mrp": 1999
+        "pack": "1 kg · 27g protein/scoop",
+        "price": 2699,
+        "mrp": 3149
       },
       {
         "pack": "2 kg",
-        "price": 3034,
-        "mrp": 3699
+        "price": 5099,
+        "mrp": 5999
       }
     ],
     "flavours": [
-      "Chocolate",
-      "Mango",
+      "Double Rich Chocolate",
+      "French Vanilla",
+      "Mango Fusion",
+      "Cookies and Cream",
       "Unflavoured"
     ],
     "images": [],
@@ -225,13 +217,13 @@
     "variants": [
       {
         "pack": "1 kg",
-        "price": 1870,
-        "mrp": 2199
+        "price": 1899,
+        "mrp": 2299
       },
       {
         "pack": "2 kg",
-        "price": 3280,
-        "mrp": 3999
+        "price": 3499,
+        "mrp": 4199
       }
     ],
     "flavours": [
@@ -252,14 +244,14 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "2 lb",
-        "price": 3034,
-        "mrp": 3699
+        "pack": "1 kg",
+        "price": 2799,
+        "mrp": 3399
       },
       {
-        "pack": "5 lb",
-        "price": 6560,
-        "mrp": 7999
+        "pack": "2 kg",
+        "price": 5299,
+        "mrp": 6399
       }
     ],
     "flavours": [
@@ -281,13 +273,13 @@
     "variants": [
       {
         "pack": "1 kg",
-        "price": 1499,
-        "mrp": 1799
+        "price": 1299,
+        "mrp": 1699
       },
       {
         "pack": "2 kg",
-        "price": 2706,
-        "mrp": 3299
+        "price": 2399,
+        "mrp": 3099
       }
     ],
     "flavours": [
@@ -308,19 +300,14 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "1 lb",
-        "price": 1955,
-        "mrp": 2299
+        "pack": "1 kg",
+        "price": 2899,
+        "mrp": 3499
       },
       {
-        "pack": "2 lb",
-        "price": 3280,
-        "mrp": 3999
-      },
-      {
-        "pack": "4 lb",
-        "price": 5740,
-        "mrp": 6999
+        "pack": "2 kg",
+        "price": 5499,
+        "mrp": 6599
       }
     ],
     "flavours": [
@@ -341,14 +328,14 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "2 lb",
-        "price": 3690,
-        "mrp": 4499
+        "pack": "1 kg",
+        "price": 3499,
+        "mrp": 4199
       },
       {
-        "pack": "4 lb",
-        "price": 6970,
-        "mrp": 8499
+        "pack": "2 kg",
+        "price": 6499,
+        "mrp": 7799
       }
     ],
     "flavours": [
@@ -361,7 +348,7 @@
   },
   {
     "id": "ultimate-prostar",
-    "name": "Ultimate Nutrition Prostar Whey",
+    "name": "Ultimate Nutrition Prostar 100% Whey",
     "brand": "Ultimate Nutrition",
     "fullBrand": "Ultimate Nutrition",
     "category": "Whey Protein",
@@ -369,14 +356,14 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "2 lb",
-        "price": 3116,
-        "mrp": 3799
+        "pack": "1 kg",
+        "price": 2799,
+        "mrp": 3399
       },
       {
-        "pack": "5.28 lb",
-        "price": 6560,
-        "mrp": 7999
+        "pack": "2 kg",
+        "price": 5199,
+        "mrp": 6199
       }
     ],
     "flavours": [
@@ -390,7 +377,7 @@
   },
   {
     "id": "dymatize-iso100",
-    "name": "Dymatize ISO100 Hydrolyzed",
+    "name": "Dymatize ISO100 Hydrolyzed Whey",
     "brand": "Dymatize",
     "fullBrand": "Dymatize",
     "category": "Whey Protein",
@@ -398,19 +385,19 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "1.6 lb",
-        "price": 5330,
-        "mrp": 6499
+        "pack": "1 kg",
+        "price": 5999,
+        "mrp": 6999
       },
       {
-        "pack": "5 lb",
-        "price": 12300,
-        "mrp": 14999
+        "pack": "2 kg",
+        "price": 10999,
+        "mrp": 12999
       }
     ],
     "flavours": [
       "Gourmet Chocolate",
-      "Vanilla",
+      "Gourmet Vanilla",
       "Fudge Brownie"
     ],
     "images": [],
@@ -428,13 +415,13 @@
     "variants": [
       {
         "pack": "1 kg",
-        "price": 1399,
+        "price": 1299,
         "mrp": 1699
       },
       {
         "pack": "2 kg",
-        "price": 2460,
-        "mrp": 2999
+        "price": 2399,
+        "mrp": 3099
       }
     ],
     "flavours": [
@@ -457,13 +444,13 @@
     "variants": [
       {
         "pack": "1 kg",
-        "price": 2099,
-        "mrp": 2599
+        "price": 1899,
+        "mrp": 2399
       },
       {
         "pack": "1.5 kg",
-        "price": 2952,
-        "mrp": 3599
+        "price": 2699,
+        "mrp": 3299
       }
     ],
     "flavours": [
@@ -485,12 +472,12 @@
     "variants": [
       {
         "pack": "1 kg",
-        "price": 2870,
-        "mrp": 3499
+        "price": 2499,
+        "mrp": 3199
       },
       {
         "pack": "2.5 kg",
-        "price": 5740,
+        "price": 5499,
         "mrp": 6999
       }
     ],
@@ -514,18 +501,18 @@
     "variants": [
       {
         "pack": "1 kg",
-        "price": 3690,
-        "mrp": 4499
+        "price": 3499,
+        "mrp": 4199
       },
       {
         "pack": "2 kg",
-        "price": 6970,
-        "mrp": 8499
+        "price": 6499,
+        "mrp": 7799
       }
     ],
     "flavours": [
       "Chocolate",
-      "Caffe Mocha"
+      "Café Mocha"
     ],
     "images": [],
     "imgStem": "isowhey-mb",
@@ -541,19 +528,19 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "1 kg · ~8 serv",
-        "price": 1399,
-        "mrp": 1499
+        "pack": "1 kg · ~8 servings",
+        "price": 999,
+        "mrp": 1099
       },
       {
-        "pack": "3 kg · ~25 serv",
-        "price": 3399,
-        "mrp": 3499
+        "pack": "3 kg · ~25 servings",
+        "price": 2499,
+        "mrp": 2599
       },
       {
-        "pack": "5 kg · ~42 serv",
-        "price": 5199,
-        "mrp": 5299
+        "pack": "5 kg · ~42 servings",
+        "price": 3799,
+        "mrp": 3899
       }
     ],
     "flavours": [
@@ -575,19 +562,14 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "3 lb",
-        "price": 3399,
-        "mrp": 3499
+        "pack": "3 kg",
+        "price": 4499,
+        "mrp": 4599
       },
       {
-        "pack": "6 lb",
-        "price": 5899,
-        "mrp": 5999
-      },
-      {
-        "pack": "12 lb",
-        "price": 10899,
-        "mrp": 10999
+        "pack": "5 kg",
+        "price": 6999,
+        "mrp": 7099
       }
     ],
     "flavours": [
@@ -610,13 +592,13 @@
     "variants": [
       {
         "pack": "3 kg",
-        "price": 3699,
-        "mrp": 3799
+        "price": 2799,
+        "mrp": 2899
       },
       {
         "pack": "5 kg",
-        "price": 5699,
-        "mrp": 5799
+        "price": 4299,
+        "mrp": 4399
       }
     ],
     "flavours": [
@@ -638,13 +620,13 @@
     "variants": [
       {
         "pack": "3 kg",
-        "price": 5399,
-        "mrp": 5499
+        "price": 3999,
+        "mrp": 4099
       },
       {
         "pack": "7 kg",
-        "price": 9899,
-        "mrp": 9999
+        "price": 7499,
+        "mrp": 7599
       }
     ],
     "flavours": [
@@ -665,9 +647,9 @@
     "badge": "100% AUTHENTIC",
     "variants": [
       {
-        "pack": "4.54 kg (10 lb)",
-        "price": 7399,
-        "mrp": 7499
+        "pack": "4.5 kg",
+        "price": 5499,
+        "mrp": 5599
       }
     ],
     "flavours": [
@@ -689,18 +671,18 @@
     "variants": [
       {
         "pack": "1 kg",
-        "price": 1099,
-        "mrp": 1199
+        "price": 799,
+        "mrp": 899
       },
       {
         "pack": "3 kg",
-        "price": 2899,
-        "mrp": 2999
+        "price": 2199,
+        "mrp": 2299
       },
       {
         "pack": "5 kg",
-        "price": 4399,
-        "mrp": 4499
+        "price": 3299,
+        "mrp": 3399
       }
     ],
     "flavours": [
