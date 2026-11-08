@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5BFC — Master Members (Duplicate Safai)</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#080808;color:#fff;padding:12px;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+.wrap{max-width:560px;width:100%}
+h1{color:#ffcc00;font-size:19px;text-align:center;margin-bottom:4px}
+.sub{color:#bbb;font-size:11px;text-align:center;margin-bottom:12px}
+.box{background:#141414;border:1.5px solid #333;border-radius:10px;padding:11px;margin-bottom:11px}
+.box h3{color:#ffcc00;font-size:13px;margin-bottom:8px}
+.btn{border:none;border-radius:8px;padding:10px;font-weight:800;font-size:12px;cursor:pointer}
+.btn-gold{background:#ffcc00;color:#000}.btn-green{background:#25D366;color:#000}.btn-dark{background:#333;color:#fff}.btn-red{background:#ff3333;color:#fff}
+.btn-sm{padding:6px 9px;font-size:11px;border-radius:6px}
+.btn-block{width:100%}
+.muted{color:#999;font-size:11px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.stat{background:#1c1c1c;border-radius:8px;padding:8px;text-align:center}
+.stat b{display:block;font-size:18px;color:#ffcc00}.stat span{font-size:10px;color:#aaa}
+.src{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed #333;font-size:12px}
+.src input{width:18px;height:18px;accent-color:#ffcc00}
+.src b{color:#ffcc00}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.tab{background:#181818;border:1.5px solid #444;color:#bbb;padding:9px 2px;border-radius:8px;font-size:11px;font-weight:bold;cursor:pointer;text-align:center}
+.tab.on{background:#ffcc00;color:#000;border-color:#ffcc00}
+.grp{background:#171205;border:1.5px solid #ffcc00;border-radius:10px;padding:9px;margin-bottom:10px}
+.grp.fam{border-color:#4aa3ff;background:#0b1522}
+.grp .gh{font-size:11px;color:#ffcc00;font-weight:800;margin-bottom:6px}
+.grp.fam .gh{color:#7cc0ff}
+.ent{background:#101010;border:1.5px solid #333;border-radius:8px;padding:8px;margin-bottom:6px}
+.ent.keep{border-color:#25D366}
+.ent .n{font-size:13px;font-weight:800}
+.ent .d{font-size:11px;color:#bbb;margin-top:2px;line-height:1.5}
+.tag{display:inline-block;background:#2a2a2a;color:#ffcc00;border-radius:8px;padding:1px 6px;font-size:9px;margin-right:3px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center}
+.acts label{font-size:11px;color:#25D366;font-weight:800;display:flex;align-items:center;gap:4px}
+input[type=text],input[type=date],input[type=tel],input[type=search]{width:100%;background:#181818;border:1.5px solid #444;color:#fff;padding:9px;border-radius:8px;font-size:13px;outline:none}
+input:focus{border-color:#ffcc00}
+.fg{margin-bottom:8px}.fg label{display:block;font-size:11px;color:#ddd;margin-bottom:3px;font-weight:600}
+#modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99;overflow-y:auto;padding:12px}
+#modal .in{max-width:520px;margin:0 auto;background:#141414;border:1.5px solid #ffcc00;border-radius:10px;padding:12px}
+.hide{display:none!important}
+.badge{display:inline-block;border-radius:8px;padding:2px 7px;font-size:10px;font-weight:800;margin:2px 3px 2px 0}
+.b-ok{background:#0e3a1c;color:#25D366;border:1px solid #25D366}
+.b-no{background:#3a0e0e;color:#ff7777;border:1px solid #ff5555}
+.b-old{background:#3a2a0e;color:#ffb347;border:1px solid #ff9900}
+.thumbs{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.thumbs img{height:58px;max-width:90px;object-fit:cover;border-radius:6px;border:1px solid #555;background:#000}
+.warn{background:rgba(255,51,51,.1);border:1px solid #ff3333;color:#ffb3b3;border-radius:8px;padding:8px;font-size:11px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧹 Master Members — Duplicate Safai</h1>
+  <p class="sub">सब जगह के सदस्य एक जगह · डुप्लिकेट खुद देखकर हटाएँ / Edit करें · फिर सब जगह एक ही लिस्ट सेव</p>
+
+  <div class="box">
+    <h3>1️⃣ अभी कहाँ-कहाँ कितने लोग हैं</h3>
+    <div id="srcList"></div>
+    <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn btn-dark btn-sm" onclick="scanSources()">🔄 दोबारा Scan</button>
+      <button class="btn btn-dark btn-sm" id="cloudBtn" onclick="loadCloud()">☁️ Cloud (Firebase) से भी लो</button>
+    </div>
+    <p class="muted" style="margin-top:6px">✔ टिक वाली लिस्ट इसी सफाई में जुड़ेंगी और आख़िर में सबमें <b>एक जैसी</b> लिस्ट सेव होगी। जो लिस्ट सदस्यों की नहीं (जैसे रोज़ की attendance का लॉग) उस पर टिक मत करना।</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="stAll">0</b><span>कुल एंट्री (सब जोड़कर)</span></div>
+    <div class="stat"><b id="stGrp">0</b><span>डुप्लिकेट ग्रुप</span></div>
+    <div class="stat"><b id="stFinal">0</b><span>अभी की Final गिनती</span></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" id="tabDup" onclick="showView('dup')">🔁 डुप्लिकेट</div>
+    <div class="tab" id="tabFam" onclick="showView('fam')">👨‍👩‍👦 Same मोबाइल</div>
+    <div class="tab" id="tabNo" onclick="showView('no')">🚫 बिना Photo/ID</div>
+    <div class="tab" id="tabAll" onclick="showView('all')">📋 सब सदस्य</div>
+  </div>
+
+  <div id="view"></div>
+
+  <div class="box" style="margin-top:12px">
+    <h3>2️⃣ सेव — सब जगह एक जैसी लिस्ट</h3>
+    <p class="muted" id="saveInfo"></p>
+    <label style="display:flex;gap:8px;align-items:center;font-size:12px;margin:8px 0;color:#ffcc00">
+      <input type="checkbox" id="chkCloud" disabled style="width:18px;height:18px;accent-color:#ffcc00"> ☁️ Cloud (Firebase) में भी यही लिस्ट रखो (हटाए हुए वहाँ से भी हटेंगे)
+    </label>
+    <p class="muted" id="cloudNote">Cloud में सेव करने के लिए पहले ऊपर "☁️ Cloud से भी लो" दबाएँ, ताकि वहाँ का कोई सदस्य छूटे नहीं।</p>
+    <button class="btn btn-green btn-block" style="margin-top:8px" onclick="saveAll()">💾 सेव करो (पहले Backup file उतरेगी)</button>
+    <button class="btn btn-dark btn-block" style="margin-top:6px" onclick="undo()" id="undoBtn">↩ आख़िरी Delete / Merge वापस</button>
+  </div>
+</div>
+
+<div id="modal"><div class="in">
+  <h3 style="color:#ffcc00;margin-bottom:8px">✏️ Edit</h3>
+  <div class="fg"><label>नाम</label><input type="text" id="eName"></div>
+  <div class="fg"><label>पिता का नाम</label><input type="text" id="eFather"></div>
+  <div class="fg"><label>मोबाइल</label><input type="tel" id="ePhone" maxlength="10"></div>
+  <div class="fg"><label>जॉइनिंग तारीख</label><input type="date" id="eJoin"></div>
+  <div class="fg"><label>आख़िरी भुगतान तारीख</label><input type="date" id="eLast"></div>
+  <div style="display:flex;gap:8px;margin-top:6px">
+    <button class="btn btn-green" style="flex:1" onclick="saveEdit()">💾 Save</button>
+    <button class="btn btn-dark" style="flex:1" onclick="closeEdit()">✖ रद्द</button>
+  </div>
+</div></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const KNOWN = ["bbf_master_records_v4","5BFC_MEMBERS","5bfc_admissions"];
+const IMG_KEYS = ["memberPhoto","memberSign","memberIdImg","memberIdBack","memberIdBackImg"];
+const FB_CFG = {apiKey:"AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",authDomain:"brother-s-fitness-club.firebaseapp.com",projectId:"brother-s-fitness-club",storageBucket:"brother-s-fitness-club.firebasestorage.app",messagingSenderId:"781489019006",appId:"1:781489019006:web:4a230698f2195e7208202f"};
+
+let SOURCES = {};      // key -> {arr, checked}
+let CLOUD = null;      // array from cloud (or null)
+let CLOUD_IDS = [];
+let ENTRIES = [];      // merged entries {uid, rec, src:[...]}
+let IGNORE = new Set();// group signatures marked "duplicate nahi"
+let KEEP = {};         // group sig -> uid
+let VIEW = "dup", UNDO = null, EDIT_UID = null, UIDC = 1;
+
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ph10 = p => String(p||"").replace(/\D/g,"").slice(-10);
+const nameOf = r => String(r.name||"").trim();
+const fatherOf = r => String(r.father || r.parentName || "").trim();
+
+/* ---------- Hindi → Roman (सिर्फ़ व्यंजन, मिलान के लिए) ---------- */
+const DEV = {"क":"k","ख":"k","ग":"g","घ":"g","ङ":"n","च":"c","छ":"c","ज":"j","झ":"j","ञ":"n","ट":"t","ठ":"t","ड":"d","ढ":"d","ण":"n","त":"t","थ":"t","द":"d","ध":"d","न":"n","प":"p","फ":"f","ब":"b","भ":"b","म":"m","य":"","र":"r","ल":"l","व":"v","श":"s","ष":"s","स":"s","ह":"","ं":"n","ँ":"n","ः":"","ड़":"d","ढ़":"d"};
+function skel(str){
+  let t = String(str||"").replace(/ज्ञ/g,"g").replace(/क्ष/g,"ks").replace(/त्र/g,"tr");
+  let out = "";
+  for(const ch of t){
+    if(DEV[ch]!==undefined) out += DEV[ch];
+    else if(/[a-zA-Z]/.test(ch)) out += ch.toLowerCase();
+  }
+  out = out.replace(/sh|ch|kh|gh|th|dh|ph|bh|jh/g, m=>m[0]);
+  out = out.replace(/[aeiouyh]/g,"").replace(/w/g,"v").replace(/[cq]/g,"k").replace(/z/g,"j").replace(/x/g,"ks").replace(/f/g,"p");
+  return out.replace(/(.)\1+/g,"$1");
+}
+function nameKeys(r){
+  const full = nameOf(r);
+  const paren = (full.match(/\(([^)]*)\)/g)||[]).map(x=>x.slice(1,-1));
+  const outside = full.replace(/\([^)]*\)/g," ");
+  return [...new Set([skel(outside), ...paren.map(skel), skel(full.replace(/[()]/g," "))].filter(k=>k.length>=2))];
+}
+function lev(a,b){
+  const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  let p=[...Array(n+1).keys()];
+  for(let i=1;i<=m;i++){ const c=[i]; for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c; }
+  return p[n];
+}
+function sameName(a,b){
+  const A = nameKeys(a), B = nameKeys(b);
+  for(const x of A) for(const y of B){
+    const l = Math.min(x.length,y.length);
+    const tol = l>=7 ? 2 : l>=4 ? 1 : 0;
+    if(lev(x,y) <= tol) return true;
+  }
+  return false;
+}
+function prefixName(a,b){
+  for(const x of nameKeys(a)) for(const y of nameKeys(b)){
+    if(Math.min(x.length,y.length)>=3 && (x.startsWith(y)||y.startsWith(x))) return true;
+  }
+  return false;
+}
+const hasPhoto = r => !!r.memberPhoto;
+const hasId = r => !!(r.memberIdImg || r.memberIdBackImg || r.memberIdBack);
+function daysSince(d){ if(!d) return null; const t = new Date(d+"T00:00:00"); if(isNaN(t)) return null; return Math.floor((Date.now()-t.getTime())/86400000); }
+function sameFather(a,b){
+  const fa = fatherOf(a), fb = fatherOf(b);
+  if(!fa || !fb) return true;
+  return sameName({name:fa},{name:fb});
+}
+
+/* ---------- Sources ---------- */
+function scanSources(){
+  SOURCES = {};
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    let v; try{ v = JSON.parse(localStorage.getItem(k)); }catch(e){ continue; }
+    if(!Array.isArray(v) || !v.length) {
+      if(KNOWN.includes(k)) SOURCES[k] = {arr:[], checked:true};
+      continue;
+    }
+    if(!v.some(x=>x && typeof x==="object" && (x.name || x.memberName))) continue;
+    SOURCES[k] = {arr: v.filter(x=>x && typeof x==="object"), checked: KNOWN.includes(k)};
+  }
+  KNOWN.forEach(k=>{ if(!SOURCES[k]) SOURCES[k] = {arr:[], checked:true}; });
+  if(CLOUD) SOURCES["☁ cloud:members"] = {arr:CLOUD, checked:true, cloud:true};
+  renderSources(); rebuild();
+}
+function renderSources(){
+  $("srcList").innerHTML = Object.entries(SOURCES).map(([k,s])=>`
+    <div class="src"><input type="checkbox" ${s.checked?"checked":""} onchange="toggleSrc('${esc(k).replace(/'/g,"\\'")}',this.checked)">
+      <div style="flex:1"><b>${esc(k)}</b>${KNOWN.includes(k)||s.cloud?"":' <span class="muted">(अन्य लिस्ट)</span>'}</div>
+      <b style="font-size:15px">${s.arr.length}</b> <span class="muted">लोग</span></div>`).join("") || '<p class="muted">कोई लिस्ट नहीं मिली</p>';
+}
+function toggleSrc(k,v){ SOURCES[k].checked = v; rebuild(); }
+
+async function loadCloud(){
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(FB_CFG);
+    const db = firebase.firestore();
+    $("cloudBtn").textContent = "⏳ आ रहा है...";
+    const snap = await db.collection("members").get();
+    CLOUD = []; snap.forEach(d=>CLOUD.push({id:d.id, ...d.data()}));
+    CLOUD_IDS = CLOUD.map(c=>String(c.id));
+    $("cloudBtn").textContent = "☁️ Cloud लोड ✅ ("+CLOUD.length+")";
+    $("chkCloud").disabled = false; $("chkCloud").checked = true;
+    $("cloudNote").textContent = "Cloud की लिस्ट जुड़ गई है। सेव पर Cloud में भी यही साफ़ लिस्ट रहेगी।";
+    scanSources();
+  }catch(e){ alert("Cloud नहीं खुला: "+e.message); $("cloudBtn").textContent = "☁️ Cloud (Firebase) से भी लो"; }
+}
+
+/* ---------- Merge + groups ---------- */
+function score(r){
+  let s = 0;
+  ["name","phone","joinDate","lastPaid","type","amount","status","address","emergency"].forEach(k=>{ if(r[k]!==undefined && r[k]!=="" && r[k]!==null) s++; });
+  if(fatherOf(r)) s += 2;
+  if(hasPhoto(r)) s += 6;
+  if(hasId(r)) s += 6;
+  return s;
+}
+function fillMissing(into, from){
+  Object.keys(from).forEach(k=>{
+    if(k==="id") return;
+    if(into[k]===undefined || into[k]===null || into[k]==="") into[k] = from[k];
+  });
+  if(!into.father && into.parentName) into.father = into.parentName;
+  if(!into.parentName && into.father) into.parentName = into.father;
+}
+function rebuild(){
+  const map = new Map(); ENTRIES = [];
+  Object.entries(SOURCES).forEach(([k,s])=>{
+    if(!s.checked) return;
+    s.arr.forEach(raw=>{
+      const rec = JSON.parse(JSON.stringify(raw));
+      if(!rec.name && rec.memberName) rec.name = rec.memberName;
+      if(!nameOf(rec)) return;
+      const key = (ph10(rec.phone)||"x") + "|" + nameOf(rec).toLowerCase().replace(/\s+/g," ");
+      if(map.has(key)){ const e = map.get(key); if(!e.src.includes(k)) e.src.push(k); fillMissing(e.rec, rec); }
+      else{ const e = {uid:UIDC++, rec, src:[k]}; map.set(key,e); ENTRIES.push(e); }
+    });
+  });
+  $("stAll").textContent = Object.values(SOURCES).filter(s=>s.checked).reduce((a,s)=>a+s.arr.length,0);
+  render();
+}
+function findGroups(){
+  const n = ENTRIES.length, par = [...Array(n).keys()];
+  const find = x => par[x]===x ? x : (par[x]=find(par[x]));
+  const uni = (a,b)=>{ par[find(a)] = find(b); };
+  for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+    const a = ENTRIES[i].rec, b = ENTRIES[j].rec;
+    const pa = ph10(a.phone), pb = ph10(b.phone);
+    if(pa && pb && pa===pb){ if(sameName(a,b) || prefixName(a,b)) uni(i,j); }
+    else if(sameName(a,b) && sameFather(a,b) && (!pa || !pb || (fatherOf(a)&&fatherOf(b)))) uni(i,j);
+  }
+  const g = {};
+  for(let i=0;i<n;i++){ const r = find(i); (g[r] = g[r]||[]).push(ENTRIES[i]); }
+  const dup = Object.values(g).filter(x=>x.length>1).map(list=>{
+    const sig = list.map(e=>e.uid).sort().join("-");
+    return {sig, list: list.sort((a,b)=>score(b.rec)-score(a.rec))};
+  }).filter(x=>!IGNORE.has(x.sig));
+  // same mobile, different name (not already in a dup group)
+  const inDup = new Set(); dup.forEach(d=>d.list.forEach(e=>inDup.add(e.uid)));
+  const byPhone = {};
+  ENTRIES.forEach(e=>{ const p = ph10(e.rec.phone); if(p) (byPhone[p] = byPhone[p]||[]).push(e); });
+  const sigOf = {}; dup.forEach(d=>d.list.forEach(e=>{ sigOf[e.uid] = d.sig; }));
+  const fam = Object.entries(byPhone).filter(([p,l])=>{
+    if(l.length<2) return false;
+    const sigs = new Set(l.map(e=>sigOf[e.uid]||("solo"+e.uid)));
+    return sigs.size>1;
+  }).map(([p,l])=>({sig:"p"+p, phone:p, list:l}));
+  return {dup, fam};
+}
+function entHTML(e, gsig, isDup){
+  const r = e.rec, keep = KEEP[gsig]===e.uid;
+  const ds = daysSince(r.lastPaid);
+  const imgs = [["📸",r.memberPhoto],["🪪",r.memberIdImg],["🪪↩",r.memberIdBackImg||r.memberIdBack]].filter(x=>x[1] && String(x[1]).startsWith("data:"));
+  return `<div class="ent ${isDup&&keep?"keep":""}">
+    <div class="n">${esc(nameOf(r))}</div>
+    <div class="d">पिता: <b>${esc(fatherOf(r)||"—")}</b> · 📞 <b>${esc(r.phone||"—")}</b><br>
+      जॉइन: ${esc(r.joinDate||"—")} · आख़िरी भुगतान: ${esc(r.lastPaid||"—")}${ds!==null?` (${ds} दिन पहले)`:""} ${r.type?` · ${esc(r.type)}`:""}</div>
+    <div>
+      <span class="badge ${hasPhoto(r)?"b-ok":"b-no"}">${hasPhoto(r)?"✅ Photo लगी है":"❌ Photo नहीं"}</span>
+      <span class="badge ${hasId(r)?"b-ok":"b-no"}">${hasId(r)?"✅ ID लगी है":"❌ ID नहीं"}</span>
+      ${ds!==null && ds>45 ? `<span class="badge b-old">⏳ ${ds} दिन से भुगतान नहीं</span>`:""}
+    </div>
+    ${imgs.length?`<div class="thumbs">${imgs.map(x=>`<img src="${x[1]}" alt="${x[0]}">`).join("")}</div>`:""}
+    <div>${e.src.map(s=>`<span class="tag">${esc(s)}</span>`).join("")}</div>
+    <div class="acts">
+      ${isDup?`<label><input type="radio" name="k_${gsig}" ${keep?"checked":""} onchange="setKeep('${gsig}',${e.uid})"> इसे रखो</label>`:""}
+      <button class="btn btn-gold btn-sm" onclick="openEdit(${e.uid})">✏️ Edit</button>
+      <button class="btn btn-red btn-sm" onclick="delEntry(${e.uid})">🗑️ Delete</button>
+    </div></div>`;
+}
+function setKeep(sig,uid){ KEEP[sig] = uid; render(); }
+function showView(v){ VIEW = v; ["dup","fam","no","all"].forEach(x=>$("tab"+x[0].toUpperCase()+x.slice(1)).classList.toggle("on", x===v)); render(); }
+
+function render(){
+  const {dup, fam} = findGroups();
+  dup.forEach(g=>{ if(!g.list.some(e=>e.uid===KEEP[g.sig])) KEEP[g.sig] = g.list[0].uid; });
+  $("stGrp").textContent = dup.length;
+  $("stFinal").textContent = ENTRIES.length;
+  $("tabNo").textContent = "🚫 बिना Photo/ID ("+ENTRIES.filter(e=>!hasPhoto(e.rec)||!hasId(e.rec)).length+")";
+  $("saveInfo").innerHTML = `सेव करने पर सब जगह <b style="color:#ffcc00">${ENTRIES.length}</b> सदस्य एक जैसे होंगे।`
+    + (dup.length ? ` <span style="color:#ff9900">अभी ${dup.length} डुप्लिकेट ग्रुप बचे हैं।</span>` : " ✅ कोई डुप्लिकेट नहीं बचा।");
+  $("undoBtn").classList.toggle("hide", !UNDO);
+  let h = "";
+  if(VIEW==="dup"){
+    h = dup.length ? dup.map(g=>`<div class="grp"><div class="gh">🔁 ${g.list.length} एंट्री एक ही इंसान जैसी — एक चुनो, बाकी हटाओ <span style="color:#25D366">(हरा = Photo/ID वाली, सुझाई हुई)</span></div>
+      ${g.list.map(e=>entHTML(e,g.sig,true)).join("")}
+      <div class="acts"><button class="btn btn-green btn-sm" onclick="mergeGroup('${g.sig}')">✅ चुनी हुई रखो, बाकी हटाओ (जानकारी जोड़कर)</button>
+      <button class="btn btn-dark btn-sm" onclick="ignoreGroup('${g.sig}')">❎ ये डुप्लिकेट नहीं हैं</button></div></div>`).join("")
+      : '<div class="box"><p class="muted" style="text-align:center">✅ कोई डुप्लिकेट नहीं मिला</p></div>';
+  } else if(VIEW==="fam"){
+    h = '<p class="muted" style="margin-bottom:8px">एक ही मोबाइल पर अलग नाम — भाई/परिवार भी हो सकते हैं, इसलिए अपने आप नहीं हटाए। ज़रूरत हो तो खुद Delete/Edit करें।</p>'
+      + (fam.length ? fam.map(g=>`<div class="grp fam"><div class="gh">📞 ${esc(g.phone)} — ${g.list.length} नाम</div>${g.list.map(e=>entHTML(e,g.sig,false)).join("")}</div>`).join("") : '<div class="box"><p class="muted" style="text-align:center">कुछ नहीं</p></div>');
+  } else if(VIEW==="no"){
+    const list = ENTRIES.filter(e=>!hasPhoto(e.rec) || !hasId(e.rec));
+    h = `<p class="muted" style="margin-bottom:8px">जिनमें Photo या ID नहीं लगी — इन्हें खोलकर देख लें। ज़रूरत हो तो Delete या Edit करें। (${list.length} सदस्य)</p>`
+      + (list.map(e=>entHTML(e,"no",false)).join("") || '<div class="box"><p class="muted" style="text-align:center">✅ सबमें Photo और ID लगी है</p></div>');
+  } else {
+    h = '<div class="fg"><input type="search" id="q" placeholder="🔍 नाम / मोबाइल खोजें" oninput="renderAll()"></div><div class="fg"><select id="flt" onchange="renderAll()" style="width:100%;background:#181818;border:1.5px solid #444;color:#fff;padding:9px;border-radius:8px;font-size:13px"><option value="">सब सदस्य</option><option value="old">⏳ 45+ दिन से भुगतान नहीं</option><option value="nophoto">❌ बिना Photo</option><option value="noid">❌ बिना ID</option></select></div><div id="allList"></div>';
+  }
+  $("view").innerHTML = h;
+  if(VIEW==="all") renderAll();
+}
+function renderAll(){
+  const q = (($("q")||{}).value||"").toLowerCase().trim();
+  const flt = ($("flt")||{}).value||"";
+  const list = ENTRIES.filter(e=>!q || (nameOf(e.rec)+" "+(e.rec.phone||"")).toLowerCase().includes(q)).filter(e=>{
+    if(flt==="old"){ const d = daysSince(e.rec.lastPaid); return d===null || d>45; }
+    if(flt==="nophoto") return !hasPhoto(e.rec);
+    if(flt==="noid") return !hasId(e.rec);
+    return true;
+  }).slice(0,150);
+  $("allList").innerHTML = list.map(e=>entHTML(e,"all",false)).join("") || '<p class="muted">कोई नहीं</p>';
+  if(ENTRIES.length>150 && !q && !flt) $("allList").innerHTML += '<p class="muted">पहले 150 दिख रहे हैं — खोज का इस्तेमाल करें</p>';
+}
+
+/* ---------- Actions ---------- */
+function delEntry(uid){
+  const e = ENTRIES.find(x=>x.uid===uid); if(!e) return;
+  if(!confirm("🗑️ '"+nameOf(e.rec)+"' हटाना है?")) return;
+  UNDO = {removed:[e], kept:null};
+  ENTRIES = ENTRIES.filter(x=>x.uid!==uid); render();
+}
+function mergeGroup(sig){
+  const {dup} = findGroups(); const g = dup.find(x=>x.sig===sig); if(!g) return;
+  const keepUid = KEEP[sig]; const kept = g.list.find(e=>e.uid===keepUid) || g.list[0];
+  const others = g.list.filter(e=>e!==kept);
+  if(!confirm(`'${nameOf(kept.rec)}' रखकर ${others.length} एंट्री हटानी हैं?`)) return;
+  UNDO = {removed:others, kept:{uid:kept.uid, rec:JSON.parse(JSON.stringify(kept.rec)), src:[...kept.src]}};
+  others.forEach(o=>{ fillMissing(kept.rec, o.rec); o.src.forEach(s=>{ if(!kept.src.includes(s)) kept.src.push(s); }); });
+  const rm = new Set(others.map(o=>o.uid));
+  ENTRIES = ENTRIES.filter(e=>!rm.has(e.uid)); render();
+}
+function ignoreGroup(sig){ IGNORE.add(sig); render(); }
+function undo(){
+  if(!UNDO) return;
+  if(UNDO.kept){ const k = ENTRIES.find(e=>e.uid===UNDO.kept.uid); if(k){ k.rec = UNDO.kept.rec; k.src = UNDO.kept.src; } }
+  ENTRIES.push(...UNDO.removed); UNDO = null; render();
+}
+function openEdit(uid){
+  const e = ENTRIES.find(x=>x.uid===uid); if(!e) return; EDIT_UID = uid; const r = e.rec;
+  $("eName").value = nameOf(r); $("eFather").value = fatherOf(r); $("ePhone").value = r.phone||"";
+  $("eJoin").value = r.joinDate||""; $("eLast").value = r.lastPaid||"";
+  $("modal").style.display = "block"; $("modal").scrollTop = 0;
+}
+function closeEdit(){ $("modal").style.display = "none"; EDIT_UID = null; }
+function saveEdit(){
+  const e = ENTRIES.find(x=>x.uid===EDIT_UID); if(!e) return;
+  const name = $("eName").value.trim(); if(!name){ alert("नाम लिखें"); return; }
+  const r = e.rec;
+  r.name = name; r.phone = $("ePhone").value.replace(/\D/g,"").slice(-10);
+  const f = $("eFather").value.trim();
+  if(f || r.father!==undefined || r.parentName!==undefined){ r.father = f; r.parentName = f; }
+  r.joinDate = $("eJoin").value; r.lastPaid = $("eLast").value;
+  closeEdit(); render();
+}
+
+/* ---------- Save ---------- */
+function downloadBackup(){
+  const bak = {when:new Date().toISOString(), local:{}, cloud:CLOUD};
+  Object.keys(SOURCES).forEach(k=>{ if(!SOURCES[k].cloud) bak.local[k] = localStorage.getItem(k); });
+  const blob = new Blob([JSON.stringify(bak)], {type:"application/json"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "5BFC_members_backup_"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function cleanForCloud(rec){
+  const c = JSON.parse(JSON.stringify(rec));
+  IMG_KEYS.forEach(k=>delete c[k]);
+  Object.keys(c).forEach(k=>{ if(typeof c[k]==="string" && c[k].startsWith("data:")) delete c[k]; });
+  return c;
+}
+async function saveAll(){
+  if(!ENTRIES.length){ alert("लिस्ट खाली है"); return; }
+  const {dup} = findGroups();
+  let msg = `सब जगह ${ENTRIES.length} सदस्य सेव होंगे.`;
+  if(dup.length) msg += `\n⚠️ अभी ${dup.length} डुप्लिकेट ग्रुप बचे हैं (वो भी सेव होंगे).`;
+  if($("chkCloud").checked) msg += `\n☁️ Cloud में भी यही लिस्ट रहेगी; बाकी वहाँ से हटेंगे.`;
+  msg += `\n\nपहले Backup file उतरेगी। जारी रखें?`;
+  if(!confirm(msg)) return;
+  downloadBackup();
+  // ids
+  const final = ENTRIES.map((e,i)=>{ const r = e.rec; if(r.id===undefined || r.id===null || r.id==="") r.id = "m"+(ph10(r.phone)||"x")+"_"+Date.now().toString(36)+i; if(!r.father && r.parentName) r.father = r.parentName; if(!r.parentName && r.father) r.parentName = r.father; return r; });
+  const targets = Object.entries(SOURCES).filter(([k,s])=>s.checked && !s.cloud).map(([k])=>k);
+  KNOWN.forEach(k=>{ if(!targets.includes(k)) targets.push(k); });
+  targets.forEach(k=>{ try{ localStorage.setItem(k, JSON.stringify(final)); }catch(e){ alert("⚠️ '"+k+"' में सेव नहीं हुआ (जगह कम): "+e.message); } });
+  let cloudMsg = "";
+  if($("chkCloud").checked && CLOUD){
+    try{
+      const db = firebase.firestore();
+      const keepIds = new Set(final.map(r=>String(r.id)));
+      let ops = [];
+      final.forEach(r=>ops.push({t:"set", id:String(r.id), d:cleanForCloud(r)}));
+      CLOUD_IDS.forEach(id=>{ if(!keepIds.has(id)) ops.push({t:"del", id}); });
+      for(let i=0;i<ops.length;i+=400){
+        const b = db.batch();
+        ops.slice(i,i+400).forEach(o=>{ const ref = db.collection("members").doc(o.id); if(o.t==="set") b.set(ref,o.d,{merge:true}); else b.delete(ref); });
+        await b.commit();
+      }
+      CLOUD_IDS = [...keepIds];
+      cloudMsg = `\n☁️ Cloud भी अपडेट (${final.length} रखे, ${ops.filter(o=>o.t==="del").length} हटाए).`;
+    }catch(e){ cloudMsg = "\n⚠️ Cloud अपडेट नहीं हुआ: "+e.message+" (यहाँ का लोकल सेव हो गया)"; }
+  }
+  alert(`✅ सेव हो गया — ${final.length} सदस्य, सब जगह एक जैसे.${cloudMsg}\n\nअब बाकी पेज (Attendance / Admission / Pay) एक बार Refresh कर लें.`);
+  scanSources();
+}
+
+scanSources();
+</script>
+</body>
+</html>
