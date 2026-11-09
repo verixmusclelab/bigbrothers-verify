@@ -1,0 +1,3185 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>5 Brother's Fitness Club - Attendance Kiosk</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffcc00">
+
+<!-- Firebase App & Firestore SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script>
+/* 5 BROTHER'S FITNESS CLUB — दहाड़ता शेर Welcome Pop-up
+ * Kisi bhi page me:  roar-welcome.js
+ * Phir:  showRoarWelcome({ name: "Vivek Kumar" });
+ */
+(function () {
+  if (window.showRoarWelcome) return;
+
+  var CSS = [
+    "#roarOv{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;",
+    "background:radial-gradient(circle at 50% 42%,#4a3300 0%,#140d00 45%,#000 80%);opacity:0;animation:roarFadeIn .35s forwards;font-family:'Segoe UI',Arial,sans-serif;}",
+    "#roarOv.out{animation:roarFadeOut .45s forwards}",
+    "@keyframes roarFadeIn{to{opacity:1}} @keyframes roarFadeOut{to{opacity:0;transform:scale(1.08)}}",
+    "#roarOv canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}",
+    "#roarOv .stage{position:relative;width:min(78vw,300px);height:min(78vw,300px);display:flex;align-items:center;justify-content:center;animation:roarShake .12s linear 1.0s 9}",
+    "#roarOv .ring{position:absolute;inset:0;border-radius:50%;border:4px solid #ffcc00;opacity:0;transform:scale(.3);animation:roarRing 1.6s ease-out infinite}",
+    "#roarOv .ring.r2{animation-delay:.35s}#roarOv .ring.r3{animation-delay:.7s}",
+    "@keyframes roarRing{0%{opacity:.9;transform:scale(.3)}100%{opacity:0;transform:scale(1.7)}}",
+    "#roarOv .lion{line-height:1;filter:drop-shadow(0 0 28px #ffb300) drop-shadow(0 0 60px #ff7b00);transform:scale(0) rotate(-12deg);",
+    "animation:roarPop .7s cubic-bezier(.2,1.6,.4,1) .15s forwards,roarRoar .9s ease-in-out 1.0s 2}",
+    "@keyframes roarPop{to{transform:scale(1) rotate(0)}}",
+    "@keyframes roarRoar{0%,100%{transform:scale(1)}35%{transform:scale(1.28) rotate(-3deg)}65%{transform:scale(1.18) rotate(3deg)}}",
+    "@keyframes roarShake{0%{transform:translate(0,0)}25%{transform:translate(4px,-3px)}50%{transform:translate(-4px,3px)}75%{transform:translate(3px,4px)}100%{transform:translate(0,0)}}",
+    "#roarOv .t1{color:#ffe08a;font-weight:800;letter-spacing:5px;font-size:min(5vw,19px);margin-top:10px;opacity:0;transform:translateY(20px);animation:roarUp .6s ease-out .9s forwards}",
+    "#roarOv .t2{font-weight:900;text-align:center;font-size:min(8.6vw,36px);line-height:1.15;margin:4px 14px 0;opacity:0;transform:scale(.6);",
+    "background:linear-gradient(90deg,#b8860b,#ffe066,#fff6c4,#ffcc00,#b8860b);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;",
+    "animation:roarZoom .6s cubic-bezier(.2,1.5,.4,1) 1.15s forwards,roarShine 2.2s linear 1.8s infinite;text-shadow:0 0 22px rgba(255,190,0,.35)}",
+    "#roarOv .t3{color:#fff;font-weight:800;text-align:center;font-size:min(5.6vw,22px);margin:14px 18px 0;opacity:0;animation:roarUp .6s ease-out 1.6s forwards,roarPulse 1.3s ease-in-out 2.3s infinite}",
+    "#roarOv .nm{color:#25D366;font-weight:900;font-size:min(6vw,24px);margin-top:12px;opacity:0;animation:roarUp .6s ease-out 1.9s forwards}",
+    "#roarOv .tap{position:absolute;bottom:18px;color:#777;font-size:11px;opacity:0;animation:roarUp .5s ease-out 2.4s forwards}",
+    "@keyframes roarUp{to{opacity:1;transform:translateY(0)}} @keyframes roarZoom{to{opacity:1;transform:scale(1)}}",
+    "@keyframes roarShine{0%{background-position:0 0}100%{background-position:250% 0}}",
+    "@keyframes roarPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}",
+    "#roarOv.flash::after{content:'';position:absolute;inset:0;background:#fff;opacity:0;animation:roarFlash .35s ease-out 1.0s}",
+    "@keyframes roarFlash{0%{opacity:.55}100%{opacity:0}}",
+    "#roarOv .lion svg,#roarOv .lion video,#roarOv .lion img{width:min(72vw,290px);height:min(72vw,290px);display:block;object-fit:contain}",
+    "#roarOv .lion{font-size:0}",
+    "#roarOv .m1,#roarOv .m2,#roarOv .m3{transform-box:view-box;transform-origin:150px 150px}",
+    "#roarOv .m1{animation:roarSpinA 5s ease-in-out infinite}#roarOv .m2{animation:roarSpinB 4s ease-in-out infinite}#roarOv .m3{animation:roarSpinA 3.2s ease-in-out infinite}",
+    "@keyframes roarSpinA{0%,100%{transform:rotate(-3deg) scale(1)}50%{transform:rotate(3deg) scale(1.04)}}",
+    "@keyframes roarSpinB{0%,100%{transform:rotate(3deg) scale(1.03)}50%{transform:rotate(-3deg) scale(1)}}",
+    "#roarOv .mouth{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(.2);animation:roarJaw .9s ease-in-out 1.0s 2 forwards}",
+    "@keyframes roarJaw{0%{transform:scaleY(.2)}40%,70%{transform:scaleY(1)}100%{transform:scaleY(.55)}}",
+    "#roarOv .eyeglow{animation:roarEye 1.2s ease-in-out infinite}",
+    "@keyframes roarEye{0%,100%{opacity:.75}50%{opacity:1}}"
+  ].join("");
+
+  function injectCss() {
+    if (document.getElementById("roarCss")) return;
+    var st = document.createElement("style"); st.id = "roarCss"; st.textContent = CSS;
+    document.head.appendChild(st);
+  }
+
+  // Original (copyright-free) dahadta sher — SVG
+  function star(cx, cy, ro, ri, n, rot) {
+    var d = "";
+    for (var i = 0; i < n * 2; i++) {
+      var a = rot + i * Math.PI / n, r = (i % 2 === 0) ? ro : ri;
+      d += (i ? "L" : "M") + (cx + Math.cos(a) * r).toFixed(1) + " " + (cy + Math.sin(a) * r).toFixed(1);
+    }
+    return d + "Z";
+  }
+  function lionSVG() {
+    return '<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">' +
+      '<defs>' +
+        '<radialGradient id="rlFace" cx="50%" cy="42%" r="62%"><stop offset="0" stop-color="#ffd27a"/><stop offset=".7" stop-color="#e29a2c"/><stop offset="1" stop-color="#b9701a"/></radialGradient>' +
+        '<radialGradient id="rlGlow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff3a0"/><stop offset="1" stop-color="#ffb300"/></radialGradient>' +
+        '<linearGradient id="rlMane1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a4a05"/><stop offset="1" stop-color="#4b2200"/></linearGradient>' +
+        '<linearGradient id="rlMane2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d98a12"/><stop offset="1" stop-color="#8f4c06"/></linearGradient>' +
+        '<linearGradient id="rlMane3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc247"/><stop offset="1" stop-color="#c8741a"/></linearGradient>' +
+      '</defs>' +
+      '<g class="m1"><path d="' + star(150, 150, 146, 104, 16, 0.1) + '" fill="url(#rlMane1)"/></g>' +
+      '<g class="m2"><path d="' + star(150, 150, 128, 92, 15, 0.35) + '" fill="url(#rlMane2)"/></g>' +
+      '<g class="m3"><path d="' + star(150, 150, 110, 80, 14, 0.6) + '" fill="url(#rlMane3)"/></g>' +
+      // ears
+      '<circle cx="92" cy="96" r="20" fill="#b9701a"/><circle cx="92" cy="96" r="11" fill="#5a2a05"/>' +
+      '<circle cx="208" cy="96" r="20" fill="#b9701a"/><circle cx="208" cy="96" r="11" fill="#5a2a05"/>' +
+      // face
+      '<ellipse cx="150" cy="158" rx="64" ry="72" fill="url(#rlFace)"/>' +
+      // forehead wrinkles (growl)
+      '<path d="M138 92 L144 122 M150 88 L150 120 M162 92 L156 122" stroke="#b86a10" stroke-width="3.5" stroke-linecap="round" fill="none"/>' +
+      // eyes
+      '<path d="M98 128 Q120 112 142 130 Q120 140 98 128Z" fill="url(#rlGlow)" class="eyeglow"/>' +
+      '<path d="M202 128 Q180 112 158 130 Q180 140 202 128Z" fill="url(#rlGlow)" class="eyeglow"/>' +
+      '<ellipse cx="121" cy="129" rx="4" ry="8" fill="#1a0a00"/><ellipse cx="179" cy="129" rx="4" ry="8" fill="#1a0a00"/>' +
+      // angry brows
+      '<path d="M94 116 L144 136" stroke="#3a1a00" stroke-width="9" stroke-linecap="round"/>' +
+      '<path d="M206 116 L156 136" stroke="#3a1a00" stroke-width="9" stroke-linecap="round"/>' +
+      // muzzle + nose
+      '<ellipse cx="150" cy="180" rx="40" ry="27" fill="#f3c777"/>' +
+      '<path d="M130 152 Q150 143 170 152 Q165 170 150 174 Q135 170 130 152Z" fill="#4a2200"/>' +
+      // open mouth (roar)
+      '<g class="mouth">' +
+        '<path d="M110 186 Q150 176 190 186 Q182 238 150 244 Q118 238 110 186Z" fill="#5a0f0f"/>' +
+        '<path d="M128 214 Q150 204 172 214 Q165 238 150 240 Q135 238 128 214Z" fill="#e0607a"/>' +
+        '<path d="M123 186 L135 186 L129 210Z M165 186 L177 186 L171 210Z" fill="#fffdf2"/>' +
+        '<path d="M128 240 L137 240 L132 222Z M163 240 L172 240 L168 222Z" fill="#fffdf2"/>' +
+      '</g>' +
+      '<path d="M150 174 L150 186" stroke="#4a2200" stroke-width="4" stroke-linecap="round"/>' +
+      '<path d="M110 186 Q130 190 150 184 Q170 190 190 186" stroke="#4a2200" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+    '</svg>';
+  }
+  function lionHTML(opts) {
+    var m = opts && opts.media;
+    if (m) {
+      if (/\.(mp4|webm|mov)(\?|$)/i.test(m)) return '<video src="' + m + '" autoplay muted playsinline loop></video>';
+      return '<img src="' + m + '" alt="">';
+    }
+    return lionSVG();
+  }
+
+  // Sound: synthesized roar (koi audio file nahi chahiye)
+  function playRoar() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      var ctx = new AC(), t0 = ctx.currentTime + 0.95, dur = 1.8;
+      var master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+      master.gain.setValueAtTime(0.0001, t0);
+      master.gain.exponentialRampToValueAtTime(0.9, t0 + 0.12);
+      master.gain.setValueAtTime(0.9, t0 + 0.9);
+      master.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      // growl: low sawtooth with fast tremolo
+      var osc = ctx.createOscillator(); osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(150, t0);
+      osc.frequency.exponentialRampToValueAtTime(95, t0 + 0.5);
+      osc.frequency.exponentialRampToValueAtTime(60, t0 + dur);
+      var trem = ctx.createGain(); trem.gain.value = 0.6;
+      var lfo = ctx.createOscillator(); lfo.frequency.value = 26;
+      var lfoG = ctx.createGain(); lfoG.gain.value = 0.4; lfo.connect(lfoG); lfoG.connect(trem.gain);
+      var lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.setValueAtTime(900, t0); lp.frequency.exponentialRampToValueAtTime(250, t0 + dur);
+      osc.connect(trem); trem.connect(lp); lp.connect(master);
+      // breath / rasp: filtered noise
+      var len = ctx.sampleRate * dur, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1);
+      var ns = ctx.createBufferSource(); ns.buffer = buf;
+      var bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 420; bp.Q.value = 0.7;
+      var ng = ctx.createGain(); ng.gain.value = 0.55;
+      ns.connect(bp); bp.connect(ng); ng.connect(master);
+      osc.start(t0); lfo.start(t0); ns.start(t0);
+      osc.stop(t0 + dur); lfo.stop(t0 + dur); ns.stop(t0 + dur);
+      setTimeout(function () { try { ctx.close(); } catch (e) {} }, (dur + 1.2) * 1000);
+    } catch (e) {}
+  }
+
+  // Gold sparks
+  function sparks(canvas, startDelay) {
+    var ctx = canvas.getContext("2d"), W, H, P = [], run = true;
+    function size() { W = canvas.width = canvas.clientWidth * (window.devicePixelRatio || 1); H = canvas.height = canvas.clientHeight * (window.devicePixelRatio || 1); }
+    size();
+    function burst() {
+      for (var i = 0; i < 110; i++) {
+        var a = Math.random() * Math.PI * 2, sp = (2 + Math.random() * 7) * (window.devicePixelRatio || 1);
+        P.push({ x: W / 2, y: H * 0.40, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1.5, life: 1, r: (1 + Math.random() * 3) * (window.devicePixelRatio || 1), h: 38 + Math.random() * 20 });
+      }
+    }
+    setTimeout(burst, startDelay); setTimeout(burst, startDelay + 900);
+    (function loop() {
+      if (!run) return;
+      ctx.clearRect(0, 0, W, H);
+      for (var i = P.length - 1; i >= 0; i--) {
+        var p = P[i]; p.x += p.vx; p.y += p.vy; p.vy += 0.09; p.vx *= 0.985; p.life -= 0.012;
+        if (p.life <= 0) { P.splice(i, 1); continue; }
+        ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = "hsl(" + p.h + ",100%,60%)";
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(loop);
+    })();
+    return function () { run = false; };
+  }
+
+  window.showRoarWelcome = function (opts) {
+    opts = opts || {};
+    if (document.getElementById("roarOv")) return;
+    injectCss();
+    var ov = document.createElement("div"); ov.id = "roarOv"; ov.className = "flash";
+    var name = opts.name ? String(opts.name).replace(/[<>&]/g, "") : "";
+    ov.innerHTML =
+      '<canvas></canvas>' +
+      '<div class="stage"><div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><div class="lion">' + lionHTML(opts) + '</div></div>' +
+      '<div class="t1">WELCOME TO</div>' +
+      '<div class="t2">5 BROTHER\u2019S<br>FITNESS CLUB</div>' +
+      '<div class="t3">शेर बनकर आए हैं, दहाड़ते हुए जाएँगे! 🔥</div>' +
+      (name ? '<div class="nm">💪 ' + name + '</div>' : '') +
+      '<div class="tap">बंद करने के लिए टैप करें</div>';
+    document.body.appendChild(ov);
+
+    var stopSparks = sparks(ov.querySelector("canvas"), 950);
+    if (opts.sound !== false) playRoar();
+    try { if (navigator.vibrate) navigator.vibrate([120, 60, 120, 60, 260, 80, 260]); } catch (e) {}
+
+    var closed = false;
+    function close() {
+      if (closed) return; closed = true;
+      ov.classList.add("out");
+      setTimeout(function () { stopSparks(); if (ov.parentNode) ov.parentNode.removeChild(ov); if (typeof opts.onDone === "function") opts.onDone(); }, 460);
+    }
+    ov.addEventListener("click", close);
+    setTimeout(close, opts.duration || 5200);
+  };
+})();
+
+</script>
+
+<style>
+  :root {
+    --gold: #ffcc00;
+    --gold-glow: rgba(255, 204, 0, 0.28);
+    --bg-dark: #070707;
+    --card-bg: #121212;
+    --border-color: #242424;
+    --green-accent: #00ff66;
+    --red-accent: #ff3333;
+    --text-muted: #888888;
+  }
+
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: #ffffff;
+    padding: 12px 10px 90px 10px;
+    max-width: 500px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  .nav-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+  }
+
+  .btn-back-home {
+    background: var(--gold); color: #000; text-decoration: none;
+    font-size: 11px; font-weight: 900; padding: 7px 12px; border-radius: 8px;
+    text-transform: uppercase; border: none; cursor: pointer;
+  }
+
+  .btn-admin-pill {
+    background: #1c1c1c; color: var(--gold); border: 1px solid var(--gold);
+    font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  }
+
+  .branding-card {
+    background: radial-gradient(circle at top, #1e1908 0%, #0d0d0d 100%);
+    border: 1.5px solid var(--gold); border-radius: 14px;
+    padding: 14px; text-align: center; margin-bottom: 12px;
+    box-shadow: 0 4px 20px var(--gold-glow);
+  }
+
+  .branding-title {
+    font-size: 18px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .badge-live-clock {
+    display: inline-block; background: #161616; border: 1px solid #ffcc00;
+    color: var(--gold); font-size: 11px; font-weight: 800;
+    padding: 4px 12px; border-radius: 14px; margin-top: 6px;
+  }
+
+  .kiosk-hero-box {
+    background: #111; border: 2px dashed #333; border-radius: 14px;
+    padding: 20px 14px; text-align: center; margin-bottom: 14px;
+  }
+
+  .btn-mark-kiosk-trigger {
+    width: 100%; background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%);
+    color: #000; font-size: 14px; font-weight: 900; padding: 14px; border: none;
+    border-radius: 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+    box-shadow: 0 4px 20px var(--gold-glow);
+  }
+
+  .search-area-wrapper {
+    display: none; background: #141414; border: 1.5px solid var(--gold);
+    border-radius: 12px; padding: 12px; margin-bottom: 14px;
+  }
+
+  .live-search-input {
+    width: 100%; background: #000; border: 1.5px solid #444;
+    border-radius: 8px; padding: 12px 14px; color: #fff; font-size: 14px; outline: none;
+  }
+  .live-search-input:focus { border-color: var(--gold); }
+
+  .search-dropdown-results {
+    margin-top: 8px; max-height: 250px; overflow-y: auto;
+  }
+
+  .search-result-item {
+    background: #1f1f1f; border: 1px solid #333; border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+  }
+  .search-result-item:hover { border-color: var(--gold); }
+
+  .batch-direct-list-box {
+    display: none; background: #111; border: 1.5px solid #333; border-radius: 12px; padding: 12px; margin-bottom: 14px;
+  }
+
+  .single-member-container {
+    display: none; margin-bottom: 14px;
+  }
+
+  .loaded-member-card {
+    background: var(--card-bg); border: 2px solid var(--border-color);
+    border-radius: 14px; padding: 14px; position: relative;
+  }
+  .loaded-member-card.status-present {
+    border-color: #00ff66 !important;
+    background: linear-gradient(180deg, #0d1a10 0%, #07120a 100%) !important;
+    box-shadow: 0 0 16px rgba(0, 255, 102, 0.25);
+  }
+
+  .card-top-row {
+    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;
+  }
+
+  .card-member-name {
+    font-size: 16px; font-weight: 900; color: #fff;
+  }
+
+  .fee-pill-tag {
+    font-size: 9.5px; font-weight: 900; padding: 3px 8px; border-radius: 4px; cursor: pointer;
+  }
+  .fee-paid { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
+  .fee-due { background: rgba(255, 77, 77, 0.15); color: #ff6666; border: 1px solid #ff6666; }
+
+  .card-details-box {
+    background: #161616; border: 1px solid #282828; border-radius: 8px;
+    padding: 10px; margin-bottom: 10px; font-size: 11px; line-height: 1.6;
+  }
+
+  .slot-row-flex {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #1f1f1f; border: 1px solid #333; border-radius: 6px; padding: 6px 10px; margin-top: 6px;
+  }
+
+  .btn-slot-gear {
+    background: var(--gold); color: #000; border: none; border-radius: 4px;
+    padding: 3px 8px; font-size: 10px; font-weight: 900; cursor: pointer;
+  }
+
+  .compact-proof-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: #000; border: 1.5px dashed var(--green-accent);
+    border-radius: 8px; padding: 6px 10px; margin: 8px 0; font-size: 10px; color: #00ff66; font-weight: bold;
+  }
+  .compact-proof-badge img {
+    width: 36px; height: 36px; border-radius: 4px; object-fit: cover; border: 1px solid var(--green-accent);
+  }
+
+  .card-actions-row {
+    display: flex; gap: 8px; margin-top: 10px;
+  }
+
+  .btn-pres-action {
+    flex: 2; font-size: 12px; font-weight: 900; padding: 12px; border-radius: 8px;
+    border: none; cursor: pointer; text-transform: uppercase;
+  }
+  .btn-pres-action.is-ver { background: #00ff66; color: #000; }
+  .btn-pres-action.not-ver { background: #132417; color: #00ff66; border: 1.5px solid #00ff66; }
+
+  .btn-clear-action {
+    flex: 1; background: #222; color: #bbb; border: 1px solid #444;
+    font-size: 11px; font-weight: bold; padding: 12px; border-radius: 8px; cursor: pointer;
+  }
+
+  .custom-modal-backdrop {
+    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.95); z-index: 999999;
+    align-items: center; justify-content: center; padding: 14px; box-sizing: border-box;
+  }
+  .custom-modal-backdrop.show { display: flex; }
+
+  .modal-box-card {
+    background: #111; border: 2px solid var(--gold); border-radius: 14px;
+    max-width: 430px; width: 100%; padding: 18px 14px; text-align: center;
+    box-shadow: 0 0 30px var(--gold-glow); color: #fff;
+  }
+  .camera-feed-container {
+    width: 100%; height: 380px; background: #000; border-radius: 10px;
+    position: relative; overflow: hidden; border: 2px solid #333;
+  }
+  #videoElement { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+  .scanner-reticle-ring {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 180px; height: 180px; border: 2px dashed var(--green-accent); border-radius: 50%;
+  }
+
+  .slot-chip-btn {
+    background: #1c1c1c; border: 1px solid #333; color: #aaa;
+    font-size: 11px; font-weight: bold; padding: 7px; border-radius: 6px; cursor: pointer;
+  }
+
+  #feeTicker{display:none;margin:10px 0 0;background:#2a0a0a;border:1.5px solid #ff4444;border-radius:10px;overflow:hidden;position:relative;white-space:nowrap;text-align:left}
+  #feeTicker .tk-label{position:absolute;left:0;top:0;bottom:0;z-index:2;background:#ff2d2d;color:#fff;font-weight:900;font-size:11px;padding:0 9px;display:flex;align-items:center}
+  #feeTicker .tk-run{display:inline-block;padding:9px 0;color:#ffd7d7;font-weight:800;font-size:13px;animation:tkmove2 30s linear infinite;will-change:transform}
+  #feeTicker .tk-in{display:inline-block;padding-left:150px}
+  #feeTicker .tk-run b{color:#ffcc00}
+  @keyframes tkmove{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+  @keyframes tkmove2{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+
+  <!-- One-time Permission Gate -->
+  <div id="permGateOverlay" style="display:none;position:fixed;inset:0;background:#050505;z-index:999998;padding:16px;overflow:auto;box-sizing:border-box;">
+    <div style="max-width:420px;margin:20px auto;background:#111;border:2px solid #ffcc00;border-radius:18px;padding:20px;color:#fff;">
+      <div style="text-align:center;font-size:36px;margin-bottom:8px;">🔐</div>
+      <h2 style="margin:0 0 8px;text-align:center;color:#ffcc00;font-size:18px;">Roz Attendance ke liye</h2>
+      <p style="margin:0 0 14px;text-align:center;color:#ccc;font-size:13px;line-height:1.45;">
+        Sirf <b style="color:#00ff66;">2 settings Allow</b> karni hain.<br>
+        Ek baar Allow = roz selfie seedha chalega.
+      </p>
+      <div style="background:#0a0a0a;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:14px;font-weight:800;">📍 Location (GPS)</span>
+          <span id="permLocStatus" style="font-size:12px;color:#ff9900;">Pending</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:14px;font-weight:800;">📷 Camera</span>
+          <span id="permCamStatus" style="font-size:12px;color:#ff9900;">Pending</span>
+        </div>
+      </div>
+      <button type="button" id="permAllowBtn" onclick="requestBothPermissionsNow()" style="width:100%;background:linear-gradient(135deg,#ffcc00,#ff9900);color:#000;font-weight:900;font-size:16px;padding:16px;border:none;border-radius:14px;cursor:pointer;margin-bottom:10px;">
+        ✅ Dono Allow karein (1 click)
+      </button>
+      <button type="button" onclick="openSitePermissionHelp()" style="width:100%;background:#1a1a1a;color:#4db8ff;border:1px solid #4db8ff;font-weight:700;font-size:13px;padding:12px;border-radius:12px;cursor:pointer;margin-bottom:8px;">
+        ⚙️ Site Settings kaise kholein?
+      </button>
+      <div id="permHelpBox" style="display:none;background:#0d1520;border:1px solid #334;border-radius:10px;padding:12px;font-size:12px;line-height:1.55;color:#ddd;margin-bottom:10px;">
+        <b style="color:#ffcc00;">Chrome (Android):</b><br>
+        1. Address bar me <b>🔒 lock / tune icon</b> dabao<br>
+        2. <b>Permissions</b> / Site settings<br>
+        3. <b>Camera → Allow</b><br>
+        4. <b>Location → Allow</b><br>
+        5. Wapas is page pe aao → Allow button dabao<br><br>
+        <b style="color:#ffcc00;">Agar block hai:</b> Chrome Settings → Site settings → is site → Clear & reset → page refresh
+      </div>
+      <button type="button" id="permContinueBtn" onclick="closePermGate()" style="width:100%;background:#222;color:#aaa;border:none;padding:12px;border-radius:10px;font-size:12px;cursor:pointer;display:none;">
+        Continue → Attendance
+      </button>
+      <p id="permMsg" style="font-size:12px;color:#888;text-align:center;margin:10px 0 0;"></p>
+    </div>
+  </div>
+
+
+  <div class="nav-header">
+    <button type="button" class="btn-back-home" id="smartBackBtn" onclick="smartGoBack()">⬅ Back</button>
+    <button type="button" class="btn-admin-pill" onclick="unlockAdminControl()">🔒 Admin Access</button>
+  </div>
+
+  <div class="branding-card">
+    <div class="branding-title">👑 5 BROTHER'S FITNESS CLUB</div>
+    <div style="font-size:11px; color:#aaa; margin-top:2px;">Digital Attendance & Verification Register</div>
+    <div class="badge-live-clock" id="liveSystemClock">Connecting Clock...</div>
+  </div>
+
+  <div class="kiosk-hero-box" id="kioskHeroBox">
+    <div style="font-size:34px; margin-bottom:6px;">🏋️‍♂️</div>
+    <h3 style="font-size:14px; color:#ffcc00; margin-bottom:4px;">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</h3>
+    <div style="font-size:10.5px; color:#888; margin-bottom:12px;">नाम या मोबाइल नंबर से तुरंत खोजें (हिंदी/English)</div>
+    <button type="button" class="btn-mark-kiosk-trigger" onclick="openSearchKiosk()">👉 MARK YOUR ATTENDANCE</button>
+    
+    <div style="margin-top:12px; display:flex; gap:10px;">
+      <button type="button" onclick="showBatchList('morning')" style="flex:1; background:linear-gradient(135deg,#1a3a5c,#0a1520); border:2px solid #4db8ff; color:#4db8ff; font-size:14px; font-weight:900; padding:14px 8px; border-radius:12px; cursor:pointer; min-height:52px;">
+        🌅 Morning Batch
+      </button>
+      <button type="button" onclick="showBatchList('evening')" style="flex:1; background:linear-gradient(135deg,#3a1a50,#150a20); border:2px solid #c084fc; color:#c084fc; font-size:14px; font-weight:900; padding:14px 8px; border-radius:12px; cursor:pointer; min-height:52px;">
+        🌙 Evening Batch
+      </button>
+    </div>
+    <div style="margin-top:10px; display:flex; justify-content:space-around; align-items:center; gap:8px; flex-wrap:wrap;">
+      <button type="button" onclick="showBatchList('all')" style="background:transparent; border:none; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; text-decoration:underline;">
+        📋 सभी सदस्य
+      </button>
+      <button type="button" onclick="openAddMemberModal()" style="background:rgba(255,204,0,0.15); border:1px solid var(--gold); color:var(--gold); font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px; cursor:pointer;">
+        ➕ नया सदस्य
+      </button>
+      <button type="button" onclick="openZoneManager()" style="background:rgba(37,211,102,0.12); border:1px solid #25D366; color:#25D366; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px; cursor:pointer;">
+        🚦 Zone Set
+      </button>
+    </div>
+    <div id="feeTicker"><div class="tk-label" id="feeTickerLabel">📢 FEES BAAKI</div><div class="tk-run" id="feeTickerRun"></div></div>
+    <!-- LIVE ABSENT / PRESENT COUNTS -->
+    <div id="todayStatsPanel" style="margin-top:14px;background:#0a0a0a;border:1.5px solid #333;border-radius:12px;padding:12px;text-align:left;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <b style="color:#ffcc00;font-size:12px;">📊 Aaj ka Live Count</b>
+        <button type="button" onclick="refreshTodayStats()" style="background:#222;color:#ffcc00;border:1px solid #444;border-radius:6px;padding:4px 8px;font-size:10px;font-weight:800;cursor:pointer;">↻ Refresh</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
+        <div style="background:#111;border:1px solid #333;border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:10px;color:#aaa;">Total Members</div>
+          <div id="statTotalMembers" style="font-size:20px;font-weight:900;color:#fff;">—</div>
+        </div>
+        <div style="background:#0d1a10;border:1px solid #00ff66;border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:10px;color:#8f8;">Present</div>
+          <div id="statTotalPresent" style="font-size:20px;font-weight:900;color:#00ff66;">—</div>
+        </div>
+        <div style="background:#1a0808;border:1px solid #ff4444;border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:10px;color:#f88;">Absent</div>
+          <div id="statTotalAbsent" style="font-size:20px;font-weight:900;color:#ff6666;">—</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:#0a1520;border:1px solid #4db8ff;border-radius:8px;padding:10px;">
+          <div style="font-size:11px;color:#4db8ff;font-weight:800;margin-bottom:4px;">🌅 Morning Batch</div>
+          <div style="font-size:12px;color:#ccc;line-height:1.45;">
+            Total: <b id="statMorTotal" style="color:#fff;">—</b><br>
+            Present: <b id="statMorPresent" style="color:#00ff66;">—</b><br>
+            Absent: <b id="statMorAbsent" style="color:#ff9900;">—</b>
+          </div>
+        </div>
+        <div style="background:#150a20;border:1px solid #c084fc;border-radius:8px;padding:10px;">
+          <div style="font-size:11px;color:#c084fc;font-weight:800;margin-bottom:4px;">🌙 Evening Batch</div>
+          <div style="font-size:12px;color:#ccc;line-height:1.45;">
+            Total: <b id="statEveTotal" style="color:#fff;">—</b><br>
+            Present: <b id="statEvePresent" style="color:#00ff66;">—</b><br>
+            Absent: <b id="statEveAbsent" style="color:#ff6666;">—</b>
+          </div>
+        </div>
+      </div>
+      <div id="statHint" style="margin-top:8px;font-size:10px;color:#888;text-align:center;">Cloud se load ho raha hai...</div>
+    </div>
+
+    <div style="margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <button type="button" id="btnMorAbsent" onclick="showAbsentList('morning')" style="background:#1a1008;border:1.5px solid #ff9900;color:#ff9900;font-size:12px;font-weight:900;padding:12px 8px;border-radius:10px;cursor:pointer;">🌅 Morning Absent</button>
+      <button type="button" id="btnEveAbsent" onclick="showAbsentList('evening')" style="background:#150a18;border:1.5px solid #c084fc;color:#c084fc;font-size:12px;font-weight:900;padding:12px 8px;border-radius:10px;cursor:pointer;">🌙 Evening Absent</button>
+    </div>
+    <button type="button" id="btnTotalAbsent" onclick="showAbsentList('all')" style="width:100%;margin-top:8px;background:#1a0808;border:1.5px solid #ff4444;color:#ff6666;font-size:13px;font-weight:900;padding:12px;border-radius:10px;cursor:pointer;">❌ Total Absent Today</button>
+    <button type="button" id="btnFeeDue" onclick="showFeeDueList()" style="width:100%;margin-top:8px;background:#1f1500;border:1.5px solid #ffcc00;color:#ffcc00;font-size:13px;font-weight:900;padding:12px;border-radius:10px;cursor:pointer;">💸 Fees Bakaya (1 tarikh se aaj tak)</button>
+  </div>
+
+  <div class="batch-direct-list-box" id="batchDirectListBox">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <b style="font-size:12px; color:var(--gold);" id="directListTitle">All Registered Members (Cloud Sync)</b>
+      <button onclick="document.getElementById('batchDirectListBox').style.display='none'; cancelSearchAndReset();" style="background:#222; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">⬅ Back</button>
+    </div>
+    <div id="directListContainerNode" style="max-height:220px; overflow-y:auto;"></div>
+  </div>
+
+  <div class="search-area-wrapper" id="searchAreaWrapper">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <span style="font-size:11px; font-weight:bold; color:var(--gold);">🔍 सदस्य खोजें (Universal Cloud Search)</span>
+      <button type="button" onclick="cancelSearchAndReset()" style="background:#282828; color:#bbb; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">⬅ Back</button>
+    </div>
+    <input type="text" id="memberFilterInput" class="live-search-input" placeholder="नाम या मोबाइल नंबर लिखें (हिंदी/English)..." oninput="executeUniversalSearch()">
+    <div id="searchDropdownNode" class="search-dropdown-results"></div>
+  </div>
+
+  <div class="single-member-container" id="singleMemberContainer">
+    <div class="loaded-member-card" id="activeLoadedCard">
+      <div class="card-top-row">
+        <div>
+          <div class="card-member-name" id="cardMemberName">MEMBER NAME</div>
+          <div style="font-size:10.5px; color:#888; margin-top:2px;" id="cardMemberPhone">📞 +91 0000000000</div>
+        </div>
+        <span class="fee-pill-tag fee-paid" id="cardFeeBadge" onclick="toggleManualFeeStatus()" title="Click to change status">FEES PAID</span>
+      </div>
+
+      <div class="card-details-box">
+        <div>📋 <b>प्लान:</b> <span id="cardPlanText">General (1 माह)</span></div>
+        <div>📅 <b>जॉइनिंग तिथि:</b> <span id="cardJoinDate">DD-MM-YYYY</span> | <b>अंतिम फीस:</b> <span id="cardLastPaidDisplay" style="color:var(--gold); font-weight:bold;">DD-MM-YYYY</span></div>
+        
+        <div id="cardPromiseDateBox" style="display:none; color:#00ff66; margin-top:5px; font-weight:bold; font-size:11px;">
+          📅 फीस वादा तारीख (Promise Date): <span id="cardPromiseDateVal">--</span>
+        </div>
+
+        <div class="slot-row-flex">
+          <span>🕒 वर्तमान स्लॉट: <b id="cardSlotDisplay">06:00 AM - 07:00 AM</b></span>
+          <button type="button" class="btn-slot-gear" onclick="openSlotChangerModal()">⚙️ Slot</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button type="button" onclick="currentlyLoadedMember&&setMemberBatch(currentlyLoadedMember.id,'morning')" style="flex:1;background:#0a1520;border:1px solid #4db8ff;color:#4db8ff;padding:8px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;">🌅 Morning</button>
+          <button type="button" onclick="currentlyLoadedMember&&setMemberBatch(currentlyLoadedMember.id,'evening')" style="flex:1;background:#150a20;border:1px solid #c084fc;color:#c084fc;padding:8px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;">🌙 Evening</button>
+        </div>
+      </div>
+
+      <div id="cardProofContainer"></div>
+
+      <div class="card-actions-row">
+        <button type="button" class="btn-pres-action not-ver" id="btnPresTrigger" onclick="handleAttendanceClick()">
+          📸 PRESENT दर्ज करें (सेल्फी के साथ)
+        </button>
+        <button type="button" class="btn-clear-action" onclick="cancelSearchAndReset()">
+          ⬅ BACK / CLEAR
+        </button>
+      </div>
+
+      <div style="margin-top:8px; text-align:right;">
+        <button type="button" onclick="openAdminMemberManager(currentlyLoadedMember.id)" style="background:transparent; border:1px dashed var(--gold); color:var(--gold); font-size:10px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">
+          ⚙️ एडमिन कंट्रोल (कैレンダー, अंतिम फीस, डिलीट & स्टेटस)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-modal-backdrop" id="addMemberModal">
+    <div class="modal-box-card" style="border-color:var(--gold); text-align:left;">
+      <h3 style="color:var(--gold); font-size:15px; margin-bottom:8px; text-align:center;">➕ नया सदस्य जोड़ें (Cloud Sync)</h3>
+      <div style="font-size:11px; margin-bottom:6px;">सदस्य का नाम (हिंदी/English):</div>
+      <input type="text" id="newMemberNameInput" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+      
+      <div style="font-size:11px; margin-bottom:6px;">मोबाइल नंबर (10 अंक):</div>
+      <input type="tel" id="newMemberPhoneInput" maxlength="10" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+
+      <div style="display:flex; gap:8px;">
+        <button type="button" onclick="closeModal('addMemberModal')" style="flex:1; background:#222; color:#bbb; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer;">⬅ Back</button>
+        <button type="button" onclick="saveNewMemberData()" style="flex:2; background:var(--gold); color:#000; border:none; padding:8px; border-radius:6px; font-weight:900; cursor:pointer;">✔ क्लाउड पर सेव करें</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-modal-backdrop" id="strictExpiryModal">
+    <div class="modal-box-card" id="strictModalInnerBox" style="border-color:#ff4d4d; box-shadow:0 0 35px rgba(255,77,77,0.4);">
+      <div style="font-size:38px; margin-bottom:2px;">⚠️</div>
+      <h3 style="color:#ffcc00; margin:0 0 4px; font-size:16px; text-transform:uppercase;">5 BROTHER'S FITNESS CLUB</h3>
+      <div style="color:#ff6666; font-size:11.5px; font-weight:bold; margin-bottom:10px;">सदस्यता अवधि व फीस समाप्ति सूचना</div>
+
+      <div style="background:#201010; border:1.5px solid #ff4d4d; border-radius:8px; padding:10px; margin-bottom:12px; text-align:left; font-size:11px; line-height:1.5;">
+        प्रिय <b id="expiringMemberName">सदस्य</b>,<br>
+        आपकी जिम मेंबरशिप एक्सपायर हो चुकी है या फीस बकाया है।<br>
+        <b style="color:#ffcc00;">सख्त नियम:</b> कृपया अपनी फीस जमा करें या एडमिन से संपर्क करें।
+      </div>
+
+      <div id="promiseDateContainer" style="display:none; background:#181818; border:1.5px solid #00ff66; padding:10px; border-radius:8px; margin-bottom:12px; text-align:left;">
+        <label style="display:block; font-size:10.5px; color:#00ff66; font-weight:bold; margin-bottom:4px;">
+          📅 आप फीस किस तारीख तक जमा कर देंगे? (Promise Date):
+        </label>
+        <input type="date" id="memberPromiseDate" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:7px; border-radius:6px; font-size:11.5px; box-sizing:border-box; margin-bottom:6px;">
+        <button onclick="submitPromiseAndOpenCam()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:9px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✔ तारीख लॉक करें व सेल्फी लें
+        </button>
+      </div>
+
+      <div id="initialActionButtons" style="display:flex; flex-direction:column; gap:6px;">
+        <button onclick="showPromiseDateField()" style="background:#00ff66; color:#000; font-weight:900; padding:10px; border:none; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✔ हाँ, मैं सहमत हूँ (फीस तारीख चुनें)
+        </button>
+        <button onclick="handleDisagreeLegalNotice()" style="background:#261212; color:#ff6666; font-weight:bold; padding:9px; border:1.5px solid #ff4d4d; border-radius:6px; font-size:11.5px; cursor:pointer;">
+          ✖ मैं सहमत नहीं हूँ
+        </button>
+      </div>
+
+      <div style="margin-top:10px;">
+        <button onclick="closeModal('strictExpiryModal')" style="background:#333; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; width:100%;">⬅ Back</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-modal-backdrop" id="slotChangerModal">
+    <div class="modal-box-card" style="border-color:var(--gold);">
+      <h3 style="color:#ffcc00; font-size:15px; margin-bottom:4px;">🕒 स्लॉट चुनें (Slot Changer)</h3>
+      <div style="font-size:11px; color:#ccc; margin-bottom:10px;" id="slotChangerMemberName">सदस्य: --</div>
+
+      <div style="text-align:left; font-size:10px; font-weight:bold; color:var(--gold); margin-bottom:3px;">🌅 MORNING SLOTS:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:00 AM - 06:00 AM')">05:00 - 06:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:00 AM - 07:00 AM')">06:00 - 07:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:00 AM - 08:00 AM')">07:00 - 08:00 AM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('08:00 AM - 09:00 AM')">08:00 - 09:00 AM</button>
+      </div>
+
+      <div style="text-align:left; font-size:11px; font-weight:bold; color:#00c8ff; margin-bottom:4px;">🌙 EVENING SLOTS:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:14px;">
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('04:00 PM - 05:00 PM')">04:00 - 05:00 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('05:30 PM - 06:30 PM')">05:30 - 06:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('06:30 PM - 07:30 PM')">06:30 - 07:30 PM</button>
+        <button type="button" class="slot-chip-btn" onclick="saveNewMemberSlot('07:30 PM - 08:30 PM')">07:30 - 08:30 PM</button>
+        <button type="button" class="slot-chip-btn" style="grid-column: span 2;" onclick="saveNewMemberSlot('08:30 PM - 09:30 PM')">08:30 - 09:30 PM</button>
+      </div>
+
+      <button type="button" onclick="closeModal('slotChangerModal')" style="width:100%; background:#282828; color:#fff; border:none; padding:9px; border-radius:6px; font-size:12px; cursor:pointer;">⬅ Back</button>
+    </div>
+  </div>
+
+  <div class="custom-modal-backdrop" id="attendanceCelebrationModal">
+    <div class="modal-box-card" id="celebrateModalCard" style="border-color:#00ff66; box-shadow:0 0 30px rgba(0,255,102,0.3);">
+      <div style="font-size:42px; margin-bottom:3px;" id="celebrateEmoji">💪</div>
+      <h3 style="color:#ffcc00; font-size:16px; margin:0 0 2px; font-weight:900;" id="celebrateHeaderTitle">ATTENDANCE VERIFIED</h3>
+      <div style="color:#00ff66; font-size:13px; font-weight:bold; margin-bottom:10px;" id="celebrateMemberName">MEMBER NAME</div>
+
+      <div style="background:#090909; border:1px solid #222; border-radius:8px; padding:12px; text-align:left; font-size:12px; line-height:1.6; margin-bottom:14px;">
+        <div style="color:#ffcc00; font-weight:bold; margin-bottom:4px;" id="celebrateSubTitle">Thank So Much To Verify Your Attendance!</div>
+        <div style="color:#00ff66; font-size:11.5px; margin-bottom:6px;" id="celebrateMainMsg">आपकी उपस्थिति आज की दर्ज कर ली गई है।</div>
+        <span id="celebrateAttendedDays">इस महीने कुल 0 दिन आ चुके हैं</span>
+      </div>
+
+        <button onclick="completeAttendanceAndResetKiosk()" style="width:100%; background:#00ff66; color:#000; font-weight:900; padding:12px; border:none; border-radius:8px; font-size:13px; cursor:pointer;">
+        ✔ ठीक है (DONE)
+      </button>
+    </div>
+  </div>
+
+  <div class="custom-modal-backdrop" id="cameraBackdropModal">
+    <div class="modal-box-card">
+      <div style="text-align:center; margin-bottom:8px;">
+        <div style="font-size:15px; font-weight:900; color:var(--gold);" id="modalCandidateName">Member Name</div>
+        <div style="font-size:11px; color:#888;">सेल्फी अनिवार्य है</div>
+        <div id="modalMonthCount" style="margin-top:6px; font-size:12px; color:#9dffbf;"></div>
+        <div id="modalDueWarn" style="display:none; margin-top:6px; padding:8px; border-radius:8px; background:rgba(255,51,51,0.15); border:1.5px solid #ff4444; color:#ff8080; font-size:12px; font-weight:bold; line-height:1.5;"></div>
+      </div>
+      <div class="camera-feed-container">
+        <video id="videoElement" autoplay playsinline></video>
+        <div class="scanner-reticle-ring"></div>
+      </div>
+      <div style="display:flex; gap:8px; width:100%; margin-top:12px;">
+        <button onclick="closeCameraModal()" style="flex:1; background:#222; color:#bbb; border:1px solid #444; padding:11px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">⬅ Back</button>
+        <button onclick="captureLiveSelfieProof()" style="flex:2; background:var(--green-accent); color:#000; padding:11px; border-radius:8px; font-weight:bold; border:none; cursor:pointer; font-size:12px;">📸 CAPTURE</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="offscreenCanvas" style="display: none;"></canvas>
+
+<script>
+  // --- FIREBASE CLOUD SETUP ---
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",
+    authDomain: "brother-s-fitness-club.firebaseapp.com",
+    projectId: "brother-s-fitness-club",
+    storageBucket: "brother-s-fitness-club.firebasestorage.app",
+    messagingSenderId: "781489019006",
+    appId: "1:781489019006:web:4a230698f2195e7208202f"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.firestore();
+
+  // Admin code ab plain text me nahi, sirf hash me rakha hai
+  function cyrb53(str, seed) {
+    var h1 = 0xdeadbeef ^ (seed||0), h2 = 0x41c6ce57 ^ (seed||0);
+    for (var i = 0, ch; i < str.length; i++) { ch = str.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
+    h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1>>>0)).toString(36);
+  }
+  const DEFAULT_PIN_HASH = "224cvdduu0a";
+  function pinHash(pin) { return cyrb53("5bfc|" + String(pin) + "|gym"); }
+  function currentPinHash() {
+    try { return localStorage.getItem("5bfc_admin_pin_hash") || DEFAULT_PIN_HASH; } catch(e) { return DEFAULT_PIN_HASH; }
+  }
+  let isAdminUnlocked = false;
+  let __adminRelockTimer = null;
+  function setAdminUnlocked() {
+    isAdminUnlocked = true;
+    clearTimeout(__adminRelockTimer);
+    __adminRelockTimer = setTimeout(function(){ isAdminUnlocked = false; }, 30 * 60 * 1000); // 30 min (har kaam par naya 30 min) baad apne aap lock
+  }
+  function keepAdminAlive() { if (isAdminUnlocked) setAdminUnlocked(); }
+  function pinLockLeftMin() {
+    try {
+      var st = JSON.parse(localStorage.getItem("5bfc_pin_lock") || "{}");
+      if (st.until && Date.now() < st.until) return Math.ceil((st.until - Date.now()) / 60000);
+    } catch(e) {}
+    return 0;
+  }
+  // Code poochho: 3 galat try par 15 minute ke liye lock
+  function askAdminPin(label) {
+    var left = pinLockLeftMin();
+    if (left > 0) { alert("🔒 3 galat code ho gaye. " + left + " minute baad try karo."); return false; }
+    var pin = prompt(label || "🔒 Admin code dalo:");
+    if (pin === null) return false;
+    var st = {}; try { st = JSON.parse(localStorage.getItem("5bfc_pin_lock") || "{}"); } catch(e) {}
+    if (pinHash(String(pin).trim()) === currentPinHash()) {
+      try { localStorage.removeItem("5bfc_pin_lock"); } catch(e) {}
+      setAdminUnlocked();
+      return true;
+    }
+    st.fails = (st.fails || 0) + 1;
+    if (st.fails >= 3) { st.until = Date.now() + 15 * 60 * 1000; st.fails = 0; alert("❌ Galat code. 3 baar galat — 15 minute ke liye lock."); }
+    else alert("❌ Galat code! (" + st.fails + "/3)");
+    try { localStorage.setItem("5bfc_pin_lock", JSON.stringify(st)); } catch(e) {}
+    return false;
+  }
+  // Code badalna (naya code Firestore me bhi jata hai taaki sab phone par same rahe)
+  async function changeAdminPin() {
+    if (!askAdminPin("🔑 Purana admin code dalo:")) return;
+    var n1 = prompt("🔑 Naya code dalo (kam se kam 4 ank):");
+    if (n1 === null) return;
+    n1 = String(n1).trim();
+    if (!/^\d{4,12}$/.test(n1)) return alert("❌ Code sirf ank (4 se 12) ka hona chahiye.");
+    var n2 = prompt("🔑 Naya code dobara dalo:");
+    if (n2 === null) return;
+    if (String(n2).trim() !== n1) return alert("❌ Dono code alag hain, badla nahi.");
+    var hh = pinHash(n1);
+    try { localStorage.setItem("5bfc_admin_pin_hash", hh); } catch(e) {}
+    var cloudOk = true;
+    try { await db.collection("settings").doc("adminPin").set({ hash: hh, updated: Date.now() }); } catch(e) { cloudOk = false; }
+    alert(cloudOk ? "✅ Naya code set ho gaya (sab phone par lagega)." : "✅ Naya code is phone par set hua. ⚠ Cloud me save nahi hua, doosre phone par purana code chalega.");
+  }
+  async function loadCloudPin() {
+    try {
+      var d = await db.collection("settings").doc("adminPin").get();
+      if (d.exists && d.data() && d.data().hash) localStorage.setItem("5bfc_admin_pin_hash", d.data().hash);
+    } catch(e) {}
+  }
+  loadCloudPin();
+  let currentlyLoadedMember = null;
+  let currentVideoStream = null;
+  let cachedMembersList = [];
+
+  function getLocalDateISO(date = new Date()) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+  let currentDateISO = getLocalDateISO();
+
+  function runLiveSystemClock() {
+    const now = new Date();
+    currentDateISO = getLocalDateISO(now);
+    const dayStr = `${now.getDate() < 10 ? '0'+now.getDate() : now.getDate()}-${(now.getMonth()+1) < 10 ? '0'+(now.getMonth()+1) : (now.getMonth()+1)}-${now.getFullYear()}`;
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    const clockElem = document.getElementById("liveSystemClock");
+    if (clockElem) clockElem.innerText = `📅 ${dayStr} | ⏰ ${timeStr}`;
+  }
+
+  // --- CLOUD FIRESTORE MEMBERS SYNC ---
+  async function fetchStoredMembers() {
+    try {
+      const snapshot = await db.collection("members").get();
+      let cloudList = [];
+      snapshot.forEach(doc => {
+        cloudList.push({ id: doc.id, ...doc.data() });
+      });
+
+      const localPool = [];
+      for (const key of ["5BFC_MEMBERS", "bbf_master_records_v4", "5bfc_admissions"]) {
+        try {
+          const value = JSON.parse(localStorage.getItem(key) || "[]");
+          if (Array.isArray(value)) localPool.push(...value);
+        } catch (err) { console.warn("Invalid local member data in", key, err); }
+      }
+      const merged = new Map();
+      [...localPool, ...cloudList].forEach(m => {
+        if (!m) return;
+        const key = String(m.phone || m.id || m.code || "").trim();
+        if (!key) return;
+        merged.set(key, { ...(merged.get(key) || {}), ...m });
+      });
+      cachedMembersList = __dedupeMembers(Array.from(merged.values()).filter(m => m.activeInGym !== false));
+      return cachedMembersList;
+    } catch (e) {
+      console.error("Cloud fetch error, using local fallback:", e);
+    }
+
+    let bbfMaster = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
+    let bfcMembers = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+    let admSync = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+
+    let pool = [...bfcMembers, ...bbfMaster, ...admSync];
+    let uniqueMap = new Map();
+    pool.forEach(item => {
+      let key = (item.phone && item.phone.length > 5) ? item.phone.trim() : item.id;
+      if (item.activeInGym !== false && !uniqueMap.has(key)) {
+        if (!item.slot) item.slot = "06:00 AM - 07:00 AM";
+        if (!item.manualStatus) item.manualStatus = item.status || "Paid";
+        uniqueMap.set(key, item);
+      }
+    });
+
+    let localArray = Array.from(uniqueMap.values());
+    if (localArray.length > 0) {
+      localArray.forEach(async (m) => {
+        try {
+          await db.collection("members").doc(String(m.id)).set(m, { merge: true });
+        } catch(err) {
+          console.error("Auto sync error:", err);
+        }
+      });
+      return __dedupeMembers(localArray);
+    }
+    cachedMembersList = [];
+    return [];
+  }
+
+  function writeMemberToLocal(member) {
+    try {
+      var ph = String(member.phone || "").replace(/\D/g, "").slice(-10);
+      ["5BFC_MEMBERS", "bbf_master_records_v4", "5bfc_admissions"].forEach(function(key){
+        var arr; try { arr = JSON.parse(localStorage.getItem(key) || "[]"); } catch(e) { return; }
+        if (!Array.isArray(arr)) return;
+        var changed = false;
+        arr.forEach(function(r, i){
+          if (!r) return;
+          var rp = String(r.phone || "").replace(/\D/g, "").slice(-10);
+          if ((member.id != null && String(r.id) === String(member.id)) || (ph && rp === ph)) {
+            arr[i] = Object.assign({}, r, member); changed = true;
+          }
+        });
+        if (changed) localStorage.setItem(key, JSON.stringify(arr));
+      });
+      cachedMembersList = (cachedMembersList || []).map(function(r){
+        if (!(r && String(r.id) === String(member.id))) return r;
+        var n = Object.assign({}, r, member);
+        if (r.__twins) Object.defineProperty(n, "__twins", { value: r.__twins, enumerable: false, writable: true, configurable: true });
+        return n;
+      });
+    } catch(e) { console.warn("local write-through failed", e); }
+  }
+
+  async function syncMemberToCloud(member) {
+    writeMemberToLocal(member);
+    try {
+      if (member.__twins && member.__twins.length) {
+        var f = {};
+        ["manualStatus","status","fees","lastPaid","feesPromiseDate","joinDate","planMonths","plan","planFee","paidAmount","dueAmount","slot","validTill","payZone"].forEach(function(k){ if (member[k] !== undefined) f[k] = member[k]; });
+        for (var ti = 0; ti < member.__twins.length; ti++) {
+          writeMemberToLocal(Object.assign({ id: member.__twins[ti] }, f));
+          try { await db.collection("members").doc(String(member.__twins[ti])).set(f, { merge: true }); } catch (e2) {}
+        }
+      }
+    } catch (e) {}
+    try {
+      const docId = String(member.id);
+      await db.collection("members").doc(docId).set(member, { merge: true });
+    } catch (err) {
+      console.error("Cloud sync failed:", err);
+    }
+  }
+
+  function fetchAttendanceMapForDate(dateStr) {
+    try {
+      const raw = localStorage.getItem("5bfc_attendance_" + dateStr);
+      return raw ? (JSON.parse(raw) || {}) : {};
+    } catch (err) {
+      console.error("Could not read attendance records:", err);
+      return {};
+    }
+  }
+
+  // Cloud + local merge — doosre phone ki present bhi dikhe
+  async function loadAttendanceMapForDate(dateStr) {
+    let map = fetchAttendanceMapForDate(dateStr) || {};
+    try {
+      if (typeof db !== "undefined" && db) {
+        const snap = await db.collection("attendance").doc(String(dateStr)).get();
+        if (snap.exists) {
+          const cloud = snap.data() || {};
+          Object.keys(cloud).forEach(function(mid) {
+            const c = cloud[mid] || {};
+            const l = map[mid];
+            // cloud presence wins if local missing; keep local photo if better
+            if (!l || !l.isReal) {
+              map[mid] = Object.assign({}, c, { isReal: !!(c.isReal) });
+            } else if (l && !l.photo && c.photo) {
+              map[mid] = Object.assign({}, l, { photo: c.photo });
+            } else if (l && c && c.isReal) {
+              // merge meta
+              map[mid] = Object.assign({}, c, l, {
+                isReal: true,
+                photo: l.photo || c.photo || "",
+                time: l.time || c.time || "",
+                name: l.name || c.name || "",
+                phone: l.phone || c.phone || ""
+              });
+            }
+          });
+          // write merged back to local so offline works
+          try { localStorage.setItem("5bfc_attendance_" + dateStr, JSON.stringify(map)); } catch(e) {}
+        }
+      }
+    } catch (e) {
+      console.error("cloud attendance load", e);
+    }
+    return map;
+  }
+
+  
+  function normPhone(ph){
+    return String(ph||"").replace(/\D/g,"").slice(-10);
+  }
+
+  // ================= Duplicate (Hindi/English) members =================
+  var __DEV = {"क":"k","ख":"k","ग":"g","घ":"g","ङ":"n","च":"c","छ":"c","ज":"j","झ":"j","ञ":"n","ट":"t","ठ":"t","ड":"d","ढ":"d","ण":"n","त":"t","थ":"t","द":"d","ध":"d","न":"n","प":"p","फ":"f","ब":"b","भ":"b","म":"m","य":"","र":"r","ल":"l","व":"v","श":"s","ष":"s","स":"s","ह":"","ं":"n","ँ":"n","ः":""};
+  function __skel(str){
+    var t = String(str||"").replace(/ज्ञ/g,"g").replace(/क्ष/g,"ks").replace(/त्र/g,"tr");
+    var out = "";
+    for (var i=0;i<t.length;i++){ var ch=t[i]; if (__DEV[ch]!==undefined) out += __DEV[ch]; else if (/[a-zA-Z]/.test(ch)) out += ch.toLowerCase(); }
+    out = out.replace(/sh|ch|kh|gh|th|dh|ph|bh|jh/g, function(m){return m[0];});
+    out = out.replace(/[aeiouyh]/g,"").replace(/w/g,"v").replace(/[cq]/g,"k").replace(/z/g,"j").replace(/x/g,"ks").replace(/f/g,"p");
+    return out.replace(/(.)\1+/g,"$1");
+  }
+  var __nkCache = {};
+  function __nameKeys(name){
+    var full = String(name||"").trim();
+    if (__nkCache[full]) return __nkCache[full];
+    var paren = (full.match(/\(([^)]*)\)/g)||[]).map(function(x){return x.slice(1,-1);});
+    var outside = full.replace(/\([^)]*\)/g," ");
+    var keys = [__skel(outside)].concat(paren.map(__skel), [__skel(full.replace(/[()]/g," "))]).filter(function(k,i,a){return k.length>=2 && a.indexOf(k)===i;});
+    return (__nkCache[full] = keys);
+  }
+  function __lev(a,b){
+    var m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+    var p=[]; for (var j=0;j<=n;j++) p[j]=j;
+    for (var i=1;i<=m;i++){ var c=[i]; for (var k=1;k<=n;k++) c[k]=Math.min(p[k]+1,c[k-1]+1,p[k-1]+(a[i-1]===b[k-1]?0:1)); p=c; }
+    return p[n];
+  }
+  function __firstKeys(name){
+    var full = String(name||"").trim();
+    var paren = (full.match(/\(([^)]*)\)/g)||[]).map(function(x){return x.slice(1,-1);});
+    var outside = full.replace(/\([^)]*\)/g," ");
+    return [outside].concat(paren, [full.replace(/[()]/g," ")]).map(function(v){
+      var t = v.trim().split(/\s+/)[0] || ""; return __skel(t);
+    }).filter(function(k,i,a){ return k.length>=1 && a.indexOf(k)===i; });
+  }
+  function __firstTokMatch(x,y){
+    var A=__firstKeys(x), B=__firstKeys(y);
+    for (var i=0;i<A.length;i++) for (var j=0;j<B.length;j++){
+      var l=Math.min(A[i].length,B[j].length), tol = l>=3?1:0;
+      if (__lev(A[i],B[j])<=tol) return true;
+    }
+    return false;
+  }
+  function __sameNameStr(x,y){
+    if (!__firstTokMatch(x,y)) return false;
+    var A=__nameKeys(x), B=__nameKeys(y);
+    for (var i=0;i<A.length;i++) for (var j=0;j<B.length;j++){
+      var l=Math.min(A[i].length,B[j].length), tol = l>=7?2:(l>=4?1:0);
+      if (__lev(A[i],B[j])<=tol) return true;
+    }
+    return false;
+  }
+  function __prefixName(x,y){
+    var A=__nameKeys(x), B=__nameKeys(y);
+    for (var i=0;i<A.length;i++) for (var j=0;j<B.length;j++){
+      if (Math.min(A[i].length,B[j].length)>=3 && (A[i].indexOf(B[j])===0 || B[j].indexOf(A[i])===0)) return true;
+    }
+    return false;
+  }
+  function __father(m){ return String(m.parentName || m.father || "").trim(); }
+  function __memScore(m){
+    var s=0; ["name","phone","joinDate","lastPaid","type","amount","address","emergency","slot"].forEach(function(k){ if (m[k]!==undefined && m[k]!=="" && m[k]!==null) s++; });
+    if (__father(m)) s+=2; if (m.memberPhoto) s+=6; if (m.memberIdImg||m.memberIdBackImg||m.memberIdBack) s+=6; if (m.idSubmitted) s+=2;
+    return s;
+  }
+  // Ek hi insaan ki kai entries (Hindi/English) → sirf ek dikhao, baaki "twins" me; attendance sab par lagegi
+  function __dedupeMembers(list){
+    try{
+      var arr = (list||[]).filter(Boolean), n = arr.length, par=[], i, j;
+      for (i=0;i<n;i++) par[i]=i;
+      function find(x){ while(par[x]!==x){ par[x]=par[par[x]]; x=par[x]; } return x; }
+      for (i=0;i<n;i++) for (j=i+1;j<n;j++){
+        var a=arr[i], b=arr[j], pa=normPhone(a.phone), pb=normPhone(b.phone), fa=__father(a), fb=__father(b);
+        var link=false;
+        if (pa && pb && pa===pb) link = __sameNameStr(a.name,b.name) || __prefixName(a.name,b.name);
+        else if (__sameNameStr(a.name,b.name)) {
+          var fOk = (!fa || !fb) ? true : __sameNameStr(fa,fb);
+          link = fOk && (!pa || !pb || (fa && fb));
+        }
+        if (link) par[find(i)] = find(j);
+      }
+      var groups = {}, order = [];
+      for (i=0;i<n;i++){ var r=find(i); if(!groups[r]){ groups[r]=[]; order.push(r);} groups[r].push(arr[i]); }
+      return order.map(function(r){
+        var g = groups[r];
+        if (g.length===1) return g[0];
+        g.sort(function(x,y){ return __memScore(y)-__memScore(x); });
+        var primary = g[0], twins = [];
+        for (var k=1;k<g.length;k++){
+          var o = g[k]; twins.push(String(o.id));
+          Object.keys(o).forEach(function(key){ if (key==="id") return; if (primary[key]===undefined || primary[key]===null || primary[key]==="") primary[key]=o[key]; });
+        }
+        Object.defineProperty(primary, "__twins", { value: twins, enumerable:false, writable:true, configurable:true });
+        return primary;
+      });
+    }catch(e){ console.warn("dedupe failed", e); return list; }
+  }
+
+  // ================= Is mahine kitne din aaya =================
+  function __pad2(n){ return (n<10?"0":"")+n; }
+  var __cloudDayLoaded = {};
+  function monthAttendCount(m){
+    var t=new Date(), n=0;
+    for (var d=1; d<=t.getDate(); d++){
+      var iso=t.getFullYear()+"-"+__pad2(t.getMonth()+1)+"-"+__pad2(d);
+      if (isMemberPresentInMap(fetchAttendanceMapForDate(iso), m)) n++;
+    }
+    return n;
+  }
+  async function monthAttendCountFresh(m){
+    var t=new Date(), isos=[];
+    for (var d=1; d<=t.getDate(); d++) isos.push(t.getFullYear()+"-"+__pad2(t.getMonth()+1)+"-"+__pad2(d));
+    var todo = isos.filter(function(iso){ return !__cloudDayLoaded[iso]; });
+    await Promise.all(todo.map(function(iso){ return loadAttendanceMapForDate(iso).then(function(){ __cloudDayLoaded[iso]=true; }).catch(function(){}); }));
+    return monthAttendCount(m);
+  }
+  function monthCountText(n){ return "📅 इस महीने अब तक <b>"+n+" दिन</b> आ चुके हैं"; }
+  function paintMonthCount(m, ids){
+    var first = monthAttendCount(m);
+    ids.forEach(function(id){ var el=document.getElementById(id); if (el) el.innerHTML = monthCountText(first); });
+    monthAttendCountFresh(m).then(function(n){
+      if (currentlyLoadedMember && String(currentlyLoadedMember.id)!==String(m.id)) return;
+      ids.forEach(function(id){ var el=document.getElementById(id); if (el) el.innerHTML = monthCountText(n); });
+    }).catch(function(){});
+  }
+
+  // ================= Bakaya / strict message =================
+  function payZoneOf(m){ var z = String((m && m.payZone) || "").toLowerCase(); return (z === "green" || z === "yellow") ? z : "red"; }
+  function dueWarnHTML(m){
+    try{
+      var zone = payZoneOf(m);
+      if (zone === "green") return "";                       // Green Zone: koi chetavni nahi
+      var amt = Number(m.dueAmount)||0;
+      var manual = String(m.manualStatus || m.status || "Paid").toLowerCase();
+      var pending = manual.indexOf("paid")<0 || manual.indexOf("unpaid")>=0;
+      var fs = feeStatus(m), over = !!(fs && fs.kind==="over");
+      if (!(amt>0 || pending || over)) return "";
+      var head = amt>0 ? "⚠️ आपका बकाया: ₹"+amt : "⚠️ आपकी फीस बकाया है";
+      if (zone === "yellow") return head + "<br>फीस समय से भुगतान करें, अन्यथा फीस बकाया की जानकारी Group में साझा की जाएगी।";
+      return head + "<br>बेशर्मी से बचें! जो भी अमाउंट बकाया हो वो pay करें — ये भंडारा नहीं है।";   // Red / default
+    }catch(e){ return ""; }
+  }
+
+  function normName(n){
+    return String(n||"").toLowerCase().replace(/\s+/g," ").trim();
+  }
+  // Selfie / present: id mismatch ke bawajood phone/name se match
+  function isMemberPresentInMap(dayMap, m){
+    if(!dayMap || !m) return false;
+    var id = String(m.id);
+    if (m.__twins && m.__twins.length){
+      for (var ti=0; ti<m.__twins.length; ti++){
+        var tr = dayMap[m.__twins[ti]];
+        if (tr && (tr.isReal || (tr.photo && String(tr.photo).length>30))) return true;
+      }
+    }
+    var rec = dayMap[id] || dayMap[m.id];
+    if(rec && (rec.isReal || (rec.photo && String(rec.photo).length>30))) return true;
+    var phone = normPhone(m.phone);
+    if(phone && phone.length===10){
+      var byP = dayMap["phone:"+phone];
+      if(byP && (byP.isReal || (byP.photo && String(byP.photo).length>30))) return true;
+    }
+    // scan all entries for phone/name match
+    try{
+      var keys = Object.keys(dayMap);
+      for(var i=0;i<keys.length;i++){
+        var e = dayMap[keys[i]];
+        if(!e) continue;
+        var real = !!(e.isReal || (e.photo && String(e.photo).length>30));
+        if(!real) continue;
+        if(phone && phone.length===10 && normPhone(e.phone)===phone) return true;
+        if(m.name && e.name && normName(e.name)===normName(m.name)){
+          // same name + father if both have
+          if(m.parentName && e.parentName){
+            if(normName(m.parentName)===normName(e.parentName)) return true;
+          } else {
+            return true;
+          }
+        }
+      }
+    }catch(err){}
+    return false;
+  }
+
+  // ================= Fees bakaya list (date-wise, sabke liye) =================
+  function feeDueList(members){
+    var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var out = [];
+    (members||[]).forEach(function(m){
+      try{
+        if (!m) return;
+        var A = memberExpiryDate(m);                       // agla cycle (joining-date wala) — is din se naya mahina
+        var manual = String(m.manualStatus || m.status || "Paid").toLowerCase();
+        var pending = manual.indexOf("paid") < 0 || manual.indexOf("unpaid") >= 0;
+        var amt = Number(m.dueAmount) || 0;
+        var step = Math.max(1, parseInt(m.planMonths) || 1);
+        var date = null, kind = "";
+        if (A) {
+          var lastDay = new Date(A.getFullYear(), A.getMonth(), A.getDate() - 1);   // mahina pura hone ka din (join 8 Nov -> 7 Dec)
+          if (lastDay <= today) { date = lastDay; kind = "month"; }                 // mahina pura, fees nahi jama
+          else if (pending || amt > 0) {                                           // admin ne pending/bakaya rakha
+            var pa = addMonthsClamped(A, -step);
+            var pd = new Date(pa.getFullYear(), pa.getMonth(), pa.getDate() - 1);
+            if (pd <= today) { date = pd; kind = "pending"; }
+          }
+        } else if (pending || amt > 0) { kind = "pending"; }
+        if (!kind) return;                                                          // aage ki date wale list me nahi aayenge
+        out.push({ m: m, D: date, late: date ? Math.round((today - date) / 86400000) : 0, amt: amt, kind: kind });
+      }catch(e){}
+    });
+    out.sort(function(a,b){
+      if (a.D && b.D) return a.D - b.D;
+      if (a.D) return -1; if (b.D) return 1; return 0;
+    });
+    return out;
+  }
+  function __dmy(d){ return d ? (__pad2(d.getDate())+"-"+__pad2(d.getMonth()+1)+"-"+d.getFullYear()) : "—"; }
+  async function showFeeDueList() {
+    __listReturn = function () { return showFeeDueList(); };
+    const box = document.getElementById("batchDirectListBox");
+    const allMembers = await fetchStoredMembers();
+    const list = feeDueList(allMembers);
+    const now = new Date(), mStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const old = list.filter(x => x.D && x.D < mStart);
+    const cur = list.filter(x => x.D && x.D >= mStart);
+    const nodate = list.filter(x => !x.D);
+    function row(x){
+      const m = x.m;
+      const tag = x.late > 0 ? x.late + " दिन लेट" : "आज आख़िरी दिन";
+      const amt = x.amt > 0 ? ' · <b style="color:#ff6666;">बकाया ₹' + x.amt + '</b>' : '';
+      const prom = m.feesPromiseDate ? ' · <span style="color:#7dffa0;">वादा: ' + esc(formatDateToDDMMYYYY(m.feesPromiseDate)) + '</span>' : '';
+      return '<div class="search-result-item" onclick="loadSingleMemberKioskCard(\'' + m.id + '\')">' +
+        '<div style="flex:1"><b style="color:#fff;font-size:13px;">' + esc(m.name || "—") + '</b><br>' +
+        '<small style="color:#ff9966;">' + (x.D ? tag : "date नहीं") + '</small><br>' +
+        '<small style="color:#aaa;">' + (x.kind === "pending" ? 'Fees Pending' : 'महीना पूरा, फीस जमा नहीं') + amt + prom + '</small></div>' +
+        '<button type="button" style="background:#ffcc00;color:#000;border:none;padding:6px 10px;border-radius:6px;font-weight:bold;font-size:11px;">बकाया</button></div>';
+    }
+    function byDate(arr){
+      var html = "", lastKey = "", cnt = {};
+      arr.forEach(function(x){ var k = __dmy(x.D); cnt[k] = (cnt[k]||0) + 1; });
+      arr.forEach(function(x){
+        var k = __dmy(x.D);
+        if (k !== lastKey) { html += '<div style="color:#ffcc00;font-size:12px;font-weight:900;margin:10px 0 4px;border-bottom:1px dashed #444;padding-bottom:3px;">📅 ' + k + ' <span style="color:#aaa;font-weight:600;">(' + cnt[k] + ' लोग)</span></div>'; lastKey = k; }
+        html += row(x);
+      });
+      return html;
+    }
+    function sec(title, arr, plain){
+      return arr.length ? '<div style="background:#2a2200;color:#ffcc00;font-size:13px;font-weight:900;margin:12px 0 2px;padding:7px 10px;border-radius:8px;">' + title + ' (' + arr.length + ')</div>' + (plain ? arr.map(row).join("") : byDate(arr)) : "";
+    }
+    document.getElementById("directListTitle").innerText = "💸 Fees Bakaya (" + list.length + ")";
+    const container = document.getElementById("directListContainerNode");
+    container.innerHTML = list.length
+      ? sec("इस महीने — 1 से " + now.getDate() + " तारीख तक", cur) + sec("पिछले महीनों का बकाया", old) + sec("तारीख नहीं मिली", nodate, true)
+      : '<div style="color:#00ff66;text-align:center;padding:16px;font-size:13px;">✅ किसी की फीस बकाया नहीं</div>';
+    box.style.display = "block";
+    document.getElementById("kioskHeroBox").style.display = "none";
+    updateSmartBackLabel();
+  }
+
+  async function showAbsentList(mode) {
+    __listReturn = function () { return showAbsentList(mode); };
+    // mode: morning | evening | all
+    const box = document.getElementById("batchDirectListBox");
+    const allMembers = await fetchStoredMembers();
+    const todayISO = (typeof currentDateISO !== "undefined" && currentDateISO) ? currentDateISO : getLocalDateISO(new Date());
+    const dayMap = await loadAttendanceMapForDate(todayISO);
+    let list = allMembers.slice();
+    if (mode === "morning") list = list.filter(m => getMemberBatch(m) === "morning");
+    if (mode === "evening") list = list.filter(m => getMemberBatch(m) === "evening");
+    const absent = list.filter(m => {
+      return !isMemberPresentInMap(dayMap, m);
+    }).sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"hi"));
+
+    const title = mode === "morning" ? "🌅 Morning Absent Aaj" : mode === "evening" ? "🌙 Evening Absent Aaj" : "❌ Total Absent Aaj";
+    document.getElementById("directListTitle").innerText = title + " (" + absent.length + ")";
+    const container = document.getElementById("directListContainerNode");
+    if (!absent.length) {
+      container.innerHTML = '<div style="color:#00ff66;text-align:center;padding:16px;font-size:13px;">✅ Is list me koi absent nahi — sab present!</div>';
+    } else {
+      container.innerHTML = absent.map(m => {
+        const b = getMemberBatch(m);
+        const mStatus = m.manualStatus || m.status || "—";
+        return '<div class="search-result-item" onclick="loadSingleMemberKioskCard(\''+m.id+'\')">' +
+          '<div style="flex:1"><b style="color:#fff;font-size:13px;">'+(m.name||"—")+'</b><br>' +
+          '<small style="color:#888;">'+(m.phone||"")+' · '+(b==="evening"?"🌙 Eve":"🌅 Mor")+' · '+mStatus+'</small><br>' +
+          '<small style="color:#ff6666;font-weight:800;">Aaj PRESENT nahi</small></div>' +
+          '<button type="button" style="background:#ff3333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-weight:bold;font-size:11px;">Absent</button></div>';
+      }).join("");
+    }
+    box.style.display = "block";
+    document.getElementById("kioskHeroBox").style.display = "none";
+    updateSmartBackLabel();
+  }
+
+
+
+  /* ===== FEES BAAKI NEWS TICKER ===== */
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function feeParseDate(v){
+    if(!v) return null; var t=String(v).trim(), d=null, x;
+    if((x=t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) d=new Date(+x[1],+x[2]-1,+x[3]);
+    else if((x=t.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/))) d=new Date(+x[3],+x[2]-1,+x[1]);
+    else d=new Date(t);
+    return (d && !isNaN(d)) ? d : null;
+  }
+  function addMonthsClamped(d, n){
+    var t = new Date(d.getFullYear(), d.getMonth() + n, 1);
+    var last = new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate();
+    return new Date(t.getFullYear(), t.getMonth(), Math.min(d.getDate(), last));
+  }
+  // Fees ki due date hamesha joining-date ke din par rehti hai; late jama karne se date nahi khisakti.
+  function memberExpiryDate(m){
+    var join = feeParseDate(m.joinDate), last = feeParseDate(m.lastPaid) || join;
+    if (!join && !last) return null;
+    if (!join) join = last;
+    if (!last) last = join;
+    var step = Math.max(1, parseInt(m.planMonths) || 1);
+    join = new Date(join.getFullYear(), join.getMonth(), join.getDate());
+    // 3 din pehle jama ki gayi fees agle cycle ki maani jaati hai
+    var limit = new Date(last.getFullYear(), last.getMonth(), last.getDate() + 3);
+    var k = 0;
+    while (k < 1200 && addMonthsClamped(join, (k + 1) * step) <= limit) k++;
+    return addMonthsClamped(join, (k + 1) * step);
+  }
+  function feeStatus(m){
+    try{
+      var manual = String(m.manualStatus || m.status || "Paid").toLowerCase();
+      var paid = manual.indexOf("paid") >= 0 && manual.indexOf("unpaid") < 0;
+      var diff = null;
+      var e = memberExpiryDate(m);
+      if (e) {
+        var n = new Date(); var today = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+        diff = Math.round((e - today) / 86400000); // <0 = nikal chuka, 0 = aaj khatam
+      }
+      var pr = m.feesPromiseDate || "";
+      if (!paid) return {kind:"over", d: (diff !== null && diff < 0) ? -diff : 0, p: pr};
+      if (diff === null) return null;
+      if (diff < 0) return {kind:"over", d: -diff, p: pr};
+      if (diff <= 3) return {kind:"soon", d: diff, p: pr};
+    }catch(e){}
+    return null;
+  }
+  function promTag(x){
+    if (!x.p) return "";
+    var t = x.p; try { t = formatDateToDDMMYYYY(x.p); } catch(e) {}
+    return " <span style='color:#7dffa0'>(promise: " + esc(t) + ")</span>";
+  }
+  function slotMinutes(t){
+    var x = String(t||"").trim().match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); if (!x) return null;
+    var h = (+x[1]) % 12; if (x[3].toUpperCase() === "PM") h += 12;
+    return h * 60 + (+x[2]);
+  }
+  // 0 = abhi chal raha/aane wala slot, 1 = nikal chuka evening slot, 2 = nikal chuka morning slot
+  function slotGroup(m, nowMin){
+    var parts = String(m.slot || m.timeSlot || "").split(/\s*-\s*/);
+    var st = slotMinutes(parts[0]), en = slotMinutes(parts[1]);
+    if (st === null) return {g: 2, s: 9999};
+    if (en === null) en = st + 60;
+    if (en > nowMin) return {g: 0, s: st};
+    return {g: st >= 12 * 60 ? 1 : 2, s: st};
+  }
+  function updateFeeTicker(allMembers){
+    var box = document.getElementById("feeTicker"); if (!box) return;
+    var over = [], soon = [];
+    var nowD = new Date(), nowMin = nowD.getHours() * 60 + nowD.getMinutes();
+    (allMembers || []).forEach(function(m){
+      var st = feeStatus(m); if (!st) return;
+      var sg = slotGroup(m, nowMin);
+      var it = {n: m.name || "—", d: st.d, b: (getMemberBatch(m) === "morning" ? "🌅" : "🌙"), p: st.p, g: sg.g, s: sg.s, k: st.kind};
+      (st.kind === "over" ? over : soon).push(it);
+    });
+    // pehle abhi/aage ke slot wale, morning wale last; har group me pehle baaki-fees (zyada din pehle), phir khatam hone wale
+    var all = over.concat(soon);
+    all.sort(function(a,b){
+      if (a.g !== b.g) return a.g - b.g;
+      if (a.k !== b.k) return a.k === "over" ? -1 : 1;
+      if (a.k === "over") return b.d - a.d;
+      return a.d - b.d;
+    });
+    var label = document.getElementById("feeTickerLabel");
+    var run = document.getElementById("feeTickerRun");
+    var total = over.length + soon.length;
+    if (!total) {
+      box.setAttribute("data-sig", "");
+      label.textContent = "📢 FEES";
+      run.style.animation = "none"; run.style.padding = "9px 0 9px 70px"; run.style.color = "#9f9";
+      run.innerHTML = "✅ Kisi ki fees baaki nahi, aur 3 din me kisi ki membership khatam nahi ho rahi";
+      box.style.display = "block"; return;
+    }
+    run.style.animation = ""; run.style.padding = ""; run.style.color = "";
+    var parts = [];
+    all.forEach(function(x){
+      if (x.k === "over") {
+        parts.push("🔴 " + x.b + " <b>" + esc(x.n) + "</b> ki fees " + (x.d > 0 ? x.d + " din se " : "") + "baaki hai" + promTag(x));
+      } else {
+        var when = x.d === 0 ? "aaj khatam ho rahi hai — aaj hi fees jama kare"
+                 : x.d === 1 ? "kal khatam ho rahi hai — fees jama kare"
+                 : x.d + " din baad khatam hogi — fees jama kare";
+        parts.push((x.d === 0 ? "🟠 " : "🟡 ") + x.b + " <b>" + esc(x.n) + "</b> ki membership " + when + promTag(x));
+      }
+    });
+    var sep = "&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;";
+    var txt = parts.join(sep) + sep;
+    var sig = txt;
+    if (box.getAttribute("data-sig") !== sig) {
+      box.setAttribute("data-sig", sig);
+      run.innerHTML = '<span class="tk-in">' + txt + '</span><span class="tk-in" style="padding-left:0">' + txt + '</span>';
+    }
+    label.textContent = "📢 FEES (" + total + ")";
+    box.style.display = "block";
+    if (box.getAttribute("data-spd") !== box.getAttribute("data-sig")) {
+      box.setAttribute("data-spd", box.getAttribute("data-sig"));
+      var halfW = run.scrollWidth / 2;
+      run.style.animationDuration = Math.max(40, Math.round(halfW / 22)) + "s";   // ~22 px/second, dheere dheere
+    }
+  }
+
+  async function refreshTodayStats() {
+    try {
+      const hint = document.getElementById("statHint");
+      if (hint) hint.textContent = "⏳ Counting...";
+      const allMembers = await fetchStoredMembers();
+      const todayISO = getLocalDateISO(new Date());
+      const dayMap = await loadAttendanceMapForDate(todayISO) || {};
+
+      function isPresent(m){ return isMemberPresentInMap(dayMap, m); }
+
+      const morning = allMembers.filter(m => getMemberBatch(m) === "morning");
+      const evening = allMembers.filter(m => getMemberBatch(m) === "evening");
+      const morP = morning.filter(isPresent).length;
+      const eveP = evening.filter(isPresent).length;
+      const morA = morning.length - morP;
+      const eveA = evening.length - eveP;
+      const totalP = allMembers.filter(isPresent).length;
+      const totalA = allMembers.length - totalP;
+
+      try { updateFeeTicker(allMembers); } catch(e) { try { var bx = document.getElementById("feeTicker"); bx.style.display = "block"; document.getElementById("feeTickerRun").textContent = "ticker error: " + e.message; } catch(e2) {} }
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v); };
+      set("statTotalMembers", allMembers.length);
+      set("statTotalPresent", totalP);
+      set("statTotalAbsent", totalA);
+      set("statMorTotal", morning.length);
+      set("statMorPresent", morP);
+      set("statMorAbsent", morA);
+      set("statEveTotal", evening.length);
+      set("statEvePresent", eveP);
+      set("statEveAbsent", eveA);
+
+      const b1 = document.getElementById("btnMorAbsent");
+      const b2 = document.getElementById("btnEveAbsent");
+      const b3 = document.getElementById("btnTotalAbsent");
+      if (b1) b1.textContent = "🌅 Morning Absent (" + morA + ")";
+      if (b2) b2.textContent = "🌙 Evening Absent (" + eveA + ")";
+      if (b3) b3.textContent = "❌ Total Absent Today (" + totalA + " / " + allMembers.length + ")";
+      try { const b4 = document.getElementById("btnFeeDue"); if (b4) b4.textContent = "💸 Fees Bakaya — 1 tarikh se aaj tak (" + feeDueList(allMembers).length + ")"; } catch(e) {}
+
+      if (hint) {
+        hint.innerHTML = "Aaj: <b style='color:#00ff66'>" + totalP + " aaye</b> · <b style='color:#ff6666'>" + totalA + " nahi aaye</b> · Total " + allMembers.length +
+          " members · Morning absent <b style='color:#ff9900'>" + morA + "</b> · Evening absent <b style='color:#c084fc'>" + eveA + "</b>";
+      }
+    } catch (e) {
+      console.error(e);
+      const hint = document.getElementById("statHint");
+      if (hint) hint.textContent = "Count load fail — Refresh dabao";
+    }
+  }
+
+  async function checkPermStates() {
+    let loc = "unknown", cam = "unknown";
+    try {
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const l = await navigator.permissions.query({ name: "geolocation" });
+          loc = l.state; // granted | denied | prompt
+        } catch(e) {}
+        try {
+          const c = await navigator.permissions.query({ name: "camera" });
+          cam = c.state;
+        } catch(e) {}
+      }
+    } catch(e) {}
+    return { loc, cam };
+  }
+
+  function setPermStatusUI(locOk, camOk, locState, camState) {
+    const ls = document.getElementById("permLocStatus");
+    const cs = document.getElementById("permCamStatus");
+    if (ls) {
+      ls.textContent = locOk ? "Allow ✓" : (locState === "denied" ? "Block ✗" : "Pending");
+      ls.style.color = locOk ? "#00ff66" : (locState === "denied" ? "#ff4444" : "#ff9900");
+    }
+    if (cs) {
+      cs.textContent = camOk ? "Allow ✓" : (camState === "denied" ? "Block ✗" : "Pending");
+      cs.style.color = camOk ? "#00ff66" : (camState === "denied" ? "#ff4444" : "#ff9900");
+    }
+    const cont = document.getElementById("permContinueBtn");
+    if (cont) cont.style.display = (locOk && camOk) ? "block" : "block";
+    const msg = document.getElementById("permMsg");
+    if (msg) {
+      if (locOk && camOk) msg.innerHTML = '<span style="color:#00ff66;font-weight:800;">✅ Dono ready — ab attendance lag sakti hai</span>';
+      else if (locState === "denied" || camState === "denied") msg.textContent = "Block hai to neeche Settings guide dekho, Allow karke wapas aao.";
+      else msg.textContent = "Upar wala peela button dabao — phone Allow poochhega.";
+    }
+  }
+
+  async function requestBothPermissionsNow() {
+    const msg = document.getElementById("permMsg");
+    if (msg) msg.textContent = "Phone par Allow dabao...";
+    let locOk = false, camOk = false;
+
+    // LOCATION first
+    try {
+      await new Promise((resolve) => {
+        if (!navigator.geolocation) { resolve(false); return; }
+        navigator.geolocation.getCurrentPosition(
+          () => { locOk = true; resolve(true); },
+          () => { locOk = false; resolve(false); },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
+      });
+    } catch(e) { locOk = false; }
+
+    // CAMERA
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" },
+          audio: false
+        });
+        stream.getTracks().forEach(t => t.stop());
+        camOk = true;
+        currentVideoStream = null;
+      }
+    } catch(e) {
+      camOk = false;
+      console.log("cam deny", e);
+    }
+
+    const st = await checkPermStates();
+    setPermStatusUI(locOk, camOk, locOk ? "granted" : (st.loc||"denied"), camOk ? "granted" : (st.cam||"denied"));
+
+    if (locOk && camOk) {
+      try { localStorage.setItem("5bfc_perm_ok", "1"); } catch(e) {}
+      if (msg) msg.innerHTML = '<span style="color:#00ff66;font-weight:800;">✅ Ho gaya! 1 sec me attendance page...</span>';
+      setTimeout(closePermGate, 700);
+    } else {
+      if (msg) msg.textContent = "Abhi Allow nahi hua. Settings guide kholo ya Allow button dubara dabao.";
+      document.getElementById("permHelpBox").style.display = "block";
+    }
+  }
+
+  function openSitePermissionHelp() {
+    const box = document.getElementById("permHelpBox");
+    if (box) box.style.display = box.style.display === "none" ? "block" : "none";
+    // Try to hint browser UI — cannot force chrome:// from page
+    try {
+      alert("Address bar me 🔒 / tune icon dabao → Permissions → Camera Allow + Location Allow");
+    } catch(e) {}
+  }
+
+  function closePermGate() {
+    const o = document.getElementById("permGateOverlay");
+    if (o) o.style.display = "none";
+  }
+
+  
+  function isInAppBrowser(){
+    var ua = navigator.userAgent || "";
+    return /FBAN|FBAV|Instagram|Line\/|Twitter|MicroMessenger|WhatsApp|Snapchat|TikTok|Pinterest|LinkedInApp|wv\)/i.test(ua);
+  }
+  function openInChromeHint(){
+    var url = location.href;
+    // Android Chrome intent
+    if (/Android/i.test(navigator.userAgent)) {
+      var intent = "intent://" + location.host + location.pathname + location.search + location.hash +
+        "#Intent;scheme=https;package=com.android.chrome;end";
+      location.href = intent;
+      setTimeout(function(){
+        alert("Agar Chrome nahi khula: menu (⋮) → Open in Chrome / Browser");
+      }, 1200);
+    } else {
+      alert("Is app browser me camera aksar block hota hai.\\nSafari/Chrome me link kholo — 1 baar Allow, phir easy.");
+    }
+  }
+
+  async function maybeShowPermGate() {
+    let locOk = false, camOk = false;
+    const st = await checkPermStates();
+    if (st.loc === "granted") locOk = true;
+    if (st.cam === "granted") camOk = true;
+    const saved = localStorage.getItem("5bfc_perm_ok") === "1";
+    // ek baar allow + not hard-denied = mat pareshan karo
+    if (locOk && camOk) { closePermGate(); return; }
+    if (saved && st.loc !== "denied" && st.cam !== "denied") { closePermGate(); return; }
+    const o = document.getElementById("permGateOverlay");
+    if (o) {
+      o.style.display = "block";
+      setPermStatusUI(locOk, camOk, st.loc, st.cam);
+      // in-app browser warning
+      var hint = document.getElementById("inAppBrowserHint");
+      if (isInAppBrowser()) {
+        if (!hint) {
+          hint = document.createElement("div");
+          hint.id = "inAppBrowserHint";
+          hint.style.cssText = "margin:10px 0;padding:12px;background:#2a1500;border:1px solid #ff9900;border-radius:10px;font-size:12px;line-height:1.45;color:#ffe0b2;";
+          hint.innerHTML = "⚠️ Instagram/FB/WhatsApp browser me camera often block hota hai.<br><b>Chrome me kholo</b> — 1 baar Allow, phir roz easy.";
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = "🌐 Chrome me kholo";
+          btn.style.cssText = "margin-top:8px;width:100%;background:#ffcc00;color:#000;border:none;border-radius:8px;padding:12px;font-weight:900;cursor:pointer;";
+          btn.onclick = openInChromeHint;
+          hint.appendChild(btn);
+          var allowBtn = document.getElementById("permAllowBtn");
+          if (allowBtn && allowBtn.parentNode) allowBtn.parentNode.insertBefore(hint, allowBtn);
+          else o.querySelector("div").appendChild(hint);
+        }
+      }
+    }
+  }
+
+  async function ensurePermissionsEarly() {
+    await requestBothPermissionsNow();
+  }
+
+  async function openSearchKiosk() {
+    await maybeShowPermGate();
+    const st = await checkPermStates();
+    if (st.loc === "denied" || st.cam === "denied") {
+      const o = document.getElementById("permGateOverlay");
+      if (o) o.style.display = "block";
+      document.getElementById("permHelpBox").style.display = "block";
+      alert("Pehle Camera + Location Allow karo — roz attendance ke liye zaroori hai.");
+      return;
+    }
+    // soft request if still prompt
+    if (st.loc === "prompt" || st.cam === "prompt" || st.loc === "unknown") {
+      await requestBothPermissionsNow();
+    }
+
+    document.getElementById("kioskHeroBox").style.display = "none";
+    document.getElementById("searchAreaWrapper").style.display = "block";
+    document.getElementById("singleMemberContainer").style.display = "none";
+    document.getElementById("batchDirectListBox").style.display = "none";
+    const inp = document.getElementById("memberFilterInput");
+    inp.value = "";
+    inp.focus();
+    document.getElementById("searchDropdownNode").style.display = "none";
+    updateSmartBackLabel();
+  }
+
+  var __listReturn = null, __cameFromList = false;
+  async function returnToListView() {
+    var fn = __listReturn; __cameFromList = false;
+    document.getElementById("singleMemberContainer").style.display = "none";
+    document.getElementById("searchAreaWrapper").style.display = "none";
+    currentlyLoadedMember = null;
+    try { if (fn) await fn(); } catch (e) { cancelSearchAndReset(); return; }
+    updateSmartBackLabel();
+  }
+  function cancelSearchAndReset() {
+    __listReturn = null; __cameFromList = false;
+    document.getElementById("kioskHeroBox").style.display = "block";
+    document.getElementById("searchAreaWrapper").style.display = "none";
+    document.getElementById("singleMemberContainer").style.display = "none";
+    document.getElementById("batchDirectListBox").style.display = "none";
+    document.getElementById("memberFilterInput").value = "";
+    document.getElementById("searchDropdownNode").style.display = "none";
+    currentlyLoadedMember = null;
+    // Close any open modals
+    document.getElementById("cameraBackdropModal")?.classList.remove("show");
+    document.getElementById("attendanceCelebrationModal")?.classList.remove("show");
+    document.getElementById("strictExpiryModal")?.classList.remove("show");
+    document.getElementById("slotChangerModal")?.classList.remove("show");
+    updateSmartBackLabel();
+  }
+
+  function getCurrentKioskState() {
+    if (document.getElementById("attendanceCelebrationModal")?.classList.contains("show")) return "celebration";
+    if (document.getElementById("cameraBackdropModal")?.classList.contains("show")) return "camera";
+    if (document.getElementById("strictExpiryModal")?.classList.contains("show")) return "expiry";
+    if (document.getElementById("slotChangerModal")?.classList.contains("show")) return "slot";
+    if (document.getElementById("singleMemberContainer")?.style.display === "block") return "member";
+    if (document.getElementById("searchAreaWrapper")?.style.display === "block") return "search";
+    if (document.getElementById("batchDirectListBox")?.style.display === "block") return "batch";
+    return "root";
+  }
+
+  function updateSmartBackLabel() {
+    const btn = document.getElementById("smartBackBtn");
+    if (!btn) return;
+    const state = getCurrentKioskState();
+    if (state === "root") {
+      btn.innerText = "⬅ Home / Master App";
+    } else {
+      btn.innerText = "⬅ Back";
+    }
+  }
+
+  function smartGoBack() {
+    const state = getCurrentKioskState();
+
+    if (state === "celebration") {
+      completeAttendanceAndResetKiosk();
+      return;
+    }
+    if (state === "camera") {
+      closeCameraModal();
+      updateSmartBackLabel();
+      return;
+    }
+    if (state === "expiry") {
+      closeModal("strictExpiryModal");
+      updateSmartBackLabel();
+      return;
+    }
+    if (state === "slot") {
+      closeModal("slotChangerModal");
+      updateSmartBackLabel();
+      return;
+    }
+    if (state === "member" && __cameFromList && __listReturn) { returnToListView(); return; }
+    if (state === "member") {
+      // Go back to search (one step)
+      document.getElementById("singleMemberContainer").style.display = "none";
+      document.getElementById("searchAreaWrapper").style.display = "block";
+      currentlyLoadedMember = null;
+      updateSmartBackLabel();
+      return;
+    }
+    if (state === "search" || state === "batch") {
+      // Back to hero
+      cancelSearchAndReset();
+      return;
+    }
+    // Root → go to master app
+    window.location.href = "app.html";
+  }
+
+  async function toggleBatchDirectList() {
+    return showBatchList("all");
+  }
+
+  
+  function normalizeSearchText(s) {
+    return String(s || "")
+      .toLowerCase()
+      .replace(/[्\s.\-_()]/g, "")
+      .replace(/[^\u0900-\u097Fa-z0-9]/gi, "");
+  }
+  // Hindi aur English dono ko ek jaisi "consonant skeleton" me badalta hai (Sonu = सोनू = sonoo)
+  var DEV_MAP = {"क":"k","ख":"k","ग":"g","घ":"g","ङ":"n","च":"c","छ":"c","ज":"j","झ":"j","ञ":"n","ट":"t","ठ":"t","ड":"d","ढ":"d","ण":"n","त":"t","थ":"t","द":"d","ध":"d","न":"n","प":"p","फ":"p","ब":"b","भ":"b","म":"m","य":"y","र":"r","ल":"l","ळ":"l","व":"v","श":"s","ष":"s","स":"s","ह":"h","क्ष":"ks","ज्ञ":"gy","ड़":"r","ढ़":"r","फ़":"p","ज़":"j","क़":"k","ख़":"k","ग़":"g","ऋ":"r","ं":"n","ँ":"n"};
+  function phoneticKey(str) {
+    var t = String(str || "").toLowerCase().normalize("NFC");
+    t = t.replace(/क्ष/g,"ks").replace(/ज्ञ/g,"gy").replace(/ड़/g,"र").replace(/ढ़/g,"र");
+    var out = "";
+    for (var i = 0; i < t.length; i++) {
+      var ch = t[i];
+      if (DEV_MAP[ch] !== undefined) out += DEV_MAP[ch];
+      else if (/[\u0900-\u097F]/.test(ch)) continue;      // matra, halant, nukta, vowels
+      else out += ch;
+    }
+    out = out.replace(/chh?/g,"#").replace(/sh/g,"s").replace(/kh/g,"k").replace(/gh/g,"g").replace(/jh/g,"j")
+             .replace(/th/g,"t").replace(/dh/g,"d").replace(/bh/g,"b").replace(/ph/g,"p")
+             .replace(/c/g,"k").replace(/#/g,"c").replace(/q/g,"k").replace(/x/g,"ks").replace(/z/g,"j")
+             .replace(/f/g,"p").replace(/w/g,"v").replace(/[aeiou]/g,"").replace(/[^a-z]/g,"");
+    return out.replace(/(.)\1+/g,"$1");
+  }
+  function memberSearchWords(m) {
+    var raw = [m.name, m.parentName, m.fatherName, m.englishName, m.nameEn, m.village].filter(Boolean).join(" ");
+    return raw.split(/\s+/).filter(Boolean);
+  }
+  function memberMatchScore(m, query) {
+    // 0 = match nahi; bada number = behtar match
+    var qRaw = String(query || "").trim().toLowerCase();
+    if (!qRaw) return 0;
+    var qDigits = qRaw.replace(/\D/g, "");
+    var phone = String(m.phone || "").replace(/\D/g, "");
+    if (qDigits.length && /^[\d\s+\-]+$/.test(qRaw)) {
+      var q10 = qDigits.length > 10 && qDigits.indexOf("91") === 0 ? qDigits.slice(2) : qDigits;
+      if (phone.indexOf(q10) >= 0) return phone.indexOf(q10) === 0 || phone.slice(-q10.length) === q10 ? 90 : 70;
+      var idd = String(m.id || "").replace(/\D/g, "");
+      return (idd && idd.indexOf(q10) >= 0) ? 60 : 0;
+    }
+    var words = memberSearchWords(m);
+    var fullN = normalizeSearchText(words.join(" "));
+    var tokens = qRaw.split(/\s+/).filter(Boolean);
+    var total = 0;
+    for (var ti = 0; ti < tokens.length; ti++) {
+      var tk = tokens[ti], tkN = normalizeSearchText(tk), tkK = phoneticKey(tk), best = 0;
+      for (var wi = 0; wi < words.length; wi++) {
+        var w = words[wi], wN = normalizeSearchText(w), wK = phoneticKey(w);
+        if (wN === tkN) best = Math.max(best, 100);
+        else if (wN.indexOf(tkN) === 0) best = Math.max(best, 85);
+        else if (wN.indexOf(tkN) > 0) best = Math.max(best, 60);
+        if (tkK) {
+          if (wK === tkK) best = Math.max(best, 80);
+          else if (wK.indexOf(tkK) === 0) best = Math.max(best, 70);
+          else if (tkK.length >= 3 && wK.indexOf(tkK) > 0) best = Math.max(best, 45);
+        }
+      }
+      if (!best && tkN.length >= 2 && fullN.indexOf(tkN) >= 0) best = 40;
+      if (!best && String(m.batch || "").toLowerCase().indexOf(tk) === 0 && tk.length >= 4) best = 30;
+      if (!best) return 0;
+      total += best;
+    }
+    return total / tokens.length;
+  }
+  function memberMatchesQuery(m, query) { return memberMatchScore(m, query) > 0; }
+
+  function renderSearchResults(allMembers, query) {
+    const dropdown = document.getElementById("searchDropdownNode");
+    const matches = (allMembers || []).filter(Boolean)
+      .map(m => ({m: m, sc: memberMatchScore(m, query)}))
+      .filter(x => x.sc > 0)
+      .sort((a,b) => b.sc - a.sc || String(a.m.name||"").localeCompare(String(b.m.name||""),"hi"))
+      .map(x => x.m);
+    if (!matches.length) {
+      dropdown.innerHTML = `<div style="color:#ff4444; font-size:11px; text-align:center; padding:8px;">कोई सदस्य नहीं मिला। नया जोड़ें!</div>`;
+      return;
+    }
+    let html = `<div style="font-size:10px; color:#ffcc00; margin-bottom:5px; font-weight:bold;">मिलते-जुलते सदस्य (${matches.length}):</div>`;
+    matches.slice(0, 40).forEach(m => {
+      const mStatus = m.manualStatus || 'Paid';
+      const isPaid = (mStatus === 'Paid');
+      html += `
+        <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
+          <div>
+            <b style="color:#fff; font-size:12.5px;">${esc(m.name)}</b><br>
+            <small style="color:#888;">${esc(m.phone)} | <span style="color:${isPaid ? '#00ff66' : '#ff4444'}; font-weight:bold;">${esc(String(mStatus).toUpperCase())}</span></small>
+          </div>
+          <button type="button" style="background:#ffcc00; color:#000; border:none; padding:5px 10px; border-radius:6px; font-weight:900; font-size:11px;">लोड करें</button>
+        </div>`;
+    });
+    dropdown.innerHTML = html;
+  }
+
+  var __searchSeq = 0;
+  async function executeUniversalSearch() {
+    const input = document.getElementById("memberFilterInput");
+    const query = input.value.trim().toLowerCase();
+    const dropdown = document.getElementById("searchDropdownNode");
+    const seq = ++__searchSeq;
+
+    if (!query) { dropdown.style.display = "none"; return; }
+    dropdown.style.display = "block";
+
+    // 1) Turant: jo members pehle se memory me hain unhi me abhi dhundo
+    if (cachedMembersList && cachedMembersList.length) renderSearchResults(cachedMembersList, query);
+    else dropdown.innerHTML = `<div style="color:#ffcc00; font-size:11px; text-align:center; padding:6px;">खोज रहे हैं...</div>`;
+
+    // 2) Peeche se fresh data la ke dobara dhundo (agar tab tak query badli nahi)
+    try {
+      const fresh = await fetchStoredMembers();
+      if (seq === __searchSeq || input.value.trim().toLowerCase() === query) renderSearchResults(fresh, query);
+    } catch (e) {}
+  }
+
+    function openAddMemberModal() {
+    document.getElementById("newMemberNameInput").value = "";
+    document.getElementById("newMemberPhoneInput").value = "";
+    document.getElementById("addMemberModal").classList.add("show");
+  }
+
+  async function saveNewMemberData() {
+    const name = document.getElementById("newMemberNameInput").value.trim();
+    const phone = document.getElementById("newMemberPhoneInput").value.trim();
+
+    if (!name || phone.length < 10) {
+      alert("⚠️ कृपया सही नाम और 10 अंकों का मोबाइल नंबर दर्ज करें!");
+      return;
+    }
+
+    const newId = phone;
+    const todayStr = getLocalDateISO();
+
+    const newMember = {
+      id: newId,
+      name: name,
+      phone: phone,
+      slot: "06:00 AM - 07:00 AM",
+      joinDate: todayStr,
+      lastPaid: todayStr,
+      planMonths: 1,
+      plan: "सामान्य (General Fitness - ₹500/माह)",
+      manualStatus: "Paid",
+      feesPromiseDate: ""
+    };
+
+    await syncMemberToCloud(newMember);
+    closeModal('addMemberModal');
+    alert(`✅ ${name} को क्लाउड पर सफलतापूर्वक जोड़ दिया गया है!`);
+    toggleBatchDirectList();
+  }
+
+  async function loadSingleMemberKioskCard(memberId) {
+    try { var __lb = document.getElementById("batchDirectListBox"); if (__lb && __lb.style.display === "block" && __listReturn) __cameFromList = true; } catch (e) {}
+    const list = await fetchStoredMembers();
+    const m = list.find(x => x.id.toString() === memberId.toString());
+    if (!m) return;
+
+    currentlyLoadedMember = m;
+    const attMap = fetchAttendanceMapForDate(currentDateISO);
+    const isPresent = isMemberPresentInMap(attMap, m);
+    const checkin = attMap[String(m.id)] || attMap[m.id] || (normPhone(m.phone) ? attMap["phone:"+normPhone(m.phone)] : null);
+    
+    const manualStat = m.manualStatus || 'Paid';
+    const baseLastPaid = m.lastPaid || m.joinDate;
+
+    document.getElementById("cardMemberName").innerText = m.name;
+    document.getElementById("cardMemberPhone").innerText = `📞 +91 ${m.phone}`;
+    
+    const feeBadge = document.getElementById("cardFeeBadge");
+    if (manualStat === 'Paid') {
+      feeBadge.className = "fee-pill-tag fee-paid";
+      feeBadge.innerText = "FEES PAID";
+    } else {
+      feeBadge.className = "fee-pill-tag fee-due";
+      feeBadge.innerText = "FEES PENDING";
+    }
+
+    document.getElementById("cardPlanText").innerText = `${m.plan || 'General Fitness'}`;
+    document.getElementById("cardJoinDate").innerText = formatDateToDDMMYYYY(m.joinDate);
+    document.getElementById("cardLastPaidDisplay").innerText = formatDateToDDMMYYYY(baseLastPaid);
+
+    const promiseBox = document.getElementById("cardPromiseDateBox");
+    const promiseValSpan = document.getElementById("cardPromiseDateVal");
+    if (m.feesPromiseDate) {
+      promiseBox.style.display = "block";
+      promiseValSpan.innerText = formatDateToDDMMYYYY(m.feesPromiseDate);
+    } else {
+      promiseBox.style.display = "none";
+    }
+
+    document.getElementById("cardSlotDisplay").innerText = m.slot || "06:00 AM - 07:00 AM";
+
+    const proofBox = document.getElementById("cardProofContainer");
+    if (isPresent && checkin) {
+      proofBox.innerHTML = `
+        <div class="compact-proof-badge">
+          <img src="${checkin.photo}" alt="Seal">
+          <span>✔ ${checkin.statusMsg || 'VERIFIED'} | ${checkin.time}</span>
+        </div>
+      `;
+    } else {
+      proofBox.innerHTML = "";
+    }
+
+    const btnPres = document.getElementById("btnPresTrigger");
+    btnPres.className = `btn-pres-action ${isPresent ? 'is-ver' : 'not-ver'}`;
+    btnPres.innerText = isPresent ? '📸 फिर से सेल्फी लें (Update Selfie)' : '📸 PRESENT दर्ज करें (सेल्फी के साथ)';
+
+    document.getElementById("activeLoadedCard").className = `loaded-member-card ${isPresent ? 'status-present' : ''}`;
+    document.getElementById("searchAreaWrapper").style.display = "none";
+    document.getElementById("batchDirectListBox").style.display = "none";
+    document.getElementById("singleMemberContainer").style.display = "block";
+    updateSmartBackLabel();
+  }
+
+  async function toggleManualFeeStatus() {
+    if (!currentlyLoadedMember) return;
+    let current = currentlyLoadedMember.manualStatus || 'Paid';
+    let next = current === 'Paid' ? 'Pending' : 'Paid';
+    if (next === 'Paid') { currentlyLoadedMember.lastPaid = getLocalDateISO(new Date()); currentlyLoadedMember.feesPromiseDate = ""; currentlyLoadedMember.dueAmount = 0; }
+
+    currentlyLoadedMember.manualStatus = next;
+    await syncMemberToCloud(currentlyLoadedMember);
+    alert(`✅ फीस स्टेटस बदलकर "${next.toUpperCase()}" कर दिया गया है!`);
+    loadSingleMemberKioskCard(currentlyLoadedMember.id);
+  }
+
+  function showAlreadyMarkedWarning() {
+    alert("Your Attendance Already Marked!\nआपकी आज की उपस्थिति पहले ही दर्ज की जा चुकी है।");
+  }
+
+  function logAttendanceAttempt(m, status, extra) {
+    try {
+      const todayISO = getLocalDateISO(new Date());
+      const payload = {
+        id: String(m.id),
+        name: m.name || "",
+        phone: m.phone || "",
+        status: status,
+        at: new Date().toISOString(),
+        extra: extra || {}
+      };
+      // local log
+      try {
+        const key = "5bfc_att_attempts_" + todayISO;
+        const arr = JSON.parse(localStorage.getItem(key) || "[]");
+        arr.push(payload);
+        localStorage.setItem(key, JSON.stringify(arr.slice(-200)));
+      } catch(e) {}
+      // cloud log — admin ko dikhe kaun last step tak gaya
+      if (typeof db !== "undefined" && db) {
+        db.collection("attendance_attempts").doc(todayISO).set(
+          { [String(m.id) + "_" + Date.now()]: payload },
+          { merge: true }
+        ).catch(function(){});
+      }
+    } catch(e) {}
+  }
+
+  function handleAttendanceClick() {
+    if (!currentlyLoadedMember) return;
+    const m = currentlyLoadedMember;
+
+    const todayISOStr = getLocalDateISO(new Date());
+    if (m.joinDate && todayISOStr < m.joinDate) {
+        alert("❌ Aap apni joining date se pehle attendance nahi laga sakte!");
+        logAttendanceAttempt(m, "blocked_join_date");
+        return;
+    }
+
+    // Fees due? warn but DO NOT block present
+    const manualStat = m.manualStatus || m.status || 'Paid';
+    let isMonthExpired = false;
+    try {
+      const expD = memberExpiryDate(m);
+      if (expD && new Date() >= expD) isMonthExpired = true;
+    } catch(e) {}
+    const feesDue = ((String(manualStat).toLowerCase().indexOf('paid') < 0) || isMonthExpired) && !m.feesPromiseDate;
+    if (feesDue) {
+      // soft warn — still allow selfie
+      try {
+        const nmEl = document.getElementById("expiringMemberName");
+        if (nmEl) nmEl.innerText = m.name;
+      } catch(e) {}
+      // do not return — continue
+      window.__attFeesDueFlag = true;
+    } else {
+      window.__attFeesDueFlag = false;
+    }
+
+    function goCamera(gpsMeta) {
+      window.__lastGpsMeta = gpsMeta || null;
+      logAttendanceAttempt(m, "opened_camera", gpsMeta || {});
+      initiateCameraVerification(m);
+    }
+
+    if (!navigator.geolocation) {
+        logAttendanceAttempt(m, "no_geo_api");
+        if (confirm("GPS support nahi. Phir bhi selfie se present lagayein? (sirf gym me ho to OK)")) {
+          goCamera({ mode: "no_geo" });
+        }
+        return;
+    }
+
+    const GYM_LAT = 26.5187839;
+    const GYM_LNG = 80.446607;
+    const ALLOWED = 1000;
+
+    // loading toast on button
+    const btn = document.getElementById("btnPresTrigger");
+    const oldTxt = btn ? btn.innerText : "";
+    if (btn) { btn.disabled = true; btn.innerText = "📍 GPS check..."; }
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            if (btn) { btn.disabled = false; btn.innerText = oldTxt || "📸 PRESENT दर्ज करें (सेल्फी के साथ)"; }
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            const accuracy = Math.round(position.coords.accuracy || 0);
+
+            const R = 6371e3;
+            const φ1 = userLat * Math.PI/180;
+            const φ2 = GYM_LAT * Math.PI/180;
+            const Δφ = (GYM_LAT - userLat) * Math.PI/180;
+            const Δλ = (GYM_LNG - userLng) * Math.PI/180;
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = Math.round(R * c);
+
+            // Soft GPS: accuracy buffer (phone GPS often ±30–150m)
+            const effective = Math.max(0, distance - Math.min(accuracy, 250));
+            const meta = { distance: distance, accuracy: accuracy, effective: effective, lat: userLat, lng: userLng };
+
+            if (effective <= ALLOWED) {
+              goCamera(meta);
+              return;
+            }
+            // thoda bahar (1–1.8 km) → confirm ke baad allow
+            if (effective <= 1800) {
+              logAttendanceAttempt(m, "gps_border", meta);
+              if (confirm("GPS: gym se ~" + distance + "m (accuracy ±" + accuracy + "m).\nAgar aap gym ke andar/gate pe ho to OK dabao.")) {
+                goCamera(Object.assign({}, meta, { soft: true }));
+              }
+              return;
+            }
+            // clearly far
+            logAttendanceAttempt(m, "gps_far", meta);
+            alert("❌ Aap gym se bahut door ho (≈" + distance + "m). Fake attendance nahi lagegi.\nGym aake try karo.");
+        },
+        (error) => {
+            if (btn) { btn.disabled = false; btn.innerText = oldTxt || "📸 PRESENT दर्ज करें (सेल्फी के साथ)"; }
+            console.error("GPS error", error);
+            const code = error && error.code;
+            let msg = "Location nahi mili. ";
+            if (code === 1) msg = "Location permission DENY / block hai.\nChrome → 🔒 lock → Permissions → Location Allow.";
+            else if (code === 2) msg = "GPS signal weak. Open area me try karo.";
+            else if (code === 3) msg = "Location timeout. GPS ON karke dobara try.";
+            logAttendanceAttempt(m, "gps_error_" + (code || "x"), {});
+            if (confirm("❌ " + msg + "\n\nOK = gym me ho to bina GPS present try")) {
+              goCamera({ mode: "gps_error", code: code });
+            } else {
+              maybeShowPermGate();
+            }
+        },
+        { enableHighAccuracy: true, timeout: 25000, maximumAge: 30000 }
+    );
+  }
+  
+  function showPromiseDateField() {
+    document.getElementById("initialActionButtons").style.display = "none";
+    document.getElementById("promiseDateContainer").style.display = "block";
+  }
+
+  async function submitPromiseAndOpenCam() {
+    const promiseVal = document.getElementById("memberPromiseDate").value;
+    if (!promiseVal) {
+      alert("⚠️ कृपया वादा तारीख चुनें!");
+      return;
+    }
+    currentlyLoadedMember.feesPromiseDate = promiseVal;
+    await syncMemberToCloud(currentlyLoadedMember);
+    closeModal('strictExpiryModal');
+    initiateCameraVerification(currentlyLoadedMember);
+  }
+
+  function handleDisagreeLegalNotice() {
+    alert("सदस्यता अवधि समाप्त हो चुकी है।");
+    closeModal('strictExpiryModal');
+    cancelSearchAndReset();
+  }
+
+  async function initiateCameraVerification(candidate) {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert("कैमरा उपलब्ध नहीं है। कृपया पेज को HTTPS या localhost पर खोलें।");
+      return;
+    }
+
+    document.getElementById("modalCandidateName").innerText = candidate.name;
+    try {
+      paintMonthCount(candidate, ["modalMonthCount"]);
+      var __dw = document.getElementById("modalDueWarn"), __dh = dueWarnHTML(candidate);
+      var __yz = payZoneOf(candidate) === "yellow";
+      __dw.style.background = __yz ? "rgba(255,204,0,0.14)" : "rgba(255,51,51,0.15)";
+      __dw.style.borderColor = __yz ? "#ffcc00" : "#ff4444";
+      __dw.style.color = __yz ? "#ffe066" : "#ff8080";
+      __dw.style.display = __dh ? "block" : "none"; __dw.innerHTML = __dh;
+    } catch (e) {}
+    document.getElementById("cameraBackdropModal").classList.add("show");
+    updateSmartBackLabel();
+    const videoElem = document.getElementById("videoElement");
+    
+    try {
+      if (!currentVideoStream) {
+        currentVideoStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, 
+          audio: false 
+        });
+      }
+      videoElem.srcObject = currentVideoStream;
+      await videoElem.play();
+    } catch (err) {
+      console.error("Camera error:", err);
+      currentVideoStream = null;
+      const retry = confirm("कैमरा/परमिशन बंद है।\n\nOK dabao → browser dubara permission maangega.\nAllow karo fir selfie ho jayegi.");
+      if (retry) {
+        try {
+          currentVideoStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } },
+            audio: false
+          });
+          videoElem.srcObject = currentVideoStream;
+          await videoElem.play();
+          return;
+        } catch (e2) {
+          alert("Abhi bhi permission nahi mili. Chrome Settings → Site settings → Camera → Allow karke page refresh karo.");
+          closeCameraModal();
+        }
+      } else {
+        closeCameraModal();
+      }
+    }
+  }
+
+  async function captureLiveSelfieProof() {
+    if (!currentlyLoadedMember) {
+      alert("पहले सदस्य चुनें।");
+      closeCameraModal();
+      return;
+    }
+    const now = new Date();
+    const todayISO = getLocalDateISO(now);
+    const videoElem = document.getElementById("videoElement");
+    const canvas = document.getElementById("offscreenCanvas");
+
+    const attendanceRecords = fetchAttendanceMapForDate(todayISO) || {};
+    const mid = String(currentlyLoadedMember.id);
+    logAttendanceAttempt(currentlyLoadedMember, "capture_clicked", window.__lastGpsMeta || {});
+
+    if (!videoElem || !videoElem.videoWidth || !videoElem.videoHeight) {
+      await new Promise(r => setTimeout(r, 800));
+    }
+    if (!videoElem || !videoElem.videoWidth || !videoElem.videoHeight) {
+      // Camera fail → STILL mark present without photo so data admin ke paas ho
+      if (confirm("Camera ready nahi. Bina selfie ke PRESENT mark karein? (GPS/time record ho jayega)")) {
+        const entry0 = {
+          time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }),
+          fullStamp: "📅 " + todayISO + " | ⏰ no-selfie",
+          photo: "",
+          statusMsg: "PRESENT (no selfie - camera fail)",
+          isReal: true,
+          name: currentlyLoadedMember.name,
+          phone: currentlyLoadedMember.phone,
+          slot: currentlyLoadedMember.slot || "",
+          noSelfie: true,
+          feesDue: !!window.__attFeesDueFlag
+        };
+        attendanceRecords[mid] = entry0;
+        try { (currentlyLoadedMember.__twins || []).forEach(function(t){ attendanceRecords[t] = Object.assign({}, entry0, { aliasOf: mid }); }); } catch(e) {}
+        try { localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords)); } catch(e) {}
+        try {
+          if (typeof db !== "undefined" && db) {
+            var __p0 = { [mid]: entry0 };
+            try { (currentlyLoadedMember.__twins || []).forEach(function(t){ __p0[t] = Object.assign({}, entry0, { aliasOf: mid }); }); } catch(e) {}
+            await db.collection("attendance").doc(todayISO).set(__p0, { merge: true });
+          }
+        } catch(e) {}
+        logAttendanceAttempt(currentlyLoadedMember, "saved_no_selfie", {});
+        try { refreshTodayStats(); } catch(e) {}
+        closeCameraModal();
+        alert("✅ Present save (bina selfie). Admin ko record mil gaya.");
+        try { loadSingleMemberKioskCard(currentlyLoadedMember.id); } catch(e) {}
+        return;
+      }
+      alert("कैमरा अभी तैयार नहीं है। 1 sec baad CAPTURE dubara dabao.");
+      return;
+    }
+
+    const sourceWidth = videoElem.videoWidth;
+    const sourceHeight = videoElem.videoHeight;
+    const maxSide = 320;
+    const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
+    canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+    canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      alert("सेल्फी कैप्चर नहीं हो पाई। कृपया दोबारा कोशिश करें।");
+      return;
+    }
+    ctx.save();
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
+    ctx.restore();
+
+        const base64Stamp = canvas.toDataURL("image/jpeg", 0.3);
+    const dayStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth()+1).padStart(2, '0')}-${now.getFullYear()}`;
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+    
+    const entry = {
+      time: timeStr,
+      fullStamp: "📅 " + dayStr + " | ⏰ " + timeStr,
+      photo: base64Stamp,
+      statusMsg: "VERIFIED LIVE SELFIE",
+      isReal: true,
+      name: currentlyLoadedMember.name,
+      phone: currentlyLoadedMember.phone,
+      slot: currentlyLoadedMember.slot || "",
+      feesDue: !!window.__attFeesDueFlag,
+      gps: window.__lastGpsMeta || null
+    };
+    attendanceRecords[mid] = entry;
+    try { delete attendanceRecords[currentlyLoadedMember.id]; } catch(e) {}
+    attendanceRecords[mid] = entry;
+    try { (currentlyLoadedMember.__twins || []).forEach(function(t){ attendanceRecords[t] = Object.assign({}, entry, { aliasOf: mid, photo: "" }); }); } catch(e) {}
+    // phone alias — id mismatch pe bhi present dikhe
+    try {
+      var phKey = normPhone(currentlyLoadedMember.phone);
+      if (phKey && phKey.length === 10) {
+        attendanceRecords["phone:" + phKey] = Object.assign({}, entry, { aliasOf: mid });
+      }
+    } catch(e) {}
+    logAttendanceAttempt(currentlyLoadedMember, "selfie_saved", { hasPhoto: true });
+    try { refreshTodayStats(); } catch(e) {}
+
+    let savedOk = false;
+    try {
+      localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
+      savedOk = true;
+    } catch (storageError) {
+      console.error("Storage full:", storageError);
+      // photo hata ke sirf presence save
+      try {
+        const light = Object.assign({}, entry, { photo: "" });
+        attendanceRecords[mid] = light;
+        localStorage.setItem("5bfc_attendance_" + todayISO, JSON.stringify(attendanceRecords));
+        savedOk = true;
+        alert("Storage full — present save ho gaya, photo skip.");
+      } catch (e2) {
+        alert("❌ Save fail: phone storage full. Purani selfies gallery se clear karni padengi.");
+      }
+    }
+
+    try {
+      if (typeof db !== "undefined" && db) {
+        // Cloud pe meta + chhoti photo (baaki phones ko present dikhe)
+        var cloudEntry = Object.assign({}, attendanceRecords[mid]);
+        if (cloudEntry.photo && cloudEntry.photo.length > 180000) {
+          cloudEntry = Object.assign({}, cloudEntry, { photo: "" }); // badi photo sirf local
+        }
+        var cloudPayload = {};
+        cloudPayload[String(mid)] = cloudEntry;
+        try { (currentlyLoadedMember.__twins || []).forEach(function(t){ cloudPayload[String(t)] = Object.assign({}, cloudEntry, { aliasOf: mid, photo: "" }); }); } catch(e) {}
+        try {
+          var pk = normPhone(currentlyLoadedMember.phone);
+          if (pk && pk.length===10) cloudPayload["phone:"+pk] = Object.assign({}, cloudEntry, { aliasOf: mid });
+        } catch(e) {}
+        await db.collection("attendance").doc(todayISO).set(cloudPayload, { merge: true });
+      }
+    } catch (cloudErr) {
+      console.error("Attendance cloud sync error:", cloudErr);
+    }
+
+    // verify read-back
+    const check = fetchAttendanceMapForDate(todayISO);
+    if (!(check && check[mid] && check[mid].isReal)) {
+      alert("⚠ Present save confirm nahi hua. Dubara CAPTURE try karo.");
+      return;
+    }
+
+    currentDateISO = todayISO;
+
+    let target = currentlyLoadedMember;
+    let todayDate = new Date();
+    let monthStart = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
+    let totalAttendedInCycle = 0;
+    let curr = new Date(monthStart);
+    while(curr <= todayDate) {
+      let isoStr = getLocalDateISO(curr);
+      let dayAttMap = fetchAttendanceMapForDate(isoStr) || {};
+      if (isMemberPresentInMap(dayAttMap, target)) totalAttendedInCycle++;
+      curr.setDate(curr.getDate() + 1);
+    }
+
+    closeCameraModal();
+
+    // Motivational messages (random)
+    const motivations = [
+      { emoji: "💪", title: "BEAST MODE ON!", msg: "Aaj aapne apne aap se promise pura kiya. Keep going!" },
+      { emoji: "🔥", title: "CONSISTENCY WINS!", msg: "Roz thoda thoda = Bada result. Aap sahi raaste par ho!" },
+      { emoji: "🏆", title: "CHAMPION MINDSET!", msg: "Gym aana = Winning decision. Proud of you!" },
+      { emoji: "⚡", title: "ENERGY UNLOCKED!", msg: "Aaj ki mehnat kal ke aapko strong banayegi." },
+      { emoji: "🚀", title: "LEVEL UP!", msg: "Har attendance ek step closer to your goal." },
+      { emoji: "👊", title: "NO EXCUSES!", msg: "Aap aaye, aapne kiya. That's real discipline." },
+      { emoji: "🌟", title: "RESPECT!", msg: "Khud ke liye time nikaala – yeh sabse badi jeet hai." }
+    ];
+    const pick = motivations[Math.floor(Math.random() * motivations.length)];
+
+    document.getElementById("celebrateEmoji").innerText = pick.emoji;
+    document.getElementById("celebrateHeaderTitle").innerText = pick.title;
+    document.getElementById("celebrateMemberName").innerText = `THANK YOU ${currentlyLoadedMember.name.toUpperCase()}!`;
+    document.getElementById("celebrateSubTitle").innerText = pick.msg;
+    document.getElementById("celebrateMainMsg").innerText = "आपकी उपस्थिति आज सफलतापूर्वक दर्ज हो गई है।";
+    document.getElementById("celebrateAttendedDays").innerText = `इस महीने (1 तारीख से) कुल ${totalAttendedInCycle} दिन आ चुके हैं 🔥`;
+    var __showCel = function () {
+      document.getElementById("attendanceCelebrationModal").classList.add("show");
+      updateSmartBackLabel();
+    };
+    // Attendance lagte hi dahadta sher wala Welcome pop-up, uske baad pehle wala "Thank you" box
+    try {
+      if (typeof window.showRoarWelcome === "function") window.showRoarWelcome({ name: currentlyLoadedMember.name, onDone: __showCel });
+      else __showCel();
+    } catch (e) { __showCel(); }
+  }
+
+  function completeAttendanceAndResetKiosk() {
+    const modal = document.getElementById('attendanceCelebrationModal');
+    if (modal) modal.classList.remove('show');
+    if (__cameFromList && __listReturn) { returnToListView(); return; }
+    cancelSearchAndReset();
+  }
+
+  async function openAdminMemberManager(memberId) {
+    if (!isAdminUnlocked && !askAdminPin("🔒 5 BFC Admin code दर्ज करें:")) return;
+
+    let allRecords = await fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (!m) { alert("सदस्य नहीं मिला!"); return; }
+
+    let modal = document.getElementById("adminMemberManagerModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "adminMemberManagerModal";
+      modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;";
+      document.body.appendChild(modal);
+    }
+
+    const currentStat = m.manualStatus || 'Paid';
+    let now = new Date();
+
+    modal.innerHTML = `
+      <div style="background:#111; border:2px solid #ffcc00; border-radius:14px; max-width:460px; width:100%; padding:18px; color:#fff; max-height:90vh; overflow-y:auto; box-sizing:border-box;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:12px;">
+          <h3 style="color:#ffcc00; margin:0; font-size:15px;">⚙️ Admin Control: ${m.name}</h3>
+          <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'" style="background:#333; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;">✕</button>
+        </div>
+
+        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 ज्वाइनिंग तिथि बदलें:</div>
+          <input type="date" id="adminEditableJoinDate" value="${m.joinDate || ''}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+          
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📅 अंतिम फीस की तारीख बदलें:</div>
+          <input type="date" id="adminEditableLastPaid" value="${m.lastPaid || m.joinDate}" style="width:100%; background:#000; color:#ffcc00; border:1px solid #555; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+          
+          <button onclick="saveAdminDates('${m.id}')" style="background:#ffcc00; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 ज्वाइनिंग व फीस तिथियां अपडेट करें</button>
+        </div>
+
+        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">📋 मासिक प्लान बदलें (Plan Months):</div>
+          <select id="adminPlanMonthsSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+            <option value="1" ${Number(m.planMonths) === 1 ? 'selected' : ''}>1 महीना (1 Month)</option>
+            <option value="3" ${Number(m.planMonths) === 3 ? 'selected' : ''}>3 महीने (3 Months)</option>
+            <option value="6" ${Number(m.planMonths) === 6 ? 'selected' : ''}>6 महीने (6 Months)</option>
+            <option value="12" ${Number(m.planMonths) === 12 ? 'selected' : ''}>1 साल (12 Months)</option>
+          </select>
+          <button onclick="saveAdminPlan('${m.id}')" style="background:#00c8ff; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 प्लान अपडेट करें</button>
+        </div>
+
+        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">🚦 भुगतान ज़ोन (Payment Zone):</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;">
+            <button type="button" id="pz_green" onclick="setPayZone('${m.id}','green')" style="padding:9px 2px; border-radius:8px; font-size:12px; font-weight:900; cursor:pointer; background:#0b2a12; color:#25D366; border:2px solid ${payZoneOf(m)==='green' && m.payZone ? '#25D366' : '#2a4a32'}; ${payZoneOf(m)==='green' && m.payZone ? 'box-shadow:0 0 8px #25D366;' : ''}">🟢 Green<br><small style="font-weight:600;">समय पर देता है</small></button>
+            <button type="button" id="pz_yellow" onclick="setPayZone('${m.id}','yellow')" style="padding:9px 2px; border-radius:8px; font-size:12px; font-weight:900; cursor:pointer; background:#2a2200; color:#ffcc00; border:2px solid ${payZoneOf(m)==='yellow' ? '#ffcc00' : '#4a4020'}; ${payZoneOf(m)==='yellow' ? 'box-shadow:0 0 8px #ffcc00;' : ''}">🟡 Yellow<br><small style="font-weight:600;">कभी-कभी लेट</small></button>
+            <button type="button" id="pz_red" onclick="setPayZone('${m.id}','red')" style="padding:9px 2px; border-radius:8px; font-size:12px; font-weight:900; cursor:pointer; background:#2a0b0b; color:#ff5555; border:2px solid ${payZoneOf(m)==='red' ? '#ff5555' : '#4a2a2a'}; ${payZoneOf(m)==='red' ? 'box-shadow:0 0 8px #ff5555;' : ''}">🔴 Red<br><small style="font-weight:600;">हमेशा लेट</small></button>
+          </div>
+          <div style="font-size:10px; color:#888; margin-top:6px; line-height:1.5;">🟢 कोई चेतावनी नहीं · 🟡 "समय से भुगतान करें, वरना Group में साझा" · 🔴 (चुना न हो तो भी) भंडारा वाली सख्त लाइन</div>
+        </div>
+
+        <div style="background:#1f1f1f; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; color:#ffcc00; font-weight:bold; margin-bottom:6px;">💰 फीस स्थिति (Fee Status Control):</div>
+          <select id="adminFeeStatusSelect" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; margin-bottom:8px;">
+            <option value="Paid" ${currentStat === 'Paid' ? 'selected' : ''}>✅ Paid (फीस जमा है)</option>
+            <option value="Pending" ${currentStat === 'Pending' ? 'selected' : ''}>❌ Pending (फीस बकाया है)</option>
+          </select>
+          <div style="font-size:11px; color:#ffcc00; font-weight:bold; margin:6px 0 4px;">💵 राशि (₹) — बकाया अपने आप निकलेगा:</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:8px;">
+            <input type="number" min="0" id="adminPlanFee" placeholder="कुल फीस" value="${m.planFee || ''}" oninput="adminCalcDue()" style="background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box;">
+            <input type="number" min="0" id="adminPaidAmt" placeholder="जमा" value="${m.paidAmount || ''}" oninput="adminCalcDue()" style="background:#000; border:1px solid #555; color:#fff; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box;">
+            <input type="number" min="0" id="adminDueAmt" placeholder="बकाया" value="${m.dueAmount || ''}" style="background:#000; border:1px solid #ff4444; color:#ff8080; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box;">
+          </div>
+          <button onclick="saveAdminFeeStatus('${m.id}')" style="background:#00ff66; color:#000; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; width:100%;">💾 फीस स्टेटस अपडेट करें</button>
+        </div>
+
+        <div id="attendanceCalendarContainer" style="background:#1a1a1a; border:1.5px solid var(--gold); border-radius:12px; padding:10px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="display:flex;align-items:center;gap:6px;"><button type="button" onclick="calNav(-1)" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:4px 9px;font-weight:900;cursor:pointer;">◀</button><h4 id="calendarMonthTitle" style="color:var(--gold); font-size:14px; margin:0;min-width:96px;text-align:center;">October 2026</h4><button type="button" onclick="calNav(1)" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:4px 9px;font-weight:900;cursor:pointer;">▶</button></div>
+            <div style="font-size:11px; color:#00ff66; font-weight:bold;" id="totalPresentCounter">Total Present: 0 Days</div>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:10px; font-weight:bold; color:#888; margin-bottom:4px;">
+            <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
+          </div>
+          <div id="calendarDaysGrid" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:4px;"></div>
+        </div>
+
+        <div style="background:#1f1f1f; padding:10px; border-radius:8px; margin-bottom:12px;">
+          <button onclick="deleteMemberPermanently('${m.id}')" style="background:#ff3333; color:#000; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">🗑️ इस सदस्य को हमेशा के लिए डिलीट करें</button>
+        </div>
+
+        <button onclick="document.getElementById('adminMemberManagerModal').style.display='none'; if (currentlyLoadedMember) loadSingleMemberKioskCard(currentlyLoadedMember.id);" style="width:100%; background:#00ff66; color:#000; font-weight:bold; padding:10px; border:none; border-radius:8px; cursor:pointer; font-size:12px;">✔ सहेजें और बंद करें</button>
+      </div>
+    `;
+    modal.style.display = "flex";
+    renderAttendanceCalendar(m, now.getFullYear(), now.getMonth());
+  }
+
+  async function saveAdminDates(memberId) {
+    let newJoin = document.getElementById("adminEditableJoinDate").value;
+    let newLastPaid = document.getElementById("adminEditableLastPaid").value;
+    if (!newJoin && !newLastPaid) return;
+
+    let allRecords = await fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (m) {
+      if (newJoin) m.joinDate = newJoin;
+      if (newLastPaid) {
+        if (newLastPaid !== m.lastPaid) { m.manualStatus = "Paid"; m.feesPromiseDate = ""; }
+        m.lastPaid = newLastPaid;
+      }
+      await syncMemberToCloud(m);
+      alert("✅ ज्वाइनिंग और अंतिम फीस की तारीख सफलतापूर्वक अपडेट कर दी गई है!");
+      openAdminMemberManager(m.id);
+    }
+  }
+
+  async function saveAdminPlan(memberId) {
+    let months = document.getElementById("adminPlanMonthsSelect").value;
+    let allRecords = await fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (m) {
+      m.planMonths = Number(months);
+      m.plan = `सामान्य (General Fitness - ₹500/माह x ${months} माह)`;
+      await syncMemberToCloud(m);
+      alert("✅ सदस्य का प्लान सफलतापूर्वक अपडेट कर दिया गया है!");
+      openAdminMemberManager(m.id);
+    }
+  }
+
+  // ================= Payment Zone — instant =================
+  var __zoneDirty = {}, __zoneTimer = null, __zoneStatusCb = null;
+  function setZoneFast(id, zone) {
+    if (!isAdminUnlocked) return false;
+    keepAdminAlive();
+    var m = (cachedMembersList || []).find(function (x) { return String(x.id) === String(id); });
+    if (m) m.payZone = zone;
+    if (currentlyLoadedMember && String(currentlyLoadedMember.id) === String(id)) currentlyLoadedMember.payZone = zone;
+    __zoneDirty[String(id)] = zone;
+    if (m && m.__twins) m.__twins.forEach(function (t) { __zoneDirty[String(t)] = zone; });
+    if (__zoneStatusCb) __zoneStatusCb("saving");
+    clearTimeout(__zoneTimer);
+    __zoneTimer = setTimeout(flushZones, 700);      // kai tap ek saath save (fast)
+    return true;
+  }
+  async function flushZones() {
+    var dirty = __zoneDirty; __zoneDirty = {};
+    var ids = Object.keys(dirty); if (!ids.length) return;
+    try {
+      ["5BFC_MEMBERS", "bbf_master_records_v4", "5bfc_admissions"].forEach(function (key) {
+        var arr; try { arr = JSON.parse(localStorage.getItem(key) || "[]"); } catch (e) { return; }
+        if (!Array.isArray(arr)) return;
+        var ch = false;
+        arr.forEach(function (r) { if (r && dirty[String(r.id)] !== undefined) { r.payZone = dirty[String(r.id)]; ch = true; } });
+        if (ch) localStorage.setItem(key, JSON.stringify(arr));
+      });
+    } catch (e) { console.warn("zone local save", e); }
+    try {
+      for (var i = 0; i < ids.length; i += 400) {
+        var batch = db.batch();
+        ids.slice(i, i + 400).forEach(function (id) { batch.set(db.collection("members").doc(String(id)), { payZone: dirty[id] }, { merge: true }); });
+        await batch.commit();
+      }
+      if (__zoneStatusCb) __zoneStatusCb(Object.keys(__zoneDirty).length ? "saving" : "done");
+    } catch (e) {
+      ids.forEach(function (id) { if (__zoneDirty[id] === undefined) __zoneDirty[id] = dirty[id]; });
+      if (__zoneStatusCb) __zoneStatusCb("offline");
+      setTimeout(flushZones, 8000);
+    }
+  }
+  function paintZoneButtons(root, zone) {
+    var cols = { green: "#25D366", yellow: "#ffcc00", red: "#ff5555" };
+    ["green", "yellow", "red"].forEach(function (z) {
+      var b = root.querySelector('[data-z="' + z + '"]'); if (!b) return;
+      var on = (z === zone);
+      b.style.opacity = (zone && !on) ? "0.35" : "1";
+      b.style.boxShadow = on ? "0 0 10px " + cols[z] : "none";
+      b.style.transform = on ? "scale(1.12)" : "scale(1)";
+    });
+  }
+  async function setPayZone(memberId, zone) {
+    if (!isAdminUnlocked && !askAdminPin("🔒 Payment Zone badalne ke liye Admin code dalo:")) return;
+    setAdminUnlocked();
+    setZoneFast(memberId, zone);
+    var cols = { green: ["#25D366", "#2a4a32"], yellow: ["#ffcc00", "#4a4020"], red: ["#ff5555", "#4a2a2a"] };
+    ["green", "yellow", "red"].forEach(function (z) {
+      var b = document.getElementById("pz_" + z); if (!b) return;
+      var on = z === zone;
+      b.style.borderColor = on ? cols[z][0] : cols[z][1];
+      b.style.boxShadow = on ? "0 0 8px " + cols[z][0] : "none";
+    });
+  }
+
+  async function openZoneManager() {
+    if (!isAdminUnlocked && !askAdminPin("🔒 Zone set karne ke liye Admin code dalo:")) return;
+    setAdminUnlocked();
+    var all = (await fetchStoredMembers()).slice().sort(function (a, b) { return String(a.name || "").localeCompare(String(b.name || ""), "hi"); });
+    var modal = document.getElementById("zoneListModal");
+    if (!modal) {
+      modal = document.createElement("div"); modal.id = "zoneListModal";
+      modal.style.cssText = "position:fixed;inset:0;z-index:99990;background:#050505;overflow-y:auto;-webkit-overflow-scrolling:touch;";
+      document.body.appendChild(modal);
+    }
+    var filter = "all", q = "";
+    modal.innerHTML =
+      '<div style="position:sticky;top:0;background:#0b0b0b;border-bottom:2px solid #ffcc00;padding:10px 12px;z-index:2;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">' +
+          '<div style="color:#ffcc00;font-weight:900;font-size:15px;">🚦 भुगतान ज़ोन — सभी सदस्य</div>' +
+          '<button id="zmClose" style="background:#ffcc00;color:#000;border:none;border-radius:8px;padding:7px 12px;font-weight:900;font-size:12px;cursor:pointer;">✔ बंद करें</button>' +
+        '</div>' +
+        '<div id="zmCount" style="font-size:12px;color:#ccc;margin:6px 0;"></div>' +
+        '<input id="zmSearch" type="search" placeholder="🔍 नाम खोजें" style="width:100%;box-sizing:border-box;background:#161616;border:1.5px solid #444;color:#fff;padding:9px;border-radius:8px;font-size:13px;outline:none;">' +
+        '<div id="zmChips" style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;"></div>' +
+        '<div id="zmStatus" style="font-size:11px;color:#7dffa0;margin-top:6px;">✅ सब सेव है</div>' +
+      '</div>' +
+      '<div id="zmList"></div>';
+    modal.style.display = "block";
+    var listEl = modal.querySelector("#zmList");
+
+    function zoneOf(m) { var z = String(m.payZone || "").toLowerCase(); return (z === "green" || z === "yellow" || z === "red") ? z : ""; }
+    function counts() {
+      var c = { green: 0, yellow: 0, red: 0, none: 0 };
+      all.forEach(function (m) { var z = zoneOf(m); if (z) c[z]++; else c.none++; });
+      modal.querySelector("#zmCount").innerHTML = "कुल " + all.length + " · 🟢 <b>" + c.green + "</b> · 🟡 <b>" + c.yellow + "</b> · 🔴 <b>" + c.red + "</b> · ⚪ बिना ज़ोन <b>" + c.none + "</b>";
+      return c;
+    }
+    function chips() {
+      var defs = [["all", "सब"], ["none", "⚪ बिना ज़ोन"], ["green", "🟢"], ["yellow", "🟡"], ["red", "🔴"]];
+      modal.querySelector("#zmChips").innerHTML = defs.map(function (d) {
+        var on = d[0] === filter;
+        return '<button data-f="' + d[0] + '" style="border:1.5px solid ' + (on ? "#ffcc00" : "#444") + ';background:' + (on ? "#ffcc00" : "#161616") + ';color:' + (on ? "#000" : "#ddd") + ';border-radius:16px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;">' + d[1] + '</button>';
+      }).join("");
+    }
+    function btn(z, emoji, col) {
+      return '<button data-z="' + z + '" style="width:46px;height:46px;border-radius:50%;border:2px solid ' + col + ';background:#111;font-size:22px;cursor:pointer;padding:0;transition:transform .08s,opacity .08s;">' + emoji + '</button>';
+    }
+    function render() {
+      var qq = q.trim().toLowerCase();
+      var rows = all.filter(function (m) {
+        if (qq && (String(m.name || "") + " " + String(m.phone || "")).toLowerCase().indexOf(qq) < 0) return false;
+        var z = zoneOf(m);
+        if (filter === "none") return !z;
+        if (filter === "all") return true;
+        return z === filter;
+      });
+      listEl.innerHTML = rows.map(function (m) {
+        return '<div class="zrow" data-id="' + esc(String(m.id)) + '" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #1d1d1d;">' +
+          '<div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(m.name || "—") + '</div>' +
+          '<div style="font-size:10px;color:#777;">' + esc(m.phone || "") + '</div></div>' +
+          btn("green", "🟢", "#25D366") + btn("yellow", "🟡", "#ffcc00") + btn("red", "🔴", "#ff5555") + '</div>';
+      }).join("") || '<div style="color:#888;text-align:center;padding:30px;font-size:13px;">कोई सदस्य नहीं</div>';
+      Array.prototype.forEach.call(listEl.querySelectorAll(".zrow"), function (row) {
+        var m = all.find(function (x) { return String(x.id) === row.getAttribute("data-id"); });
+        if (m) paintZoneButtons(row, zoneOf(m));
+      });
+    }
+    counts(); chips(); render();
+    __zoneStatusCb = function (st) {
+      var el = modal.querySelector("#zmStatus"); if (!el) return;
+      el.style.color = st === "done" ? "#7dffa0" : st === "offline" ? "#ff9966" : "#ffcc00";
+      el.textContent = st === "done" ? "✅ सब सेव है" : st === "offline" ? "⚠️ नेट नहीं है — फ़ोन में सेव है, नेट आते ही अपने आप सेव होगा" : "⏳ सेव हो रहा है...";
+    };
+    listEl.onclick = function (e) {
+      var b = e.target.closest("button[data-z]"); if (!b) return;
+      var row = b.closest(".zrow"); var id = row.getAttribute("data-id");
+      var zone = b.getAttribute("data-z");
+      var m = all.find(function (x) { return String(x.id) === id; }); if (!m) return;
+      if (!setZoneFast(id, zone)) { alert("🔒 Admin lock हो गया — दोबारा खोलें"); return; }
+      m.payZone = zone;                    // turant screen par
+      paintZoneButtons(row, zone);
+      counts();
+    };
+    modal.querySelector("#zmChips").onclick = function (e) { var b = e.target.closest("button[data-f]"); if (!b) return; filter = b.getAttribute("data-f"); chips(); render(); };
+    modal.querySelector("#zmSearch").oninput = function () { q = this.value; render(); };
+    modal.querySelector("#zmClose").onclick = function () { flushZones(); modal.style.display = "none"; __zoneStatusCb = null; };
+  }
+
+  function adminCalcDue() {
+    var f = Number(document.getElementById("adminPlanFee").value) || 0;
+    var p = Number(document.getElementById("adminPaidAmt").value) || 0;
+    if (f > 0) document.getElementById("adminDueAmt").value = Math.max(0, f - p) || "";
+  }
+
+  async function saveAdminFeeStatus(memberId) {
+    if (!isAdminUnlocked && !askAdminPin("🔒 Fees status badalne ke liye Admin code dalo:")) return;
+    let allRecords = await fetchStoredMembers();
+    let m = allRecords.find(r => r.id.toString() === memberId.toString());
+    if (!m) return;
+    let newStatus = document.getElementById("adminFeeStatusSelect").value;
+    if (newStatus === "Paid" && String(m.manualStatus || "Paid") !== "Paid") { m.lastPaid = getLocalDateISO(new Date()); m.feesPromiseDate = ""; }
+    m.manualStatus = newStatus;
+    m.planFee = Number(document.getElementById("adminPlanFee").value) || 0;
+    m.paidAmount = Number(document.getElementById("adminPaidAmt").value) || 0;
+    m.dueAmount = Number(document.getElementById("adminDueAmt").value) || 0;
+    await syncMemberToCloud(m);
+    alert("✅ फीस स्टेटस सफलतापूर्वक अपडेट कर दिया गया है!");
+    document.getElementById('adminMemberManagerModal').style.display = 'none';
+    loadSingleMemberKioskCard(m.id);
+  }
+
+  async function deleteMemberPermanently(memberId) {
+    if (!confirm("⚠️ इस सदस्य को हटाना है?\n\nपूरा डेटा 'Ex-Members' में सुरक्षित रहेगा — वापस आने पर Admission पेज से 1 क्लिक में Rejoin हो जाएगा।")) return;
+    try {
+      // Delete se pehle poora data "ex_members" me archive (Rejoining ke liye)
+      let full = {};
+      try { const s = await db.collection("members").doc(String(memberId)).get(); if (s.exists) full = s.data() || {}; } catch (e) {}
+      ["5BFC_MEMBERS", "bbf_master_records_v4", "5bfc_admissions"].forEach(function (k) {
+        try {
+          const arr = JSON.parse(localStorage.getItem(k) || "[]");
+          const r = Array.isArray(arr) && arr.find(x => x && String(x.id) === String(memberId));
+          if (r) full = Object.assign({}, r, full);
+        } catch (e) {}
+      });
+      const nowD = new Date();
+      const rec = Object.assign({}, full, {
+        id: String(memberId),
+        phone: String(full.phone || "").replace(/\D/g, "").slice(-10),
+        leftDate: getLocalDateISO(nowD),
+        archivedAt: Date.now(),
+        archivedFrom: "attendance"
+      });
+      try {
+        await db.collection("ex_members").doc(String(memberId)).set(JSON.parse(JSON.stringify(rec)));
+      } catch (e) {
+        console.error("archive", e);
+        if (!confirm("⚠️ Ex-Members me data save nahi hua (internet?).\n\nPhir bhi hata dein? Yeh wapas nahi aayega.")) return;
+      }
+      // local se bhi hatao, warna is phone par wapas dikh sakta hai
+      ["5BFC_MEMBERS", "bbf_master_records_v4", "5bfc_admissions"].forEach(function (k) {
+        try {
+          const arr = JSON.parse(localStorage.getItem(k) || "[]");
+          if (Array.isArray(arr)) localStorage.setItem(k, JSON.stringify(arr.filter(x => !x || String(x.id) !== String(memberId))));
+        } catch (e) {}
+      });
+      await db.collection("members").doc(String(memberId)).delete();
+      alert("✅ सदस्य हटा दिया गया (Ex-Members में सुरक्षित)!");
+      document.getElementById('adminMemberManagerModal').style.display = 'none';
+      cancelSearchAndReset();
+      location.reload();
+    } catch (err) {
+      alert("❌ डिलीट करने में समस्या आई: " + err.message);
+    }
+  }
+
+  async function openSlotChangerModal() {
+    if (!isAdminUnlocked && !askAdminPin("🔒 Slot badalne ke liye Admin code dalo:")) return;
+    document.getElementById("slotChangerMemberName").innerText = `सदस्य: ${currentlyLoadedMember.name} (वर्तमान: ${currentlyLoadedMember.slot})`;
+    document.getElementById("slotChangerModal").classList.add("show");
+  }
+
+  async function saveNewMemberSlot(newSlot) {
+    if (!currentlyLoadedMember) return;
+    if (!isAdminUnlocked && !askAdminPin("🔒 Admin code dalo:")) return;
+    currentlyLoadedMember.slot = newSlot;
+    await syncMemberToCloud(currentlyLoadedMember);
+    alert(`✅ स्लॉट बदलकर "${newSlot}" कर दिया गया!`);
+    closeModal('slotChangerModal');
+    loadSingleMemberKioskCard(currentlyLoadedMember.id);
+  }
+
+  function unlockAdminControl() {
+    if (!askAdminPin("🔒 Admin code दर्ज करें:")) return;
+    openAdminHub();
+  }
+
+  function openAdminHub() {
+    let modal = document.getElementById("adminHubModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "adminHubModal";
+      modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999999;display:flex;align-items:center;justify-content:center;padding:14px;";
+      document.body.appendChild(modal);
+    }
+    modal.innerHTML = `
+      <div style="background:#111;border:2px solid #ffcc00;border-radius:16px;max-width:400px;width:100%;padding:18px;color:#fff;">
+        <h3 style="margin:0 0 6px;color:#ffcc00;text-align:center;">🔒 Admin Panel</h3>
+        <p style="font-size:12px;color:#aaa;text-align:center;margin:0 0 14px;">Selfie data safe hai — yahan se delete nahi hota</p>
+        <button type="button" onclick="document.getElementById('adminHubModal').style.display='none'; openAdminPhotoVault();" style="width:100%;background:linear-gradient(135deg,#00ff66,#00cc55);color:#000;font-weight:900;border:0;border-radius:12px;padding:16px;margin-bottom:10px;font-size:15px;cursor:pointer;">📸 Selfie Gallery (Calendar se date choose)</button>
+        <button type="button" onclick="document.getElementById('adminHubModal').style.display='none';" style="width:100%;background:#222;color:#eee;border:1px solid #555;border-radius:12px;padding:14px;margin-bottom:10px;font-size:14px;font-weight:700;cursor:pointer;">✓ Sirf unlock (attendance normal)</button>
+        <button type="button" onclick="changeAdminPin()" style="width:100%;background:#0a1a2a;color:#6cf;border:1px solid #1d4a6b;border-radius:12px;padding:12px;margin-bottom:10px;font-size:13px;font-weight:700;cursor:pointer;">🔑 Admin code badlo</button>
+        <button type="button" onclick="document.getElementById('adminHubModal').style.display='none'; openDuplicateManager();" style="width:100%;background:#1a1000;color:#ff9900;border:1px solid #664400;border-radius:12px;padding:12px;font-size:12px;cursor:pointer;">⚠ Duplicate members (optional — member list only, selfie nahi)</button>
+        <button type="button" onclick="document.getElementById('adminHubModal').style.display='none'" style="width:100%;margin-top:10px;background:#333;color:#aaa;border:0;border-radius:10px;padding:10px;cursor:pointer;">Band karo</button>
+      </div>`;
+    modal.style.display = "flex";
+  }
+
+  function formatDateDisplay(iso) {
+    if (!iso || iso.length < 10) return iso || "—";
+    const p = String(iso).slice(0,10).split("-");
+    if (p.length === 3 && p[0].length === 4) return p[2] + "-" + p[1] + "-" + p[0];
+    return iso;
+  }
+
+  function listAttendanceDates() {
+    const dates = [];
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.indexOf("5bfc_attendance_") === 0) {
+          const d = k.replace("5bfc_attendance_", "");
+          if (/^\d{4}-\d{2}-\d{2}$/.test(d)) dates.push(d);
+        }
+      }
+    } catch (e) {}
+    dates.sort();
+    dates.reverse();
+    return dates;
+  }
+
+  function getMemberBatch(m) {
+    const slot = String(m.slot || m.timeSlot || "").toUpperCase();
+    const batch = String(m.batch || "").toLowerCase();
+    if (batch === "evening" || batch === "morning") return batch;
+    if (slot.indexOf("PM") >= 0 || slot.indexOf("P.M") >= 0) return "evening";
+    return "morning";
+  }
+
+  async function showBatchList(mode) {
+    __listReturn = function () { return showBatchList(mode); };
+    const box = document.getElementById("batchDirectListBox");
+    const allMembers = await fetchStoredMembers();
+    // aaj ki cloud attendance pehle pull
+    try { await loadAttendanceMapForDate(getLocalDateISO(new Date())); } catch(e) {}
+    let list = allMembers.slice();
+    if (mode === "morning") list = list.filter(m => getMemberBatch(m) === "morning");
+    if (mode === "evening") list = list.filter(m => getMemberBatch(m) === "evening");
+    list.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"hi"));
+    const title = mode === "morning" ? "🌅 Morning Batch" : mode === "evening" ? "🌙 Evening Batch" : "📋 All Members";
+    document.getElementById("directListTitle").innerText = title + " (" + list.length + ")";
+    const container = document.getElementById("directListContainerNode");
+    const now = new Date();
+    const y = now.getFullYear(), mo = now.getMonth();
+    container.innerHTML = "";
+    if (!list.length) {
+      container.innerHTML = '<div style="color:#aaa;font-size:12px;text-align:center;padding:12px;">Is batch me koi member nahi</div>';
+    } else {
+      list.forEach(m => {
+        const mStatus = m.manualStatus || m.status || "Paid";
+        const isPaid = /paid/i.test(String(mStatus));
+        const b = getMemberBatch(m);
+        // this month present count
+        let present = 0;
+        const start = new Date(y, mo, 1);
+        const d = new Date(start);
+        while (d.getMonth() === mo && d <= now) {
+          const iso = getLocalDateISO(d);
+          const map = fetchAttendanceMapForDate(iso);
+          if (map[m.id] && map[m.id].isReal) present++;
+          d.setDate(d.getDate() + 1);
+        }
+        container.innerHTML += `
+          <div class="search-result-item" onclick="loadSingleMemberKioskCard('${m.id}')">
+            <div style="flex:1">
+              <b style="color:#fff;font-size:13px;">${m.name||"—"}</b><br>
+              <small style="color:#888;">${m.phone||""} · ${b==="evening"?"🌙 Eve":"🌅 Mor"} · <span style="color:${isPaid?"#00ff66":"#ff4444"}">${mStatus}</span></small><br>
+              <small style="color:#ffcc00;">Is mahine: ${present} din present</small>
+            </div>
+            <button type="button" style="background:#ffcc00;color:#000;border:none;padding:6px 10px;border-radius:6px;font-weight:bold;font-size:11px;">चुनें</button>
+          </div>`;
+      });
+    }
+    box.style.display = "block";
+    document.getElementById("kioskHeroBox").style.display = "none";
+    updateSmartBackLabel();
+  }
+
+  async function openDuplicateManager() {
+    if (!isAdminUnlocked) return alert("Pehle Admin unlock karo");
+    const all = await fetchStoredMembers();
+    const byPhone = {};
+    const byNameFather = {};
+    all.forEach(m => {
+      const p = String(m.phone || "").replace(/\D/g,"").slice(-10);
+      if (p && p.length >= 10) {
+        if (!byPhone[p]) byPhone[p] = [];
+        byPhone[p].push(m);
+      }
+      const nk = (String(m.name||"").toLowerCase().replace(/\s+/g," ").trim()) + "|" + (String(m.parentName||"").toLowerCase().replace(/\s+/g," ").trim());
+      if (String(m.name||"").trim().length >= 3) {
+        if (!byNameFather[nk]) byNameFather[nk] = [];
+        byNameFather[nk].push(m);
+      }
+    });
+    const dups = Object.keys(byPhone).filter(p => byPhone[p].length > 1);
+    const nameDups = Object.keys(byNameFather).filter(k => byNameFather[k].length > 1 && byNameFather[k].map(x=>String(x.id)).filter((v,i,a)=>a.indexOf(v)===i).length > 1);
+    let modal = document.getElementById("dupManagerModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "dupManagerModal";
+      modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:999999;display:flex;align-items:flex-start;justify-content:center;padding:12px;overflow:auto;";
+      document.body.appendChild(modal);
+    }
+    let body = "";
+    if (!dups.length && !nameDups.length) {
+      body = '<div style="color:#00ff66;text-align:center;padding:20px;">✅ Koi duplicate phone / same name+father nahi mila</div>';
+    } else {
+      nameDups.forEach(k => {
+        const group = byNameFather[k];
+        const ids = group.map(x=>String(x.id));
+        const uniq = group.filter((m,i)=> ids.indexOf(String(m.id))===i);
+        if (uniq.length < 2) return;
+        body += '<div style="background:#1a1a1a;border:1px solid #4db8ff;border-radius:10px;padding:12px;margin-bottom:12px;">' +
+          '<div style="color:#4db8ff;font-weight:800;margin-bottom:8px;">👤 Same Name+Father · '+uniq.length+' entries</div>';
+        uniq.forEach((m,i) => {
+          body += '<div style="background:#111;border:1px solid #333;border-radius:8px;padding:10px;margin:6px 0;font-size:12px;line-height:1.4;">' +
+            '<b style="color:#fff;">'+(m.name||"—")+'</b><br>ID: '+m.id+' · Phone: '+(m.phone||"—")+' · Father: '+(m.parentName||"—")+' · Join: '+(m.joinDate||"—")+
+            '<br><button type="button" onclick="deleteDuplicateMember(\''+m.id+'\')" style="margin-top:6px;background:#ff3333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">🗑️ Delete this entry</button></div>';
+        });
+        body += '</div>';
+      });
+      dups.forEach(p => {
+        const group = byPhone[p];
+        body += `<div style="background:#1a1a1a;border:1px solid #ff9900;border-radius:10px;padding:12px;margin-bottom:12px;">
+          <div style="color:#ffcc00;font-weight:800;margin-bottom:8px;">📞 ${p} · ${group.length} entries</div>`;
+        group.forEach((m,i) => {
+          body += `<div style="background:#111;border:1px solid #333;border-radius:8px;padding:10px;margin:6px 0;font-size:12px;line-height:1.4;">
+            <b style="color:#fff;">${m.name||"—"}</b> ${i===0?'<span style="color:#00ff66;font-size:10px;">(rakhne layak?)</span>':''}<br>
+            ID: ${m.id} · Join: ${m.joinDate||"—"} · Plan: ${m.plan||"—"} · Slot: ${m.slot||"—"}<br>
+            Status: ${m.manualStatus||m.status||"—"} · Father: ${m.parentName||"—"}
+            <button type="button" onclick="deleteDuplicateMember('${m.id}')" style="margin-top:6px;background:#ff3333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">🗑️ Delete this entry</button>
+          </div>`;
+        });
+        body += "</div>";
+      });
+    }
+    modal.innerHTML = `<div style="background:#0d0d0d;border:2px solid #ffcc00;border-radius:14px;max-width:480px;width:100%;padding:16px;color:#fff;margin-top:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 style="margin:0;color:#ffcc00;font-size:16px;">🔁 Duplicate Members</h3>
+        <button type="button" onclick="document.getElementById('dupManagerModal').style.display='none'" style="background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;">✕</button>
+      </div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:10px;">Same mobile = duplicate. Jo rakhna hai usko chhodo, baaki Delete.</div>
+      <div style="max-height:65vh;overflow-y:auto;">${body}</div>
+      <button type="button" onclick="document.getElementById('dupManagerModal').style.display='none'" style="width:100%;margin-top:10px;background:#222;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;">Band karo</button>
+    </div>`;
+    modal.style.display = "flex";
+  }
+
+  async function deleteDuplicateMember(id) {
+    if (!isAdminUnlocked) return alert("Admin only");
+    if (!confirm("Yeh entry permanently delete?")) return;
+    try {
+      let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+      records = records.filter(r => String(r.id) !== String(id));
+      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records));
+      localStorage.setItem("bbf_master_records_v4", JSON.stringify(records));
+      if (typeof db !== "undefined" && db) {
+        try { await db.collection("members").doc(String(id)).delete(); } catch(e) {}
+      }
+      alert("Deleted");
+      openDuplicateManager();
+    } catch(e) {
+      alert("Delete fail: " + e.message);
+    }
+  }
+
+  async function setMemberBatch(memberId, batch) {
+    if (!isAdminUnlocked && !askAdminPin("🔒 Batch badalne ke liye Admin code dalo:")) return;
+    const all = await fetchStoredMembers();
+    const m = all.find(r => String(r.id) === String(memberId));
+    if (!m) return alert("Member nahi mila");
+    m.batch = batch;
+    if (batch === "morning" && (!m.slot || String(m.slot).toUpperCase().indexOf("PM")>=0)) m.slot = "06:00 AM - 07:00 AM";
+    if (batch === "evening" && (!m.slot || String(m.slot).toUpperCase().indexOf("AM")>=0)) m.slot = "06:30 PM - 07:30 PM";
+    try {
+      let records = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+      const ix = records.findIndex(r => String(r.id) === String(memberId));
+      if (ix >= 0) { records[ix].batch = batch; records[ix].slot = m.slot; localStorage.setItem("5BFC_MEMBERS", JSON.stringify(records)); localStorage.setItem("bbf_master_records_v4", JSON.stringify(records)); }
+    } catch(e) {}
+    await syncMemberToCloud(m);
+    alert("Batch → " + batch + " (save ho gaya)");
+    if (currentlyLoadedMember && String(currentlyLoadedMember.id)===String(memberId)) loadSingleMemberKioskCard(memberId);
+  }
+
+  function openAdminPhotoVault() {
+    let vaultModal = document.getElementById("adminPhotoVaultModal");
+    if (!vaultModal) {
+      vaultModal = document.createElement("div");
+      vaultModal.id = "adminPhotoVaultModal";
+      vaultModal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:999999;display:flex;justify-content:center;align-items:flex-start;padding:12px;overflow:auto;box-sizing:border-box;";
+      document.body.appendChild(vaultModal);
+    }
+
+    const dates = listAttendanceDates();
+    (function(){ // pichhle 21 din cloud se bhi dekho
+      const t = new Date();
+      for (let i = 0; i < 21; i++) { const d = new Date(t.getFullYear(), t.getMonth(), t.getDate() - i); const iso = getLocalDateISO(d); if (dates.indexOf(iso) < 0) dates.push(iso); }
+      dates.sort().reverse();
+    })();
+    const defaultDate = getLocalDateISO(new Date()) || dates[0]; const __unusedDefault = dates[0] || (typeof currentDateISO !== "undefined" ? currentDateISO : new Date().toISOString().slice(0,10));
+
+    async function renderVault(targetDate) {
+      let dayData = await loadAttendanceMapForDate(targetDate) || {};
+      /* ek insaan = ek entry (id/phone/naam se jodkar) */
+      let uniq = {};
+      Object.keys(dayData).forEach(function(k){
+        const e = dayData[k] || {};
+        if (!(e.isReal || (e.photo && String(e.photo).length > 30))) return;
+        if (e.aliasOf && dayData[e.aliasOf]) return; /* alias copy — asli entry pehle se hai */
+        const pk = normPhone(e.phone || (k.indexOf("phone:") === 0 ? k.slice(6) : ""));
+        const id = pk.length === 10 ? "p" + pk : (e.aliasOf ? "i" + e.aliasOf : (e.name ? "n" + normName(e.name) : "k" + k));
+        if (!uniq[id]) uniq[id] = { e: e, n: 1 };
+        else { uniq[id].n++; const o = uniq[id].e; if (!o.photo && e.photo) o.photo = e.photo; if (!o.name && e.name) o.name = e.name; if (!o.phone && e.phone) o.phone = e.phone; }
+      });
+      function tmin(t){ const m = String(t||"").match(/(\d{1,2}):(\d{2})\s*([ap]m)?/i); if(!m) return 9999; let h = +m[1]; const ap = (m[3]||"").toLowerCase(); if (ap === "pm" && h < 12) h += 12; if (ap === "am" && h === 12) h = 0; return h * 60 + (+m[2]); }
+      let people = Object.keys(uniq).map(k => uniq[k].e).sort((a,b) => tmin(a.time) - tmin(b.time));
+      let keys = people;
+      let galleryHTML = "";
+      if (keys.length === 0) {
+        galleryHTML = '<div style="color:#ff8888;text-align:center;padding:20px;">Is date ('+formatDateDisplay(targetDate)+') par koi selfie record nahi.<br><small style="color:#888;">Data delete nahi hua — galat date ho sakti hai</small></div>';
+      } else {
+        keys.forEach(function(entry, idx) {
+          let img = entry.photo ? '<img src="'+entry.photo+'" style="width:64px;height:64px;border-radius:8px;object-fit:cover;border:2px solid #00ff66;">' : '<div style="width:64px;height:64px;background:#222;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-size:10px;">No img</div>';
+          galleryHTML += '<div style="background:#181818;border:1px solid #333;border-radius:10px;padding:10px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">' +
+            img +
+            '<div style="text-align:left;font-size:12px;line-height:1.45;flex:1;">' +
+              '<b style="color:#ffcc00;font-size:14px;">'+(idx+1)+'. '+(entry.name||'Unknown')+'</b><br>' +
+              '<span style="color:#aaa;">📞 '+(entry.phone||'—')+'</span><br>' +
+              '<span style="color:#00ff66;">⏰ '+(entry.time||'')+' | 📅 '+formatDateDisplay(targetDate)+'</span>' +
+            '</div></div>';
+        });
+      }
+
+      let dateChips = dates.slice(0, 10).map(function(d) {
+        const on = d === targetDate;
+        return '<button type="button" data-vault-date="'+d+'" style="padding:8px 10px;border-radius:8px;border:1px solid '+(on?'#ffcc00':'#444')+';background:'+(on?'#2a2200':'#1a1a1a')+';color:'+(on?'#ffcc00':'#ccc')+';font-size:11px;font-weight:700;cursor:pointer;margin:3px;">'+formatDateDisplay(d)+'</button>';
+      }).join("");
+
+      vaultModal.innerHTML =
+        '<div style="background:#111;border:2px solid #00ff66;border-radius:14px;max-width:480px;width:100%;padding:16px;color:#fff;margin:10px auto 30px;box-sizing:border-box;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">' +
+            '<h3 style="margin:0;color:#00ff66;font-size:16px;">📸 Selfie Gallery</h3>' +
+            '<button type="button" id="vaultCloseBtn" style="background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;">✕</button>' +
+          '</div>' +
+          '<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Date choose karo (DD-MM-YYYY). Selfie data <b style="color:#00ff66;">safe</b> hai.</div>' +
+          '<label style="font-size:12px;color:#ffcc00;font-weight:700;">Calendar se date</label>' +
+          '<input type="date" id="vaultDatePicker" value="'+targetDate+'" style="width:100%;margin:6px 0 10px;padding:12px;border-radius:10px;border:1.5px solid #ffcc00;background:#000;color:#fff;font-size:16px;box-sizing:border-box;">' +
+          '<div style="margin-bottom:12px;max-height:90px;overflow:auto;">'+ (dateChips || '<span style="color:#666;font-size:11px;">Koi date nahi mili</span>') +'</div>' +
+          '<div style="text-align:center;background:#0d2614;border:1.5px solid #00ff66;border-radius:12px;padding:12px;margin-bottom:10px;">' +
+            '<div style="font-size:11px;color:#9dffbf;">📅 '+formatDateDisplay(targetDate)+' — Attendance</div>' +
+            '<div style="font-size:34px;font-weight:900;color:#00ff66;line-height:1.1;">'+keys.length+'</div>' +
+            '<div style="font-size:11px;color:#9dffbf;">लोगों की उपस्थिति लगी</div>' +
+          '</div>' +
+          '<div style="max-height:50vh;overflow-y:auto;">'+galleryHTML+'</div>' +
+          '<button type="button" id="vaultCloseBtn2" style="width:100%;background:#222;color:#fff;border:none;padding:12px;border-radius:8px;margin-top:12px;font-weight:bold;cursor:pointer;">Band karo</button>' +
+        '</div>';
+
+      vaultModal.style.display = "flex";
+      var dp = document.getElementById("vaultDatePicker");
+      if (dp) dp.onchange = function(){ renderVault(dp.value); };
+      vaultModal.querySelectorAll("[data-vault-date]").forEach(function(btn){
+        btn.onclick = function(){ renderVault(btn.getAttribute("data-vault-date")); };
+      });
+      var c1 = document.getElementById("vaultCloseBtn");
+      var c2 = document.getElementById("vaultCloseBtn2");
+      if (c1) c1.onclick = function(){ vaultModal.style.display="none"; };
+      if (c2) c2.onclick = function(){ vaultModal.style.display="none"; };
+    }
+
+    renderVault(defaultDate);
+  }
+
+  function closeCameraModal() {
+    document.getElementById("cameraBackdropModal").classList.remove("show");
+    // Keep stream alive for next selfie in same session (no re-permission)
+    updateSmartBackLabel();
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove("show");
+    updateSmartBackLabel();
+  }
+
+  function formatDateToDDMMYYYY(dateString) {
+    if (!dateString || dateString === "N/A") return "N/A";
+    let parts = dateString.split("-");
+    if (parts.length === 3) {
+      if (parts[0].length === 4) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      return dateString;
+    }
+    return dateString;
+  }
+
+  window.onload = () => {
+    runLiveSystemClock();
+    setInterval(runLiveSystemClock, 1000);
+    updateSmartBackLabel();
+    maybeShowPermGate();
+    try {
+      const iso = getLocalDateISO(new Date());
+      loadAttendanceMapForDate(iso)
+        .then(function(){ return refreshTodayStats(); })
+        .catch(function(){ refreshTodayStats(); });
+    } catch(e) { try { refreshTodayStats(); } catch(e2) {} }
+    // har 60 sec auto refresh counts
+    setInterval(function(){ try { refreshTodayStats(); } catch(e) {} }, 60000);
+  };
+
+  async function renderAttendanceCalendar(member, year, month, noCloud) {
+    const grid = document.getElementById("calendarDaysGrid");
+    const title = document.getElementById("calendarMonthTitle");
+    const counter = document.getElementById("totalPresentCounter");
+    if (!grid || !member) return;
+    window.__calView = { m: member, y: year, mo: month };
+    grid.innerHTML = "";
+    
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    if(title) title.innerText = `${monthNames[month]} ${year}`;
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    let startingSpace = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    let joinDateStr = member.joinDate || member.lastPaid || '2026-10-01';
+    let joinDate = new Date(joinDateStr);
+    let presentCount = 0;
+
+    for (let i = 0; i < startingSpace; i++) {
+      grid.innerHTML += `<div></div>`;
+    }
+
+    for (let day = 1; day <= totalDaysInMonth; day++) {
+      let dayISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      let currentDate = new Date(dayISO);
+      let isSunday = (currentDate.getDay() === 0);
+      let isBeforeJoin = currentDate < new Date(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate());
+
+      let dayMap = fetchAttendanceMapForDate(dayISO);
+      // Sunday auto-present HATA DIYA — sirf real mark / admin toggle se present
+      let isPresent = isMemberPresentInMap(dayMap, member);
+
+      if (isPresent && !isBeforeJoin) presentCount++;
+
+      let bgStyle = "background:#222; color:#fff; border:1px solid #444;";
+      let statusDot = `<div style="width:4px; height:4px; background:#ff4444; border-radius:50%; margin:2px auto 0;"></div>`;
+
+      const isFuture = dayISO > getLocalDateISO(new Date());
+      if (isFuture && !isPresent) { statusDot = ""; }
+      if (isBeforeJoin) {
+        bgStyle = "background:#111; color:#444; border:1px solid #222; opacity:0.3; cursor:not-allowed;";
+        statusDot = "";
+      } else if (isPresent) {
+        bgStyle = "background:#0d2614; color:#00ff66; border:1px solid #00ff66;";
+        statusDot = `<div style="width:4px; height:4px; background:#00ff66; border-radius:50%; margin:2px auto 0;"></div>`;
+      } else if (isSunday) {
+        // Sunday default absent — admin calendar pe click karke present mark kar sakta hai
+        bgStyle = "background:#1a1a22; color:#aaa; border:1px dashed #666;";
+        statusDot = `<div style="font-size:8px;color:#888;">Sun</div>`;
+      }
+
+      grid.innerHTML += `
+        <div onclick="${isBeforeJoin ? '' : `toggleCalendarDay('${member.id}', '${dayISO}')`}" 
+             style="${bgStyle} border-radius:6px; padding:6px 2px; text-align:center; font-size:11px; font-weight:bold; cursor:${isBeforeJoin ? 'not-allowed' : 'pointer'};">
+          <div>${day}</div>
+          ${statusDot}
+        </div>
+      `;
+    }
+    if(counter) counter.innerText = `Is mahine present: ${presentCount} din (sirf marked · Sunday auto nahi)` + (noCloud ? "" : " ⏳ cloud se check ho raha hai...");
+    if (!noCloud) {
+      const tok = (window.__calTok = (window.__calTok || 0) + 1);
+      const todayD = new Date();
+      const last = (year === todayD.getFullYear() && month === todayD.getMonth()) ? todayD.getDate() : totalDaysInMonth;
+      const jobs = [];
+      for (let d = 1; d <= last; d++) {
+        jobs.push(loadAttendanceMapForDate(`${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`).catch(() => null));
+      }
+      Promise.all(jobs).then(() => { if (tok === window.__calTok) renderAttendanceCalendar(member, year, month, true); });
+    }
+  }
+
+  function calNav(delta) {
+    const v = window.__calView; if (!v) return;
+    const d = new Date(v.y, v.mo + delta, 1);
+    renderAttendanceCalendar(v.m, d.getFullYear(), d.getMonth());
+  }
+
+  async function toggleCalendarDay(memberId, dateISO) {
+    // Turant respond: local data se toggle + screen update, cloud peeche se
+    const v = window.__calView || {};
+    let m = (v.m && String(v.m.id) === String(memberId)) ? v.m : (cachedMembersList || []).find(function (r) { return String(r.id) === String(memberId); });
+    if (!m) { try { const all = await fetchStoredMembers(); m = all.find(function (r) { return String(r.id) === String(memberId); }); } catch (e) {} }
+    const dayMap = fetchAttendanceMapForDate(dateISO) || {};
+    const pk = m ? normPhone(m.phone) : "";
+    const twins = (m && m.__twins) ? m.__twins.map(String) : [];
+    const ids = [String(memberId)].concat(twins);
+    const wasPresent = m ? isMemberPresentInMap(dayMap, m) : !!(dayMap[memberId] && dayMap[memberId].isReal);
+    let del = [], payload = null;
+    if (wasPresent) {
+      Object.keys(dayMap).forEach(function (k) {
+        const e = dayMap[k] || {};
+        if (ids.indexOf(k) >= 0 || (pk && (k === "phone:" + pk || normPhone(e.phone) === pk)) ||
+            (m && m.name && e.name && normName(e.name) === normName(m.name) && !(m.parentName && e.parentName && normName(m.parentName) !== normName(e.parentName)))) del.push(k);
+      });
+      del.forEach(function (k) { delete dayMap[k]; });
+    } else {
+      const entry = { time: "Manual Admin", fullStamp: "📅 " + dateISO + " | ⏰ Manual", photo: "", isReal: true, name: m ? m.name : "", phone: m ? m.phone : "" };
+      payload = {};
+      ids.forEach(function (id, i) { const e = i === 0 ? entry : Object.assign({}, entry, { aliasOf: String(memberId) }); dayMap[id] = e; payload[id] = e; });
+      if (pk.length === 10) { const pe = Object.assign({}, entry, { aliasOf: String(memberId) }); dayMap["phone:" + pk] = pe; payload["phone:" + pk] = pe; }
+    }
+    try { localStorage.setItem("5bfc_attendance_" + dateISO, JSON.stringify(dayMap)); } catch (e) {}
+    if (m) { const vv = window.__calView || { y: new Date().getFullYear(), mo: new Date().getMonth() }; renderAttendanceCalendar(m, vv.y, vv.mo, true); }
+    // ---- cloud (background) ----
+    try {
+      const ref = db.collection("attendance").doc(dateISO);
+      if (wasPresent) {
+        if (del.length) { const args = []; del.forEach(function (k) { args.push(new firebase.firestore.FieldPath(k), firebase.firestore.FieldValue.delete()); }); ref.update.apply(ref, args).catch(function (e) { console.error(e); }); }
+      } else if (payload) {
+        ref.set(payload, { merge: true }).catch(function (e) { console.error(e); });
+      }
+    } catch (e) { console.error(e); }
+  }
+</script>
+</body>
+</html>
