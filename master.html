@@ -7,19 +7,16 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="auth-gate.js" data-mode="page"></script>
+<script src="auth-gate.js" data-mode="ondemand"></script>
 </head>
 <body style="background:#050505; color:#fff; font-family:sans-serif; margin:0; padding:12px;">
 
-<!-- PIN LOCK SCREEN -->
+<!-- LOCK SCREEN — Firebase Email/Password (no client PIN) -->
 <div id="masterLockScreen" style="max-width:420px; margin:50px auto; background:#111; border:2px solid #ffcc00; border-radius:16px; padding:28px 22px; text-align:center; box-shadow:0 0 30px rgba(255,204,0,0.25);">
   <div style="font-size:42px; margin-bottom:8px;">🔒</div>
   <h2 style="color:#ffcc00; font-size:18px; margin:0 0 6px;">Master Control Locked</h2>
-  <p style="color:#aaa; font-size:12px; margin:0 0 16px; line-height:1.5;">केवल Admin · बिना PIN डेटा नहीं खुलेगा</p>
-  <input type="password" id="masterPinInput" maxlength="8" placeholder="Admin PIN"
-    style="width:100%; background:#181818; border:1.5px solid #444; color:#fff; padding:12px; border-radius:8px; font-size:16px; text-align:center; letter-spacing:5px; outline:none; margin-bottom:12px;"
-    onkeydown="if(event.key==='Enter') unlockMasterDashboard()">
-  <button type="button" onclick="unlockMasterDashboard()" style="width:100%; background:#ffcc00; color:#000; border:none; padding:12px; border-radius:8px; font-weight:900; font-size:14px; cursor:pointer;">🔓 अनलॉक करें</button>
+  <p style="color:#aaa; font-size:12px; margin:0 0 16px; line-height:1.5;">Firebase Email + Password · PIN code me nahi hai</p>
+  <button type="button" onclick="unlockMasterDashboard()" style="width:100%; background:#ffcc00; color:#000; border:none; padding:12px; border-radius:8px; font-weight:900; font-size:14px; cursor:pointer;">🔐 Secure Login</button>
   <div id="masterLockError" style="color:#ff6666; font-size:12px; margin-top:10px; display:none; font-weight:bold;"></div>
   <a href="app.html" style="display:inline-block; margin-top:14px; color:#888; font-size:12px; text-decoration:none;">⬅️ मुख्य मेन्यू</a>
 </div>
@@ -119,7 +116,7 @@
 let currentMasterPage = 1;
 const recordsPerPage = 10;
 
-const MASTER_PIN = "5555";
+/* No client PIN — Firebase Auth only */
 const firebaseConfig = {
   apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",
   authDomain: "brother-s-fitness-club.firebaseapp.com",
@@ -131,25 +128,27 @@ const firebaseConfig = {
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("masterPinInput")?.focus();
-});
-
-async function unlockMasterDashboard() {
-  const pin = (document.getElementById("masterPinInput").value || "").trim();
-  const err = document.getElementById("masterLockError");
-  const ok = window.bfcPinCheck ? await window.bfcPinCheck(pin) : (pin === MASTER_PIN);
-  if (!ok) {
-    err.style.display = "block";
-    err.innerText = "❌ गलत PIN!";
-    document.getElementById("masterPinInput").value = "";
-    return;
-  }
-  err.style.display = "none";
+function openMasterUI() {
   document.getElementById("masterLockScreen").style.display = "none";
   document.getElementById("masterNavBar").style.display = "flex";
   document.getElementById("masterDashboard").style.display = "block";
   renderMasterTable();
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+  if (window.bfcIsAdmin && (await window.bfcIsAdmin())) openMasterUI();
+});
+
+async function unlockMasterDashboard() {
+  const err = document.getElementById("masterLockError");
+  err.style.display = "none";
+  const ok = window.bfcLogin ? await window.bfcLogin() : false;
+  if (!ok) {
+    err.style.display = "block";
+    err.innerText = "❌ Login fail / cancel";
+    return;
+  }
+  openMasterUI();
 }
 
 function getMasterRecords() {

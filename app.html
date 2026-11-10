@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>5 Brother's Fitness Club — Main Menu</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="auth-gate.js" data-mode="ondemand"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;min-height:100%;background:#050505;color:#fff;font-family:system-ui,-apple-system,sans-serif}
@@ -38,6 +41,8 @@ a.tile.red{border-color:#ff5555;background:#1a0808;color:#ff6666}
 a.tile.cyan{border-color:#22d3ee;background:#061a1f;color:#22d3ee}
 a.full{grid-column:1/-1;min-height:72px;flex-direction:row;gap:12px;font-size:16px}
 footer{text-align:center;margin-top:20px;color:#555;font-size:11px}
+.sec-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11px;color:#888}
+.sec-bar button{background:#222;border:1px solid #ffcc00;color:#ffcc00;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -48,36 +53,41 @@ footer{text-align:center;margin-top:20px;color:#555;font-size:11px}
     <div class="menu">मुख्य मेन्यू (Main Menu)</div>
   </header>
 
+  <div class="sec-bar">
+    <span id="authStatus">🔒 Admin pages protected</span>
+    <button type="button" onclick="doLogout()">Logout</button>
+  </div>
+
   <div class="grid">
     <a class="tile gold" href="admission.html" data-lock="1">
       <span class="ico">📝</span>
       Admission Form
-      <span class="sub">नया सदस्य / फॉर्म</span>
+      <span class="sub">🔒 नया सदस्य / फॉर्म</span>
     </a>
-    <a class="tile blue" href="members-portal.html">
+    <a class="tile blue" href="members-portal.html" data-lock="1">
       <span class="ico">👥</span>
       Members Portal
-      <span class="sub">Student · Job · Edit</span>
+      <span class="sub">🔒 Student · Job · Edit</span>
     </a>
     <a class="tile green" href="attendance.html">
       <span class="ico">✅</span>
       Attendance
       <span class="sub">हाजिरी / Selfie</span>
     </a>
-    <a class="tile orange" href="master.html">
+    <a class="tile orange" href="master.html" data-lock="1">
       <span class="ico">📊</span>
       Master
-      <span class="sub">Admin dashboard</span>
+      <span class="sub">🔒 Admin dashboard</span>
     </a>
     <a class="tile purple" href="store.html">
       <span class="ico">🛒</span>
       Supplement Store
       <span class="sub">Products / Shop</span>
     </a>
-    <a class="tile cyan" href="store-admin.html">
+    <a class="tile cyan" href="store-admin.html" data-lock="1">
       <span class="ico">🖼️</span>
       Store Admin
-      <span class="sub">Photo + Price · Admin</span>
+      <span class="sub">🔒 Photo + Price</span>
     </a>
     <a class="tile green" href="verify.html">
       <span class="ico">🔑</span>
@@ -87,52 +97,58 @@ footer{text-align:center;margin-top:20px;color:#555;font-size:11px}
     <a class="tile orange" href="health-diet.html">
       <span class="ico">🥗</span>
       Health &amp; Diet
-      <span class="sub">BMI &amp; Diet Chart Form</span>
+      <span class="sub">BMI &amp; Diet Chart</span>
     </a>
-    <a class="tile pink" href="diet-admin.html">
+    <a class="tile pink" href="diet-admin.html" data-lock="1">
       <span class="ico">🧾</span>
       Diet Orders
-      <span class="sub">Approve UTR / History</span>
+      <span class="sub">🔒 Approve UTR</span>
     </a>
     <a class="tile gold" href="supplement-udhar.html" data-lock="1">
       <span class="ico">📒</span>
       Supplement Udhar
-      <span class="sub">Bill / Udhar Register</span>
+      <span class="sub">🔒 Bill / Register</span>
     </a>
     <a class="tile cyan full" href="master-members.html" data-lock="1">
       <span class="ico">🧹</span>
-      <span>Master Members<br><span class="sub">डुप्लिकेट साफ़ करें · सब जगह एक लिस्ट</span></span>
+      <span>Master Members<br><span class="sub">🔒 डुप्लिकेट साफ़ · एक लिस्ट</span></span>
     </a>
     <a class="tile red full" href="pay.html">
       <span class="ico">💳</span>
-      <span>Pay / UPI &amp; Fees<br><span class="sub">ऑनलाइन भुगतान और फीस रसीद</span></span>
+      <span>Pay / UPI &amp; Fees<br><span class="sub">ऑनलाइन भुगतान (public OK)</span></span>
     </a>
   </div>
 
-  <footer>5 Brother's Fitness Club · Internal Use</footer>
+  <footer>5 Brother's Fitness Club · Secure Internal Use</footer>
 </div>
 <script>
-/* Admin lock — PIN code me likha nahi hai, sirf uska hash hai */
-const MENU_HASH = "88rtwo0qam";
-function pinHash(str){
-  let h1=0xdeadbeef^7, h2=0x41c6ce57^7;
-  const t="5BFC|"+str+"|MENU";
-  for(let i=0;i<t.length;i++){ const c=t.charCodeAt(i); h1=Math.imul(h1^c,2654435761); h2=Math.imul(h2^c,1597334677); }
-  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
-  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
-  return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);
-}
-document.querySelectorAll('a.tile[data-lock]').forEach(a=>{
-  const sub = a.querySelector('.sub');
-  if(sub) sub.textContent = '🔒 ' + sub.textContent;
-  a.addEventListener('click', e=>{
+document.querySelectorAll("a.tile[data-lock]").forEach(function (a) {
+  a.addEventListener("click", async function (e) {
     e.preventDefault();
-    const p = prompt("🔒 केवल एडमिन के लिए — PIN डालें:");
-    if(p===null) return;
-    if(pinHash(p.trim()) !== MENU_HASH){ alert("❌ गलत PIN"); return; }
-    location.href = a.getAttribute('href');
+    if (typeof bfcIsAdmin === "function" && (await bfcIsAdmin())) {
+      location.href = a.getAttribute("href");
+      return;
+    }
+    if (typeof bfcLogin === "function") {
+      var ok = await bfcLogin();
+      if (ok) location.href = a.getAttribute("href");
+    } else {
+      alert("auth-gate.js missing — upload karo");
+    }
   });
 });
+
+async function doLogout() {
+  if (typeof bfcLogout === "function") await bfcLogout();
+  document.getElementById("authStatus").textContent = "🔒 Logged out";
+  alert("Logout ho gaya");
+}
+
+(async function () {
+  if (typeof bfcIsAdmin === "function" && (await bfcIsAdmin())) {
+    document.getElementById("authStatus").textContent = "✅ Admin session active";
+  }
+})();
 </script>
 </body>
 </html>

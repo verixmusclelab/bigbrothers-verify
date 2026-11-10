@@ -7,7 +7,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="auth-gate.js" data-mode="page"></script>
+<script src="auth-gate.js" data-mode="ondemand"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:#050505;color:#fff;font-family:system-ui,-apple-system,sans-serif;min-height:100vh;padding:12px}
@@ -69,11 +69,9 @@
   <div id="loginScreen" class="login-box card">
     <div style="font-size:28px;margin-bottom:8px">🔒</div>
     <h1>Members Portal</h1>
-    <p class="muted" style="margin-bottom:16px">5 Brother's Fitness Club — Admin Only</p>
-    <input type="password" id="pwInput" placeholder="••••" maxlength="8" inputmode="numeric"
-      onkeydown="if(event.key==='Enter')tryLogin()">
-    <button class="btn btn-gold" style="width:100%;margin-top:12px" onclick="tryLogin()">LOGIN</button>
-    <p class="muted" style="margin-top:12px">Password required — random access blocked</p>
+    <p class="muted" style="margin-bottom:16px">5 Brother's Fitness Club — Admin Only<br>Firebase Email + Password (PIN client pe nahi)</p>
+    <button class="btn btn-gold" style="width:100%;margin-top:12px" onclick="tryLogin()">🔐 Secure Login</button>
+    <p class="muted" style="margin-top:12px">sessionStorage bypass band · Auth required</p>
   </div>
 
   <!-- MAIN -->
@@ -159,7 +157,7 @@
 </div>
 
 <script>
-const PASSWORD = "5555";
+/* PIN/password client pe NAHI — Firebase Auth (auth-gate.js) */
 const LS_KEYS = ["5BFC_MEMBERS", "bbf_master_records_v4", "bbf_members_v1"];
 
 const firebaseConfig = {
@@ -177,24 +175,26 @@ let MEMBERS = [];
 let currentTab = "all";
 
 async function tryLogin() {
-  const v = (document.getElementById("pwInput").value || "").trim();
-  if (window.bfcPinCheck ? await window.bfcPinCheck(v) : v === PASSWORD) {
-    sessionStorage.setItem("5bfc_members_ok", "1");
+  // Firebase Email/Password only — sessionStorage se bypass nahi
+  const ok = window.bfcLogin ? await window.bfcLogin() : false;
+  if (ok) {
     document.getElementById("loginScreen").classList.add("hide");
     document.getElementById("mainScreen").classList.remove("hide");
     loadMembers(true);
-  } else {
-    document.getElementById("pwInput").value = "";
   }
 }
-function logout() {
-  sessionStorage.removeItem("5bfc_members_ok");
+async function logout() {
+  if (window.bfcLogout) await window.bfcLogout();
   location.reload();
 }
-if (sessionStorage.getItem("5bfc_members_ok") === "1") {
-  document.getElementById("loginScreen").classList.add("hide");
-  document.getElementById("mainScreen").classList.remove("hide");
-}
+// Auto-open if already Firebase-authenticated (not sessionStorage)
+(async function () {
+  if (window.bfcIsAdmin && (await window.bfcIsAdmin())) {
+    document.getElementById("loginScreen").classList.add("hide");
+    document.getElementById("mainScreen").classList.remove("hide");
+    loadMembers(true);
+  }
+})();
 
 function setTab(t) {
   currentTab = t;
@@ -615,8 +615,7 @@ function exportCSV(){
   a.click();
 }
 
-// auto load if already logged in
-if(sessionStorage.getItem("5bfc_members_ok")==="1") loadMembers(true);
+// auto-load only via Firebase auth (see tryLogin / bfcIsAdmin above)
 </script>
 </body>
 </html>
