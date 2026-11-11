@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Dietician Xpert</title>
+<script src="tg-notify.js"></script>
+<style>
+:root{--y:#ffd60a;--bg:#0b0b0b;--c:#161616}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:12px;padding-bottom:32px;background:var(--bg);color:#fff;font-family:system-ui,'Noto Sans Devanagari',sans-serif;max-width:480px;margin:0 auto;min-height:100vh}
+.h{border:2px solid var(--y);background:linear-gradient(145deg,#2a2200,#141414);border-radius:14px;text-align:center;padding:14px;margin-bottom:12px}
+.h .brand{color:var(--y);font-weight:900;font-size:20px;letter-spacing:.5px}
+.h small{display:block;color:#ccc;font-size:11px;margin-top:4px}
+.c{background:var(--c);border:1.5px solid #3a3a3a;border-radius:14px;padding:14px;margin-bottom:12px}
+h3{margin:0 0 8px;color:var(--y);font-size:16px}
+.m{font-size:12px;color:#bbb;margin:10px 0 4px}
+.bi{font-size:11px;color:#888;margin:0 0 6px;line-height:1.35}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1.5px solid #555;background:#0d0d0d;color:#fff;font-size:15px}
+button,.b{display:block;width:100%;text-align:center;text-decoration:none;color:#000;background:linear-gradient(135deg,#ffd60a,#e6b800);font-weight:900;border:0;border-radius:12px;padding:14px;margin-top:10px;font-size:15px;min-height:48px;cursor:pointer}
+.g{background:#222;color:#eee;border:1.5px solid #555}
+.hid{display:none!important}
+.r{display:flex;gap:8px}.r>*{flex:1}
+.bd{display:flex;gap:8px;flex-wrap:wrap}
+.bd button{background:#0d0d0d;color:#eee;border:1.5px solid #555;padding:12px 8px;font-size:13px;border-radius:10px;flex:1;min-width:42%;min-height:44px}
+.bd button.active{border-color:var(--y);background:#2a2200;color:var(--y);font-weight:800}
+.chk{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chk label{display:flex;align-items:center;gap:6px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:10px 12px;font-size:13px;flex:1 1 42%;min-height:44px}
+.chk input{width:18px;height:18px;margin:0}
+.quote{background:rgba(255,214,10,.1);border-left:4px solid var(--y);padding:10px;margin:10px 0;font-size:12px;color:#ffe566;border-radius:0 8px 8px 0;line-height:1.45}
+.step{text-align:center;font-size:11px;color:var(--y);font-weight:700;margin-bottom:8px}
+.counter{display:flex;align-items:center;gap:8px;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:8px 10px;margin:6px 0}
+.counter span{flex:1;font-size:13px}
+.counter b{min-width:36px;text-align:center;color:var(--y);font-size:16px}
+.counter button{width:40px;min-height:40px;padding:0;margin:0;font-size:20px;border-radius:8px}
+.photo-box{display:flex;gap:10px;align-items:center;margin:8px 0;border:1.5px dashed #555;border-radius:12px;padding:10px;background:#0d0d0d}
+.photo-box img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:2px solid var(--y)}
+.okt{color:#3ddc84;font-size:12px;font-weight:700}
+.sec{border-top:1px solid #333;margin-top:12px;padding-top:10px}
+.bmi-box{background:#0d0d0d;border:1.5px solid #555;border-radius:12px;padding:12px;margin:10px 0}
+.bmi-box.low{border-color:#42a5f5}.bmi-box.ok{border-color:#3ddc84}.bmi-box.high{border-color:#ff7043}.bmi-box.ob{border-color:#ff3333}
+.bmi-num{font-size:28px;font-weight:900;color:var(--y)}
+.person-card{background:#0d0d0d;border:1px solid #444;border-radius:12px;padding:12px;margin:10px 0}
+.person-card h4{margin:0 0 8px;color:var(--y);font-size:14px}
+.supp-item{display:flex;justify-content:space-between;align-items:center;background:#0d0d0d;border:1px solid #444;border-radius:10px;padding:12px;margin:6px 0;min-height:48px}
+.supp-item.on{border-color:var(--y);background:#221d0a}
+#psy{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:16px}
+#psy.show{display:flex}
+#psy .box{background:#1a1600;border:2px solid var(--y);border-radius:16px;padding:18px;max-width:360px;width:100%;text-align:center}
+#psy .box p{color:#ffe566;font-size:13px;line-height:1.5;margin:0 0 12px;text-align:left}
+#payChoiceModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;align-items:center;justify-content:center;padding:16px}
+#payChoiceModal.show{display:flex}
+#payChoiceModal .modal-box{background:#141414;border:2px solid var(--y);border-radius:16px;padding:20px;max-width:380px;width:100%;text-align:center}
+.disc{font-size:10px;color:#888;line-height:1.4;margin-top:12px;border-top:1px solid #333;padding-top:10px}
+.spinner{border:4px solid #333;border-top:4px solid var(--y);border-radius:50%;width:36px;height:36px;animation:spin 1s linear infinite;margin:12px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.choice-grid>*{min-width:0}
+.pending-box{background:#171300;border:2px solid var(--y);border-radius:14px;padding:14px;text-align:center;margin-top:12px}.pending-box .timer{font-size:28px;color:var(--y);font-weight:900}.legal{font-size:12px;line-height:1.55;color:#ffe9a3;border:2px solid #9b7d00;background:#211b00;padding:12px;border-radius:10px;margin-top:14px;font-weight:700}
+@media(max-width:480px){body{width:100%;padding:10px;overflow-x:hidden}.c{width:100%;padding:12px}.bd{display:grid;grid-template-columns:1fr 1fr}.bd button{width:100%;min-width:0}.r{display:grid;grid-template-columns:1fr 1fr;gap:7px}.r>*{min-width:0}.counter{min-height:54px}.counter button{flex:0 0 42px}.photo-box{align-items:flex-start;flex-wrap:wrap}button,.b{font-size:16px}.h .brand{font-size:19px}}
+
+button.sel{outline:3px solid #fff;outline-offset:2px}
+.plan-btn{background:#0d0d0d;color:#eee;border:1.5px solid #555;text-align:left;font-weight:700;padding:12px 14px}
+.plan-btn b{display:block;font-size:15px;color:#fff}.plan-btn span{display:block;font-size:12px;color:#bbb;margin-top:3px;font-weight:600}
+.plan-btn.active{border-color:var(--y);background:#2a2200}.plan-btn.active b{color:var(--y)}
+.line{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #2a2a2a;font-size:13px;line-height:1.4}.line b{white-space:nowrap}.line small{color:#999;font-size:11px}
+.line.tot{border-bottom:0;font-size:16px;color:var(--y);font-weight:800}
+.sumbox{background:#0d0d0d;border:1.5px solid var(--y);border-radius:12px;padding:6px 12px;margin:12px 0}
+.okbox{background:#12351f;border:1px solid #3ddc84;color:#9affbd;border-radius:10px;padding:10px;font-size:13px;font-weight:700;margin:10px 0}
+.errbox{background:#3a1414;border:1px solid #ff5c5c;color:#ffb3b3;border-radius:10px;padding:10px;font-size:13px;font-weight:700;margin:10px 0}
+.steps .st{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:13px;line-height:1.35}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:12px;flex:0 0 22px;font-weight:900}
+.dot.done{background:#3ddc84;border-color:#3ddc84;color:#000}.dot.act{border-color:var(--y);color:var(--y);animation:pulse 1.4s infinite}.dot.bad{background:#ff5c5c;border-color:#ff5c5c;color:#000}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(255,214,10,.22)}}
+.live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#3ddc84;margin-right:6px;animation:pulse 1.4s infinite}
+#payChoiceModal .modal-box{max-height:88vh;overflow:auto;text-align:left}
+.ovrow{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:4px 0}.ovrow span:first-child{color:#aaa}.ovrow span:last-child{text-align:right;word-break:break-word}
+</style>
+</head>
+<body>
+<div class="h"><div class="brand">DIETICIAN XPERT</div><small>Personalised Nutrition Guidance · व्यक्तिगत डाइट मार्गदर्शन</small></div>
+
+<div id="step-home" class="c">
+  <h3>Your personalised diet plan<br>आपका व्यक्तिगत डाइट प्लान</h3>
+  <div class="bi">Get a diet plan built around your body, lifestyle and goals.<br>आपके शरीर, जीवनशैली और लक्ष्य के अनुसार डाइट प्लान पाएँ।</div>
+  <div class="quote">Every lasting change begins with a first step. Tap Start to build your plan.<br>हर स्थायी बदलाव पहले कदम से शुरू होता है। अपना प्लान बनाने के लिए "शुरू करें" दबाएँ।</div>
+  <button onclick="psyGo(1,'home')">Start / शुरू करें</button>
+</div>
+
+<div id="step-1" class="c hid">
+  <div class="step">STEP 1 of 5 · Basic Details / बुनियादी जानकारी</div>
+  <h3>Setup / सेटअप</h3>
+  <div class="m">Gender / लिंग</div>
+  <div class="bd">
+    <button type="button" class="active" id="gM" onclick="setGender('M')">Male / पुरुष</button>
+    <button type="button" id="gF" onclick="setGender('F')">Female / महिला</button>
+  </div>
+  <div class="m">Who is this plan for? (select one or more) / यह प्लान किसके लिए है?</div>
+  <div class="bi">You will enter age, height and weight separately for each person selected.<br>चुने गए प्रत्येक व्यक्ति की उम्र, ऊँचाई और वज़न अलग से भरी जाएगी।</div>
+  <div class="chk" id="forWhom">
+    <label><input type="checkbox" value="Self" checked onchange="rebuildPersons()"> Self / स्वयं</label>
+    <label><input type="checkbox" value="Wife" onchange="rebuildPersons()"> Wife / पत्नी</label>
+    <label><input type="checkbox" value="Husband" onchange="rebuildPersons()"> Husband / पति</label>
+    <label><input type="checkbox" value="Father" onchange="rebuildPersons()"> Father / पिता</label>
+    <label><input type="checkbox" value="Mother" onchange="rebuildPersons()"> Mother / माता</label>
+    <label><input type="checkbox" value="Senior" onchange="rebuildPersons()"> Senior / वरिष्ठ</label>
+    <label><input type="checkbox" value="Brother" onchange="rebuildPersons()"> Brother / भाई</label>
+    <label><input type="checkbox" value="Sister" onchange="rebuildPersons()"> Sister / बहन</label>
+    <label><input type="checkbox" value="Boyfriend" onchange="rebuildPersons()"> Boyfriend / बॉयफ्रेंड</label>
+    <label><input type="checkbox" value="Girlfriend" onchange="rebuildPersons()"> Girlfriend / गर्लफ्रेंड</label>
+    <label><input type="checkbox" value="Relative" onchange="rebuildPersons()"> Relative / रिश्तेदार</label>
+  </div>
+  <div class="m">Customer name and mobile number / ग्राहक का नाम और मोबाइल नंबर</div>
+  <input id="nm" placeholder="Full name / पूरा नाम">
+  <input id="mb" type="tel" maxlength="10" placeholder="Mobile number (10 digits) / मोबाइल नंबर">
+  <div class="m">Photo (optional) / फोटो (वैकल्पिक)</div>
+  <div class="photo-box">
+    <div><input type="file" accept="image/*" onchange="previewPhoto(this)"><div id="photoOk" class="okt hid">Photo added / फोटो जुड़ गई</div></div>
+    <img id="photoPrev" class="hid" alt="">
+  </div>
+  <button class="g" onclick="go(0)">Back to Home / होम पर वापस</button>
+  <button onclick="val1()">Next / आगे</button>
+</div>
+
+<div id="step-2" class="c hid">
+  <div class="step">STEP 2 of 5 · Body Details / शारीरिक जानकारी</div>
+  <h3>Details for each member / प्रत्येक सदस्य की जानकारी</h3>
+  <div class="bi">Enter age, weight and height for every member. BMI is calculated automatically.<br>प्रत्येक सदस्य की उम्र, वज़न और ऊँचाई भरें। BMI अपने-आप निकल जाएगा।</div>
+  <div id="personsBox"></div>
+  <div class="m">Diet type / आहार का प्रकार</div>
+  <div class="bd">
+    <button type="button" class="active" id="dV" onclick="setDiet('v')">Vegetarian / शाकाहारी</button>
+    <button type="button" id="dN" onclick="setDiet('n')">Non-Vegetarian / मांसाहारी</button>
+  </div>
+  <div class="m">Desired physique / शारीरिक लक्ष्य</div>
+  <div class="bd">
+    <button type="button" class="active" id="lF" onclick="setLook('Fit')">Fit</button>
+    <button type="button" id="lM" onclick="setLook('Muscular')">Muscular</button>
+    <button type="button" id="lX" onclick="setLook('Monster')">Bulk / Heavy</button>
+  </div>
+  <div id="suppHint" class="quote">Fit: balanced diet with basic protein guidance.</div>
+  <div class="m">Main goal / मुख्य लक्ष्य</div>
+  <select id="goal">
+    <option value="Stay Fit">Stay Fit / फिट रहना</option>
+    <option value="Muscle Building">Muscle Building / मसल्स बनाना</option>
+    <option value="Fat Loss">Fat Loss / वज़न घटाना</option>
+    <option value="Bulking">Weight Gain (Bulking) / वज़न बढ़ाना</option>
+    <option value="Healthy Lifestyle">Healthy Lifestyle / स्वस्थ जीवनशैली</option>
+  </select>
+  <div class="m">Diet chart language / डाइट चार्ट की भाषा</div>
+  <select id="lang"><option value="hi">Hindi / हिन्दी</option><option value="en">English</option></select>
+  <div class="sec">
+    <div class="m"><b style="color:var(--y)">Do you go to the gym? / क्या आप जिम जाते हैं?</b></div>
+    <div class="bd">
+      <button type="button" id="gymYes" onclick="setGym(true)">Yes / हाँ</button>
+      <button type="button" id="gymNo" class="active" onclick="setGym(false)">No / नहीं</button>
+    </div>
+    <div id="gymExtra" class="hid">
+      <div class="counter"><span>Days per week / सप्ताह में दिन</span><button type="button" class="g" onclick="chg('gymDays',-1)">−</button><b id="gymDays">3</b><button type="button" class="g" onclick="chg('gymDays',1)">+</button></div>
+      <div class="m">Body measurements in inches, 0–50 (optional) / माप इंच में (वैकल्पिक)</div>
+      <div class="counter"><span>Biceps / बाइसेप्स</span><button type="button" class="g" onclick="chg('mBiceps',-1)">−</button><b id="mBiceps">0</b><button type="button" class="g" onclick="chg('mBiceps',1)">+</button></div>
+      <div class="counter"><span>Chest / छाती</span><button type="button" class="g" onclick="chg('mChest',-1)">−</button><b id="mChest">0</b><button type="button" class="g" onclick="chg('mChest',1)">+</button></div>
+      <div class="counter"><span>Shoulder / कंधा</span><button type="button" class="g" onclick="chg('mShoulder',-1)">−</button><b id="mShoulder">0</b><button type="button" class="g" onclick="chg('mShoulder',1)">+</button></div>
+      <div class="counter"><span>Thigh / जांघ</span><button type="button" class="g" onclick="chg('mThigh',-1)">−</button><b id="mThigh">0</b><button type="button" class="g" onclick="chg('mThigh',1)">+</button></div>
+      <div class="counter"><span>Waist / कमर (inch)</span><button type="button" class="g" onclick="chg('mWaist',-1)">−</button><b id="mWaist">0</b><button type="button" class="g" onclick="chg('mWaist',1)">+</button></div>
+    </div>
+  </div>
+  <div id="femaleBox" class="sec hid">
+    <div class="m">Are you pregnant? / क्या आप गर्भवती हैं?</div>
+    <div class="bd"><button type="button" onclick="S.pregnant='Yes';mark(this)">Yes / हाँ</button><button type="button" class="active" onclick="S.pregnant='No';mark(this)">No / नहीं</button></div>
+    <div class="m">Any PCOD, thyroid or menstrual issue? / PCOD, थायरॉइड या मासिक धर्म संबंधी समस्या?</div>
+    <div class="bd"><button type="button" onclick="S.femaleIssue='Yes';mark(this)">Yes / हाँ</button><button type="button" class="active" onclick="S.femaleIssue='No';mark(this)">No / नहीं</button></div>
+    <div class="quote">If you have any medical condition, please confirm the plan with your doctor.<br>किसी भी चिकित्सीय स्थिति में कृपया डॉक्टर से परामर्श अवश्य लें।</div>
+  </div>
+  <button class="g" onclick="go(1)">Back / पीछे</button>
+  <button onclick="val2()">Next / आगे</button>
+</div>
+
+<div id="step-3" class="c hid">
+  <div class="step">STEP 3 of 5 · Lifestyle / जीवनशैली</div>
+  <h3>Habits / आदतें</h3>
+  <div class="quote">सही जानकारी से safer और useful plan बनेगा। अगर आप कोई चीज नहीं लेते, तो “नहीं” चुनें।</div>
+  <div class="counter"><span>Cigarettes per day / प्रतिदिन सिगरेट</span><button type="button" class="g" onclick="chg('cigDay',-1)">−</button><b id="cigDay">0</b><button type="button" class="g" onclick="chg('cigDay',1)">+</button></div>
+  <div class="counter"><span>Cigarettes per week / हफ्ते में सिगरेट</span><button type="button" class="g" onclick="chg('smokeWeek',-1)">−</button><b id="smokeWeek">0</b><button type="button" class="g" onclick="chg('smokeWeek',1)">+</button></div>
+  <div class="m">Paan/tobacco/masala per day / पान-तंबाकू-मसाला प्रतिदिन</div><input id="paanManual" type="number" min="0" placeholder="Quantity per day / रोज की मात्रा" oninput="S.paanDay=+this.value||0;track()">
+  <div class="m">Paan/tobacco per week / हफ्ते में कुल मात्रा</div><div class="r"><input id="paanWeekManual" type="number" min="0" placeholder="Weekly quantity / साप्ताहिक मात्रा" oninput="S.paanWeek=+this.value||0;track()"><select id="paanPackSize" onchange="S.paanPackSize=+this.value;track()"><option value="10">10 pack</option><option value="20">20 pack</option><option value="50">50 pack</option><option value="0">Other/manual</option></select></div>
+  <div class="m">Beer / बीयर</div><div class="r"><select id="beerMl" onchange="S.beerMl=+this.value;track()"><option value="0">Never / नहीं पीता</option><option value="100">100 ml</option><option value="250">250 ml</option><option value="330">330 ml</option><option value="500">500 ml</option><option value="750">750 ml</option><option value="1000">1000 ml</option></select><select id="beerFreq" onchange="S.beerFreq=this.value;track()"><option value="Never">Never / कभी नहीं</option><option value="Sometimes">Sometimes / कभी-कभी</option><option value="Weekly">Weekly / हफ्ते में</option><option value="Daily">Daily / रोज</option></select></div>
+  <div class="counter"><span>Beer quantity per week / हफ्ते में मात्रा</span><button type="button" class="g" onclick="chg('beerWeek',-1)">−</button><b id="beerWeek">0</b><button type="button" class="g" onclick="chg('beerWeek',1)">+</button></div>
+  <div class="m">Other alcohol / अन्य शराब</div><div class="bd"><button type="button" class="active" onclick="S.alcFreq='Never';mark(this)">Never / कभी नहीं</button><button type="button" onclick="S.alcFreq='Sometimes';mark(this)">Sometimes / कभी-कभी</button><button type="button" onclick="S.alcFreq='Weekly';mark(this)">Weekly / हफ्ते में</button></div>
+  <button class="g" onclick="go(2)">Back / पीछे</button><button onclick="psyGo(4,'habits')">Next / आगे</button>
+</div>
+
+<div id="step-4" class="c hid">
+  <div class="step">STEP 4 of 5 · Medical History / स्वास्थ्य इतिहास</div>
+  <h3>Health / स्वास्थ्य</h3>
+  <select id="hq" onchange="document.getElementById('hx').classList.toggle('hid',this.value!='y')">
+    <option value="n">No medical condition / कोई बीमारी नहीं</option>
+    <option value="y">Yes, I have a condition / हाँ, बीमारी है</option>
+  </select>
+  <div id="hx" class="hid">
+    <input id="bm" placeholder="Medical condition / बीमारी का नाम"><input id="dw" placeholder="Current medicines / वर्तमान दवाइयाँ">
+  </div>
+  <div class="sec">
+    <div class="m">Any surgery or long hospital stay? / कोई ऑपरेशन या लंबा अस्पताल प्रवास?</div>
+    <div class="bd">
+      <button type="button" id="opYes" onclick="setOp(true)">Yes / हाँ</button>
+      <button type="button" id="opNo" class="active" onclick="setOp(false)">No / नहीं</button>
+    </div>
+  </div>
+  <button class="g" onclick="go(3)">Back / पीछे</button>
+  <button onclick="val4()">Next / आगे</button>
+</div>
+
+<div id="step-5" class="c hid">
+  <div class="step">STEP 5 of 5 · Plan and Payment / प्लान और भुगतान</div>
+  <h3>Choose your plan / अपना प्लान चुनें</h3>
+  <div id="budgetBox" class="hid">
+    <div class="counter"><span>Monthly budget (Rs) / मासिक बजट</span><button type="button" class="g" onclick="chg('budget',-500)">−</button><b id="budget">2000</b><button type="button" class="g" onclick="chg('budget',500)">+</button></div>
+  </div>
+  <div id="planSuggest" class="quote"></div>
+  <div id="priceInfo" class="quote"></div>
+
+  <button type="button" id="btnDietOnly" onclick="chooseSupp(false)">Diet plan only / केवल डाइट प्लान</button>
+  <button type="button" id="btnWithSupp" onclick="chooseSupp(true)">Diet plan with supplements / सप्लीमेंट के साथ</button>
+
+  <div id="suppPick" class="hid sec">
+    <div class="m">Select the products you are interested in, then open the store / दिलचस्पी वाले प्रोडक्ट चुनें, फिर स्टोर खोलें</div>
+    <div class="supp-item" data-s="Whey Protein" onclick="togSupp(this)"><span>Whey Protein</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Mass Gainer" onclick="togSupp(this)"><span>Mass Gainer</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Multivitamin" onclick="togSupp(this)"><span>Multivitamin</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Creatine" onclick="togSupp(this)"><span>Creatine</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Pre-workout" onclick="togSupp(this)"><span>Pre-workout</span><span>+ Add</span></div>
+    <div class="supp-item" data-s="Peanut Butter" onclick="togSupp(this)"><span>Peanut Butter</span><span>+ Add</span></div>
+    <div class="m">Selected / चयनित: <b id="suppList" style="color:var(--y)">None</b></div>
+    <button type="button" id="storeBtn" onclick="goStore()">Open Store / स्टोर खोलें</button>
+    <div class="bi" style="margin-top:6px">Add your products in the store. You will return to this page, where the product prices are added to your plan total.<br>स्टोर में प्रोडक्ट जोड़ें। आप इसी पेज पर लौटेंगे, जहाँ प्रोडक्ट की कीमत आपके प्लान के कुल भुगतान में जुड़ जाएगी।</div>
+  </div>
+
+  <div id="cartBox" class="hid sec"></div>
+
+  <div id="dietPlans" class="hid sec">
+    <div class="m"><b style="color:var(--y)">Select plan duration / प्लान की अवधि चुनें</b></div>
+    <button type="button" class="plan-btn" id="plan7" onclick="selectPlan(7)"><b>1 Week (7 days) · 1 सप्ताह</b><span id="planPrice7"></span></button>
+    <button type="button" class="plan-btn" id="plan14" onclick="selectPlan(14)"><b>2 Weeks (14 days) · 2 सप्ताह</b><span id="planPrice14"></span></button>
+    <button type="button" class="plan-btn" id="plan30" onclick="selectPlan(30)"><b>1 Month (30 days) · 1 महीना</b><span id="planPrice30"></span></button>
+  </div>
+
+  <div id="summaryBox" class="sumbox hid"></div>
+  <button type="button" id="proceedBtn" class="hid" onclick="proceedToPay()">Proceed to Pay / भुगतान के लिए आगे बढ़ें</button>
+  <button class="g" onclick="go(4)">Back / पीछे</button>
+</div>
+
+<div id="pay" class="c hid"></div>
+<div id="orderView" class="c hid"></div>
+<div id="psy"><div class="box"><p id="psyText"></p><button onclick="psyClose()">Continue / जारी रखें</button></div></div>
+<div id="payChoiceModal">
+  <div class="modal-box">
+    <h3 style="color:var(--y)">Confirm your products / अपने प्रोडक्ट की पुष्टि करें</h3>
+    <div id="payChoiceBody"></div>
+    <button id="pcContinue" onclick="proceedPaymentWithSupplements()">Add to my diet plan payment / डाइट प्लान के भुगतान में जोड़ें</button>
+    <button class="g" onclick="closePayChoiceModal();goStore()">Back to Store / स्टोर पर वापस जाएँ</button>
+  </div>
+</div>
+
+
+<script>
+const $=i=>document.getElementById(i);
+const EXPERT_WA="9140417259", UPI="9990954574@okbizaxis";
+const FF="system-ui,'Noto Sans Devanagari','Mangal',sans-serif";
+function storeUrl(){
+  return "https://verixmusclelab.github.io/bigbrothers-verify/store.html";
+}
+const S={gender:'M',members:['Self'],persons:{},diet:'v',look:'Fit',gym:false,gymDays:3,
+  cigDay:0,cigMon:0,paanDay:0,beerMon:0,alcMon:0,op:false,budget:2000,photo:'',supplements:[],
+  pregnant:'No',femaleIssue:'No',mBiceps:0,mChest:0,mShoulder:0,mThigh:0,mWaist:0,smokeWeek:0,paanWeek:0,paanPackSize:10,beerMl:0,beerWeek:0,beerFreq:'Never',alcFreq:'Never'};
+const counts={gymDays:3,cigDay:0,cigMon:0,paanDay:0,beerMon:0,alcMon:0,budget:2000,mBiceps:0,mChest:0,mShoulder:0,mThigh:0,mWaist:0,smokeWeek:0,paanWeek:0,beerMl:0,beerWeek:0};
+const limits={gymDays:[1,7],cigDay:[0,40],cigMon:[0,30],paanDay:[0,20],beerMon:[0,30],alcMon:[0,30],budget:[500,15000],mBiceps:[0,50],mChest:[0,60],mShoulder:[0,70],mThigh:[0,70],mWaist:[0,80],smokeWeek:[0,300],paanWeek:[0,100],beerMl:[0,1000],beerWeek:[0,30]};
+const MEM_HI={Self:"स्वयं",Wife:"पत्नी",Husband:"पति",Father:"पिता",Mother:"माता",Senior:"वरिष्ठ नागरिक",Brother:"भाई",Sister:"बहन",Boyfriend:"बॉयफ्रेंड",Girlfriend:"गर्लफ्रेंड",Relative:"रिश्तेदार"};
+const GOAL_HI={"Stay Fit":"फिट रहना","Muscle Building":"मसल्स बनाना","Fat Loss":"वज़न घटाना","Bulking":"वज़न बढ़ाना","Healthy Lifestyle":"स्वस्थ जीवनशैली"};
+const LOOK_HI={Fit:"फिट",Muscular:"मस्कुलर",Monster:"बल्क / हेवी"};
+const PSY={
+  home:"Every lasting change begins with a first step. Let's build your plan.\n\nहर स्थायी बदलाव पहले कदम से शुरू होता है। चलिए, आपका प्लान बनाते हैं।",
+  after1:"Thank you. Your basic details have been recorded.\n\nधन्यवाद। आपकी बुनियादी जानकारी दर्ज हो गई है।",
+  after2:"Body details recorded. Your plan will be matched to each member's BMI.\n\nशारीरिक जानकारी दर्ज हो गई है। प्लान हर सदस्य के BMI के अनुसार बनेगा।",
+  habits:"Accurate lifestyle information helps us build a safer plan.\n\nसही जानकारी से अधिक सुरक्षित प्लान बनाया जा सकता है।",
+  medical:"Accurate health information leads to safer diet guidance.\n\nसही स्वास्थ्य जानकारी से सुरक्षित डाइट मार्गदर्शन मिलता है।",
+  pay:"Final step: please complete your payment to receive the diet chart.\n\nअंतिम चरण: डाइट चार्ट पाने के लिए कृपया भुगतान पूरा करें।"
+};
+const DISC_HI="यह डाइट चार्ट आपके द्वारा दी गई जानकारी के आधार पर तैयार किया गया है। गलत, अधूरी या छुपाई गई जानकारी से होने वाली समस्या के लिए हम जिम्मेदार नहीं होंगे। सही जानकारी दें। यह AI-assisted general nutrition guidance है, medical treatment या डॉक्टर की सलाह का replacement नहीं है। किसी बीमारी, pregnancy, allergy या दवा की स्थिति में डॉक्टर/dietitian से सलाह लें। यह डाइट मार्गदर्शन केवल आपके द्वारा दी गई जानकारी पर आधारित है और चिकित्सा उपचार नहीं है। गर्भावस्था, किसी बीमारी या नियमित दवा की स्थिति में कृपया डॉक्टर से सलाह लें। गलत जानकारी के कारण होने वाले परिणामों के लिए Dietician Xpert उत्तरदायी नहीं है।";
+const DISC_EN="This diet chart is prepared from the information you provide. We are not responsible for problems caused by incorrect, incomplete or hidden information. This is AI-assisted general nutrition guidance, not medical treatment or a replacement for a doctor/dietitian. Consult a doctor for illness, pregnancy, allergy or medicines. This diet guidance is based solely on the information you provided and is not medical treatment. If you are pregnant, have a medical condition or take regular medication, please consult a doctor. Dietician Xpert is not liable for outcomes arising from inaccurate information.";
+
+function bmiCat(b){
+  if(!b) return {en:"—",hi:"—"};
+  if(b<18.5) return {en:"Underweight",hi:"कम वज़न"};
+  if(b<25) return {en:"Normal",hi:"सामान्य"};
+  if(b<30) return {en:"Overweight",hi:"अधिक वज़न"};
+  return {en:"Obese",hi:"मोटापा"};
+}
+function bmiMsg(bmi){
+  if(!bmi||bmi<=0) return {cls:"",hi:"",en:""};
+  if(bmi<18.5) return {cls:"low",en:"Underweight. Higher risk of low energy, weak immunity and bone loss. A calorie- and protein-rich diet is recommended.",hi:"वज़न सामान्य से कम है। कमज़ोरी, कम रोग-प्रतिरोधक क्षमता और हड्डियों के कमज़ोर होने का जोखिम रहता है। अधिक कैलोरी व प्रोटीन वाला आहार आवश्यक है।"};
+  if(bmi<25) return {cls:"ok",en:"Healthy range. This plan supports maintaining your weight and reaching your goal with consistency.",hi:"BMI सामान्य सीमा में है। नियमितता के साथ यह प्लान आपके लक्ष्य में सहायक होगा।"};
+  if(bmi<30) return {cls:"high",en:"Overweight. Higher risk of abdominal fat and raised blood pressure. Portion-controlled carbohydrates with adequate protein will help.",hi:"वज़न सामान्य से अधिक है। पेट की चर्बी और ब्लड प्रेशर का जोखिम बढ़ सकता है। संतुलित कार्ब्स और पर्याप्त प्रोटीन लाभकारी रहेगा।"};
+  return {cls:"ob",en:"Obese range. Higher risk of diabetes, hypertension and joint strain. Please consult a doctor alongside a structured diet.",hi:"मोटापे की श्रेणी। शुगर, ब्लड प्रेशर और जोड़ों पर दबाव का जोखिम अधिक है। संरचित डाइट के साथ डॉक्टर से सलाह अवश्य लें।"};
+}
+function calcBMI(w,ft,inc){
+  if(!w||w<10) return 0;
+  var cm=(ft*12+(inc||0))*2.54; if(cm<50) return 0;
+  return Math.round((w/Math.pow(cm/100,2))*10)/10;
+}
+
+function rebuildPersons(){
+  var mem=Array.prototype.slice.call(document.querySelectorAll("#forWhom input:checked")).map(function(x){return x.value});
+  if(!mem.length) mem=["Self"];
+  S.members=mem;
+  var box=$("personsBox"); if(!box) return;
+  box.innerHTML="";
+  mem.forEach(function(m){
+    if(!S.persons[m]) S.persons[m]={age:"",wt:"",ft:5,inc:0,bmi:0};
+    var p=S.persons[m];
+    var div=document.createElement("div");
+    div.className="person-card";
+    div.innerHTML="<h4>"+m+" / "+(MEM_HI[m]||m)+"</h4>"+
+      "<div class='r'><input type='number' placeholder='Age (years) / उम्र' data-m='"+m+"' data-f='age' value='"+(p.age||"")+"' oninput='onPersonInput(this)'>"+
+      "<input type='number' placeholder='Weight (kg) / वज़न' data-m='"+m+"' data-f='wt' value='"+(p.wt||"")+"' oninput='onPersonInput(this)'></div>"+
+      "<div class='m'>Height / ऊँचाई</div><div class='r'>"+
+      "<select data-m='"+m+"' data-f='ft' onchange='onPersonInput(this)'>"+[3,4,5,6,7].map(function(x){return "<option value='"+x+"'"+(Number(p.ft)===x?" selected":"")+">"+x+" ft</option>"}).join("")+"</select>"+
+      "<select data-m='"+m+"' data-f='inc' onchange='onPersonInput(this)'>"+[0,1,2,3,4,5,6,7,8,9,10,11].map(function(x){return "<option value='"+x+"'"+(Number(p.inc)===x?" selected":"")+">"+x+" in</option>"}).join("")+"</select></div>"+
+      "<div class='bmi-box' id='bmi_"+m+"'><div class='m'>BMI (automatic) / BMI (अपने-आप)</div><div class='bmi-num' id='bmiN_"+m+"'>—</div><div class='bi' id='bmiT_"+m+"'>Enter age, weight and height.<br>उम्र, वज़न और ऊँचाई भरें।</div></div>";
+    box.appendChild(div);
+    updateBMICard(m);
+  });
+}
+function onPersonInput(el){
+  var m=el.getAttribute("data-m"), f=el.getAttribute("data-f");
+  if(!S.persons[m]) S.persons[m]={};
+  S.persons[m][f]=el.value;
+  updateBMICard(m);
+}
+function updateBMICard(m){
+  var p=S.persons[m]||{}; var b=calcBMI(+p.wt,+p.ft,+p.inc); p.bmi=b; S.persons[m]=p;
+  var box=$("bmi_"+m), num=$("bmiN_"+m), txt=$("bmiT_"+m);
+  if(!box) return;
+  var msg=bmiMsg(b), cat=bmiCat(b);
+  box.className="bmi-box "+(msg.cls||"");
+  num.textContent=b?(b+" · "+cat.en+" / "+cat.hi):"—";
+  num.style.fontSize=b?"18px":"28px";
+  txt.innerHTML=b?(msg.en+"<br>"+msg.hi):"Enter age, weight and height.<br>उम्र, वज़न और ऊँचाई भरें।";
+}
+
+let _psyNext=null;
+function showPsy(key,next){ $("psyText").innerHTML=(PSY[key]||PSY.home).replace(/\n/g,"<br>"); $("psy").classList.add("show"); _psyNext=next; }
+function psyGo(step,key){ showPsy(key,function(){go(step)}); }
+function psyClose(){ $("psy").classList.remove("show"); if(_psyNext){var f=_psyNext;_psyNext=null;f();} }
+function track(){ try{ localStorage.setItem("dxDraft",JSON.stringify({S:S,t:Date.now()})); }catch(e){} }
+function go(n){
+  document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+  var id=n===0?"step-home":("step-"+n);
+  if($(id)) $(id).classList.remove("hid");
+  if(n===2) rebuildPersons();
+  track(); window.scrollTo(0,0);
+}
+function chg(k,d){ var L=limits[k]||[0,99]; counts[k]=Math.max(L[0],Math.min(L[1],(counts[k]||0)+d)); S[k]=counts[k]; if($(k)) $(k).textContent=counts[k]; }
+function mark(btn){ btn.parentNode.querySelectorAll("button").forEach(function(b){b.classList.remove("active")}); btn.classList.add("active"); }
+function setGender(g){ S.gender=g; $("gM").classList.toggle("active",g==="M"); $("gF").classList.toggle("active",g==="F"); $("femaleBox").classList.toggle("hid",g!=="F"); }
+function setDiet(v){ S.diet=v; $("dV").classList.toggle("active",v==="v"); $("dN").classList.toggle("active",v==="n"); }
+function setLook(v){
+  S.look=v; ["lF","lM","lX"].forEach(function(id){$(id).classList.remove("active")});
+  $(v==="Fit"?"lF":v==="Muscular"?"lM":"lX").classList.add("active");
+  $("suppHint").textContent=v==="Fit"?"Fit: balanced diet with basic protein guidance.":v==="Muscular"?"Muscular: higher protein; whey and creatine can be considered.":"Bulk / Heavy: higher-calorie diet focused on weight gain.";
+  $("budgetBox").classList.toggle("hid",v==="Fit");
+}
+function setGym(y){ S.gym=y; $("gymYes").classList.toggle("active",y); $("gymNo").classList.toggle("active",!y); $("gymExtra").classList.toggle("hid",!y); }
+function setOp(y){ S.op=y; $("opYes").classList.toggle("active",y); $("opNo").classList.toggle("active",!y); }
+function previewPhoto(inp){ var f=inp.files&&inp.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(e){ shrinkData(e.target.result,700,0.7).then(function(u){ S.photo=u||e.target.result; $("photoPrev").src=S.photo; $("photoPrev").classList.remove("hid"); $("photoOk").classList.remove("hid"); track(); }); }; r.readAsDataURL(f); }
+function personCount(){ return Math.max(1,(S.members||[]).length); }
+
+function val1(){
+  var n=$("nm").value.trim(), mb=$("mb").value.trim();
+  if(!n||!/^\d{10}$/.test(mb)) return alert("Please enter your full name and a valid 10-digit mobile number.\nकृपया अपना पूरा नाम और 10 अंकों का सही मोबाइल नंबर भरें।");
+  S.members=Array.prototype.slice.call(document.querySelectorAll("#forWhom input:checked")).map(function(x){return x.value});
+  if(!S.members.length) return alert("Please select at least one member.\nकृपया कम से कम एक सदस्य चुनें।");
+  S.n=n; S.mb=mb;
+  showPsy("after1",function(){go(2)});
+}
+function val2(){
+  var ok=true;
+  (S.members||[]).forEach(function(m){
+    var p=S.persons[m]||{};
+    if(!p.age||!p.wt) ok=false;
+    p.bmi=calcBMI(+p.wt,+p.ft,+p.inc); S.persons[m]=p;
+  });
+  if(!ok) return alert("Please enter age and weight for every member.\nकृपया प्रत्येक सदस्य की उम्र और वज़न भरें।");
+  var first=S.members[0], p=S.persons[first]||{};
+  S.a=+p.age; S.w=+p.wt; S.ft=+p.ft; S.ic=+p.inc; S.B=p.bmi;
+  S.goal=$("goal").value; S.lang=$("lang").value;
+  showPsy("after2",function(){go(3)});
+}
+function val4(){
+  var y=$("hq").value==="y";
+  if(y&&(!$("bm").value.trim())) return alert("Please enter the medical condition.\nकृपया बीमारी का नाम लिखें।");
+  S.hasDisease=y; S.disease=$("bm").value.trim(); S.medicine=$("dw").value.trim();
+  prepStep5();
+  showPsy("medical",function(){go(5)});
+}
+/* ===== STEP 5 : plan, supplements, summary, payment ===== */
+var PLANS={7:100,14:150,30:250};
+function rs(n){ return "₹"+Number(n||0).toLocaleString("en-IN"); }
+function esc(v){ return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function cleanCart(a){
+  if(!Array.isArray(a)) return [];
+  return a.slice(0,40).map(function(x){
+    x=x||{};
+    return {name:String(x.name||"").slice(0,120),pack:String(x.pack||"").slice(0,40),flavour:String(x.flavour||"").slice(0,60),
+      qty:Math.max(1,Math.min(20,parseInt(x.qty,10)||1)),price:Math.max(0,Math.min(200000,Number(x.price)||0))};
+  }).filter(function(x){return x.name&&x.price>0;});
+}
+function activeCart(){ return S.withSupp?(S.storeCart||[]):[]; }
+function cartSum(c){ return (c||[]).reduce(function(s,x){return s+x.price*x.qty;},0); }
+function cartLine(x){ return x.name+" ("+[x.pack,x.flavour].filter(Boolean).join(", ")+") × "+x.qty+" = "+rs(x.price*x.qty); }
+function line(a,b,sub){ return "<div class='line'><span>"+a+(sub?"<br><small>"+sub+"</small>":"")+"</span><b>"+b+"</b></div>"; }
+
+function prepStep5(){
+  $("planSuggest").textContent="Physique: "+S.look+" · Goal: "+S.goal+" · Members: "+(S.members||[]).join(", ");
+  $("priceInfo").textContent="Price = plan rate × "+personCount()+" person(s) / कीमत = प्लान की दर × "+personCount()+" व्यक्ति";
+  $("budgetBox").classList.toggle("hid",S.look==="Fit");
+  refreshStep5();
+}
+function chooseSupp(withS){
+  S.withSupp=!!withS;
+  $("btnDietOnly").classList.toggle("sel",!withS);
+  $("btnWithSupp").classList.toggle("sel",!!withS);
+  $("suppPick").classList.toggle("hid",!withS);
+  $("dietPlans").classList.remove("hid");
+  refreshStep5(); track();
+}
+function togSupp(el){
+  var name=el.getAttribute("data-s"); el.classList.toggle("on"); S.interest=S.interest||[];
+  if(el.classList.contains("on")){ if(S.interest.indexOf(name)<0) S.interest.push(name); el.querySelector("span:last-child").textContent="Added"; }
+  else { S.interest=S.interest.filter(function(x){return x!==name}); el.querySelector("span:last-child").textContent="+ Add"; }
+  $("suppList").textContent=S.interest.length?S.interest.join(", "):"None"; track();
+}
+function goStore(){
+  track();
+  var base=storeUrl();
+  var q="from=diet&name="+encodeURIComponent(S.n||"")+"&phone="+encodeURIComponent(S.mb||"")+"&items="+encodeURIComponent((S.interest||[]).join(","))+"&members="+encodeURIComponent((S.members||[]).join(","))+"&autoReturn=30&returnTo="+encodeURIComponent(location.href.split("?")[0].split("#")[0]);
+  window.location.href=base+(base.indexOf("?")>=0?"&":"?")+q;
+}
+function renderCartBox(){
+  var b=$("cartBox"), c=activeCart();
+  b.classList.toggle("hid",!S.withSupp);
+  if(!S.withSupp) return;
+  if(!c.length){ b.innerHTML="<div class='m'>No products added yet. Open the store and add products.<br>अभी कोई प्रोडक्ट नहीं जोड़ा गया। स्टोर खोलकर प्रोडक्ट जोड़ें।</div>"; return; }
+  b.innerHTML="<div class='m'><b style='color:var(--y)'>Products from store / स्टोर से जोड़े गए प्रोडक्ट</b></div>"+
+    c.map(function(x){ return line(esc(x.name),rs(x.price*x.qty),esc([x.pack,x.flavour].filter(Boolean).join(", "))+" · "+rs(x.price)+" × "+x.qty); }).join("")+
+    line("Products total / प्रोडक्ट कुल",rs(cartSum(c)))+
+    "<button type='button' class='g' onclick='goStore()'>Edit products in store / स्टोर में बदलें</button>";
+}
+function buildSummary(final){
+  var pc=personCount(), cart=final?(S.cart||[]):activeCart();
+  var planTotal=final?(S.planTotal||0):(S.days?PLANS[S.days]*pc:0), h="";
+  if(S.days) h+=line("Diet plan · "+S.days+" days × "+pc+" person(s)",rs(planTotal),rs(planTotal/pc)+" per person");
+  cart.forEach(function(x){ h+=line(esc(x.name),rs(x.price*x.qty),esc([x.pack,x.flavour].filter(Boolean).join(", "))+" · "+rs(x.price)+" × "+x.qty); });
+  var tot=planTotal+cartSum(cart);
+  h+="<div class='line tot'><span>Total payable / कुल भुगतान</span><b>"+rs(tot)+"</b></div>";
+  return h;
+}
+function refreshStep5(){
+  var pc=personCount(), cart=activeCart();
+  [7,14,30].forEach(function(d){
+    $("planPrice"+d).textContent=rs(PLANS[d])+" × "+pc+" person(s) = "+rs(PLANS[d]*pc);
+    $("plan"+d).classList.toggle("active",S.days===d);
+  });
+  renderCartBox();
+  var show=!!S.days||cart.length>0;
+  $("summaryBox").classList.toggle("hid",!show);
+  if(show) $("summaryBox").innerHTML=buildSummary(false);
+  var ready=!!S.days&&(!S.withSupp||cart.length>0);
+  $("proceedBtn").classList.toggle("hid",!ready);
+}
+function selectPlan(d){
+  S.days=d; refreshStep5(); track();
+  setTimeout(function(){ var b=$("summaryBox"); if(b&&b.scrollIntoView) b.scrollIntoView({behavior:"smooth",block:"center"}); },60);
+}
+function proceedToPay(){
+  var pc=personCount(), cart=activeCart();
+  if(!S.days) return alert("Please choose a plan.\nकृपया प्लान चुनें।");
+  if(S.withSupp&&!cart.length) return alert("Please add products from the store, or choose Diet plan only.\nकृपया स्टोर से प्रोडक्ट जोड़ें या केवल डाइट प्लान चुनें।");
+  S.cart=cart; S.supplements=cart.map(cartLine); S.supplementTotal=cartSum(cart);
+  S.planTotal=PLANS[S.days]*pc; S.priceBase=PLANS[S.days]; S.personCount=pc; S.price=S.planTotal+S.supplementTotal;
+  window.__resubmitId=null; track();
+  showPsy("pay",buildPay);
+}
+function closePayChoiceModal(){ $("payChoiceModal").classList.remove("show"); }
+function showCartConfirm(){
+  var c=activeCart(); if(!c.length) return;
+  $("payChoiceBody").innerHTML="<div class='m'>These products from the store will be added to your diet plan payment.<br>स्टोर से चुने ये प्रोडक्ट आपके डाइट प्लान के भुगतान में जुड़ेंगे।</div><div class='sumbox'>"+
+    c.map(function(x){ return line(esc(x.name),rs(x.price*x.qty),esc([x.pack,x.flavour].filter(Boolean).join(", "))+" · "+rs(x.price)+" × "+x.qty); }).join("")+
+    "<div class='line tot'><span>Products total / प्रोडक्ट कुल</span><b>"+rs(cartSum(c))+"</b></div></div>";
+  $("payChoiceModal").classList.add("show");
+}
+function proceedPaymentWithSupplements(){
+  closePayChoiceModal(); refreshStep5();
+  setTimeout(function(){ var b=$("dietPlans"); if(b&&b.scrollIntoView) b.scrollIntoView({behavior:"smooth",block:"start"}); },60);
+}
+function restoreFormFields(){
+  if($("nm")) $("nm").value=S.n||""; if($("mb")) $("mb").value=S.mb||"";
+  document.querySelectorAll("#forWhom input").forEach(function(i){ i.checked=(S.members||[]).indexOf(i.value)>=0; });
+  if(S.goal&&$("goal")) $("goal").value=S.goal; if(S.lang&&$("lang")) $("lang").value=S.lang;
+  if(S.budget){ counts.budget=S.budget; if($("budget")) $("budget").textContent=S.budget; }
+  document.querySelectorAll("#suppPick .supp-item").forEach(function(el){
+    var on=(S.interest||[]).indexOf(el.getAttribute("data-s"))>=0;
+    el.classList.toggle("on",on); el.querySelector("span:last-child").textContent=on?"Added":"+ Add";
+  });
+  if($("suppList")) $("suppList").textContent=(S.interest&&S.interest.length)?S.interest.join(", "):"None";
+}
+function returnFromStore(p){
+  try{ var d=JSON.parse(localStorage.getItem("dxDraft")||"null"); if(d&&d.S) Object.assign(S,d.S); }catch(e){}
+  try{ history.replaceState(null,"",location.pathname); }catch(e){}
+  if(!S.n||!S.mb){ alert("Your details could not be restored. Please fill the form again.\nआपकी जानकारी वापस नहीं मिली, कृपया फ़ॉर्म दोबारा भरें।"); return; }
+  var cart=[]; try{ cart=cleanCart(JSON.parse(p.get("storeCart")||"[]")); }catch(e){}
+  if(cart.length) S.storeCart=cart;
+  S.withSupp=true;
+  restoreFormFields(); prepStep5(); go(5); chooseSupp(true); showCartConfirm();
+}
+
+function buildPay(){
+  var resub=window.__resubmitId, total=S.price||0;
+  document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+  var upi="upi://pay?pa="+UPI+"&pn=DieticianXpert&am="+total+"&cu=INR&tn="+encodeURIComponent("Diet "+(S.n||""));
+  $("pay").innerHTML="<div class='step'>PAYMENT / भुगतान</div><h3>Order summary / ऑर्डर सारांश</h3><div class='sumbox'>"+buildSummary(true)+"</div>"+
+    "<a class='b' href='"+upi+"'>Pay "+rs(total)+" via UPI / UPI से भुगतान करें</a>"+
+    "<div style='text-align:center;margin:10px 0'><img alt='UPI QR' src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data="+encodeURIComponent(upi)+"' style='background:#fff;padding:8px;border-radius:12px;width:150px'></div>"+
+    "<div class='m'>After paying, enter the UTR and upload the payment screenshot.<br>भुगतान के बाद UTR नंबर भरें और स्क्रीनशॉट अपलोड करें।</div>"+
+    "<input id='ut' inputmode='numeric' maxlength='12' placeholder='UTR number (12 digits) / UTR नंबर'>"+
+    "<div class='m'>Payment screenshot / भुगतान का स्क्रीनशॉट</div><input id='ss' type='file' accept='image/*'>"+
+    "<button id='subBtn' onclick='subOrder()'>Submit payment details / भुगतान विवरण जमा करें</button><div id='ps'></div>"+
+    "<button class='g' onclick='"+(resub?"showOrder(\""+resub+"\")":"go(5)")+"'>Back / पीछे</button>"+
+    "<div class='disc'><b>EN:</b> "+DISC_EN+"<br><br><b>HI:</b> "+DISC_HI+"</div>";
+  $("pay").classList.remove("hid"); window.scrollTo(0,0);
+}
+
+var _db;
+function DB(){ return _db||(_db=(async function(){
+  function L(u){return new Promise(function(r,e){var t=document.createElement("script");t.src=u;t.onload=r;t.onerror=e;document.head.appendChild(t)})}
+  await L("https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js");
+  await L("https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js");
+  if(!firebase.apps.length) firebase.initializeApp({apiKey:"AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",projectId:"brother-s-fitness-club"});
+  return firebase.firestore();
+})()); }
+function shrinkImg(file){return new Promise(function(res){var fr=new FileReader();fr.onload=function(ev){var im=new Image();im.onload=function(){var M=800,r=Math.min(1,M/Math.max(im.width,im.height));var c=document.createElement("canvas");c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",0.5))};im.src=ev.target.result};fr.readAsDataURL(file)})}
+function newId(){ return Array.from(crypto.getRandomValues(new Uint8Array(12))).map(function(x){return x.toString(16).padStart(2,"0")}).join(""); }
+function shrinkData(src,M,q){ return new Promise(function(res){
+  var im=new Image();
+  im.onload=function(){ var r=Math.min(1,M/Math.max(im.width,im.height)); var c=document.createElement("canvas"); c.width=Math.round(im.width*r); c.height=Math.round(im.height*r); c.getContext("2d").drawImage(im,0,0,c.width,c.height); res(c.toDataURL("image/jpeg",q)); };
+  im.onerror=function(){ res(""); }; im.src=src; }); }
+function orderRef(id){ return "DX-"+String(id||"").slice(0,6).toUpperCase(); }
+function waLink(id,o){
+  var t=["*Dietician Xpert – Payment for approval*","Order: "+orderRef(id),"Name: "+(o.n||""),"Mobile: "+(o.mb||""),"Members: "+(o.members||[]).join(", "),
+    "Diet plan: "+(o.days||"")+" days","Products: "+((o.supplements&&o.supplements.length)?o.supplements.join("; "):"None"),
+    "Total paid: Rs "+(o.price||""),"UTR: "+(o.utr||""),"Payment screenshot is uploaded in the app. Please approve."].join("\n");
+  return "https://wa.me/91"+EXPERT_WA+"?text="+encodeURIComponent(t);
+}
+
+async function subOrder(){
+  var u=$("ut").value.trim(), f=$("ss").files&&$("ss").files[0];
+  if(!/^\d{12}$/.test(u)) return alert("Please enter the 12-digit UTR number.\nकृपया 12 अंकों का UTR नंबर भरें।");
+  if(!f) return alert("Please upload the payment screenshot.\nकृपया भुगतान का स्क्रीनशॉट अपलोड करें।");
+  var btn=$("subBtn"); btn.disabled=true; $("ps").innerHTML="<div class='spinner'></div>";
+  try{
+    var ss=await shrinkImg(f), photo=S.photo?await shrinkData(S.photo,700,0.7):"";
+    var resub=window.__resubmitId, id=resub||newId(), db=await DB(), ref=db.collection("diet_orders").doc(id);
+    if(resub){
+      await ref.update({utr:u,ss:ss,status:"pending",rejectReason:"",resubmittedAt:Date.now()});
+    }else{
+      var o=Object.assign({},S,{photo:photo,utr:u,ss:ss,status:"pending",t:Date.now(),brand:"Dietician Xpert"});
+      await ref.set(JSON.parse(JSON.stringify(o,function(k,v){return v===undefined?"":v})));
+    }
+    try{
+      var _cap=(resub?"🔁 Diet order दोबारा भेजा":"🥗 नया Diet order — Approve बाकी")+"\n🆔 "+id+"\n👤 "+(S.n||"")+"\n📞 "+(S.mb||"")+"\n📅 "+(S.days||"")+" दिन | ₹"+(S.price||"")+"\n🔗 UTR: "+u+"\n\nAdmin: diet-admin.html में Approve करें।";
+      if(ss) bfcNotifyPhoto(ss,_cap); else bfcNotify(_cap);
+    }catch(e){}
+    try{ localStorage.setItem("dxOrder",JSON.stringify({id:id,t:Date.now()})); localStorage.removeItem("dxWa_"+id); }catch(e){}
+    window.__resubmitId=null; _sig="";
+    showOrder(id);
+  }catch(e){
+    btn.disabled=false;
+    $("ps").innerHTML="<div class='errbox'>Could not submit (check internet and try again).<br>जमा नहीं हो पाया — इंटरनेट जाँचकर फिर कोशिश करें।<br><small>"+esc(e&&e.message)+"</small></div>";
+  }
+}
+
+/* ---------- Order view: live status, WhatsApp, auto download ---------- */
+var _sig="", _tick=null, _unsub=null;
+function waSentFlag(id){ try{return localStorage.getItem("dxWa_"+id)==="1";}catch(e){return false;} }
+function markWa(id){ try{localStorage.setItem("dxWa_"+id,"1");}catch(e){} }
+function stepRow(state,txt){ return "<div class='st'><div class='dot "+state+"'>"+(state==="done"?"✓":state==="bad"?"✕":"")+"</div><div>"+txt+"</div></div>"; }
+function ovr(a,b){ return "<div class='ovrow'><span>"+a+"</span><span>"+esc(b)+"</span></div>"; }
+function showOrder(id){
+  window.__orderId=id; _sig="";
+  document.querySelectorAll(".c").forEach(function(el){el.classList.add("hid")});
+  $("orderView").classList.remove("hid");
+  $("orderView").innerHTML="<div class='spinner'></div><div class='m' style='text-align:center'>Loading your order... / आपका ऑर्डर लोड हो रहा है...</div>";
+  DB().then(function(db){
+    if(_unsub){ try{_unsub();}catch(e){} }
+    _unsub=db.collection("diet_orders").doc(id).onSnapshot(function(doc){
+      if(!doc.exists){ $("orderView").innerHTML="<div class='errbox'>Order not found. / ऑर्डर नहीं मिला।</div><button class='g' onclick='closeOrder(true)'>Start a new order / नया ऑर्डर शुरू करें</button>"; return; }
+      renderOrderView(id,doc.data());
+    },function(err){
+      $("orderView").innerHTML="<div class='errbox'>Connection problem. Your order is safe.<br>कनेक्शन में दिक्कत है। आपका ऑर्डर सुरक्षित है।<br><small>"+esc(err&&err.message)+"</small></div><button onclick='showOrder(\""+id+"\")'>Retry / फिर कोशिश करें</button>";
+    });
+  }).catch(function(e){
+    $("orderView").innerHTML="<div class='errbox'>Could not connect. Check internet.<br>कनेक्ट नहीं हो पाया। इंटरनेट जाँचें।</div><button onclick='showOrder(\""+id+"\")'>Retry / फिर कोशिश करें</button>";
+  });
+}
+function renderOrderView(id,o){
+  var st=o.status||"pending", wa=waSentFlag(id);
+  window.__order={id:id,o:o};
+  var sig=[st,o.resendAt||"",o.approvedAt||"",o.rejectReason||"",o.utr||"",o.price||"",o.n||"",o.days||"",wa].join("|");
+  if(sig===_sig&&$("orderView").children.length) return;
+  _sig=sig;
+  var h="<h3>Your order / आपका ऑर्डर · "+orderRef(id)+"</h3><div class='steps'>"+
+    stepRow("done","Payment details submitted<br><small>भुगतान विवरण जमा हो गया</small>")+
+    stepRow(st==="pending"?(wa?"done":"act"):"done","Details sent to Dietician Expert on WhatsApp<br><small>WhatsApp पर एक्सपर्ट को भेजें</small>")+
+    stepRow(st==="approved"?"done":st==="rejected"?"bad":"act","Approval by Dietician Expert<br><small>एक्सपर्ट की मंज़ूरी</small>")+
+    stepRow(st==="approved"?"done":"","Diet chart download<br><small>डाइट चार्ट डाउनलोड</small>")+"</div>";
+  if(st==="pending"){
+    h+="<div class='pending-box'><div class='timer' id='waitTimer'>00:00</div><b><span class='live'></span>Waiting for approval / मंज़ूरी का इंतज़ार</b>"+
+      "<div class='m'>Your order is saved. You can leave this page and come back — the chart downloads automatically after approval.<br>आपका ऑर्डर सुरक्षित है। पेज छोड़कर वापस आ सकते हैं — मंज़ूरी के बाद चार्ट अपने-आप डाउनलोड होगा।</div></div>"+
+      "<a class='b' id='waBtn' href='"+waLink(id,o)+"' onclick=\"markWa('"+id+"')\">Send your payment details to Dietician Expert for approval<br><small>भुगतान विवरण WhatsApp पर एक्सपर्ट को भेजें</small></a>";
+  }else if(st==="approved"){
+    h+="<div class='okbox'>✅ Payment approved by Dietician Expert / भुगतान मंज़ूर हो गया"+(o.resendAt?"<br>📩 Chart re-sent by the expert / एक्सपर्ट ने चार्ट दोबारा भेजा":"")+"</div>"+
+      "<button onclick='generateAllCharts()'>Download diet chart / डाइट चार्ट डाउनलोड करें</button><div id='out'></div>";
+  }else{
+    h+="<div class='errbox'>❌ Payment not approved / भुगतान मंज़ूर नहीं हुआ"+(o.rejectReason?": "+esc(o.rejectReason):"")+"</div>"+
+      "<button onclick='resubmitPay()'>Re-enter payment details / भुगतान विवरण दोबारा भरें</button>";
+  }
+  var prods=(o.supplements&&o.supplements.length)?o.supplements.map(function(x){return "<div class='ovrow'><span>•</span><span>"+esc(x)+"</span></div>";}).join(""):ovr("Products","None / कोई नहीं");
+  h+="<div class='sumbox' style='margin-top:14px'>"+ovr("Name / नाम",o.n)+ovr("Mobile / मोबाइल",o.mb)+ovr("Members / सदस्य",(o.members||[]).join(", "))+ovr("Plan / प्लान",(o.days||"")+" days")+prods+ovr("Total / कुल",rs(o.price))+ovr("UTR",o.utr)+"</div>"+
+    "<button class='g' onclick='downloadReceipt()'>Download receipt / रसीद डाउनलोड करें</button>"+
+    "<button class='g' onclick='closeOrder()'>Close this order / ऑर्डर बंद करें</button>";
+  $("orderView").innerHTML=h; window.scrollTo(0,0);
+  if(_tick){ clearInterval(_tick); _tick=null; }
+  if(st==="pending"){
+    var tk=function(){ var el=$("waitTimer"); if(!el) return; var s=Math.max(0,Math.floor((Date.now()-(o.t||Date.now()))/1000)), hh=Math.floor(s/3600), mm=String(Math.floor(s%3600/60)).padStart(2,"0"), ss=String(s%60).padStart(2,"0"); el.textContent=(hh?hh+":":"")+mm+":"+ss; };
+    tk(); _tick=setInterval(tk,1000);
+  }
+  if(st==="approved") onApproved(id,o);
+}
+function onApproved(id,o){
+  var key="dxDl_"+id, mark=String(o.resendAt||o.approvedAt||1), prev=null;
+  try{ prev=localStorage.getItem(key); }catch(e){}
+  if(prev!==mark){ try{localStorage.setItem(key,mark);}catch(e){} generateAllCharts(); }
+}
+function resubmitPay(){
+  var w=window.__order; if(!w) return;
+  Object.assign(S,w.o); window.__resubmitId=w.id; buildPay();
+}
+function closeOrder(force){
+  if(!force&&!confirm("Close this order on this phone? Your details stay saved with Dietician Xpert.\nइस फ़ोन पर ऑर्डर बंद करें? आपकी जानकारी Dietician Xpert के पास सुरक्षित रहेगी।")) return;
+  try{ var id=window.__orderId; localStorage.removeItem("dxOrder"); localStorage.removeItem("dxDraft"); if(id){localStorage.removeItem("dxWa_"+id); localStorage.removeItem("dxDl_"+id);} }catch(e){}
+  location.href=location.pathname;
+}
+function downloadReceipt(){
+  var w=window.__order; if(!w) return; var o=w.o;
+  var rows=["Date: "+new Date(o.t||Date.now()).toLocaleString("en-IN"),"Order: "+orderRef(w.id),"Name: "+(o.n||""),"Mobile: "+(o.mb||""),"Members: "+(o.members||[]).join(", "),
+    "Diet plan: "+(o.days||"")+" days × "+(o.personCount||1)+" person(s) = Rs "+(o.planTotal||"")]
+    .concat((o.supplements||[]).map(function(s){return "Product: "+s;}))
+    .concat(["Total: Rs "+(o.price||""),"UTR: "+(o.utr||""),"Status: "+String(o.status||"pending").toUpperCase()]);
+  var c=document.createElement("canvas"), W=800; c.width=W; c.height=1400; var x=c.getContext("2d");
+  x.fillStyle="#0b0b0b"; x.fillRect(0,0,W,1400);
+  x.fillStyle="#ffd60a"; x.font="900 28px "+FF; x.textAlign="center"; x.fillText("DIETICIAN XPERT",W/2,70);
+  x.fillStyle="#fff"; x.font="16px "+FF; x.fillText("PAYMENT RECEIPT / भुगतान रसीद",W/2,100);
+  x.textAlign="left"; x.font="15px "+FF; var y=150;
+  rows.forEach(function(t){ wrapTxt(x,t,W-100).forEach(function(l){ x.fillStyle="#eee"; x.fillText(l,50,y); y+=26; }); y+=6; });
+  y+=14; x.fillStyle="#888"; x.font="12px "+FF;
+  wrapTxt(x,DISC_EN,W-100).forEach(function(l){ x.fillText(l,50,y); y+=18; });
+  y+=40;
+  var out=document.createElement("canvas"); out.width=W; out.height=y; var ox=out.getContext("2d");
+  ox.drawImage(c,0,0,W,y,0,0,W,y); ox.strokeStyle="#ffd60a"; ox.lineWidth=4; ox.strokeRect(20,20,W-40,y-40);
+  var a=document.createElement("a"); a.download="DX-Receipt-"+orderRef(w.id)+".png"; a.href=out.toDataURL("image/png"); a.click();
+}
+
+function generateAllCharts(){
+  var w=window.__order, o=w&&w.o;
+  if(!o||o.status!=="approved") return alert("The diet chart is available after admin approval.\nडाइट चार्ट एडमिन की मंज़ूरी के बाद उपलब्ध होगा।");
+  Object.assign(S,JSON.parse(JSON.stringify(o)));
+  if($("out")) $("out").innerHTML="";
+  _dlN=0;
+  (S.members&&S.members.length?S.members:["Self"]).forEach(function(m,i){
+    setTimeout(function(){ generateChartFor(m,S.days||7); },i*400);
+  });
+}
+
+/*ENGINE_START*/
+/* ================= DIET ENGINE v2 =================
+   Output per member (separate images):
+   1) Customer details image
+   2) Diet chart images (one image per 7 days). Each day = 4 boxes:
+      Breakfast / Lunch / Snack / Dinner, with grams, calories, protein,
+      benefit and an alternative if the item is not available. */
+
+function I(a,b,c,d,e){ return [a,b,c,d,e||0]; }
+
+var DISH={
+/* ---------- VEG BREAKFAST ---------- */
+vB1:{i:[I("Poha (with vegetables)","पोहा (सब्ज़ियों के साथ)",200,"g"),I("Milk","दूध",200,"ml"),I("Banana","केला",1,"pc",100)],k:520,p:17,
+ b:["Poha gives quick carbohydrates and iron, milk adds protein and calcium, banana supplies potassium for steady energy.","पोहा से तुरंत ऊर्जा और आयरन मिलता है, दूध से प्रोटीन व कैल्शियम, और केले से पोटैशियम जो दिनभर ऊर्जा बनाए रखता है।"],
+ a:["Upma 200 g, or 2 slices of brown bread with 1 tbsp peanut butter.","उपमा 200 ग्राम, या 2 ब्राउन ब्रेड स्लाइस के साथ 1 चम्मच पीनट बटर।"]},
+vB2:{i:[I("Vegetable paratha (little oil)","सब्ज़ी पराठा (कम तेल)",2,"pc",60),I("Curd","दही",150,"g"),I("Mint chutney","पुदीना चटनी",20,"g")],k:480,p:16,
+ b:["Whole-wheat paratha gives fibre and long-lasting energy; curd adds protein and probiotics for digestion.","गेहूँ के पराठे से फाइबर और लंबे समय तक ऊर्जा मिलती है; दही से प्रोटीन और पाचन के लिए अच्छे बैक्टीरिया मिलते हैं।"],
+ a:["3 roti with any dry sabzi and 1 glass of milk.","3 रोटी, कोई सूखी सब्ज़ी और 1 गिलास दूध।"]},
+vB3:{i:[I("Besan chilla","बेसन चीला",3,"pc",70),I("Green chutney","हरी चटनी",30,"g"),I("Curd","दही",100,"g")],k:430,p:22,
+ b:["Gram flour is rich in plant protein and fibre; it keeps you full and supports muscle repair.","बेसन में प्लांट प्रोटीन और फाइबर भरपूर होता है; यह पेट भरा रखता है और मसल्स की रिकवरी में मदद करता है।"],
+ a:["Moong dal chilla 3 pc, or 4 idli with sambar.","मूंग दाल चीला 3 नग, या 4 इडली और सांभर।"]},
+vB4:{i:[I("Daliya (cooked, with milk)","दलिया (दूध में पका)",250,"g"),I("Milk","दूध",200,"ml"),I("Banana","केला",1,"pc",100),I("Almonds","बादाम",10,"g")],k:500,p:19,
+ b:["Broken wheat is a slow-digesting carbohydrate; almonds add healthy fats and vitamin E, milk adds calcium.","दलिया धीरे पचने वाला कार्बोहाइड्रेट है; बादाम से हेल्दी फैट व विटामिन E और दूध से कैल्शियम मिलता है।"],
+ a:["Oats 50 g cooked in milk, or 2 slices of brown bread with peanut butter.","ओट्स 50 ग्राम दूध में पकाकर, या ब्राउन ब्रेड 2 स्लाइस पीनट बटर के साथ।"]},
+vB5:{i:[I("Oats (dry weight)","ओट्स (सूखा वज़न)",50,"g"),I("Milk","दूध",250,"ml"),I("Seasonal fruit (apple/papaya)","मौसमी फल (सेब/पपीता)",120,"g"),I("Walnuts","अखरोट",10,"g")],k:480,p:20,
+ b:["Oats contain beta-glucan fibre that supports heart health and steady blood sugar; walnuts add omega-3 fats.","ओट्स में बीटा-ग्लूकन फाइबर होता है जो दिल और ब्लड शुगर के लिए अच्छा है; अखरोट से ओमेगा-3 मिलता है।"],
+ a:["Daliya 250 g, or poha 200 g with 1 glass of milk.","दलिया 250 ग्राम, या पोहा 200 ग्राम और 1 गिलास दूध।"]},
+vB6:{i:[I("Idli","इडली",4,"pc",50),I("Sambar","सांभर",200,"ml"),I("Coconut chutney","नारियल चटनी",30,"g")],k:380,p:13,
+ b:["Steamed idli is light and easy to digest; sambar (dal and vegetables) adds protein, fibre and minerals.","भाप में बनी इडली हल्की और आसानी से पचती है; सांभर (दाल व सब्ज़ी) से प्रोटीन, फाइबर और मिनरल मिलते हैं।"],
+ a:["2 dosa with sambar, or poha 200 g.","2 डोसा और सांभर, या पोहा 200 ग्राम।"]},
+vB7:{i:[I("Brown bread slice","ब्राउन ब्रेड स्लाइस",2,"pc",30),I("Paneer (grated/cubes)","पनीर (कद्दूकस/टुकड़े)",60,"g"),I("Cucumber, tomato, onion","खीरा, टमाटर, प्याज़",50,"g"),I("Milk","दूध",200,"ml")],k:470,p:25,
+ b:["Paneer is a high-quality protein with calcium; vegetables add fibre and vitamins to the sandwich.","पनीर उच्च गुणवत्ता का प्रोटीन और कैल्शियम देता है; सब्ज़ियों से फाइबर और विटामिन मिलते हैं।"],
+ a:["Paneer bhurji 80 g with 2 roti.","पनीर भुर्जी 80 ग्राम और 2 रोटी।"]},
+
+/* ---------- VEG LUNCH ---------- */
+vL1:{i:[I("Roti (whole wheat)","रोटी (गेहूँ)",3,"pc",40),I("Dal (cooked)","दाल (पकी हुई)",200,"g"),I("Seasonal vegetable sabzi","मौसमी सब्ज़ी",150,"g"),I("Salad","सलाद",100,"g")],k:620,p:24,
+ b:["Dal with roti gives a complete plant protein; sabzi and salad add fibre, vitamins and keep digestion healthy.","दाल-रोटी से संपूर्ण प्लांट प्रोटीन मिलता है; सब्ज़ी और सलाद से फाइबर, विटामिन और अच्छा पाचन मिलता है।"],
+ a:["Moong dal khichdi 300 g with curd 150 g.","मूंग दाल खिचड़ी 300 ग्राम और दही 150 ग्राम।"]},
+vL2:{i:[I("Rajma (cooked)","राजमा (पका हुआ)",150,"g"),I("Rice (cooked)","चावल (पका हुआ)",150,"g"),I("Curd","दही",150,"g"),I("Salad","सलाद",80,"g")],k:640,p:26,
+ b:["Rajma is rich in protein, iron and fibre; rice restores muscle glycogen; curd aids digestion.","राजमा में प्रोटीन, आयरन और फाइबर भरपूर होता है; चावल ऊर्जा भंडार भरता है; दही पाचन में मदद करता है।"],
+ a:["Chole 150 g with 2 roti, or any dal 200 g with rice.","छोले 150 ग्राम और 2 रोटी, या कोई भी दाल 200 ग्राम और चावल।"]},
+vL3:{i:[I("Chole (cooked)","छोले (पके हुए)",180,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Salad (onion, cucumber)","सलाद (प्याज़, खीरा)",100,"g"),I("Curd","दही",100,"g")],k:600,p:24,
+ b:["Chickpeas give plant protein, fibre and iron; they digest slowly and keep hunger away for hours.","काबुली चने से प्रोटीन, फाइबर और आयरन मिलता है; ये धीरे पचते हैं और देर तक भूख नहीं लगने देते।"],
+ a:["Rajma 150 g or dal 200 g with 2 roti.","राजमा 150 ग्राम या दाल 200 ग्राम और 2 रोटी।"]},
+vL4:{i:[I("Paneer bhurji","पनीर भुर्जी",150,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",3,"pc",40),I("Cucumber salad","खीरे का सलाद",100,"g")],k:640,p:33,
+ b:["Paneer provides casein protein and calcium for muscles and bones; cucumber keeps the meal light and hydrating.","पनीर से केसीन प्रोटीन और कैल्शियम मिलता है जो मसल्स व हड्डियों के लिए ज़रूरी है; खीरा भोजन को हल्का रखता है।"],
+ a:["Soya chunk curry 150 g, or tofu sabzi 150 g.","सोया चंक्स करी 150 ग्राम, या टोफू सब्ज़ी 150 ग्राम।"]},
+vL5:{i:[I("Soya chunk curry (30 g dry soya)","सोया चंक्स करी (30 ग्राम सूखा सोया)",150,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",3,"pc",40),I("Salad","सलाद",100,"g"),I("Curd","दही",100,"g")],k:600,p:38,
+ b:["Soya chunks are among the richest vegetarian protein sources (about 50% protein) and help build lean muscle.","सोया चंक्स शाकाहारी प्रोटीन के सबसे अच्छे स्रोतों में से हैं (लगभग 50% प्रोटीन) और लीन मसल्स बनाने में मदद करते हैं।"],
+ a:["Paneer sabzi 120 g, or rajma 150 g.","पनीर सब्ज़ी 120 ग्राम, या राजमा 150 ग्राम।"]},
+vL6:{i:[I("Kadhi","कढ़ी",200,"ml"),I("Rice (cooked)","चावल (पका हुआ)",150,"g"),I("Vegetable sabzi","सब्ज़ी",100,"g"),I("Salad","सलाद",80,"g")],k:560,p:17,
+ b:["Kadhi (curd and besan) is soothing for the gut; rice gives energy; sabzi and salad add fibre.","कढ़ी (दही व बेसन) पेट के लिए आरामदायक है; चावल से ऊर्जा और सब्ज़ी-सलाद से फाइबर मिलता है।"],
+ a:["Dal 200 g with rice 150 g.","दाल 200 ग्राम और चावल 150 ग्राम।"]},
+vL7:{i:[I("Moong dal khichdi","मूंग दाल खिचड़ी",300,"g"),I("Curd","दही",150,"g"),I("Mixed vegetables","मिक्स सब्ज़ी",100,"g")],k:560,p:22,
+ b:["Moong dal khichdi is light, easy on digestion and gives balanced carbohydrate and protein.","मूंग दाल खिचड़ी हल्की और आसानी से पचने वाली है, इसमें कार्ब्स और प्रोटीन का संतुलन रहता है।"],
+ a:["Dal 200 g with 3 roti.","दाल 200 ग्राम और 3 रोटी।"]},
+
+/* ---------- VEG SNACK ---------- */
+vS1:{i:[I("Seasonal fruit (apple/papaya/guava)","मौसमी फल (सेब/पपीता/अमरूद)",150,"g"),I("Roasted peanuts","भुनी मूंगफली",25,"g")],k:220,p:8,
+ b:["Fruit gives vitamins and natural sugar; peanuts add protein and healthy fats for lasting energy.","फल से विटामिन और प्राकृतिक शुगर मिलती है; मूंगफली से प्रोटीन और हेल्दी फैट मिलता है।"],
+ a:["1 banana and 1 glass of milk.","1 केला और 1 गिलास दूध।"]},
+vS2:{i:[I("Roasted chana","भुना चना",40,"g"),I("Lemon water / green tea","नींबू पानी / ग्रीन टी",200,"ml")],k:150,p:8,
+ b:["Roasted chana is a high-fibre, high-protein snack that controls hunger without extra oil.","भुना चना हाई-फाइबर, हाई-प्रोटीन स्नैक है जो बिना ज़्यादा तेल के भूख को नियंत्रित करता है।"],
+ a:["Sprouts 100 g, or 1 fruit.","अंकुरित अनाज 100 ग्राम, या 1 फल।"]},
+vS3:{i:[I("Curd","दही",150,"g"),I("Banana","केला",1,"pc",100)],k:200,p:8,
+ b:["Curd gives protein and probiotics; banana gives quick energy and potassium for muscles.","दही से प्रोटीन और प्रोबायोटिक मिलते हैं; केले से तुरंत ऊर्जा और मसल्स के लिए पोटैशियम मिलता है।"],
+ a:["Buttermilk 250 ml with 2 dates.","छाछ 250 मि.ली. और 2 खजूर।"]},
+vS4:{i:[I("Sprouts salad (moong/chana)","अंकुरित सलाद (मूंग/चना)",150,"g"),I("Onion, tomato, lemon","प्याज़, टमाटर, नींबू",30,"g")],k:180,p:12,
+ b:["Sprouts are rich in plant protein, vitamin C and enzymes, and are low in calories.","अंकुरित अनाज में प्लांट प्रोटीन, विटामिन C और एंज़ाइम भरपूर होते हैं और कैलोरी कम होती है।"],
+ a:["Roasted chana 40 g.","भुना चना 40 ग्राम।"]},
+vS5:{i:[I("Buttermilk","छाछ",250,"ml"),I("Seasonal fruit","मौसमी फल",150,"g")],k:150,p:6,
+ b:["Buttermilk cools the stomach and aids digestion; fruit adds fibre and vitamins.","छाछ पेट को ठंडक देती है और पाचन सुधारती है; फल से फाइबर और विटामिन मिलते हैं।"],
+ a:["Coconut water 250 ml with 10 g almonds.","नारियल पानी 250 मि.ली. और 10 ग्राम बादाम।"]},
+vS6:{i:[I("Milk","दूध",250,"ml"),I("Almonds","बादाम",10,"g")],k:220,p:10,
+ b:["Milk with almonds gives calcium, protein and vitamin E, and supports muscle and bone recovery.","बादाम वाला दूध कैल्शियम, प्रोटीन और विटामिन E देता है तथा मसल्स व हड्डियों की रिकवरी में मदद करता है।"],
+ a:["Curd 150 g with 1 banana.","दही 150 ग्राम और 1 केला।"]},
+
+/* ---------- VEG DINNER ---------- */
+vR1:{i:[I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Dal (cooked)","दाल (पकी हुई)",150,"g"),I("Vegetable sabzi","सब्ज़ी",150,"g"),I("Salad","सलाद",80,"g")],k:480,p:20,
+ b:["A light dal-roti dinner gives protein for overnight muscle repair without heaviness.","हल्का दाल-रोटी वाला डिनर रात में मसल्स की रिकवरी के लिए प्रोटीन देता है और भारीपन नहीं करता।"],
+ a:["Moong dal khichdi 250 g.","मूंग दाल खिचड़ी 250 ग्राम।"]},
+vR2:{i:[I("Paneer sabzi (70 g paneer)","पनीर सब्ज़ी (70 ग्राम पनीर)",120,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Salad","सलाद",100,"g")],k:480,p:24,
+ b:["Paneer supplies slow-digesting casein protein, ideal for dinner; salad adds fibre.","पनीर से धीरे पचने वाला केसीन प्रोटीन मिलता है जो रात के खाने के लिए उत्तम है; सलाद से फाइबर मिलता है।"],
+ a:["Soya sabzi 120 g, or dal 150 g with 2 roti.","सोया सब्ज़ी 120 ग्राम, या दाल 150 ग्राम और 2 रोटी।"]},
+vR3:{i:[I("Vegetable soup","वेजिटेबल सूप",250,"ml"),I("Brown bread toast","ब्राउन ब्रेड टोस्ट",2,"pc",30),I("Paneer cubes (grilled)","पनीर क्यूब्स (ग्रिल्ड)",50,"g")],k:330,p:17,
+ b:["A light dinner with vegetables, fibre and protein that is easy to digest before sleep.","सब्ज़ियों, फाइबर और प्रोटीन वाला हल्का डिनर जो सोने से पहले आसानी से पच जाता है।"],
+ a:["Dal soup 250 ml with 1 roti.","दाल सूप 250 मि.ली. और 1 रोटी।"]},
+vR4:{i:[I("Soya vegetable","सोया सब्ज़ी",150,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Cucumber and tomato","खीरा और टमाटर",100,"g")],k:440,p:28,
+ b:["Soya gives high protein with low fat; excellent for muscle building on a vegetarian diet.","सोया में प्रोटीन अधिक और फैट कम होता है; शाकाहारी डाइट में मसल्स बनाने के लिए बेहतरीन है।"],
+ a:["Paneer sabzi 120 g.","पनीर सब्ज़ी 120 ग्राम।"]},
+vR5:{i:[I("Dal (cooked)","दाल (पकी हुई)",200,"g"),I("Rice (cooked)","चावल (पका हुआ)",120,"g"),I("Vegetable sabzi","सब्ज़ी",100,"g"),I("Salad","सलाद",80,"g")],k:500,p:19,
+ b:["Dal and rice together provide all essential amino acids and steady energy for the night.","दाल और चावल साथ मिलकर सभी ज़रूरी अमीनो एसिड और रात के लिए ऊर्जा देते हैं।"],
+ a:["2 roti with dal 200 g.","2 रोटी और दाल 200 ग्राम।"]},
+vR6:{i:[I("Moong dal chilla","मूंग दाल चीला",3,"pc",70),I("Green chutney","हरी चटनी",30,"g"),I("Curd","दही",100,"g")],k:380,p:22,
+ b:["Moong chilla is light, high in protein and very easy to digest at night.","मूंग चीला हल्का, प्रोटीन से भरपूर और रात में आसानी से पचने वाला है।"],
+ a:["Besan chilla 3 pc, or vegetable soup with toast.","बेसन चीला 3 नग, या वेज सूप और टोस्ट।"]},
+vR7:{i:[I("Lauki (bottle gourd) dal","लौकी की दाल",200,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Salad","सलाद",80,"g")],k:420,p:18,
+ b:["Bottle gourd is very light, hydrating and low in calories; dal adds protein.","लौकी बहुत हल्की, पानी से भरपूर और कम कैलोरी वाली है; दाल से प्रोटीन मिलता है।"],
+ a:["Moong dal soup 250 ml with 2 roti.","मूंग दाल सूप 250 मि.ली. और 2 रोटी।"]},
+
+/* ---------- NON-VEG BREAKFAST ---------- */
+nB1:{i:[I("Egg bhurji (from eggs)","एग भुर्जी (अंडों से)",3,"pc",50),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Tomato, onion (in bhurji)","टमाटर, प्याज़ (भुर्जी में)",50,"g")],k:520,p:28,
+ b:["Eggs are a complete protein with vitamin B12 and choline; roti adds slow carbohydrates for energy.","अंडे संपूर्ण प्रोटीन, विटामिन B12 और कोलीन देते हैं; रोटी से धीमी गति से ऊर्जा देने वाले कार्ब्स मिलते हैं।"],
+ a:["Paneer bhurji 100 g, or 3 boiled eggs with 2 roti.","पनीर भुर्जी 100 ग्राम, या 3 उबले अंडे और 2 रोटी।"]},
+nB2:{i:[I("Boiled eggs","उबले अंडे",3,"pc",50),I("Daliya (cooked, with milk)","दलिया (दूध में पका)",200,"g"),I("Banana","केला",1,"pc",100)],k:500,p:30,
+ b:["Boiled eggs give high-quality protein without extra oil; daliya and banana provide fibre and potassium.","उबले अंडे बिना अतिरिक्त तेल के उच्च गुणवत्ता का प्रोटीन देते हैं; दलिया और केले से फाइबर व पोटैशियम मिलता है।"],
+ a:["Omelette (3 eggs) with 2 slices of bread.","ऑमलेट (3 अंडे) और 2 ब्रेड स्लाइस।"]},
+nB3:{i:[I("Omelette (eggs)","ऑमलेट (अंडे)",3,"pc",50),I("Brown bread slice","ब्राउन ब्रेड स्लाइस",2,"pc",30),I("Seasonal fruit","मौसमी फल",100,"g")],k:470,p:27,
+ b:["Omelette gives protein and healthy fats; brown bread adds fibre; fruit gives vitamins.","ऑमलेट से प्रोटीन और हेल्दी फैट मिलता है; ब्राउन ब्रेड से फाइबर और फल से विटामिन मिलते हैं।"],
+ a:["Sprouts 100 g with 2 slices of bread, or 3 boiled eggs.","अंकुरित अनाज 100 ग्राम और 2 ब्रेड स्लाइस, या 3 उबले अंडे।"]},
+nB4:{i:[I("Egg paratha (little oil)","एग पराठा (कम तेल)",2,"pc",90),I("Curd","दही",150,"g")],k:520,p:25,
+ b:["Egg paratha combines protein and carbohydrates in one meal; curd supports digestion.","एग पराठा एक ही भोजन में प्रोटीन और कार्बोहाइड्रेट देता है; दही पाचन में मदद करता है।"],
+ a:["2 roti with 3 boiled eggs.","2 रोटी और 3 उबले अंडे।"]},
+nB5:{i:[I("Oats (dry weight)","ओट्स (सूखा वज़न)",50,"g"),I("Milk","दूध",200,"ml"),I("Boiled eggs","उबले अंडे",2,"pc",50)],k:520,p:33,
+ b:["Oats give slow energy and fibre; eggs add complete protein to support muscle growth.","ओट्स से धीमी ऊर्जा और फाइबर मिलता है; अंडे संपूर्ण प्रोटीन देकर मसल्स ग्रोथ में मदद करते हैं।"],
+ a:["Daliya 250 g with 2 boiled eggs.","दलिया 250 ग्राम और 2 उबले अंडे।"]},
+nB6:{i:[I("Poha (with vegetables)","पोहा (सब्ज़ियों के साथ)",200,"g"),I("Boiled eggs","उबले अंडे",2,"pc",50),I("Banana","केला",1,"pc",100)],k:530,p:24,
+ b:["Poha gives light carbohydrates and iron, eggs add protein, banana adds potassium.","पोहा से हल्के कार्ब्स और आयरन, अंडों से प्रोटीन और केले से पोटैशियम मिलता है।"],
+ a:["Upma 200 g with 2 eggs.","उपमा 200 ग्राम और 2 अंडे।"]},
+nB7:{i:[I("Brown bread slice","ब्राउन ब्रेड स्लाइस",2,"pc",30),I("Grilled chicken (shredded)","ग्रिल्ड चिकन (कटा हुआ)",80,"g"),I("Cucumber, tomato, lettuce","खीरा, टमाटर, सलाद पत्ता",50,"g"),I("Milk","दूध",200,"ml")],k:480,p:36,
+ b:["Lean chicken is high in protein and low in fat, helping muscle repair and fullness.","चिकन ब्रेस्ट में प्रोटीन अधिक और फैट कम होता है, जो मसल्स रिकवरी और पेट भरा रखने में मदद करता है।"],
+ a:["Egg sandwich (2 eggs) with milk 200 ml.","एग सैंडविच (2 अंडे) और दूध 200 मि.ली.।"]},
+
+/* ---------- NON-VEG LUNCH ---------- */
+nL1:{i:[I("Chicken curry (about 120 g chicken)","चिकन करी (लगभग 120 ग्राम चिकन)",200,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",3,"pc",40),I("Salad","सलाद",100,"g")],k:640,p:42,
+ b:["Chicken delivers around 35-40 g of complete protein; roti restores energy; salad adds fibre.","चिकन से लगभग 35-40 ग्राम संपूर्ण प्रोटीन मिलता है; रोटी से ऊर्जा और सलाद से फाइबर मिलता है।"],
+ a:["Egg curry (3 eggs) with roti, or paneer sabzi 150 g.","एग करी (3 अंडे) और रोटी, या पनीर सब्ज़ी 150 ग्राम।"]},
+nL2:{i:[I("Dal (cooked)","दाल (पकी हुई)",200,"g"),I("Boiled eggs","उबले अंडे",2,"pc",50),I("Roti (whole wheat)","रोटी (गेहूँ)",3,"pc",40),I("Salad","सलाद",80,"g")],k:640,p:36,
+ b:["Dal plus eggs boosts the protein quality of the meal; roti and salad give energy and fibre.","दाल और अंडे साथ लेने से भोजन के प्रोटीन की गुणवत्ता बढ़ती है; रोटी व सलाद से ऊर्जा और फाइबर मिलता है।"],
+ a:["Rajma 150 g with rice, or chicken 100 g.","राजमा 150 ग्राम और चावल, या चिकन 100 ग्राम।"]},
+nL3:{i:[I("Fish (curry or grilled)","मछली (करी या ग्रिल्ड)",150,"g"),I("Rice (cooked)","चावल (पका हुआ)",150,"g"),I("Vegetables","सब्ज़ी",150,"g")],k:600,p:38,
+ b:["Fish provides lean protein and omega-3 fats that support the heart and joints.","मछली से लीन प्रोटीन और ओमेगा-3 फैट मिलते हैं जो दिल और जोड़ों के लिए अच्छे हैं।"],
+ a:["Chicken 120 g with rice 150 g.","चिकन 120 ग्राम और चावल 150 ग्राम।"]},
+nL4:{i:[I("Chicken tikka (grilled)","चिकन टिक्का (ग्रिल्ड)",150,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",3,"pc",40),I("Salad and mint chutney","सलाद और पुदीना चटनी",100,"g")],k:600,p:45,
+ b:["Grilled chicken tikka is very high in protein with little oil, ideal for lean muscle gain.","ग्रिल्ड चिकन टिक्का में प्रोटीन बहुत अधिक और तेल कम होता है, लीन मसल्स के लिए उत्तम।"],
+ a:["Paneer tikka 120 g, or boiled eggs (3).","पनीर टिक्का 120 ग्राम, या उबले अंडे (3)।"]},
+nL5:{i:[I("Egg curry (eggs)","एग करी (अंडे)",3,"pc",50),I("Rice (cooked)","चावल (पका हुआ)",150,"g"),I("Salad","सलाद",80,"g")],k:640,p:30,
+ b:["Egg curry offers protein and healthy fats; rice replenishes energy after the morning.","एग करी से प्रोटीन और हेल्दी फैट मिलता है; चावल से सुबह के बाद ऊर्जा की पूर्ति होती है।"],
+ a:["Dal 200 g with 2 boiled eggs and rice.","दाल 200 ग्राम, 2 उबले अंडे और चावल।"]},
+nL6:{i:[I("Chicken pulao","चिकन पुलाव",300,"g"),I("Raita (curd)","रायता (दही)",150,"g"),I("Salad","सलाद",80,"g")],k:650,p:38,
+ b:["Chicken pulao is a balanced one-pot meal; raita adds probiotics and calcium.","चिकन पुलाव एक संतुलित वन-पॉट मील है; रायता से प्रोबायोटिक और कैल्शियम मिलता है।"],
+ a:["Chicken curry 150 g with 3 roti.","चिकन करी 150 ग्राम और 3 रोटी।"]},
+nL7:{i:[I("Dal (cooked)","दाल (पकी हुई)",150,"g"),I("Grilled chicken","ग्रिल्ड चिकन",120,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Salad","सलाद",100,"g")],k:600,p:50,
+ b:["A high-protein plate: chicken for muscle repair, dal for extra protein and fibre.","हाई-प्रोटीन थाली: चिकन मसल्स रिकवरी के लिए और दाल अतिरिक्त प्रोटीन व फाइबर के लिए।"],
+ a:["3 boiled eggs instead of chicken.","चिकन की जगह 3 उबले अंडे।"]},
+
+/* ---------- NON-VEG SNACK ---------- */
+nS1:{i:[I("Milk","दूध",250,"ml"),I("Banana","केला",1,"pc",100)],k:250,p:10,
+ b:["Milk and banana give protein, calcium, potassium and quick energy.","दूध और केले से प्रोटीन, कैल्शियम, पोटैशियम और तुरंत ऊर्जा मिलती है।"],
+ a:["Curd 150 g with 1 banana.","दही 150 ग्राम और 1 केला।"]},
+nS2:{i:[I("Boiled eggs","उबले अंडे",2,"pc",50),I("Seasonal fruit","मौसमी फल",100,"g")],k:230,p:15,
+ b:["Boiled eggs are a compact protein snack; fruit adds vitamins and fibre.","उबले अंडे कम जगह में अच्छा प्रोटीन देते हैं; फल से विटामिन और फाइबर मिलता है।"],
+ a:["Roasted chana 40 g.","भुना चना 40 ग्राम।"]},
+
+/* ---------- NON-VEG DINNER ---------- */
+nR1:{i:[I("Grilled chicken","ग्रिल्ड चिकन",150,"g"),I("Sauteed vegetables","सोटे की हुई सब्ज़ियाँ",150,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",1,"pc",40)],k:430,p:42,
+ b:["Lean protein with vegetables keeps dinner light and supports overnight muscle repair.","सब्ज़ियों के साथ लीन प्रोटीन डिनर को हल्का रखता है और रात में मसल्स रिकवरी में मदद करता है।"],
+ a:["Paneer 100 g grilled with vegetables.","100 ग्राम ग्रिल्ड पनीर और सब्ज़ियाँ।"]},
+nR2:{i:[I("Egg curry (eggs)","एग करी (अंडे)",2,"pc",50),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Salad","सलाद",100,"g")],k:460,p:24,
+ b:["Eggs provide complete protein and choline; salad adds fibre for better digestion.","अंडों से संपूर्ण प्रोटीन और कोलीन मिलता है; सलाद से फाइबर और बेहतर पाचन।"],
+ a:["Dal 200 g with 2 roti.","दाल 200 ग्राम और 2 रोटी।"]},
+nR3:{i:[I("Chicken soup","चिकन सूप",250,"ml"),I("Brown bread toast","ब्राउन ब्रेड टोस्ट",2,"pc",30),I("Boiled egg","उबला अंडा",1,"pc",50)],k:340,p:28,
+ b:["A warm, light, protein-rich dinner that is gentle on the stomach.","गर्म, हल्का और प्रोटीन से भरपूर डिनर जो पेट पर हल्का रहता है।"],
+ a:["Vegetable soup with 50 g paneer cubes.","वेज सूप और 50 ग्राम पनीर क्यूब्स।"]},
+nR4:{i:[I("Chicken sabzi (about 100 g chicken)","चिकन सब्ज़ी (लगभग 100 ग्राम चिकन)",150,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40),I("Salad","सलाद",80,"g")],k:450,p:34,
+ b:["Chicken with roti balances protein and carbohydrates for recovery after the day.","चिकन और रोटी का मेल प्रोटीन व कार्ब्स का संतुलन देता है जिससे दिन भर के बाद रिकवरी होती है।"],
+ a:["Fish 120 g grilled, or paneer sabzi 120 g.","ग्रिल्ड मछली 120 ग्राम, या पनीर सब्ज़ी 120 ग्राम।"]},
+nR5:{i:[I("Dal (cooked)","दाल (पकी हुई)",200,"g"),I("Boiled eggs","उबले अंडे",2,"pc",50),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40)],k:470,p:28,
+ b:["Dal and eggs together give excellent protein quality at a low cost.","दाल और अंडे साथ मिलकर कम खर्च में उत्कृष्ट गुणवत्ता का प्रोटीन देते हैं।"],
+ a:["Paneer 80 g with dal 150 g.","पनीर 80 ग्राम और दाल 150 ग्राम।"]},
+nR6:{i:[I("Grilled chicken salad","ग्रिल्ड चिकन सलाद",120,"g"),I("Mixed vegetable salad","मिक्स सब्ज़ी सलाद",200,"g"),I("Curd","दही",100,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",1,"pc",40)],k:380,p:38,
+ b:["High protein, low calorie and full of fibre, a good choice for fat loss.","हाई प्रोटीन, कम कैलोरी और फाइबर से भरपूर, फैट लॉस के लिए अच्छा विकल्प।"],
+ a:["3 boiled eggs with salad.","सलाद के साथ 3 उबले अंडे।"]},
+nR7:{i:[I("Chicken curry (about 100 g chicken)","चिकन करी (लगभग 100 ग्राम चिकन)",150,"g"),I("Dal (cooked)","दाल (पकी हुई)",150,"g"),I("Roti (whole wheat)","रोटी (गेहूँ)",2,"pc",40)],k:500,p:40,
+ b:["Chicken and dal combine for a strong protein dose, supporting muscle growth.","चिकन और दाल मिलकर प्रोटीन की अच्छी मात्रा देते हैं जो मसल्स ग्रोथ में सहायक है।"],
+ a:["Fish 120 g with dal 150 g.","मछली 120 ग्राम और दाल 150 ग्राम।"]}
+};
+
+var SCHED={
+ v:{B:["vB1","vB2","vB3","vB4","vB5","vB6","vB7"],L:["vL1","vL2","vL3","vL4","vL5","vL6","vL7"],S:["vS1","vS2","vS3","vS4","vS5","vS6","vS2"],R:["vR1","vR2","vR3","vR4","vR5","vR6","vR7"]},
+ n:{B:["nB1","nB2","nB3","nB4","nB5","nB6","nB7"],L:["nL1","nL2","nL3","nL4","nL5","nL6","nL7"],S:["nS1","vS2","vS6","vS1","nS2","vS4","vS3"],R:["nR1","nR2","nR3","nR4","nR5","nR6","nR7"]}
+};
+
+var MEAL_STYLE={
+ B:{col:"#ffd60a",en:"BREAKFAST · Morning 8–9 AM",hi:"नाश्ता · सुबह 8–9 बजे"},
+ L:{col:"#ff9f1c",en:"LUNCH · Afternoon 1–2 PM",hi:"दोपहर का भोजन · 1–2 बजे"},
+ S:{col:"#3ddc84",en:"SNACK · Evening 5–6 PM",hi:"शाम का स्नैक · 5–6 बजे"},
+ R:{col:"#4dabf7",en:"DINNER · Night 8–9 PM",hi:"रात का भोजन · 8–9 बजे"}
+};
+
+/* ---------- helpers ---------- */
+function wrapTxt(x,t,maxW){
+  var words=String(t).split(" "), lines=[], cur="";
+  words.forEach(function(w){
+    var tt=cur?cur+" "+w:w;
+    if(x.measureText(tt).width>maxW&&cur){ lines.push(cur); cur=w; } else cur=tt;
+  });
+  if(cur) lines.push(cur);
+  return lines.length?lines:[""];
+}
+function rrect(x,xx,yy,ww,hh,r){x.beginPath();x.moveTo(xx+r,yy);x.arcTo(xx+ww,yy,xx+ww,yy+hh,r);x.arcTo(xx+ww,yy+hh,xx,yy+hh,r);x.arcTo(xx,yy+hh,xx,yy,r);x.arcTo(xx,yy,xx+ww,yy,r);x.closePath();}
+
+function portionF(p){
+  var b=(p&&p.bmi)||22, a=+(p&&p.age)||0;
+  var f=b>=30?0.85:b>=25?0.92:b<18.5?1.2:1;
+  if(S.goal==="Bulking"||S.look==="Monster") f*=1.15;
+  else if(S.goal==="Muscle Building"||S.look==="Muscular") f*=1.08;
+  else if(S.goal==="Fat Loss") f*=0.92;
+  if(a>=60) f*=0.92;
+  return Math.max(0.8,Math.min(1.3,f));
+}
+function fmtItem(it,f,hi){
+  var amt=it[2], u=it[3], g=it[4], name=hi?it[1]:it[0], q;
+  if(u==="pc"){ var n=Math.max(1,Math.round(amt*f)); q=n+(hi?" पीस":" pc")+" · "+(n*g)+" g"; }
+  else { var v=Math.max(5,Math.round(amt*f/5)*5); q=v+" "+u; }
+  return {n:name,q:q};
+}
+function prepMeal(id,f,hi){
+  var D=DISH[id];
+  return {lines:D.i.map(function(it){return fmtItem(it,f,hi);}),
+    k:Math.round(D.k*f/10)*10, p:Math.round(D.p*f),
+    b:D.b[hi?1:0], a:D.a[hi?1:0]};
+}
+
+/* short one-line benefit per dish (used in the compact A4 table) */
+var SB={
+vB1:["Quick energy, iron, calcium, potassium","तुरंत ऊर्जा, आयरन, कैल्शियम, पोटैशियम"],
+vB2:["Fibre, lasting energy, probiotics","फाइबर, लंबी ऊर्जा, प्रोबायोटिक"],
+vB3:["Plant protein + fibre, keeps you full","प्लांट प्रोटीन + फाइबर, पेट भरा रखे"],
+vB4:["Slow carbs, healthy fats, calcium","धीमे कार्ब्स, हेल्दी फैट, कैल्शियम"],
+vB5:["Heart-healthy fibre, omega-3","दिल के लिए फाइबर, ओमेगा-3"],
+vB6:["Light, easy to digest, protein + minerals","हल्का, आसानी से पचे, प्रोटीन + मिनरल"],
+vB7:["Protein + calcium + vitamins","प्रोटीन + कैल्शियम + विटामिन"],
+vL1:["Complete plant protein, fibre, vitamins","संपूर्ण प्लांट प्रोटीन, फाइबर, विटामिन"],
+vL2:["Protein, iron, fibre, better digestion","प्रोटीन, आयरन, फाइबर, पाचन"],
+vL3:["Protein, fibre, iron; long fullness","प्रोटीन, फाइबर, आयरन; देर तक पेट भरा"],
+vL4:["Casein protein + calcium for muscle, bones","केसीन प्रोटीन + कैल्शियम, मसल्स व हड्डी"],
+vL5:["Very high veg protein for lean muscle","लीन मसल्स के लिए बहुत अधिक प्रोटीन"],
+vL6:["Gut-soothing, energy, fibre","पेट को आराम, ऊर्जा, फाइबर"],
+vL7:["Light, easy digestion, carbs + protein","हल्का, आसान पाचन, कार्ब्स + प्रोटीन"],
+vS1:["Vitamins + protein + healthy fats","विटामिन + प्रोटीन + हेल्दी फैट"],
+vS2:["High fibre + protein, no extra oil","हाई फाइबर + प्रोटीन, बिना तेल"],
+vS3:["Protein, probiotics, potassium","प्रोटीन, प्रोबायोटिक, पोटैशियम"],
+vS4:["Plant protein, vitamin C, low calorie","प्लांट प्रोटीन, विटामिन C, कम कैलोरी"],
+vS5:["Cooling, digestion, fibre + vitamins","ठंडक, पाचन, फाइबर + विटामिन"],
+vS6:["Calcium, protein, vitamin E","कैल्शियम, प्रोटीन, विटामिन E"],
+vR1:["Light protein for overnight recovery","रात की रिकवरी के लिए हल्का प्रोटीन"],
+vR2:["Slow-digesting protein, ideal at night","धीरे पचने वाला प्रोटीन, रात के लिए उत्तम"],
+vR3:["Light, fibre + protein, easy before sleep","हल्का, फाइबर + प्रोटीन, सोने से पहले"],
+vR4:["High protein, low fat for muscle","हाई प्रोटीन, कम फैट, मसल्स के लिए"],
+vR5:["All amino acids + steady energy","सभी अमीनो एसिड + स्थिर ऊर्जा"],
+vR6:["Light, high protein, easy to digest","हल्का, प्रोटीन से भरपूर, आसानी से पचे"],
+vR7:["Hydrating, low calorie, dal protein","पानी से भरपूर, कम कैलोरी, दाल का प्रोटीन"],
+nB1:["Complete protein, B12, choline + energy","संपूर्ण प्रोटीन, B12, कोलीन + ऊर्जा"],
+nB2:["High-quality protein, fibre, potassium","उच्च प्रोटीन, फाइबर, पोटैशियम"],
+nB3:["Protein, healthy fats, fibre, vitamins","प्रोटीन, हेल्दी फैट, फाइबर, विटामिन"],
+nB4:["Protein + carbs in one meal, digestion","प्रोटीन + कार्ब्स एक साथ, पाचन"],
+nB5:["Slow energy, fibre + complete protein","धीमी ऊर्जा, फाइबर + संपूर्ण प्रोटीन"],
+nB6:["Light carbs, iron, protein, potassium","हल्के कार्ब्स, आयरन, प्रोटीन, पोटैशियम"],
+nB7:["Lean high protein, low fat","लीन हाई प्रोटीन, कम फैट"],
+nL1:["35–40 g complete protein, energy, fibre","35–40 ग्राम प्रोटीन, ऊर्जा, फाइबर"],
+nL2:["Protein quality boost, energy, fibre","प्रोटीन की गुणवत्ता, ऊर्जा, फाइबर"],
+nL3:["Lean protein + omega-3 for heart, joints","लीन प्रोटीन + ओमेगा-3, दिल व जोड़"],
+nL4:["Very high protein, low oil","बहुत अधिक प्रोटीन, कम तेल"],
+nL5:["Protein, healthy fats, refills energy","प्रोटीन, हेल्दी फैट, ऊर्जा"],
+nL6:["Balanced one-pot meal, probiotics","संतुलित भोजन, प्रोबायोटिक"],
+nL7:["High-protein plate for muscle repair","मसल्स रिकवरी के लिए हाई-प्रोटीन थाली"],
+nS1:["Protein, calcium, potassium, quick energy","प्रोटीन, कैल्शियम, पोटैशियम, ऊर्जा"],
+nS2:["Compact protein + vitamins, fibre","प्रोटीन + विटामिन + फाइबर"],
+nR1:["Lean protein, light dinner, muscle repair","लीन प्रोटीन, हल्का डिनर, रिकवरी"],
+nR2:["Complete protein, choline, fibre","संपूर्ण प्रोटीन, कोलीन, फाइबर"],
+nR3:["Warm, light, protein-rich, gentle","गर्म, हल्का, प्रोटीन से भरपूर"],
+nR4:["Protein + carbs balance for recovery","प्रोटीन + कार्ब्स संतुलन, रिकवरी"],
+nR5:["Excellent protein quality, low cost","उत्कृष्ट प्रोटीन, कम खर्च"],
+nR6:["High protein, low calorie, high fibre","हाई प्रोटीन, कम कैलोरी, फाइबर"],
+nR7:["Strong protein dose for muscle growth","मसल्स ग्रोथ के लिए अच्छा प्रोटीन"]
+};
+var MEAL_HEAD={
+ B:{col:"#ffd60a",en:["BREAKFAST","Morning 8–9 AM"],hi:["नाश्ता","सुबह 8–9 बजे"]},
+ L:{col:"#ffa940",en:["LUNCH","Afternoon 1–2 PM"],hi:["दोपहर का भोजन","दोपहर 1–2 बजे"]},
+ S:{col:"#5fd68a",en:["SNACK","Evening 5–6 PM"],hi:["शाम का स्नैक","शाम 5–6 बजे"]},
+ R:{col:"#6bb9ff",en:["DINNER","Night 8–9 PM"],hi:["रात का भोजन","रात 8–9 बजे"]}
+};
+
+/* ---------- output sink ---------- */
+var _dlN=0;
+function autoDownload(url,fname){
+  setTimeout(function(){ var a=document.createElement("a"); a.download=fname; a.href=url; document.body.appendChild(a); a.click(); document.body.removeChild(a); },(_dlN++)*1000);
+}
+function emitImage(member,d,url,fname,label){
+  if(typeof window.chartSink==="function"){ window.chartSink(member,d,url,fname); return; }
+  if($("out")) $("out").insertAdjacentHTML("beforeend","<div style='margin-top:12px;color:var(--y);font-weight:700'>"+esc(label)+"</div><img src='"+url+"' style='width:100%;border-radius:10px;border:1px solid #554500'><a class='b' download='"+fname+"' href='"+url+"'>Download / डाउनलोड: "+esc(label)+"</a>");
+  autoDownload(url,fname);
+}
+function emitPdf(member,d,url,fname,label,previews){
+  if(typeof window.chartSink==="function"){ window.chartSink(member,d,url,fname); return; }
+  if($("out")) $("out").insertAdjacentHTML("beforeend","<div style='margin-top:12px;color:var(--y);font-weight:700'>"+esc(label)+"</div>"+
+    previews.map(function(u,i){ return "<img src='"+u+"' alt='page "+(i+1)+"' style='width:100%;background:#fff;border-radius:6px;margin-top:6px;border:1px solid #554500'>"; }).join("")+
+    "<a class='b' download='"+fname+"' href='"+url+"'>Download PDF / PDF डाउनलोड: "+esc(label)+"</a>");
+  autoDownload(url,fname);
+}
+
+/* ---------- minimal PDF writer (A4, one JPEG per page) ---------- */
+function jpegBytes(canvas){
+  var b64=canvas.toDataURL("image/jpeg",0.92).split(",")[1], bin=atob(b64), u=new Uint8Array(bin.length);
+  for(var i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+  return u;
+}
+function makePdfBlob(pages,iw,ih){
+  var parts=[], off=0, xref=[], te=new TextEncoder(), N=pages.length;
+  function put(s){ var b=(typeof s==="string")?te.encode(s):s; parts.push(b); off+=b.length; }
+  function obj(n,body){ xref[n]=off; put(n+" 0 obj\n"); body(); put("\nendobj\n"); }
+  put("%PDF-1.4\n");
+  obj(1,function(){ put("<< /Type /Catalog /Pages 2 0 R >>"); });
+  obj(2,function(){ var k=[]; for(var i=0;i<N;i++) k.push((3+3*i)+" 0 R"); put("<< /Type /Pages /Kids ["+k.join(" ")+"] /Count "+N+" >>"); });
+  pages.forEach(function(jb,i){
+    var pg=3+3*i, ct=4+3*i, im=5+3*i, cs="q 595 0 0 842 0 0 cm /Im0 Do Q";
+    obj(pg,function(){ put("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /Im0 "+im+" 0 R >> >> /Contents "+ct+" 0 R >>"); });
+    obj(ct,function(){ put("<< /Length "+cs.length+" >>\nstream\n"+cs+"\nendstream"); });
+    obj(im,function(){ put("<< /Type /XObject /Subtype /Image /Width "+iw+" /Height "+ih+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jb.length+" >>\nstream\n"); put(jb); put("\nendstream"); });
+  });
+  var xo=off, total=3+3*N, x="xref\n0 "+total+"\n0000000000 65535 f \n";
+  for(var n=1;n<total;n++) x+=("0000000000"+xref[n]).slice(-10)+" 00000 n \n";
+  put(x+"trailer\n<< /Size "+total+" /Root 1 0 R >>\nstartxref\n"+xo+"\n%%EOF");
+  return new Blob(parts,{type:"application/pdf"});
+}
+
+/* ---------- IMAGE 1 : customer details ---------- */
+function drawProfilePage(x,W,member,p,photo,hi){
+  var gold="#ffd60a";
+  function T(en,h){ return hi?h:en; }
+  function rr(xx,yy,ww,hh,r){ rrect(x,xx,yy,ww,hh,r); }
+  function yn(v){ return v?T("Yes","हाँ"):T("No","नहीं"); }
+  function memName(m){ return hi?(MEM_HI[m]||m):m; }
+  var FREQ={Never:["Never","कभी नहीं"],Sometimes:["Sometimes","कभी-कभी"],Weekly:["Weekly","हफ्ते में"],Daily:["Daily","रोज"]};
+  function fq(k){ var a=FREQ[k]||FREQ.Never; return hi?a[1]:a[0]; }
+
+  x.fillStyle="#0a0a0a"; x.fillRect(0,0,W,3600);
+  x.textAlign="center"; x.fillStyle=gold; x.font="900 44px "+FF; x.fillText("DIETICIAN XPERT",W/2,64);
+  x.fillStyle="#fff"; x.font="bold 24px "+FF; x.fillText(T("CUSTOMER DETAILS","ग्राहक की जानकारी"),W/2,104);
+  x.fillStyle="#bbb"; x.font="14px "+FF; x.fillText(T("Details submitted by the customer","ग्राहक द्वारा दी गई जानकारी"),W/2,130);
+  x.strokeStyle=gold; x.lineWidth=2; x.beginPath(); x.moveTo(48,148); x.lineTo(W-48,148); x.stroke();
+
+  var sy=168, sh=170, b=p.bmi||0, cat=bmiCat(b);
+  x.fillStyle="#141100"; rr(48,sy,W-96,sh,14); x.fill();
+  x.strokeStyle=gold; x.lineWidth=2; rr(48,sy,W-96,sh,14); x.stroke();
+  var tx=72;
+  if(photo){
+    x.save(); rr(68,sy+15,140,140,12); x.clip(); x.drawImage(photo,68,sy+15,140,140); x.restore();
+    x.strokeStyle=gold; x.lineWidth=2; rr(68,sy+15,140,140,12); x.stroke();
+    tx=232;
+  }
+  x.textAlign="left";
+  x.fillStyle="#fff"; x.font="bold 30px "+FF; x.fillText(String(S.n||"").slice(0,26),tx,sy+48);
+  x.fillStyle="#ddd"; x.font="17px "+FF;
+  x.fillText(T("Mobile: ","मोबाइल: ")+(S.mb||"—"),tx,sy+82);
+  x.fillText(T("Plan for: ","प्लान किसके लिए: ")+memName(member),tx,sy+110);
+  x.fillStyle=gold; x.font="bold 20px "+FF;
+  x.fillText("BMI "+(b||"—")+"  ·  "+(hi?cat.hi:cat.en),tx,sy+144);
+
+  var y=sy+sh+30;
+  function cell(cx,cy,cw,label,value){
+    x.font="600 17px "+FF;
+    var lines=wrapTxt(x,String(value),cw-28);
+    return {cx:cx,cy:cy,cw:cw,label:label,lines:lines,h:62+(lines.length-1)*24};
+  }
+  function drawCell(c,h){
+    x.fillStyle="#141414"; rr(c.cx,c.cy,c.cw,h,10); x.fill();
+    x.strokeStyle="#333"; x.lineWidth=1.5; rr(c.cx,c.cy,c.cw,h,10); x.stroke();
+    x.fillStyle=gold; x.font="bold 12px "+FF; x.textAlign="left"; x.fillText(c.label.toUpperCase(),c.cx+14,c.cy+22);
+    x.fillStyle="#fff"; x.font="600 17px "+FF;
+    c.lines.forEach(function(l,k){ x.fillText(l,c.cx+14,c.cy+47+k*24); });
+  }
+  function section(title,items){
+    x.fillStyle=gold; x.font="bold 18px "+FF; x.textAlign="left"; x.fillText(title,48,y+4);
+    x.fillStyle="#444"; x.fillRect(48,y+14,W-96,1.5);
+    y+=30;
+    var i=0;
+    while(i<items.length){
+      var it=items[i], nx=items[i+1];
+      if(it[2]||!nx||nx[2]){
+        var c=cell(48,y,W-96,it[0],it[1]); drawCell(c,c.h); y+=c.h+10; i++;
+      } else {
+        var a=cell(48,y,(W-96-12)/2,it[0],it[1]), d2=cell(48+(W-96-12)/2+12,y,(W-96-12)/2,nx[0],nx[1]);
+        var h=Math.max(a.h,d2.h); drawCell(a,h); drawCell(d2,h); y+=h+10; i+=2;
+      }
+    }
+    y+=14;
+  }
+
+  var ht=(p.ft||"—")+" ft "+(p.inc||0)+" in";
+  var cm=p.ft?Math.round(((+p.ft)*12+(+p.inc||0))*2.54):0;
+  section(T("PERSONAL INFORMATION","व्यक्तिगत जानकारी"),[
+    [T("Full name","पूरा नाम"),S.n||"—"],
+    [T("Mobile number","मोबाइल नंबर"),S.mb||"—"],
+    [T("Plan for","प्लान किसके लिए"),memName(member)],
+    [T("All members in this order","इस ऑर्डर के सभी सदस्य"),(S.members||[]).map(memName).join(", ")],
+    [T("Gender","लिंग"),S.gender==="F"?T("Female","महिला"):T("Male","पुरुष")],
+    [T("Date","दिनांक"),new Date().toLocaleDateString("en-GB")]
+  ]);
+  section(T("BODY DETAILS","शारीरिक जानकारी"),[
+    [T("Age","उम्र"),(p.age||"—")+T(" years"," वर्ष")],
+    [T("Weight","वज़न"),(p.wt||"—")+" kg"],
+    [T("Height","ऊँचाई"),ht+(cm?" ("+cm+" cm)":"")],
+    ["BMI",(b||"—")+" · "+(hi?cat.hi:cat.en)]
+  ]);
+  var bm=bmiMsg(b);
+  if(bm.en){ section(T("BMI ASSESSMENT","BMI मूल्यांकन"),[[T("What it means","इसका अर्थ"),hi?bm.hi:bm.en,true]]); }
+
+  var goalTxt=hi?(GOAL_HI[S.goal]||S.goal||"—"):(S.goal||"—");
+  var gi=[
+    [T("Diet type","आहार का प्रकार"),S.diet==="v"?T("Vegetarian","शाकाहारी"):T("Non-Vegetarian","मांसाहारी")],
+    [T("Desired physique","शारीरिक लक्ष्य"),hi?(LOOK_HI[S.look]||S.look):(S.look==="Monster"?"Bulk / Heavy":S.look)],
+    [T("Main goal","मुख्य लक्ष्य"),goalTxt],
+    [T("Gym","जिम"),S.gym?(yn(true)+" · "+S.gymDays+T(" days per week"," दिन प्रति सप्ताह")):yn(false)]
+  ];
+  if(S.look!=="Fit") gi.push([T("Monthly budget","मासिक बजट"),"Rs "+S.budget]);
+  gi.push([T("Supplements selected","चुने गए सप्लीमेंट"),(S.supplements&&S.supplements.length)?S.supplements.join(", "):T("None","कोई नहीं"),true]);
+  section(T("GOALS AND PREFERENCES","लक्ष्य और पसंद"),gi);
+
+  if(S.gym&&(S.mBiceps||S.mChest||S.mShoulder||S.mThigh||S.mWaist)){
+    section(T("BODY MEASUREMENTS (INCHES)","शरीर के माप (इंच)"),[
+      [T("Biceps","बाइसेप्स"),S.mBiceps||"—"],
+      [T("Chest","छाती"),S.mChest||"—"],
+      [T("Shoulder","कंधा"),S.mShoulder||"—"],
+      [T("Thigh","जांघ"),S.mThigh||"—"],
+      [T("Waist","कमर"),S.mWaist||"—"]
+    ]);
+  }
+
+  var beerTxt=(S.beerMl&&S.beerFreq&&S.beerFreq!=="Never")?(S.beerMl+" ml · "+fq(S.beerFreq)):T("Never","नहीं पीता");
+  section(T("LIFESTYLE HABITS","जीवनशैली की आदतें"),[
+    [T("Cigarettes per day","प्रतिदिन सिगरेट"),S.cigDay||0],
+    [T("Cigarettes per week","हफ्ते में सिगरेट"),S.smokeWeek||0],
+    [T("Paan / tobacco per day","प्रतिदिन पान-तंबाकू"),S.paanDay||0],
+    [T("Paan / tobacco per week","हफ्ते में पान-तंबाकू"),S.paanWeek||0],
+    [T("Beer (size · frequency)","बीयर (मात्रा · आवृत्ति)"),beerTxt],
+    [T("Beer quantity per week","हफ्ते में बीयर"),S.beerWeek||0],
+    [T("Other alcohol","अन्य शराब"),fq(S.alcFreq)]
+  ]);
+
+  var mi=[
+    [T("Medical condition","बीमारी"),S.hasDisease?(S.disease||T("Yes","हाँ")):T("None reported","कोई नहीं बताई")],
+    [T("Current medicines","वर्तमान दवाइयाँ"),S.hasDisease?(S.medicine||T("Not mentioned","नहीं बताई")):T("None","कोई नहीं")],
+    [T("Surgery / long hospital stay","ऑपरेशन / लंबा अस्पताल प्रवास"),yn(S.op),true]
+  ];
+  if(S.gender==="F"){
+    mi.push([T("Pregnant","गर्भवती"),yn(S.pregnant==="Yes")]);
+    mi.push([T("PCOD / thyroid / menstrual issue","PCOD / थायरॉइड / मासिक धर्म समस्या"),yn(S.femaleIssue==="Yes")]);
+  }
+  section(T("MEDICAL HISTORY","स्वास्थ्य इतिहास"),mi);
+
+  section(T("PLAN AND PAYMENT","प्लान और भुगतान"),[
+    [T("Plan duration","प्लान की अवधि"),(S.days||7)+T(" days"," दिन")],
+    [T("Number of persons","व्यक्तियों की संख्या"),S.personCount||personCount()],
+    [T("Amount","राशि"),"Rs "+(S.price||"—")],
+    [T("UTR / payment reference","UTR / भुगतान संदर्भ"),S.utr||"—"]
+  ]);
+
+  x.fillStyle="#888"; x.font="12px "+FF; x.textAlign="left";
+  wrapTxt(x,hi?DISC_HI:DISC_EN,W-96).forEach(function(l){ x.fillText(l,48,y+6); y+=18; });
+  y+=30;
+  return y;
+}
+
+function renderProfileImage(member,d,photo,hi){
+  var p=S.persons[member]||{age:S.a,wt:S.w,ft:S.ft,inc:S.ic,bmi:S.B};
+  var W=1080, pc=document.createElement("canvas"); pc.width=W; pc.height=3600;
+  var px=pc.getContext("2d");
+  var h=drawProfilePage(px,W,member,p,photo,hi);
+  var out=document.createElement("canvas"); out.width=W; out.height=h; var ox=out.getContext("2d");
+  ox.drawImage(pc,0,0,W,h,0,0,W,h);
+  ox.strokeStyle="#ffd60a"; ox.lineWidth=4; ox.strokeRect(20,20,W-40,h-40);
+  emitImage(member,d,out.toDataURL("image/png"),"DX-Customer-Details-"+member+".png",(hi?"ग्राहक की जानकारी · ":"Customer details · ")+member);
+}
+
+/* ---------- DIET CHART : A4 PDF, exactly 7 days per page ---------- */
+function a4Measure(x,cw,m,s,sb,hi){
+  var pad=9, qW=Math.round(118*s), fi=Math.round(17*s), fn=Math.round(15*s), l1=Math.round(fi*1.28), l2=Math.round(fn*1.25);
+  var nameW=cw-2*pad-qW-8, h=pad, rows=[];
+  m.lines.forEach(function(it){ x.font="600 "+fi+"px "+FF; var ls=wrapTxt(x,"• "+it.n,nameW); rows.push(ls); h+=ls.length*l1+2; });
+  h+=l1+4;
+  x.font=fn+"px "+FF;
+  var bl=wrapTxt(x,sb,cw-2*pad-14), al=wrapTxt(x,(hi?"विकल्प: ":"Alt: ")+m.a,cw-2*pad-14);
+  h+=bl.length*l2+al.length*l2+10+pad;
+  return {h:h,rows:rows,bl:bl,al:al,fi:fi,fn:fn,l1:l1,l2:l2,pad:pad,qW:qW};
+}
+function a4Draw(x,bx,by,cw,H,m,ms,hi){
+  var pad=ms.pad, y=by+pad;
+  m.lines.forEach(function(it,i){
+    var ls=ms.rows[i];
+    x.textAlign="right"; x.fillStyle="#000"; x.font="bold "+ms.fi+"px "+FF; x.fillText(it.q,bx+cw-pad,y+ms.fi);
+    x.textAlign="left"; x.fillStyle="#111"; x.font="600 "+ms.fi+"px "+FF;
+    ls.forEach(function(l,k){ x.fillText(l,bx+pad,y+ms.fi+k*ms.l1); });
+    y+=ls.length*ms.l1+2;
+  });
+  x.textAlign="left"; x.fillStyle="#7a5b00"; x.font="bold "+ms.fi+"px "+FF;
+  x.fillText("≈ "+m.k+" kcal  ·  "+(hi?"प्रोटीन ":"Protein ")+m.p+" g",bx+pad,y+ms.fi+3);
+  y+=ms.l1+4;
+  x.font=ms.fn+"px "+FF; x.fillStyle="#1b6e3c";
+  ms.bl.forEach(function(l,k){ x.fillText((k===0?"+ ":"   ")+l,bx+pad,y+ms.fn+k*ms.l2); });
+  y+=ms.bl.length*ms.l2+5;
+  x.fillStyle="#a14a00";
+  ms.al.forEach(function(l,k){ x.fillText(l,bx+pad,y+ms.fn+k*ms.l2); });
+}
+
+function renderA4Page(member,d,w,pages,hi,info){
+  var p=info.p, f=info.f, v=info.v, sc=SCHED[v];
+  var W=1654, H=2339, M=48, DAYW=100, GAPC=0, COLW=(W-2*M-DAYW)/4;
+  function T(en,h){ return hi?h:en; }
+  function memName(m){ return hi?(MEM_HI[m]||m):m; }
+  var c=document.createElement("canvas"); c.width=W; c.height=H; var x=c.getContext("2d");
+  x.fillStyle="#fff"; x.fillRect(0,0,W,H);
+
+  var start=w*7, end=Math.min(d,start+7), days=[];
+  for(var i=start;i<end;i++){
+    var idx=i%7, ms={}, tk=0, tp=0;
+    ["B","L","S","R"].forEach(function(k){ var id=sc[k][idx], m=prepMeal(id,f,hi); ms[k]={m:m,sb:SB[id][hi?1:0]}; tk+=m.k; tp+=m.p; });
+    days.push({n:i+1,meals:ms,k:tk,p:tp});
+  }
+
+  /* header */
+  var title=(d===14)?T("2-WEEK PLAN (14 DAYS)","2 सप्ताह का प्लान (14 दिन)"):(d===7)?T("1-WEEK PLAN (7 DAYS)","1 सप्ताह का प्लान (7 दिन)"):(d===30)?T("1-MONTH PLAN (30 DAYS)","1 महीने का प्लान (30 दिन)"):(d+T("-DAY PLAN"," दिन का प्लान"));
+  x.fillStyle="#ffd60a"; x.fillRect(M,M,W-2*M,104);
+  x.fillStyle="#000"; x.textAlign="left"; x.font="900 46px "+FF; x.fillText("DIETICIAN XPERT",M+24,M+50);
+  x.font="600 19px "+FF; x.fillText(T("Personalised Nutrition Guidance","व्यक्तिगत पोषण मार्गदर्शन"),M+26,M+84);
+  x.textAlign="right"; x.font="bold 28px "+FF; x.fillText(title,W-M-24,M+46);
+  x.font="600 19px "+FF; x.fillText(T("DAYS ","दिन ")+(start+1)+"–"+end+"   ·   "+T("PAGE ","पृष्ठ ")+(w+1)+" / "+pages,W-M-24,M+82);
+
+  var b=p.bmi||0, cat=bmiCat(b), y0=M+104+14;
+  x.textAlign="left"; x.fillStyle="#111"; x.font="bold 20px "+FF;
+  x.fillText(T("Prepared for: ","तैयार किया गया: ")+(S.n||"")+" ("+memName(member)+")",M,y0+22);
+  x.font="18px "+FF; x.fillStyle="#333";
+  x.fillText(T("Age ","उम्र ")+(p.age||"—")+"  ·  "+T("Weight ","वज़न ")+(p.wt||"—")+" kg  ·  "+T("Height ","ऊँचाई ")+(p.ft||"—")+"'"+(p.inc||0)+'"  ·  BMI '+(b||"—")+" ("+(hi?cat.hi:cat.en)+")  ·  "+T("Goal: ","लक्ष्य: ")+(hi?(GOAL_HI[S.goal]||S.goal):S.goal)+"  ·  "+(v==="v"?T("Vegetarian","शाकाहारी"):T("Non-Vegetarian","मांसाहारी")),M,y0+50);
+  x.fillStyle="#7a5b00"; x.font="bold 18px "+FF;
+  x.fillText(T("Daily target (average): ≈ ","दैनिक लक्ष्य (औसत): ≈ ")+info.avgK+" kcal  ·  "+T("Protein ≈ ","प्रोटीन ≈ ")+info.avgP+" g  ·  "+T("Water 3–4 L  ·  4 meals / day","पानी 3–4 लीटर  ·  दिन में 4 भोजन"),M,y0+78);
+
+  /* footer text */
+  var avoidTxt=hi?"इनसे बचें: मैदा व सफेद ब्रेड, मिठाई और मीठे पेय, तला-भुना व फास्ट फूड, पैकेट वाले प्रोसेस्ड स्नैक्स, ट्रांस फैट। रोज़ 3–4 लीटर पानी पिएँ, 7–8 घंटे सोएँ। कोई चीज़ न मिले तो उसी खाने के 'विकल्प' से बदलें। मात्रा लगभग (पके वज़न में) है।"
+    :"AVOID: refined flour and white bread, sweets and sugary drinks, fried and fast food, packaged processed snacks, trans fats. Drink 3–4 litres of water daily and sleep 7–8 hours. If an item is not available, use the 'Alt' option of that meal. Quantities are approximate (cooked weight).";
+  x.font="bold 16px "+FF; var avL=wrapTxt(x,avoidTxt,W-2*M-24);
+  x.font="12px "+FF; var dL=wrapTxt(x,hi?DISC_HI:DISC_EN,W-2*M);
+  var footH=avL.length*21+dL.length*15+84;
+
+  /* table geometry */
+  var tabTop=y0+78+22, headH=56, rowsTop=tabTop+headH, avail=H-M-footH-rowsTop;
+  var s=1.4, sizes=null;
+  while(true){
+    sizes=days.map(function(D){
+      var hs=["B","L","S","R"].map(function(k){ return a4Measure(x,COLW,D.meals[k].m,s,D.meals[k].sb,hi); });
+      var rh=Math.max.apply(null,hs.map(function(q){return q.h;}));
+      return {hs:hs,rh:Math.max(rh,92)};
+    });
+    var tot=sizes.reduce(function(a,q){return a+q.rh;},0);
+    if(tot<=avail||s<=0.6) break;
+    s=Math.round((s-0.03)*100)/100;
+  }
+  if(days.length===7){ var left=avail-sizes.reduce(function(a,q){return a+q.rh;},0); if(left>0) sizes.forEach(function(q){ q.rh+=left/7; }); }
+
+  /* column headers */
+  x.fillStyle="#f1e7b0"; x.fillRect(M,tabTop,DAYW,headH);
+  x.fillStyle="#000"; x.textAlign="center"; x.font="bold 18px "+FF; x.fillText(T("DAY","दिन"),M+DAYW/2,tabTop+34);
+  ["B","L","S","R"].forEach(function(k,ci){
+    var hd=MEAL_HEAD[k], cx=M+DAYW+ci*COLW, t=hi?hd.hi:hd.en;
+    x.fillStyle=hd.col; x.fillRect(cx,tabTop,COLW,headH);
+    x.fillStyle="#000"; x.textAlign="center"; x.font="900 21px "+FF; x.fillText(t[0],cx+COLW/2,tabTop+25);
+    x.font="600 15px "+FF; x.fillText(t[1],cx+COLW/2,tabTop+46);
+  });
+
+  /* rows */
+  var y=rowsTop;
+  days.forEach(function(D,di){
+    var sz=sizes[di], rh=sz.rh;
+    x.fillStyle="#fff6c4"; x.fillRect(M,y,DAYW,rh);
+    x.fillStyle="#000"; x.textAlign="center";
+    x.font="bold 34px "+FF; x.fillText(String(D.n),M+DAYW/2,y+rh/2-4);
+    x.font="600 15px "+FF; x.fillText(D.k+" kcal",M+DAYW/2,y+rh/2+22);
+    x.fillText(T("P ","प्रो ")+D.p+" g",M+DAYW/2,y+rh/2+42);
+    ["B","L","S","R"].forEach(function(k,ci){
+      var cx=M+DAYW+ci*COLW;
+      x.fillStyle=(di%2)?"#fafafa":"#fff"; x.fillRect(cx,y,COLW,rh);
+      a4Draw(x,cx,y,COLW,rh,D.meals[k].m,sz.hs[ci],hi);
+    });
+    x.strokeStyle="#bdbdbd"; x.lineWidth=1.5; x.strokeRect(M,y,W-2*M,rh);
+    for(var q=0;q<4;q++){ x.beginPath(); x.moveTo(M+DAYW+q*COLW,y); x.lineTo(M+DAYW+q*COLW,y+rh); x.stroke(); }
+    y+=rh;
+  });
+  x.strokeStyle="#000"; x.lineWidth=2; x.strokeRect(M,tabTop,W-2*M,y-tabTop);
+
+  /* footer */
+  var fy=H-M-footH+22;
+  x.fillStyle="#fff4f4"; x.fillRect(M,fy-14,W-2*M,avL.length*21+14); x.strokeStyle="#e57373"; x.lineWidth=1.5; x.strokeRect(M,fy-14,W-2*M,avL.length*21+14);
+  x.fillStyle="#9b1c1c"; x.textAlign="left"; x.font="bold 16px "+FF;
+  avL.forEach(function(l,k){ x.fillText(l,M+12,fy+k*21+4); });
+  fy+=avL.length*21+24;
+  x.fillStyle="#666"; x.font="12px "+FF;
+  dL.forEach(function(l,k){ x.fillText(l,M,fy+k*15); });
+  fy+=dL.length*15+24;
+  x.fillStyle="#7a5b00"; x.font="bold 16px "+FF; x.textAlign="center";
+  x.fillText(T("Right nutrition + consistent effort = visible results · Dietician Xpert","सही पोषण + नियमित मेहनत = बेहतर परिणाम · Dietician Xpert"),W/2,fy);
+
+  x.strokeStyle="#ffd60a"; x.lineWidth=6; x.strokeRect(14,14,W-28,H-28);
+  return c;
+}
+
+/* ---------- entry points (names kept for compatibility) ---------- */
+function generateChartFor(member,d){
+  if(S.photo){
+    var im=new Image();
+    im.onload=function(){ renderChart(member,d,im); };
+    im.onerror=function(){ renderChart(member,d,null); };
+    im.src=S.photo;
+  } else renderChart(member,d,null);
+}
+function renderChart(member,d,photo){
+  var p=S.persons[member]||{age:S.a,wt:S.w,ft:S.ft,inc:S.ic,bmi:S.B};
+  var hi=(S.lang||"hi")==="hi", v=S.diet||"v", f=portionF(p), sc=SCHED[v];
+  var tk=0,tp=0;
+  for(var i=0;i<d;i++){ var idx=i%7; ["B","L","S","R"].forEach(function(k){ var m=prepMeal(sc[k][idx],f,hi); tk+=m.k; tp+=m.p; }); }
+  var info={p:p,f:f,v:v,avgK:Math.round(tk/d/10)*10,avgP:Math.round(tp/d)};
+  var pages=Math.ceil(d/7), jpgs=[], previews=[];
+  renderProfileImage(member,d,photo,hi);
+  function next(w){
+    if(w>=pages){
+      var blob=makePdfBlob(jpgs,1654,2339), fr=new FileReader();
+      fr.onload=function(){ emitPdf(member,d,fr.result,"DX-"+d+"Day-Diet-Chart-"+member+".pdf",(hi?"डाइट चार्ट PDF · ":"Diet chart PDF · ")+member+" · "+pages+(hi?" पृष्ठ":" page(s)"),previews); };
+      fr.readAsDataURL(blob);
+      return;
+    }
+    var c=renderA4Page(member,d,w,pages,hi,info);
+    jpgs.push(jpegBytes(c));
+    var sm=document.createElement("canvas"); sm.width=620; sm.height=Math.round(620*2339/1654); sm.getContext("2d").drawImage(c,0,0,sm.width,sm.height);
+    previews.push(sm.toDataURL("image/jpeg",0.8));
+    setTimeout(function(){ next(w+1); },60);
+  }
+  setTimeout(function(){ next(0); },200);
+}
+/*ENGINE_END*/
+
+function boot(){
+  rebuildPersons();
+  var oid=null; try{ var sv=JSON.parse(localStorage.getItem("dxOrder")||"null"); oid=sv&&sv.id; }catch(e){}
+  if(oid){ showOrder(oid); return; }
+  var p=new URLSearchParams(location.search);
+  if(p.get("returned")==="true"||p.get("storeCart")||p.get("storeItems")) returnFromStore(p);
+}
+boot();
+</script>
+</body>
+</html>
