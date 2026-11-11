@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ▼▼ यहाँ अपने Staff/Admin के Email लिखें (Firebase Authentication में बनाए हुए) ▼▼
+    function isStaff() {
+      return request.auth != null
+        && request.auth.token.email in [
+          "saurabhsingh007604@gmail.com"
+          // , "staff2@example.com"
+        ];
+    }
+
+    // ===== PHASE 1: सिर्फ Staff (बाहर वाला कुछ नहीं पढ़/लिख सकता) =====
+    match /ex_members/{id}         { allow read, write: if isStaff(); }   // हटाए गए सदस्य (ID फोटो समेत)
+    match /supplement_credit/{id}  { allow read, write: if isStaff(); }   // उधार रजिस्टर
+    match /settings/{id}           { allow read, write: if isStaff(); }   // PIN / सेटिंग्स
+    // पेमेंट: ग्राहक सिर्फ़ "pending" बना सकता है और अपनी पर्ची (अंदाज़ न होने वाली लंबी ID) देख सकता है; Approve/Reject/सूची सिर्फ़ Staff
+    match /payment_proofs/{id} {
+      allow create: if request.resource.data.checked == false && request.resource.data.status == "pending";
+      allow get: if true;
+      allow list, update, delete: if isStaff();
+    }
+    // Diet ऑर्डर: ग्राहक बनाए व अपना ऑर्डर देखे; Reject के बाद सिर्फ़ UTR/स्क्रीनशॉट दोबारा भेज सके; बाकी सब Staff
+    match /diet_orders/{id} {
+      allow create: if request.resource.data.status == "pending";
+      allow get: if true;
+      allow update: if isStaff() || (resource.data.status == "rejected" && request.resource.data.status == "pending"
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["utr","ss","status","rejectReason","resubmittedAt"]));
+      allow list, delete: if isStaff();
+    }
+    match /supplement_catalog/{id} { allow read: if true; allow write: if isStaff(); } // रेट लिस्ट — पढ़ना खुला, बदलना सिर्फ Staff
+
+    // ===== PHASE 2 तक अस्थायी रूप से खुले (member-facing पेज इन्हें पढ़ते हैं) =====
+    // इन्हें अगले चरण में बंद करेंगे (members_public बनाकर)
+    match /members/{id}             { allow read, write: if true; }
+    match /attendance/{id}         { allow read, write: if true; }
+    match /attendance_attempts/{id} { allow read, write: if true; }
+
+    // ===== अस्थायी: जिन कलेक्शन के नाम अभी पता नहीं (Diet आदि) =====
+    // कोई भी नया रिकॉर्ड जमा कर सकता है (ऑर्डर वगैरह), पर पढ़ना/बदलना/हटाना सिर्फ Staff।
+    // Diet/Store की फाइलें देखकर इसे हटाकर सही नियम लगाएँगे।
+    match /{document=**} {
+      allow create: if true;
+      allow read, update, delete: if isStaff();
+    }
+  }
+}
