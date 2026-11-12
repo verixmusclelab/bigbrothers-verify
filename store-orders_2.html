@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Store Orders – Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,Arial,sans-serif}
+body{background:#0d0d0d;color:#fff;padding:10px;max-width:760px;margin:0 auto;padding-bottom:60px}
+h1{color:#ffcc00;font-size:18px}
+.top{display:flex;justify-content:space-between;align-items:center;margin:6px 0 10px;gap:8px;flex-wrap:wrap}
+a.home{color:#ffcc00;font-size:12px;font-weight:700;text-decoration:none}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chips button{white-space:nowrap;border:1px solid #444;background:#1a1a1a;color:#ddd;border-radius:16px;padding:6px 12px;font-size:12px;font-weight:700}
+.chips button.on{background:#ffcc00;color:#000;border-color:#ffcc00}
+.card{background:#151515;border:1px solid #2a2a2a;border-radius:12px;padding:12px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.no{font-weight:900;font-size:16px;color:#ffcc00}
+.badge{display:inline-block;border-radius:10px;padding:2px 9px;font-size:11px;font-weight:800}
+.b-placed{background:#4d3b00;color:#ffd54f}.b-paid{background:#0d3b1e;color:#69f0ae}.b-packed{background:#0d2c4d;color:#82b1ff}.b-shipped{background:#2b1a4d;color:#ce93d8}.b-delivered{background:#0d3b1e;color:#00ff66}.b-cancelled,.b-payment_rejected{background:#4d0d0d;color:#ff8a80}
+.m{font-size:12px;color:#aaa;line-height:1.5}
+.it{font-size:13px;padding:4px 0;border-bottom:1px solid #262626;display:flex;justify-content:space-between;gap:8px}
+.btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.btn{border:0;border-radius:8px;padding:9px 12px;font-weight:800;font-size:12px;cursor:pointer}
+.g{background:#00c853;color:#000}.y{background:#ffcc00;color:#000}.b{background:#2979ff;color:#fff}.r{background:#d32f2f;color:#fff}.x{background:#333;color:#ddd}
+.proof{background:#101a10;border:1px solid #1f4d2a;border-radius:8px;padding:8px;margin-top:8px;font-size:12px}
+.proof img{max-width:100%;max-height:260px;border-radius:6px;margin-top:6px;display:block}
+#sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99;align-items:center;justify-content:center;padding:14px}
+#sheet .bx{background:#181818;border:2px solid #ffcc00;border-radius:14px;padding:16px;width:100%;max-width:400px}
+#sheet input,#sheet select{width:100%;padding:11px;margin:5px 0;border-radius:8px;border:1px solid #444;background:#222;color:#fff;font-size:14px}
+#sheet label{font-size:12px;color:#aaa}
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:200;align-items:center;justify-content:center;padding:10px}
+#lb img{max-width:100%;max-height:92vh;border-radius:8px}
+.warn{background:#4d0d0d;border:1px solid #d32f2f;color:#ff8a80;border-radius:8px;padding:7px 9px;margin-top:8px;font-size:12px;font-weight:700}
+.wt{font-weight:900}
+#toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#00ff66;color:#000;padding:10px 16px;border-radius:10px;font-weight:800;display:none;z-index:999;max-width:92%}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="top"><h1>🛒 Store Orders</h1><div><a class="home" href="app.html">⬅ Menu</a> &nbsp; <a class="home" href="store.html">Store</a> &nbsp; <button class="btn x" onclick="load()">🔄</button></div></div>
+<div class="chips" id="chips"></div>
+<div id="list"><div class="m" style="padding:20px;text-align:center">Login ke baad orders dikhenge...</div></div>
+
+<div id="lb" onclick="this.style.display='none'"><img id="lbImg" alt=""></div>
+<div id="sheet"><div class="bx" id="sheetBx"></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="auth-gate.js" data-mode="page"></script>
+<script>
+var cfg={apiKey:"AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",authDomain:"brother-s-fitness-club.firebaseapp.com",projectId:"brother-s-fitness-club",storageBucket:"brother-s-fitness-club.firebasestorage.app",messagingSenderId:"781489019006",appId:"1:781489019006:web:4a230698f2195e7208202f"};
+if(!firebase.apps.length)firebase.initializeApp(cfg);
+var db=firebase.firestore(),FV=firebase.firestore.FieldValue;
+var ORDERS=[],PAYS={},FILTER='verify',TAB='orders',ordersReady=false,paysReady=false,started=false;
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function safeNo(s){return String(s==null?'':s).replace(/[^A-Za-z0-9_-]/g,'').slice(0,40)}
+function num(n){n=Number(n);return isFinite(n)?n:0}
+function okImg(u){return typeof u==='string'&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(u)}
+function toast(m){var t=$('toast');t.textContent=m;t.style.display='block';setTimeout(function(){t.style.display='none'},2600)}
+function fmt(iso){try{return new Date(iso).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true})}catch(e){return iso||''}}
+var LABEL={placed:'Payment verify baaki',paid:'Payment Confirmation Done',packed:'Packed',shipped:'Shipped',delivered:'Delivered',cancelled:'Cancelled',payment_rejected:'Payment Rejected'};
+var FILTERS=[['verify','⏳ Verify Karna Hai'],['all','Sab'],['paid','Paid'],['packed','Packed'],['shipped','Shipped'],['delivered','Delivered'],['payment_rejected','Rejected'],['cancelled','Cancelled'],['reviews','⭐ Reviews']];
+function latestProof(o){var ps=PAYS[o.orderNo]||[];return ps[0]||null}
+function needsVerify(o){
+  var p=latestProof(o);if(!p)return false;
+  if(o.status==='placed')return true;
+  if(o.status==='payment_rejected'){var at=(o.pay&&o.pay.at)||'';return String(p.createdAt||'')>String(at)}
+  return false;
+}
+function chips(){
+  var nv=ORDERS.filter(needsVerify).length;
+  $('chips').innerHTML=FILTERS.map(function(f){
+    var t=f[1]+(f[0]==='verify'&&nv?' ('+nv+')':'');
+    return '<button class="'+(FILTER===f[0]?'on':'')+'" onclick="setF(\''+f[0]+'\')">'+t+'</button>';
+  }).join('');
+  document.title=(nv?'('+nv+') ':'')+'Store Orders – Admin';
+}
+function setF(f){FILTER=f;chips();render()}
+
+/* ---- live: naya payment proof aate hi list apne aap badle + awaaz ---- */
+function beep(){
+  try{var a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.25;o.start();setTimeout(function(){o.frequency.value=1175},180);setTimeout(function(){o.stop();a.close()},380)}catch(e){}
+  try{if(navigator.vibrate)navigator.vibrate([250,100,250])}catch(e){}
+}
+function start(){
+  if(started)return;started=true;
+  $('list').innerHTML='<div class="m" style="padding:20px;text-align:center">⏳ load ho raha hai...</div>';
+  var onErr=function(e){$('list').innerHTML='<div class="m" style="color:#f66;padding:16px">❌ Load nahi hua: '+esc(e.message||e)+'<br>Sirf staff email se login karein.</div>'};
+  db.collection('store_orders').orderBy('createdAt','desc').limit(150).onSnapshot(function(q){
+    ORDERS=[];q.forEach(function(d){ORDERS.push(d.data())});
+    ordersReady=true;chips();if(paysReady)render();
+  },onErr);
+  db.collection('store_payments').orderBy('createdAt','desc').limit(300).onSnapshot(function(q){
+    var fresh=paysReady&&q.docChanges().some(function(c){return c.type==='added'});
+    PAYS={};q.forEach(function(d){var x=d.data();(PAYS[x.orderNo]=PAYS[x.orderNo]||[]).push(x)});
+    paysReady=true;chips();render();
+    if(fresh){beep();toast('🔔 Naya payment proof aaya — verify karein')}
+  },onErr);
+}
+function load(){chips();render()}
+function render(){
+  if(FILTER==='reviews'){return loadReviews()}
+  if(!ordersReady||!paysReady)return;
+  var L=ORDERS.filter(function(o){return FILTER==='all'?true:FILTER==='verify'?needsVerify(o):o.status===FILTER});
+  if(!L.length){$('list').innerHTML='<div class="m" style="padding:20px;text-align:center">'+(FILTER==='verify'?'✅ Abhi koi payment verify karne ko baaki nahi':'Koi order nahi')+'</div>';return}
+  $('list').innerHTML=L.map(card).join('');tick();
+}
+function utrOthers(o,p){
+  if(!p||!p.utr)return [];var out={};
+  Object.keys(PAYS).forEach(function(no){if(no===o.orderNo)return;PAYS[no].forEach(function(x){if(x.utr&&x.utr===p.utr)out[no]=1})});
+  return Object.keys(out);
+}
+function showImg(el){var u=el.getAttribute('data-full');if(!okImg(u))return;$('lbImg').src=u;$('lb').style.display='flex'}
+function tick(){
+  var n=document.querySelectorAll('.wt');
+  for(var i=0;i<n.length;i++){var t=Date.parse(n[i].getAttribute('data-t'));if(!t)continue;var s=Math.max(0,Math.round((Date.now()-t)/1000));
+    n[i].textContent=s<60?s+' sec se wait':Math.floor(s/60)+' min '+(s%60)+' sec se wait';n[i].style.color=s>60?'#ff5252':'#ffd54f'}
+}
+setInterval(tick,1000);
+function card(o){
+  var no=safeNo(o.orderNo),pay=o.pay||{state:'unpaid'},ps=PAYS[o.orderNo]||[],lp=ps[0]||null,verify=needsVerify(o);
+  var items=(o.items||[]).map(function(i){return '<div class="it"><span>'+esc(i.name)+' <small style="color:#888">('+esc(i.pack||'')+(i.flavour?', '+esc(i.flavour):'')+') × '+num(i.qty)+'</small></span><b>₹'+(num(i.price)*num(i.qty))+'</b></div>'}).join('');
+  var proofs=ps.slice(0,3).map(function(p,k){
+    var img=okImg(p.image)?'<img src="'+p.image+'" data-full="'+p.image+'" onclick="showImg(this)" alt="screenshot">':'<div class="m">(screenshot nahi)</div>';
+    return '<div class="proof">💳 '+(k===0?'<b>Latest</b> ':'')+'proof ('+fmt(p.createdAt)+') · ₹'+num(p.amount)+(p.utr?' · UTR: <b>'+esc(p.utr)+'</b>':'')+img+'</div>';
+  }).join('');
+  var warn='';
+  var dup=utrOthers(o,lp);
+  if(dup.length)warn+='<div class="warn">⚠️ Ye UTR dusre order par bhi use hua hai: '+dup.map(esc).join(', ')+' — dhyan se check karein!</div>';
+  if(lp&&num(lp.amount)!==num(o.total)&&o.payMode!=='COD')warn+='<div class="warn">⚠️ Proof me amount ₹'+num(lp.amount)+' hai, order total ₹'+num(o.total)+' hai.</div>';
+  var wait=verify&&lp?'<div class="m" style="margin-top:6px">⏱ Customer <span class="wt" data-t="'+esc(lp.createdAt)+'"></span></div>':'';
+  var payTxt=pay.state==='confirmed'?'<span style="color:#69f0ae">✅ Payment ₹'+num(pay.amount)+' confirm ('+fmt(pay.at)+')</span>':pay.state==='rejected'?'<span style="color:#ff8a80">❌ Rejected'+(pay.note?': '+esc(pay.note):'')+'</span>':'<span style="color:#ffd54f">⏳ Payment confirm nahi</span>';
+  var s=o.status,B=[];
+  if(verify)B.push('<button class="btn g" style="flex:1;font-size:14px;padding:12px" onclick="payOK(\''+no+'\')">✅ Payment Mila — Approve</button>','<button class="btn r" onclick="payRej(\''+no+'\')">❌ Galat</button>');
+  else if(s==='placed'||s==='payment_rejected')B.push('<span class="m">Naya proof aane ka intezaar</span>');
+  if(s==='paid')B.push('<button class="btn b" onclick="mark(\''+no+'\',\'packed\')">📦 Packed</button>');
+  if(s==='paid'||s==='packed')B.push('<button class="btn y" onclick="shipSheet(\''+no+'\')">🚚 Courier Se Bheja</button>');
+  if(s==='shipped')B.push('<button class="btn g" onclick="delivered(\''+no+'\')">✔ Delivered</button>','<button class="btn x" onclick="shipSheet(\''+no+'\')">✏️ AWB badlo</button>');
+  if(s!=='delivered'&&s!=='cancelled')B.push('<button class="btn x" onclick="cancelOrder(\''+no+'\')">🚫 Cancel</button>');
+  var badge=/^[a-z_]+$/.test(String(s))?String(s):'placed';
+  return '<div class="card"'+(verify?' style="border-color:#ffcc00"':'')+'><div class="row"><div><div class="no">'+esc(no)+'</div><div class="m">'+fmt(o.createdAt)+'</div></div><div style="text-align:right"><span class="badge b-'+badge+'">'+esc(LABEL[s]||s)+'</span><div style="font-weight:900;margin-top:4px">₹'+num(o.total)+'</div></div></div>'+
+    '<div class="m" style="margin:8px 0">👤 <b style="color:#fff">'+esc(o.name)+'</b> · <a style="color:#82b1ff" href="tel:'+esc(String(o.phone||'').replace(/[^0-9+]/g,''))+'">'+esc(o.phone)+'</a><br>🏠 '+esc(o.addr)+', '+esc(o.city)+' - '+esc(o.pin)+'</div>'+items+
+    '<div class="m" style="margin-top:8px">'+(o.payMode==='COD'?'🟡 COD (purana order) — advance ₹'+num(o.advance)+' · delivery par baki <b style="color:#ffd54f">₹'+num(o.balance)+'</b>':'🟢 Full Online ₹'+num(o.total))+' · '+esc(o.payApp||'')+'<br>'+payTxt+(o.courier?'<br>🚚 '+esc(o.courier)+' · AWB <b style="color:#fff">'+esc(o.awb||'')+'</b>':'')+'</div>'+wait+warn+proofs+
+    '<div class="btns">'+B.join('')+'</div></div>';
+}
+
+function apply(no,patch,tl){
+  var now=new Date().toISOString();
+  var upd=Object.assign({},patch,{updatedAt:now});
+  var tr=Object.assign({},patch,{updatedAt:now});
+  delete tr.name;
+  if(tl){tl.t=now;upd.timeline=FV.arrayUnion(tl);tr.timeline=FV.arrayUnion(tl)}
+  return db.collection('store_orders').doc(no).update(upd).then(function(){return db.collection('order_track').doc(no).set(tr,{merge:true})}).then(function(){toast('✅ Update ho gaya')}).catch(function(e){alert('Save nahi hua: '+(e.message||e))});
+}
+function get(no){return ORDERS.find(function(o){return o.orderNo===no})}
+function payOK(no){
+  var o=get(no);if(!o)return;var p=latestProof(o);
+  var amt=(o.payMode==='COD')?num(o.advance):num(o.total);
+  if(!confirm('Order '+no+'\n'+(o.name||'')+'\n\nApne UPI app me check kiya? ₹'+amt+' aaya?\nUTR: '+((p&&p.utr)||'-')+'\n\nOK = Haan, Approve karo'))return;
+  apply(no,{status:'paid',pay:{state:'confirmed',amount:amt,at:new Date().toISOString(),utr:(p&&p.utr)||''}},{s:'paid',note:'Payment ₹'+amt+' mil gaya'});
+}
+function payRej(no){var r=prompt('Kya galat hai? (customer ko dikhega)','UTR/amount match nahi hua');if(r===null)return;
+  apply(no,{status:'payment_rejected',pay:{state:'rejected',note:r,at:new Date().toISOString()}},{s:'payment_rejected',note:r})}
+function mark(no,s){apply(no,{status:s},{s:s,note:s==='packed'?'Order pack ho gaya':''})}
+function cancelOrder(no){var r=prompt('Cancel ki wajah (customer ko dikhega)','');if(r===null)return;apply(no,{status:'cancelled'},{s:'cancelled',note:r})}
+function delivered(no){
+  var o=get(no),extra={status:'delivered'};
+  if(o.payMode==='COD'){if(!confirm('Delivery par baki ₹'+o.balance+' mil gaya?'))return;extra.balanceReceived=true}
+  apply(no,extra,{s:'delivered',note:'Order deliver ho gaya'});
+}
+var COURIERS=['Delhivery','DTDC','India Post (Speed Post)','Blue Dart','Ecom Express','Xpressbees','Shadowfax','Shiprocket','Other'];
+function shipSheet(no){
+  var o=get(no)||{};
+  $('sheetBx').innerHTML='<div style="font-weight:900;color:#ffcc00;margin-bottom:6px">🚚 Courier Details — '+esc(no)+'</div>'+
+  '<label>Courier Partner</label><select id="shC">'+COURIERS.map(function(c){return '<option'+(o.courier===c?' selected':'')+'>'+c+'</option>'}).join('')+'</select>'+
+  '<input id="shO" placeholder="Courier ka naam likhein (Other)" style="display:none">'+
+  '<label>AWB / Tracking No *</label><input id="shA" value="'+esc(o.awb||'')+'" placeholder="AWB number">'+
+  '<label>Tracking Link (optional — nahi diya to Google search link banega)</label><input id="shU" value="'+esc(o.trackUrl||'')+'" placeholder="https://...">'+
+  '<div class="btns"><button class="btn g" style="flex:1" onclick="shipSave(\''+safeNo(no)+'\')">✅ Save & Shipped</button><button class="btn x" onclick="$(\'sheet\').style.display=\'none\'">Band</button></div>';
+  $('sheet').style.display='flex';
+  $('shC').onchange=function(){$('shO').style.display=this.value==='Other'?'block':'none'};$('shC').onchange();
+}
+function shipSave(no){
+  var c=$('shC').value;if(c==='Other')c=($('shO').value||'').trim()||'Other';
+  var a=($('shA').value||'').trim(),u=($('shU').value||'').trim();
+  if(!a){alert('AWB number likhein');return}
+  $('sheet').style.display='none';
+  var o=get(no);
+  apply(no,{status:'shipped',courier:c,awb:a,trackUrl:u},{s:'shipped',note:c+' · AWB '+a});
+}
+function loadReviews(){
+  $('list').innerHTML='<div class="m" style="padding:20px;text-align:center">⏳...</div>';
+  db.collection('store_reviews').orderBy('createdAt','desc').limit(100).get().then(function(q){
+    var h='';q.forEach(function(d){var r=d.data();h+='<div class="card"><div class="row"><div><b>'+esc(r.name)+'</b> <span class="m">· '+esc(r.orderNo)+' · '+fmt(r.createdAt)+'</span><div style="color:#f5a623;font-size:18px">'+'★'.repeat(Math.min(5,Math.max(0,num(r.rating))))+'<span style="color:#444">'+'★'.repeat(5-Math.min(5,Math.max(0,num(r.rating))))+'</span></div></div><button class="btn r" onclick="delRev(\''+safeNo(d.id)+'\')">🗑</button></div><div class="m" style="margin-top:4px;color:#ddd">'+esc(r.text||'')+'</div><div class="m">'+esc((r.pnames||[]).join(', '))+'</div></div>'});
+    $('list').innerHTML=h||'<div class="m" style="padding:20px;text-align:center">Abhi koi review nahi</div>';
+  }).catch(function(e){$('list').innerHTML='<div class="m" style="color:#f66">'+esc(e.message||e)+'</div>'});
+}
+function delRev(id){if(!confirm('Ye review hatayein?'))return;db.collection('store_reviews').doc(id).delete().then(loadReviews)}
+chips();
+firebase.auth().onAuthStateChanged(function(u){if(u&&!u.isAnonymous)start()});
+</script>
+</body>
+</html>

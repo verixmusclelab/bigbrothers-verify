@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ▼▼ यहाँ अपने Staff/Admin के Email लिखें (Firebase Authentication में बनाए हुए) ▼▼
+    function isStaff() {
+      return request.auth != null
+        && request.auth.token.email in [
+          "saurabhsingh007604@gmail.com"
+          // , "staff2@example.com"
+        ];
+    }
+
+    // ===== PHASE 1: सिर्फ Staff (बाहर वाला कुछ नहीं पढ़/लिख सकता) =====
+    match /ex_members/{id}         { allow read, write: if isStaff(); }   // हटाए गए सदस्य (ID फोटो समेत)
+    match /supplement_credit/{id}  { allow read, write: if isStaff(); }   // उधार रजिस्टर
+    match /settings/{id}           { allow read, write: if isStaff(); }   // PIN / सेटिंग्स
+    // पेमेंट: ग्राहक सिर्फ़ "pending" बना सकता है और अपनी पर्ची (अंदाज़ न होने वाली लंबी ID) देख सकता है; Approve/Reject/सूची सिर्फ़ Staff
+    match /payment_proofs/{id} {
+      allow create: if request.resource.data.checked == false && request.resource.data.status == "pending";
+      allow get: if true;
+      allow list, update, delete: if isStaff();
+    }
+    // Diet ऑर्डर: ग्राहक बनाए व अपना ऑर्डर देखे; Reject के बाद सिर्फ़ UTR/स्क्रीनशॉट दोबारा भेज सके; बाकी सब Staff
+    match /diet_orders/{id} {
+      allow create: if request.resource.data.status == "pending";
+      allow get: if true;
+      allow update: if isStaff() || (resource.data.status == "rejected" && request.resource.data.status == "pending"
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["utr","ss","status","rejectReason","resubmittedAt"]));
+      allow list, delete: if isStaff();
+    }
+    match /supplement_catalog/{id} { allow read: if true; allow write: if isStaff(); } // रेट लिस्ट — पढ़ना खुला, बदलना सिर्फ Staff
+
+
+    // ===== STORE (दुकान): रेट/फोटो सबको दिखें, बदलना सिर्फ Staff =====
+    match /price_overrides/{id}    { allow read: if true; allow write: if isStaff(); }
+    match /product_photos/{id}     { allow read: if true; allow write: if isStaff(); }
+    // ऑर्डर: ग्राहक सिर्फ़ नया बना सके; पूरी जानकारी (नाम/फोन/पता) सिर्फ़ Staff देखे
+    match /store_orders/{id} {
+      // ग्राहक सिर्फ़ "placed" + "unpaid" ऑर्डर बना सके (खुद को "paid/confirmed" नहीं कह सकता)
+      allow create: if request.resource.data.status == "placed"
+        && request.resource.data.pay.state == "unpaid"
+        && request.resource.data.orderNo == id;
+      allow read, update, delete: if isStaff();
+    }
+    // ट्रैकिंग (बिना नाम/फोन/पता): ग्राहक ऑर्डर नंबर से देखे (फोन-हैश मिलाकर), बदले सिर्फ़ Staff
+    match /order_track/{id} {
+      allow get: if true;
+      allow create: if request.resource.data.status == "placed"
+        && request.resource.data.pay.state == "unpaid"
+        && request.resource.data.orderNo == id;
+      allow list, update, delete: if isStaff();
+    }
+    // पेमेंट सबूत (UTR / स्क्रीनशॉट): ग्राहक भेजे, देखे-बदले सिर्फ़ Staff
+    match /store_payments/{id} {
+      // सिर्फ़ तय फ़ील्ड, status "review", UTR 12 अंक, फोटो छोटी (spam / बड़े डेटा से बचाव)
+      allow create: if request.resource.data.keys().hasOnly(["orderNo","utr","image","amount","app","status","createdAt"])
+        && request.resource.data.status == "review"
+        && request.resource.data.utr is string && request.resource.data.utr.matches("^[0-9]{12}$")
+        && request.resource.data.image is string && request.resource.data.image.size() < 700000
+        && request.resource.data.orderNo is string && request.resource.data.orderNo.size() < 30;
+      allow read, update, delete: if isStaff();
+    }
+    // रिव्यू: सब पढ़ें; ग्राहक 1-5 स्टार के साथ बनाए; हटाना सिर्फ़ Staff
+    match /store_reviews/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.rating is int && request.resource.data.rating >= 1 && request.resource.data.rating <= 5;
+      allow update, delete: if isStaff();
+    }
+
+    // ===== PHASE 2 तक अस्थायी रूप से खुले (member-facing पेज इन्हें पढ़ते हैं) =====
+    // इन्हें अगले चरण में बंद करेंगे (members_public बनाकर)
+    match /members/{id}             { allow read, write: if true; }
+    match /attendance/{id}         { allow read, write: if true; }
+    match /attendance_attempts/{id} { allow read, write: if true; }
+
+    // ===== Product verify (QR/कोड स्कैन): पब्लिक स्कैन-काउंट, कोड की usage limit =====
+    // इसके बिना नीचे वाला "बाकी सब Staff" नियम product verify को बंद कर देता।
+    match /scan_counts/{codeId} {
+      // verify पेज: transaction में पहले get, फिर create/update। सूची (list) बंद — कोई सारे कोड नहीं देख सकता।
+      allow get: if true;
+      allow list: if isStaff();
+      // पहला स्कैन: count ठीक 1, समय सर्वर का
+      allow create: if codeId.matches("^[A-Z0-9-]{4,40}$")
+        && request.resource.data.keys().hasOnly(["count","first","last"])
+        && request.resource.data.count == 1
+        && request.resource.data.first == request.time
+        && request.resource.data.last == request.time;
+      // आगे: count सिर्फ़ +1 बढ़े, 3 से ऊपर नहीं; first न बदले। घटाना / रीसेट / delete सिर्फ़ Staff
+      allow update: if request.resource.data.keys().hasOnly(["count","first","last"])
+        && request.resource.data.count == resource.data.count + 1
+        && request.resource.data.count <= 3
+        && request.resource.data.first == resource.data.first
+        && request.resource.data.last == request.time;
+      allow update, delete: if isStaff();
+    }
+
+    // ===== बाकी सब कुछ: सिर्फ Staff =====
+    // पहले यहाँ "कोई भी create कर सकता है" लिखा था — उससे ऊपर के सारे create-नियम बेकार हो जाते थे
+    // (Firestore में कोई एक नियम भी allow करे तो काम हो जाता है) और कोई भी बेनाम कलेक्शन में कचरा भर सकता था।
+    // अगर Diet/किसी और पेज का नया कलेक्शन सेव होना बंद हो जाए, तो उसका अलग match ऊपर जोड़ें।
+    match /{document=**} {
+      allow read, write: if isStaff();
+    }
+  }
+}
