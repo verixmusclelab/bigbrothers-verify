@@ -273,13 +273,13 @@ window.__csv=function(v){var s=String(v==null?"":v).replace(/"/g,'""');return /^
         <div style="flex:1;">
           <label style="display:block; font-size:10px; color:#aaa; margin-bottom:3px;">सीधा भाग (Front) *</label>
           <button type="button" onclick="openCameraCapture('memberIdFile','idPreview')" style="width:100%;margin-bottom:4px;background:#222;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:6px;font-size:10px;font-weight:700;cursor:pointer;">📷 कैमरा Front</button>
-          <input type="file" id="memberIdFile" accept="image/*" style="font-size:9.5px; color:#ccc; width:100%;">
+          <input type="file" id="memberIdFile" accept="image/*" onclick="this.removeAttribute('capture')" style="font-size:9.5px; color:#ccc; width:100%;">
           <img id="idPreview" class="upPrev" alt="Front Preview" hidden>
         </div>
         <div style="flex:1;">
           <label style="display:block; font-size:10px; color:#aaa; margin-bottom:3px;">पिछला भाग (Back) *</label>
           <button type="button" onclick="openCameraCapture('memberIdBackFile','idBackPreview')" style="width:100%;margin-bottom:4px;background:#222;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:6px;font-size:10px;font-weight:700;cursor:pointer;">📷 कैमरा Back</button>
-          <input type="file" id="memberIdBackFile" accept="image/*" style="font-size:9.5px; color:#ccc; width:100%;">
+          <input type="file" id="memberIdBackFile" accept="image/*" onclick="this.removeAttribute('capture')" style="font-size:9.5px; color:#ccc; width:100%;">
           <img id="idBackPreview" class="upPrev" alt="Back Preview" hidden>
         </div>
       </div>
@@ -294,7 +294,7 @@ window.__csv=function(v){var s=String(v==null?"":v).replace(/"/g,'""');return /^
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;">
             <button type="button" onclick="openCameraCapture('memberPhotoFile','photoPreview')" style="flex:1;background:#ffcc00;color:#000;border:none;border-radius:6px;padding:8px;font-weight:800;font-size:11px;cursor:pointer;">📷 कैमरा से फोटो</button>
           </div>
-          <input type="file" id="memberPhotoFile" accept="image/*" style="font-size:10px; color:#ccc; width:100%;">
+          <input type="file" id="memberPhotoFile" accept="image/*" onclick="this.removeAttribute('capture')" style="font-size:10px; color:#ccc; width:100%;">
           <img id="photoPreview" class="upPrev" alt="फोटो प्रीव्यू" hidden>
         </div>
         <div style="flex:1;">
@@ -381,6 +381,7 @@ window.__csv=function(v){var s=String(v==null?"":v).replace(/"/g,'""');return /^
       <b style="color:#ffcc00;">1. फीस एवं उपस्थिति नियम (FEES POLICY):</b> 1 दिन भी आने पर 1 महीने की पूरी फीस देय होगी। फीस गैर-वापसी योग्य (Non-Refundable) है।<br><br>
       <b style="color:#ffcc00;">2. जिम छोड़ने की प्रक्रिया (EXIT POLICY):</b> यदि जिम छोड़ना है, तो महीना पूरा होते ही तुरंत बताएं। बकाया रखने पर प्रबंधन सख्त कदम उठाएगा।<br><br>
       <b style="color:#ffcc00; font-size:11px; text-decoration:underline; color:#ff4444;">3. सख्त कानूनी चेतावनी एवं वसूली सहमति (Strict Legal Warning & Recovery):</b><br>
+      <div style="background:#2a0f0f; border:1px solid #ff4444; border-radius:6px; padding:8px; margin:6px 0 8px; color:#fff; font-weight:bold;">⚠️ गलत जानकारी देने पर आपकी सदस्यता भी रद्द की जा सकती है, या फिर बाकी बचे हुए पैसे देने पड़ेंगे। गलती से आप ग़लत स्कीम में अपना एडमिशन करा लेते हैं — हमारा प्रयास ज़रूरतमंदों की मदद करना है। आपकी ईमानदारी ही हमें प्रेरणा भी देगी और साथ भी।</div>
       <span style="color:#fff; font-weight:bold;">"यदि आप ये फॉर्म सबमिट करते हैं—जो कि आपने पहले अच्छे से पढ़कर, साइन और फोटो अपलोड की है—और यदि आप जिम की फीस या अन्य कोई बकाया (Due) छोड़कर भाग जाते हैं, जिम आना बंद कर देते हैं, तो आप 5 Brother's Fitness Club प्रबंधन को अपने ऊपर कानूनी कार्रवाई करने की पूर्ण अनुमति और अधिकार देते हैं। भविष्य में आप यह नहीं कह सकते कि आपको इसकी जानकारी नहीं थी।"</span>
     </div>
 
@@ -939,6 +940,8 @@ function openCameraCapture(inputId, previewId){
   } catch(e){}
   inp.value = '';
   inp.click();
+  // capture turant hata do — warna "file chuno" par sirf camera khulta hai (gallery nahi)
+  setTimeout(function(){ try { inp.removeAttribute('capture'); } catch(e){} }, 0);
   // restore step after file dialog (some mobile browsers reset UI)
   setTimeout(function(){
     if(stepKeep && typeof goToStep==='function'){
@@ -1023,7 +1026,7 @@ function resizeImageToDataUrl(file, maxWidth, maxHeight, callback) {
       canvas.height = height;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, width, height);
-      callback(canvas.toDataURL("image/jpeg", 0.7));
+      callback(canvas.toDataURL("image/jpeg", (maxWidth >= 600 ? 0.6 : 0.7)));
     };
     img.src = event.target.result;
   };
@@ -1170,9 +1173,16 @@ function submitAdmissionForm() {
         if (typeof db !== "undefined" && db.collection) {
           const cloudObj = (typeof cleanMemberForCloud === "function") ? cleanMemberForCloud(memberData) : memberData;
           // strip huge base64 for cloud to avoid failures
+          // Firestore doc limit ~1MB: ID Front/Back ko sabse zyada priority, photo/sign baad me
           ["memberPhoto","memberSign","memberIdImg","memberIdBack","memberIdBackImg"].forEach(function(k){
-            if (!cloudObj[k] || String(cloudObj[k]).length > 900000) delete cloudObj[k];
+            if (!cloudObj[k]) delete cloudObj[k];
           });
+          (function(){
+            function sz(){ var t=0; ["memberPhoto","memberSign","memberIdImg","memberIdBack"].forEach(function(k){ t += String(cloudObj[k]||"").length; }); return t; }
+            if (cloudObj.memberIdBack) cloudObj.memberIdBackImg = cloudObj.memberIdBack; // duplicate base64 ek hi baar chahiye
+            delete cloudObj.memberIdBackImg;
+            ["memberSign","memberPhoto"].forEach(function(k){ if (sz() > 850000) delete cloudObj[k]; });
+          })();
           db.collection("members").doc(String(memberData.id)).set(cloudObj, { merge: true })
             .then(function(){ console.log("Admission synced", memberData.name); })
             .catch(function(err){ console.error("cloud", err); });
@@ -1244,8 +1254,8 @@ function submitAdmissionForm() {
     Promise.all([
       readOne(photoInput, 300, 400),
       readOne(signInput, 300, 150),
-      readOne(idInput, 800, 800),
-      readOne(idBackInput, 800, 800)
+      readOne(idInput, 700, 700),
+      readOne(idBackInput, 700, 700)
     ]).then(function(r) {
       photoDataUrl = r[0] || "";
       signDataUrl = r[1] || "";
@@ -1465,7 +1475,7 @@ function viewMemberPhotos(m){
   if(!m){ alert("Record nahi mila"); return; }
   var photo = m.memberPhoto || m.photo || "";
   var id1 = m.memberIdImg || m.idFront || m.idImg || "";
-  var id2 = m.memberIdBack || m.idBack || "";
+  var id2 = m.memberIdBack || m.memberIdBackImg || m.idBack || "";
   var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;overflow:auto;padding:16px;">';
   html += '<div style="max-width:480px;margin:0 auto;color:#fff;font-family:sans-serif;">';
   html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><b style="color:#ffcc00;font-size:16px;">🖼️ Photo / ID — '+(m.name||'')+'</b>';
@@ -1762,6 +1772,7 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
 
         <div style="border: 1px solid #000; padding: 5px; margin-top: 6px; background: #fafafa; font-size: 10px;">
           <b>कानूनी चेतावनी एवं घोषणा (Legal Declaration & Warning):</b><br>
+          <b>गलत जानकारी देने पर आपकी सदस्यता भी रद्द की जा सकती है, या फिर बाकी बचे हुए पैसे देने पड़ेंगे। गलती से आप ग़लत स्कीम में अपना एडमिशन करा लेते हैं — हमारा प्रयास ज़रूरतमंदों की मदद करना है। आपकी ईमानदारी ही हमें प्रेरणा भी देगी और साथ भी।</b><br>
           <i>"मैंने 5 Brother's Fitness Club के सभी नियमों, फीस पॉलिसी और सख्त कानूनी चेतावनी को भली-भांति पढ़ व समझ लिया है। यदि मैं फीस या बकाया छोड़कर भागता हूँ, तो प्रबंधन को मेरे विरुद्ध कानूनी कार्रवाई करने की पूर्ण अनुमति है।"</i>
           <div style="margin-top: 5px;">
             सदस्य का नाम: <span class="line-input" style="width:150px;">${__esc(m.name)}</span> &nbsp;&nbsp;
@@ -1773,9 +1784,12 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
           </div>
         </div>
 
-        ${m.memberIdImg ? `<div style="border:1px solid #000; padding:6px; margin-top:8px;">
+        ${(m.memberIdImg || m.memberIdBack || m.memberIdBackImg) ? `<div style="border:1px solid #000; padding:6px; margin-top:8px;">
           <div style="font-weight:bold; font-size:10.5px; margin-bottom:4px;">पहचान पत्र (ID Proof): ${m.idType || ''}</div>
-          <img src="${m.memberIdImg}" alt="ID Proof" style="display:block; max-width:100%; max-height:200px; margin:0 auto; object-fit:contain;">
+          <div style="display:flex; gap:6px;">
+            <div style="flex:1; text-align:center; font-size:9px;">Front<br>${m.memberIdImg ? `<img src="${m.memberIdImg}" alt="ID Front" style="display:block; max-width:100%; max-height:180px; margin:2px auto 0; object-fit:contain;">` : '<span style="color:#c00;">अपलोड नहीं</span>'}</div>
+            <div style="flex:1; text-align:center; font-size:9px;">Back<br>${(m.memberIdBack || m.memberIdBackImg) ? `<img src="${m.memberIdBack || m.memberIdBackImg}" alt="ID Back" style="display:block; max-width:100%; max-height:180px; margin:2px auto 0; object-fit:contain;">` : '<span style="color:#c00;">अपलोड नहीं</span>'}</div>
+          </div>
         </div>` : ''}
 
         <div stylyle="border: 1.5px solid #000; padding: 6px; margin-top: 10px;">
@@ -1820,9 +1834,20 @@ function downloadAdmissionCardNow(customMember = null, lang = 'hi') {
 (function () {
   async function hydrate(m) {
     try {
-      if (!m || !m.photoOnCloud || hasImgData(m) || typeof db === "undefined") return m;
+      if (!m || typeof db === "undefined") return m;
+      function ok(x){ return x && String(x).length > 40; }
+      var needId = !ok(m.memberIdImg || m.idFront) || !ok(m.memberIdBack || m.memberIdBackImg || m.idBack);
+      if (!needId && (!m.photoOnCloud || hasImgData(m))) return m;
       var s = await db.collection("members").doc(String(m.id)).get();
-      return s.exists ? Object.assign({}, m, s.data()) : m;
+      if (!s.exists) return m;
+      var cd = s.data() || {}, out = Object.assign({}, m);
+      Object.keys(cd).forEach(function(k){
+        var isImg = ADM_IMG_KEYS.indexOf(k) >= 0;
+        if (!isImg || ok(cd[k]) || !ok(out[k])) out[k] = cd[k];   // local me jo image hai use cloud ke khaali se overwrite mat karo
+      });
+      if (out.memberIdBack && !out.memberIdBackImg) out.memberIdBackImg = out.memberIdBack;
+      if (out.memberIdBackImg && !out.memberIdBack) out.memberIdBack = out.memberIdBackImg;
+      return out;
     } catch (e) { return m; }
   }
   var origCard = window.downloadAdmissionCardNow, origView = window.viewMemberPhotos;
