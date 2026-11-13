@@ -1137,6 +1137,7 @@ function applyLock() {
   const dur = document.getElementById("feeDuration");
   const jd = document.getElementById("mFeeJoinDate");
   const pd = document.getElementById("mFeePrevPaidDate");
+  const paidDateEl = document.getElementById("mFeePaidDate");
   const paidEl = document.getElementById("mFeePaidAmount");
   const discChk = document.getElementById("chkSpecialDiscount");
   const discWrap = discChk ? (discChk.closest("label") || discChk.parentElement) : null;
@@ -1148,10 +1149,27 @@ function applyLock() {
   cat.classList.toggle("is-locked", planLocked);
   dur.classList.toggle("is-locked", planLocked);
 
+  // Admin can freely change ALL dates (joining / prev validity / paid date)
   jd.readOnly = lockedPlan;
   pd.readOnly = lockedPlan;
   jd.classList.toggle("is-locked", lockedPlan);
   pd.classList.toggle("is-locked", lockedPlan);
+  if (adminUnlocked) {
+    jd.removeAttribute("readonly");
+    pd.removeAttribute("readonly");
+    jd.classList.remove("is-locked");
+    pd.classList.remove("is-locked");
+    jd.title = "Admin: जॉइनिंग तिथि manually बदल सकते हैं";
+    pd.title = "Admin: पिछली वैधता / Next Fees Date manually बदल सकते हैं";
+    if (paidDateEl) {
+      paidDateEl.readOnly = false;
+      paidDateEl.classList.remove("is-locked");
+      paidDateEl.title = "Admin: भुगतान तिथि manually बदल सकते हैं";
+    }
+  } else {
+    jd.title = "यह केवल एडमिन द्वारा बदली जा सकती है";
+    pd.title = "पिछली अवधि की अंतिम तारीख";
+  }
 
   // Jama Fees – only Admin
   if (paidEl) {
@@ -1182,7 +1200,7 @@ function applyLock() {
   const btn = document.getElementById("btnAdminUnlock");
   if (adminUnlocked) {
     bar.classList.add("open");
-    txt.innerText = "🔓 Admin Mode: प्लान, जमा फीस, छूट व तिथियाँ";
+    txt.innerText = "🔓 Admin Mode: सभी तिथियाँ + प्लान + फीस manually बदल सकते हैं";
     btn.innerText = "🔒 Lock करें";
   } else {
     bar.classList.remove("open");
@@ -1289,14 +1307,18 @@ function getLateDaysDetails() {
   const nx = document.getElementById("nextDueLine");
   if (nx) nx.textContent = c.nextExpiry ? "इस भुगतान के बाद अगली देय तारीख: " + formatDateDMY(c.nextExpiry) : "";
   if (c.lateDays <= 0) return ok;
-  return { isLate: true, days: c.lateDays, text: `आपने ${c.lateDays} दिन देर से भुगतान किया ⚠️` };
+  return {
+    isLate: true,
+    days: c.lateDays,
+    text: `⚠️ LATE PAYMENT — ${c.lateDays} दिन देर से भुगतान`
+  };
 }
 function checkLateStatus() {
   const lateInfo = getLateDaysDetails();
   const warn = document.getElementById("lateWarningBox");
   if (lateInfo.isLate) {
     warn.style.display = "block";
-    warn.innerHTML = `🚨 आपने <b>${lateInfo.days} दिन देर से भुगतान</b> किया है।<br>कृपया समय पर फीस जमा करें।`;
+    warn.innerHTML = `🚨 <b>LATE PAYMENT</b> — आपने <b>${lateInfo.days} दिन देर</b> से फीस जमा की है।<br>रसीद पर भी यह लिखा जाएगा।`;
   } else {
     warn.style.display = "none";
   }
@@ -1678,7 +1700,15 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray, skipPersist) 
   document.getElementById("rMode").innerText = modeText;
   document.getElementById("rJoinDate").innerText = joinDateFormatted;
   document.getElementById("billDate").innerText = paidDateFormatted;
-  document.getElementById("rLateStatus").innerText = data.lateInfo.text;
+  const lateEl = document.getElementById("rLateStatus");
+  lateEl.innerText = (data.lateInfo && data.lateInfo.text) ? data.lateInfo.text : "समय पर (On Time) ✅";
+  if (data.lateInfo && data.lateInfo.isLate) {
+    lateEl.style.color = "#ff3333";
+    lateEl.style.fontWeight = "900";
+  } else {
+    lateEl.style.color = "#0a7a2f";
+    lateEl.style.fontWeight = "700";
+  }
   document.getElementById("rName").innerText = data.name;
   document.getElementById("rFather").innerText = data.father;
   document.getElementById("rPhone").innerText = data.adminEdited ? data.phone : maskPhone(data.phone);
