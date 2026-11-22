@@ -1,315 +1,286 @@
-/**
- * 5 Brother's Fitness Club — Secure Auth Gate
- * -------------------------------------------
- * - Firebase Email/Password Auth (recommended)
- * - Session: firebase.auth().currentUser (sessionStorage bypass nahi chalega)
- * - Optional PIN hash ONLY as second factor AFTER Firebase login (PIN alone se data nahi)
- * - Brute-force lock (local)
- *
- * Usage in HTML:
- *   <script src="auth-gate.js" data-mode="page"></script>   // full page lock
- *   <script src="auth-gate.js" data-mode="ondemand"></script> // call bfcLogin() when needed
- *
- * Firebase Console me ek admin user banao:
- *   Authentication → Sign-in method → Email/Password ON
- *   Users → Add user → email + strong password
- */
-(function (global) {
-  "use strict";
 
-  var FB_CFG = {
-    apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",
-    authDomain: "brother-s-fitness-club.firebaseapp.com",
-    projectId: "brother-s-fitness-club",
-    storageBucket: "brother-s-fitness-club.firebasestorage.app",
-    messagingSenderId: "781489019006",
-    appId: "1:781489019006:web:4a230698f2195e7208202f"
-  };
-
-  // Deploy ke din (Rules lagate waqt) true kar do: tab sirf wahi login "admin" maana jayega jiska uid admins collection me ho
-  var REQUIRE_ADMIN_DOC = false;
-
-  var LOCK_KEY = "5bfc_auth_lock";
-  var MAX_FAIL = 5;
-  var LOCK_MS = 15 * 60 * 1000; // 15 min
-
-  function ensureFirebase() {
-    if (typeof firebase === "undefined") {
-      console.error("auth-gate: Firebase SDK missing");
-      return null;
-    }
-    try {
-      if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
-    } catch (e) {}
-    return firebase;
-  }
-
-  function lockState() {
-    try {
-      return JSON.parse(localStorage.getItem(LOCK_KEY) || "{}") || {};
-    } catch (e) {
-      return {};
+  // Anti-Tamper Check: If someone manually tries to change localStorage bfc_role to 'owner' while staff session exists
+  function verifyRoleIntegrity() {
+    var hasStaffSess = !!staffSess();
+    var r = LS.getItem("bfc_role");
+    if (hasStaffSess && r === "owner") {
+      // Tampering detected: staff session cannot claim owner privileges
+      console.warn("Security Alert: Role tampering detected! Resetting to staff.");
+      LS.setItem("bfc_role", "staff");
     }
   }
-  function saveLock(s) {
-    try {
-      localStorage.setItem(LOCK_KEY, JSON.stringify(s));
-    } catch (e) {}
+
+// auth-gate.js v2 - Role Lock, Staff Page Allowlist, Background Lock & Continue/New Session
+(function () {
+  var LS = localStorage;
+  var SS = sessionStorage;
+  var IDLE_MS = 60 * 1000;          // 1 minute inactivity -> auto logout (resume option milega)
+  var BG_MS = 30 * 1000;            // app background me 30 sec se zyada raha -> dubara login
+  var BG_MS_PAY = 5 * 60 * 1000;    // Pay page par UPI app kholne ka time (payment beech me na toote)
+  var RESUME_TTL = 12 * 60 * 60 * 1000;
+  var idleTimer = null;
+
+  var FILE = (window.location.pathname.toLowerCase().split("/").pop() || "index.html");
+  var IS_AUTH_PAGE = (FILE === "login.html" || FILE === "reset.html");
+  // Sirf asli public pages. (Pehle "staff-join.html" bhi "join.html" se match ho kar public ban jata tha)
+  var IS_PUBLIC = (FILE === "join.html" || FILE === "join10000.html" || window.location.search.indexOf("doc=") !== -1);
+
+  var AUTH_KEYS = ["om_org_profile", "bfc_org_profile", "bfc_org_id", "bfc_role", "bfc_active_staff",
+    "bfc_admin_logged_in", "om_staff_session", "om_last_active_url", "om_hidden_at"];
+
+  function jget(k, d) {
+    try { var v = JSON.parse(LS.getItem(k)); return v == null ? d : v; } catch (e) { return d; }
   }
-  function isBruteLocked() {
-    var s = lockState();
-    if (!s.until) return false;
-    if (Date.now() < s.until) return true;
-    saveLock({ fails: 0, until: 0 });
+  function orgIdNow() {
+    return LS.getItem("bfc_org_id") || ((jget("om_org_profile", {}) || {}).orgId) || "";
+  }
+  function staffSess() { return jget("om_staff_session", null); }
+
+  // Link se bani hui (bina code wali) staff session ko kabhi valid nahi maante
+  function isLinkOnlySession() {
+    var s = staffSess();
+    return !!s && (s.code === "STF-LINK" || LS.getItem("bfc_org_id") === "staff_link_org");
+  }
+
+  function currentRole() {
+    var r = LS.getItem("bfc_role");
+    if (r === "staff" || r === "owner") return r;
+    return staffSess() ? "staff" : "owner";
+  }
+  window.bfcRole = currentRole;
+
+  function whoId() {
+    if (currentRole() === "staff") {
+      var s = staffSess() || {};
+      return "staff:" + (s.code || "") + "@" + (s.branchCode || "");
+    }
+    return "owner:" + orgIdNow();
+  }
+
+  // Staff ko sirf ye pages: Dashboard (3 option), Admission, Pay Fees, Staff Joining, Staff Salary
+    // Staff ko sirf ye limited pages allowed hain:
+  // Dashboard (limited 4-tile view), Admission Form, Pay Fees, Staff Joining
+  // Staff-Salary aur Branch-Report kisi bhi keemat par staff ke liye khula nahi rahega!
+  function staffAllowed(file) {
+    file = (file || "").toLowerCase().split("?")[0];
+    if (file === "" || file === "index.html") return true;
+    if (file === "staff-join.html") return true;
+    if (file.indexOf("join") === 0) return true;
+    if (file.indexOf("pay") === 0) return true;
+    // Disallow staff-salary.html and branch-report.html
     return false;
   }
-  function registerFail() {
-    var s = lockState();
-    s.fails = (s.fails || 0) + 1;
-    if (s.fails >= MAX_FAIL) {
-      s.until = Date.now() + LOCK_MS;
-      s.fails = 0;
-    }
-    saveLock(s);
-    return s;
-  }
-  function registerSuccess() {
-    saveLock({ fails: 0, until: 0 });
+
+  window.bfcLogin = async function () {
+    var storedPin = LS.getItem("om_admin_pin") || "1234";
+    if (currentRole() === "staff") { alert("Ye option sirf Admin ke liye hai."); return false; }
+    var pin = prompt("Admin PIN darj karein (default 1234):", "");
+    if (pin === null) return false;
+    if (pin.trim() === storedPin) return true;
+    alert("Galat PIN!");
+    return false;
+  };
+
+  window.bfcIsAdmin = async function () {
+    return currentRole() !== "staff";
+  };
+
+  function pageLabel(url) {
+    var f = String(url || "").split("?")[0].toLowerCase();
+    if (f === "" || f === "index.html") return "Dashboard";
+    if (f.indexOf("staff-salary") === 0) return "Staff Salary & Payroll";
+    if (f.indexOf("staff-join") === 0) return "Staff Joining";
+    if (f.indexOf("branch-report") === 0) return "Branch Report";
+    if (f.indexOf("pay") === 0) return "Pay Fees Desk";
+    if (f.indexOf("join") === 0) return "Admission Form";
+    return f;
   }
 
-  function waitForUser(timeoutMs) {
-    timeoutMs = timeoutMs || 4000;
-    return new Promise(function (resolve) {
-      var fb = ensureFirebase();
-      if (!fb || !fb.auth) return resolve(null);
-      var done = false;
-      var t = setTimeout(function () {
-        if (!done) {
-          done = true;
-          resolve(fb.auth().currentUser || null);
-        }
-      }, timeoutMs);
-      fb.auth().onAuthStateChanged(function (u) {
-        if (done) return;
-        done = true;
-        clearTimeout(t);
-        resolve(u || null);
-      });
-    });
-  }
-
-  /** Returns true if Firebase admin session active */
-  var _adminCache = { uid: "", ok: false, t: 0 };
-  async function bfcIsAdmin() {
-    var u = await waitForUser(2500);
-    if (!(u && u.uid)) return false;
-    if (!REQUIRE_ADMIN_DOC) return true;
-    if (_adminCache.uid === u.uid && Date.now() - _adminCache.t < 5 * 60 * 1000) return _adminCache.ok;
-    var ok = false;
+  function saveResume() {
     try {
-      var d = await firebase.firestore().collection("admins").doc(u.uid).get();
-      ok = !!d.exists;
-    } catch (e) { ok = false; }
-    _adminCache = { uid: u.uid, ok: ok, t: Date.now() };
-    return ok;
-  }
-
-  /** Password bhool gaye: reset email (kisi bhi phone se) */
-  async function bfcResetPassword(email) {
-    email = (email || "").trim();
-    if (!email) { email = (prompt("Apna admin email likho — reset link wahi aayega:") || "").trim(); }
-    if (!email) return false;
-    try {
-      var fb = ensureFirebase();
-      await fb.auth().sendPasswordResetEmail(email);
-      alert("📧 Agar ye email admin ka hai to reset link bhej diya gaya hai. Inbox/Spam dekho.");
-      return true;
-    } catch (e) {
-      alert("❌ Reset email nahi gaya: " + ((e && e.message) || e));
-      return false;
-    }
-  }
-
-  /**
-   * Login modal — Email + Password (Firebase Auth)
-   * Returns true on success
-   */
-  async function bfcLogin(opts) {
-    opts = opts || {};
-    if (isBruteLocked()) {
-      var s = lockState();
-      var mins = Math.ceil((s.until - Date.now()) / 60000);
-      alert("🔒 Bahut galat attempts. " + mins + " minute baad try karo.");
-      return false;
-    }
-
-    if (await bfcIsAdmin()) {
-      registerSuccess();
-      return true;
-    }
-
-    // Build simple modal
-    var overlay = document.getElementById("bfcAuthOverlay");
-    if (!overlay) {
-      overlay = document.createElement("div");
-      overlay.id = "bfcAuthOverlay";
-      overlay.style.cssText =
-        "position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:16px;";
-      overlay.innerHTML =
-        '<div style="background:#111;border:2px solid #ffcc00;border-radius:14px;max-width:360px;width:100%;padding:20px;color:#fff;font-family:system-ui,sans-serif">' +
-        '<div style="text-align:center;font-size:28px;margin-bottom:6px">🔒</div>' +
-        '<h3 style="margin:0 0 4px;color:#ffcc00;text-align:center;font-size:16px">Admin Login</h3>' +
-        '<p style="margin:0 0 12px;color:#888;font-size:11px;text-align:center">5 Brother\'s Fitness Club · Secure</p>' +
-        '<label style="font-size:11px;color:#aaa">Email</label>' +
-        '<input id="bfcAuthEmail" type="email" autocomplete="username" placeholder="admin@email.com" style="width:100%;box-sizing:border-box;background:#181818;border:1.5px solid #444;color:#fff;padding:10px;border-radius:8px;margin:4px 0 10px;font-size:14px">' +
-        '<label style="font-size:11px;color:#aaa">Password</label>' +
-        '<input id="bfcAuthPass" type="password" autocomplete="current-password" placeholder="••••••••" style="width:100%;box-sizing:border-box;background:#181818;border:1.5px solid #444;color:#fff;padding:10px;border-radius:8px;margin:4px 0 12px;font-size:14px">' +
-        '<div id="bfcAuthErr" style="color:#ff6666;font-size:12px;min-height:16px;margin-bottom:8px"></div>' +
-        '<button type="button" id="bfcAuthGo" style="width:100%;background:#ffcc00;color:#000;border:none;padding:12px;border-radius:8px;font-weight:900;cursor:pointer">🔓 Login</button>' +
-        '<button type="button" id="bfcAuthForgot" style="width:100%;margin-top:8px;background:transparent;color:#6cf;border:none;padding:8px;font-size:12px;text-decoration:underline;cursor:pointer">Password bhool gaye? Reset email bhejo</button>' +
-        '<button type="button" id="bfcAuthCancel" style="width:100%;margin-top:8px;background:#333;color:#ccc;border:none;padding:10px;border-radius:8px;cursor:pointer">Cancel</button>' +
-        "</div>";
-      document.body.appendChild(overlay);
-    }
-    overlay.style.display = "flex";
-
-    return new Promise(function (resolve) {
-      var emailEl = document.getElementById("bfcAuthEmail");
-      var passEl = document.getElementById("bfcAuthPass");
-      var errEl = document.getElementById("bfcAuthErr");
-      var go = document.getElementById("bfcAuthGo");
-      var cancel = document.getElementById("bfcAuthCancel");
-
-      function close(ok) {
-        overlay.style.display = "none";
-        resolve(!!ok);
-      }
-
-      cancel.onclick = function () {
-        close(false);
-      };
-      var forgot = document.getElementById("bfcAuthForgot");
-      if (forgot) forgot.onclick = function () { bfcResetPassword(emailEl.value); };
-
-      async function doLogin() {
-        errEl.textContent = "";
-        if (isBruteLocked()) {
-          errEl.textContent = "Locked — baad me try karo";
-          return;
-        }
-        var email = (emailEl.value || "").trim();
-        var pass = passEl.value || "";
-        if (!email || !pass) {
-          errEl.textContent = "Email aur password dono likho";
-          return;
-        }
-        go.disabled = true;
-        go.textContent = "Checking…";
-        try {
-          var fb = ensureFirebase();
-          await fb.auth().signInWithEmailAndPassword(email, pass);
-          if (!(await bfcIsAdmin())) {
-            try { await fb.auth().signOut(); } catch (e2) {}
-            registerFail();
-            go.disabled = false;
-            go.textContent = "🔓 Login";
-            errEl.textContent = "❌ Ye account admin nahi hai";
-            return;
-          }
-          registerSuccess();
-          go.disabled = false;
-          go.textContent = "🔓 Login";
-          close(true);
-        } catch (e) {
-          registerFail();
-          go.disabled = false;
-          go.textContent = "🔓 Login";
-          var msg = (e && e.code) || "";
-          if (msg.indexOf("user-not-found") >= 0 || msg.indexOf("wrong-password") >= 0 || msg.indexOf("invalid-credential") >= 0)
-            errEl.textContent = "❌ Galat email / password";
-          else if (msg.indexOf("too-many") >= 0) errEl.textContent = "Bahut attempts — thoda wait";
-          else errEl.textContent = "❌ Login fail: " + (e.message || e);
-        }
-      }
-
-      go.onclick = doLogin;
-      passEl.onkeydown = function (ev) {
-        if (ev.key === "Enter") doLogin();
-      };
-      emailEl.focus();
-    });
-  }
-
-  /** Logout */
-  async function bfcLogout() {
-    try {
-      var fb = ensureFirebase();
-      if (fb && fb.auth) await fb.auth().signOut();
-    } catch (e) {}
-    try {
-      sessionStorage.removeItem("5bfc_members_ok");
-      sessionStorage.removeItem("5bfc_master_ok");
-      sessionStorage.removeItem("5bfc_admin_ok");
+      if (!orgIdNow() || IS_AUTH_PAGE || IS_PUBLIC) return;
+      LS.setItem("om_resume", JSON.stringify({
+        url: FILE + window.location.search,
+        role: currentRole(),
+        who: whoId(),
+        ts: Date.now()
+      }));
     } catch (e) {}
   }
 
-  /**
-   * Legacy helper: kuch pages PIN prompt expect karte hain.
-   * Ab PIN alone KAFI NAHI — pehle Firebase login.
-   * PIN parameter ignore (security).
-   */
-  async function bfcPinCheck(pin) {
-    // Agar already logged in
-    if (await bfcIsAdmin()) return true;
-    // PIN text se login nahi — Firebase email/password modal
-    return await bfcLogin();
+  function clearSessionAndGoLogin(keepResume) {
+    try {
+      if (window.firebase && firebase.auth) {
+        firebase.auth().signOut().catch(function () {});
+      }
+    } catch (e) {}
+    AUTH_KEYS.forEach(function (k) { LS.removeItem(k); });
+    try { SS.removeItem("om_landed"); } catch (e) {}
+    if (!keepResume) LS.removeItem("om_resume");
+
+    if (!IS_AUTH_PAGE) {
+      window.location.replace("login.html?logout=1");
+    }
   }
 
-  /** Page mode: poori page lock jab tak login na ho */
-  async function gatePage() {
-    var ok = await bfcIsAdmin();
-    if (ok) return true;
-    ok = await bfcLogin();
-    if (!ok) {
-      // Optional redirect home
-      var back = document.querySelector('a[href="app.html"], a[href="index.html"], a[href="home.html"]');
-      if (back) {
-        alert("Login zaroori hai");
-        location.href = back.getAttribute("href") || "app.html";
-      } else {
-        document.body.innerHTML =
-          '<div style="background:#050505;color:#ffcc00;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:system-ui">' +
-          "<h2>🔒 Admin Login Required</h2>" +
-          '<p style="color:#888">Refresh karke login karo</p>' +
-          '<button onclick="location.reload()" style="margin-top:12px;background:#ffcc00;color:#000;border:none;padding:12px 20px;border-radius:8px;font-weight:900">Retry</button></div>';
-      }
+  // Button wala Logout = poora logout, resume option nahi milega
+  window.omLogoutNow = function () { clearSessionAndGoLogin(false); };
+
+  function autoLogout() {
+    saveResume();
+    clearSessionAndGoLogin(true);
+  }
+
+  // ---------- Idle ----------
+  function resetIdleTimer() {
+    if (idleTimer) clearTimeout(idleTimer);
+    if (IS_AUTH_PAGE || IS_PUBLIC) return;
+    if (!orgIdNow()) return;
+    idleTimer = setTimeout(autoLogout, IDLE_MS);
+  }
+  function bindActivityListeners() {
+    ["click", "touchstart", "mousemove", "keydown", "scroll"].forEach(function (ev) {
+      window.addEventListener(ev, resetIdleTimer, { passive: true });
+    });
+    resetIdleTimer();
+  }
+
+  // ---------- Background lock ----------
+  function bgLimit() { return FILE.indexOf("pay") === 0 ? BG_MS_PAY : BG_MS; }
+  function checkBackground() {
+    var t = parseInt(LS.getItem("om_hidden_at") || "0", 10);
+    LS.removeItem("om_hidden_at");
+    if (!t || IS_AUTH_PAGE || IS_PUBLIC || !orgIdNow()) return;
+    if (Date.now() - t > bgLimit()) autoLogout();
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (IS_AUTH_PAGE || IS_PUBLIC || !orgIdNow()) return;
+    if (document.visibilityState === "hidden") {
+      LS.setItem("om_hidden_at", String(Date.now()));
+    } else {
+      checkBackground();
+    }
+  });
+
+  // ---------- Guard (page load par turant) ----------
+  function guard() {
+    verifyRoleIntegrity();
+    if (IS_AUTH_PAGE) return true;
+    var params = new URLSearchParams(window.location.search);
+
+    // Link se bani purani/fake staff session hatao
+    if (isLinkOnlySession() || orgIdNow() === "preview_org_001") { AUTH_KEYS.forEach(function (k) { LS.removeItem(k); }); }
+
+    var hasSession = !!orgIdNow();
+
+    // Staff link (?role=staff) se ab seedha login NAHI milta - staff code dalna padega
+    if (params.get("role") === "staff" && !hasSession) {
+      LS.setItem("om_staff_link_branch", params.get("branch") || "001");
+      window.location.replace("login.html?staffonly=1&branch=" + encodeURIComponent(params.get("branch") || "001"));
       return false;
+    }
+
+    if (!hasSession && !IS_PUBLIC) {
+      window.location.replace("login.html");
+      return false;
+    }
+    if (!hasSession) return true;
+
+    // Role lock: staff sirf apne allowed pages dekh sakta hai
+    if (currentRole() === "staff") {
+      LS.setItem("bfc_role", "staff");
+      var landed = false;
+      try { landed = SS.getItem("om_landed") === "1"; } catch (e) {}
+      if (!staffAllowed(FILE) || (!landed && FILE !== "index.html")) {
+        try { SS.setItem("om_landed", "1"); } catch (e) {}
+        window.location.replace("index.html");
+        return false;
+      }
+    }
+    try { SS.setItem("om_landed", "1"); } catch (e) {}
+
+    // Background me 30 sec+ raha (ya app band hui) to dubara login
+    var t = parseInt(LS.getItem("om_hidden_at") || "0", 10);
+    if (t && Date.now() - t > bgLimit()) { autoLogout(); return false; }
+    LS.removeItem("om_hidden_at");
+
+    if (!IS_PUBLIC && (currentRole() !== "staff" || staffAllowed(FILE))) {
+      LS.setItem("om_last_active_url", FILE + window.location.search);
     }
     return true;
   }
 
-  // Public API
-  global.bfcLogin = bfcLogin;
-  global.bfcLogout = bfcLogout;
-  global.bfcResetPassword = bfcResetPassword;
-  global.bfcIsAdmin = bfcIsAdmin;
-  global.bfcPinCheck = bfcPinCheck;
-  global.bfcAuthGate = gatePage;
+  var guardOk = guard();
 
-  // Auto page lock
-  var mode = "ondemand";
-  try {
-    var sc = document.currentScript || document.querySelector('script[src*="auth-gate"]');
-    if (sc && sc.getAttribute("data-mode")) mode = sc.getAttribute("data-mode");
-  } catch (e) {}
+  // bfcache (back se purana page wapas) me bhi guard dobara chale
+  window.addEventListener("pageshow", function (e) {
+    if (e.persisted) { guard(); checkBackground(); }
+  });
 
-  if (mode === "page") {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", function () {
-        gatePage();
-      });
-    } else {
-      gatePage();
-    }
+  // ---------- Continue last session / New session ----------
+  function showResumePrompt(r) {
+    if (document.getElementById("omResumeOv")) return;
+    var ov = document.createElement("div");
+    ov.id = "omResumeOv";
+    ov.style.cssText = "position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:18px;font-family:'Segoe UI',Roboto,sans-serif";
+    var box = document.createElement("div");
+    box.style.cssText = "width:100%;max-width:380px;background:#0F1730;border:2px solid #FFB800;border-radius:18px;padding:20px;color:#EAF0FF;text-align:center";
+    var h = document.createElement("div");
+    h.style.cssText = "font-size:18px;font-weight:900;color:#FFB800;margin-bottom:6px";
+    h.textContent = "Pichla session mila";
+    var p = document.createElement("div");
+    p.style.cssText = "font-size:13px;color:#B8C3E0;margin-bottom:16px;line-height:1.5";
+    p.textContent = "Aap pichli baar \"" + pageLabel(r.url) + "\" par the. Wahin se aage continue karna hai ya naya session shuru karna hai?";
+    var b1 = document.createElement("button");
+    b1.type = "button";
+    b1.textContent = "▶ Continue Last Session";
+    b1.style.cssText = "width:100%;padding:13px;border:0;border-radius:12px;background:#FFB800;color:#000;font-weight:900;font-size:14px;margin-bottom:10px;cursor:pointer";
+    var b2 = document.createElement("button");
+    b2.type = "button";
+    b2.textContent = "🆕 Naya Session";
+    b2.style.cssText = "width:100%;padding:13px;border:1px solid #334E81;border-radius:12px;background:#121A2E;color:#EAF0FF;font-weight:900;font-size:14px;cursor:pointer";
+    b1.onclick = function () {
+      LS.removeItem("om_resume");
+      ov.remove();
+      var target = r.url;
+      var f = String(target).split("?")[0].toLowerCase();
+      if (currentRole() === "staff" && !staffAllowed(f)) target = "index.html";
+      if (target !== FILE + window.location.search) window.location.replace(target);
+    };
+    b2.onclick = function () {
+      LS.removeItem("om_resume");
+      ov.remove();
+      if (FILE !== "index.html") window.location.replace("index.html");
+    };
+    box.appendChild(h); box.appendChild(p); box.appendChild(b1); box.appendChild(b2);
+    ov.appendChild(box);
+    document.body.appendChild(ov);
   }
-})(typeof window !== "undefined" ? window : this);
+
+  function maybeResume() {
+    var r = jget("om_resume", null);
+    if (!r) return;
+    if (!orgIdNow() || IS_AUTH_PAGE || IS_PUBLIC) return;
+    if (!r.ts || Date.now() - r.ts > RESUME_TTL || r.role !== currentRole() || r.who !== whoId()) {
+      LS.removeItem("om_resume");   // alag banda / alag role -> koi purana session nahi dikhana
+      return;
+    }
+    if (r.url === FILE + window.location.search) { LS.removeItem("om_resume"); return; }
+    showResumePrompt(r);
+  }
+
+  // ---------- Back lock ----------
+  function setupBackLock() {
+    if (!guardOk) return;
+    if (!IS_AUTH_PAGE && orgIdNow() && window.history && window.history.pushState) {
+      window.history.pushState({ locked: true }, "", window.location.href);
+      window.onpopstate = function () {
+        window.history.pushState({ locked: true }, "", window.location.href);
+      };
+    }
+    bindActivityListeners();
+    maybeResume();
+  }
+
+  window.addEventListener("DOMContentLoaded", setupBackLock);
+})();

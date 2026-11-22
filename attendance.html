@@ -762,12 +762,12 @@ window.__csv=function(v){var s=String(v==null?"":v).replace(/"/g,'""');return /^
 <script>
   // --- FIREBASE CLOUD SETUP ---
   const firebaseConfig = {
-    apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",
-    authDomain: "brother-s-fitness-club.firebaseapp.com",
-    projectId: "brother-s-fitness-club",
-    storageBucket: "brother-s-fitness-club.firebasestorage.app",
-    messagingSenderId: "781489019006",
-    appId: "1:781489019006:web:4a230698f2195e7208202f"
+    apiKey: "AIzaSyAHEMISEIDSzZz-m2OQT5EPyhTRF-mXqjQ",
+    authDomain: "bfc-gym-215ae.firebaseapp.com",
+    projectId: "bfc-gym-215ae",
+    storageBucket: "bfc-gym-215ae.firebasestorage.app",
+    messagingSenderId: "886920088571",
+    appId: "1:886920088571:web:c4bc478d246a2700b0d95e"
   };
 
   if (!firebase.apps.length) {
@@ -790,13 +790,8 @@ window.__csv=function(v){var s=String(v==null?"":v).replace(/"/g,'""');return /^
   // ============ 📸 SELFIE → TELEGRAM (free, hamesha ke liye, phone me bhi save ho sakti hai) + chhoti thumbnail ============
   // Telegram bot ka token aur aapki chat ID yahan aayegi (guide ke baad). Khali = abhi band.
   // (Token ke do akshar l / I jaisa dikhte the — isliye 4 sambhav roop; jo chalega wahi yaad rakha jayega)
-  const SELFIE_TG_TOKENS = [
-    "9178541940:AAFbzJ4aTmv6QY8w9ee6lfRXrcs7kzztK2l",
-    "9178541940:AAFbzJ4aTmv6QY8w9ee6lfRXrcs7kzztK2I",
-    "9178541940:AAFbzJ4aTmv6QY8w9ee6IfRXrcs7kzztK2l",
-    "9178541940:AAFbzJ4aTmv6QY8w9ee6IfRXrcs7kzztK2I"
-  ];
-  const SELFIE_TG_CHAT = "1451868661";
+  const SELFIE_TG_TOKENS = [];
+  const SELFIE_TG_CHAT = "";
   let SELFIE_TG_TOKEN = "";
   async function bfcTgResolveToken() {
     if (SELFIE_TG_TOKEN) return SELFIE_TG_TOKEN;
@@ -830,28 +825,19 @@ window.__csv=function(v){var s=String(v==null?"":v).replace(/"/g,'""');return /^
     return new Blob([u8], { type: "image/jpeg" });
   }
   async function bfcDrivePost(job) {
-    const ctl = new AbortController();
-    const to = setTimeout(function () { ctl.abort(); }, 25000);
     try {
-      const tok = await bfcTgResolveToken();
-      if (!tok) return false;
-      const fd = new FormData();
-      fd.append("chat_id", SELFIE_TG_CHAT);
-      fd.append("caption", "👤 " + (job.name || "") + "\n📞 " + (job.phone || "") + "\n📅 " + (job.date || "") + "  ⏰ " + (job.time || ""));
-      fd.append("photo", bfcDataUrlToBlob(job.img), "selfie.jpg");
-      const r = await fetch("https://api.telegram.org/bot" + tok + "/sendPhoto", { method: "POST", body: fd, signal: ctl.signal });
-      const j = await r.json();
-      return !!(j && j.ok);
-    } catch (e) { return false; } finally { clearTimeout(to); }
+      if (typeof bfcNotifyPhoto !== "function") return false;
+      const cap = "👤 " + (job.name || "") + "\n📞 " + (job.phone || "") + "\n📅 " + (job.date || "") + "  ⏰ " + (job.time || "") + "\n✅ PRESENT";
+      return !!(await bfcNotifyPhoto(job.img, cap, "member_att"));
+    } catch (e) { return false; }
   }
   // Selfie Telegram par bhejo; na ja paye to queue me rakho (agli baar apne-aap koshish)
   async function bfcSendSelfie(job) {
-    if (!SELFIE_TG_CHAT || !job || !job.img) return;
+    if (!job || !job.img) return;
     const ok = await bfcDrivePost(job);
     if (!ok) { const q = bfcQRead(); q.push(job); bfcQWrite(q); }
   }
   async function bfcFlushDriveQueue() {
-    if (!SELFIE_TG_CHAT) return;
     let q = bfcQRead(); if (!q.length) return;
     const left = [];
     for (let i = 0; i < q.length; i++) { if (!(await bfcDrivePost(q[i]))) left.push(q[i]); }
