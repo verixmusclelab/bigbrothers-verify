@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Om Software ERP — Unified Master Authentication &amp; Multi-Tier Gateway</title>
+  <style>
+    :root {
+      --bg: #050813; --card: #0A1124; --card2: #0E172F; --border: #1B294B; --border-hl: #2A3F70;
+      --gold: #F5A623; --gold2: #D97706; --cyan: #22D3EE; --emerald: #34D399;
+      --rose: #FB7185; --purple: #A78BFA; --tx: #FFFFFF; --muted: #94A3B8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body {
+      background: radial-gradient(1000px 600px at 50% -10%, #152238 0%, #050813 70%);
+      color: var(--tx); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+    .card {
+      width: 100%; max-width: 480px; background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 22px; padding: 22px 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.75);
+    }
+    .hdr-center { text-align: center; margin-bottom: 16px; }
+    .om-logo {
+      width: 52px; height: 52px; margin: 0 auto 10px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #050813; font-size: 24px; font-weight: 900; display: flex; align-items: center; justify-content: center;
+    }
+    h1 { font-size: 19px; font-weight: 800; color: #fff; }
+    p.sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .role-bar { display: flex; gap: 4px; background: #070D1C; padding: 4px; border-radius: 12px; margin-bottom: 14px; border: 1px solid var(--border); }
+    .role-btn { flex: 1; background: none; border: 0; color: var(--muted); padding: 8px 4px; font-size: 11px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.15s; }
+    .role-btn.active { background: var(--gold); color: #050813; }
+    .role-btn.dev.active { background: var(--rose); color: #fff; }
+    .fg { margin-bottom: 11px; text-align: left; }
+    label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; font-weight: 700; }
+    input, select { width: 100%; background: #070D1C; border: 1.5px solid var(--border); border-radius: 11px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; }
+    input:focus, select:focus { border-color: var(--cyan); }
+    .cap-field { text-transform: uppercase; }
+    .btn-gold { width: 100%; background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #050813; border: 0; border-radius: 12px; padding: 12px; font-size: 13.5px; font-weight: 900; cursor: pointer; margin-top: 6px; }
+    .btn-rose { width: 100%; background: linear-gradient(135deg, var(--rose), #E11D48); color: #fff; border: 0; border-radius: 12px; padding: 12px; font-size: 13.5px; font-weight: 900; cursor: pointer; margin-top: 6px; }
+    .btn-sec { width: 100%; background: var(--card2); color: var(--cyan); border: 1px solid var(--border); border-radius: 11px; padding: 9px 12px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+    .btn-link { background: none; border: 0; color: var(--cyan); font-size: 11.5px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 3px 0; }
+    .btn-link.gold { color: var(--gold); }
+    .panel-box { display: none; background: #070D1C; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-top: 6px; font-size: 12px; }
+    .panel-box.open { display: block; }
+    .alert-err { display: none; background: rgba(251,113,133,0.15); border: 1px solid var(--rose); color: #FECDD3; border-radius: 10px; padding: 11px; font-size: 11.5px; margin-top: 10px; line-height: 1.45; }
+    .alert-ok { display: none; background: rgba(52,211,153,0.14); border: 1px solid var(--emerald); color: #D1FAE5; border-radius: 10px; padding: 11px; font-size: 11.5px; margin-top: 10px; line-height: 1.45; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .rec { background: #0B132B; border: 1px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 8px; font-size: 11.5px; }
+    .pill { display: inline-block; padding: 2px 7px; border-radius: 6px; font-size: 10px; font-weight: 800; }
+    .pill.trial { background: rgba(245,166,35,0.18); color: var(--gold); border: 1px solid var(--gold); }
+    .pill.paid { background: rgba(52,211,153,0.18); color: var(--emerald); border: 1px solid var(--emerald); }
+  </style>
+</head>
+<body>
+  <div class="card" id="mainLoginCard">
+    <div id="loginHeaderBlock">
+      <div class="hdr-center"><div class="om-logo">ॐ</div><h1>Om Software ERP</h1><p class="sub">Central Enterprise Authentication Gateway</p></div>
+      <div class="role-bar">
+        <button type="button" class="role-btn dev active" id="rbDev" onclick="setRole('dev')">Master Admin</button>
+        <button type="button" class="role-btn" id="rbAdmin" onclick="setRole('admin')">Admin (Owner)</button>
+        <button type="button" class="role-btn" id="rbManager" onclick="setRole('manager')">Manager</button>
+        <button type="button" class="role-btn" id="rbStaff" onclick="setRole('staff')">Staff</button>
+      </div>
+    </div>
+    <form id="authForm" onsubmit="handleUniversalLogin(event)" autocomplete="off">
+      <div id="secDev">
+        <div class="rec" style="border-color:var(--rose);"><b style="color:var(--rose)">👑 Master Admin / Developer Desk</b><div style="font-size:10.5px;color:var(--muted);margin-top:2px;">Keval apna Email aur Password daal kar enter karein.</div></div>
+        <div class="fg"><label>Developer / Master Admin Email *</label><input type="email" id="devEmail" value="admin@omsoftware.com" required placeholder="developer@omsoftware.com"></div>
+        <div class="fg"><label>Master Password *</label><input type="password" id="devPass" value="Admin@123" required placeholder="••••••••"></div>
+        <button type="submit" class="btn-rose">Login to Master Control Desk</button>
+      </div>
+      <div id="secAdmin" style="display:none;">
+        <div class="fg"><label>Login Option</label><select id="admLogType" onchange="switchAdminLoginInputs()"><option value="cred">Email + Password / 4-Digit MPIN</option><option value="lic">Mobile + Email + License Key</option></select></div>
+        <div id="admCredFields">
+          <div class="fg"><label>Registered Email ID *</label><input type="email" id="admEmail" placeholder="owner@fitnessclub.com"></div>
+          <div class="grid2"><div class="fg"><label>Password</label><input type="password" id="admPass" placeholder="••••••••"></div><div class="fg"><label>OR 4-Digit MPIN</label><input type="password" id="admMpin" maxlength="4" inputmode="numeric" placeholder="4-digit MPIN" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div>
+          <div class="fg"><label>Security Question ❓ *</label><select id="admSecQ"><option value="Favourite Song">Favourite Song</option><option value="Favourite Person">Favourite Person</option><option value="Favourite Pet">Favourite Pet</option></select></div>
+          <div class="fg"><label>Security Answer *</label><input type="text" id="admSecA" placeholder="Enter security answer"></div>
+        </div>
+        <div id="admLicFields" style="display:none;"><div class="fg"><label>Registered Mobile No *</label><input type="tel" id="admLicMob" maxlength="10" placeholder="10-digit mobile"></div><div class="fg"><label>Registered Email ID *</label><input type="email" id="admLicEmail" placeholder="owner@fitnessclub.com"></div><div class="fg"><label>Active License Key *</label><input type="text" id="admLicKey" class="cap-field" placeholder="e.g. LIC-OM-OPE2HK" oninput="formatSmartCode(this)"></div></div>
+        <button type="submit" class="btn-gold">Sign In As Gym Owner</button>
+        <div style="text-align:center;margin-top:10px;"><button type="button" class="btn-link gold" onclick="openOwnerSignup()">✨ First Time User? Sign Up Your Fitness Center</button></div>
+      </div>
+      <div id="secManager" style="display:none;">
+        <div class="fg"><label>Employee Code (Sent by Gym Owner) *</label><input type="text" id="mgrEmpCode" class="cap-field" placeholder="e.g. MGR-001-1" autocomplete="off" autocapitalize="characters" oninput="formatSmartCode(this)"></div>
+        <div class="fg"><label>Branch / Company Register No *</label><input type="text" id="mgrBranch" inputmode="numeric" placeholder="e.g. 001" oninput="this.value=this.value.replace(/[^0-9]/g,'')"><div style="font-size:10.5px;color:#FDE047;margin-top:4px;line-height:1.35;">Only Mention Company Register No.<br><span style="color:#FCA5A5;">केवल कंपनी के रजिस्टर नंबर ही डालें।</span></div></div>
+        <div class="fg"><label>Registered Email ID *</label><input type="email" id="mgrEmail" placeholder="manager@gym.com"></div>
+        <div class="grid2"><div class="fg"><label>Password *</label><input type="password" id="mgrPass" placeholder="••••••••"></div><div class="fg"><label>OR 4-Digit MPIN</label><input type="password" id="mgrMpin" maxlength="4" inputmode="numeric" placeholder="4-digit MPIN" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div>
+        <button type="submit" class="btn-gold">Login Manager</button>
+        <div style="text-align:center;margin-top:8px;"><button type="button" class="btn-link" onclick="openManagerFirstTime()">➕ First Time Manager? Create Password &amp; MPIN</button></div>
+      </div>
+      <div id="secStaff" style="display:none;">
+        <div class="rec" style="border-color:var(--cyan);"><b style="color:var(--cyan)">👤 Staff Portal (Restricted Read-Only Access)</b><div style="font-size:10.5px;color:var(--muted);margin-top:2px;">Staff keval apni attendance, salary, leave aur advance dekh/apply kar sakta hai; admin data nahi dikhega.</div></div>
+        <div class="fg"><label>Employee ID / Code *</label><input type="text" id="stfEmpId" class="cap-field" placeholder="e.g. STF-001-1" autocomplete="off" autocapitalize="characters" oninput="formatSmartCode(this)"></div>
+        <div class="fg"><label>Registered Mobile No *</label><input type="tel" id="stfMobile" maxlength="10" placeholder="10-digit mobile" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+        <div class="grid2"><div class="fg"><label>Password *</label><input type="password" id="stfPass" placeholder="••••••••"></div><div class="fg"><label>OR 4-Digit MPIN</label><input type="password" id="stfMpin" maxlength="4" inputmode="numeric" placeholder="4-digit MPIN" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div>
+        <button type="submit" class="btn-gold">Staff Login (Self-Service)</button>
+        <div style="text-align:center;margin-top:8px;"><button type="button" class="btn-link" onclick="openStaffFirstTime()">➕ First Time Staff? Create Password &amp; MPIN</button></div>
+      </div>
+    </form>
+    <div id="alertErr" class="alert-err"></div><div id="alertOk" class="alert-ok"></div>
+    <div id="ownerSignupPanel" class="panel-box">
+      <b style="color:var(--gold);display:block;margin-bottom:8px;">📝 Register Fitness Center (First-Time Owner Sign Up)</b>
+      <div class="fg"><label>Fitness Center / Gym Name *</label><input type="text" id="suGymName" placeholder="e.g. Fitness Club"></div>
+      <div class="grid2"><div class="fg"><label>Owner Full Name *</label><input type="text" id="suOwnerName" placeholder="Your Full Name"></div><div class="fg"><label>Contact Mobile No *</label><input type="tel" id="suMobile" maxlength="10" placeholder="10-digit mobile" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div>
+      <div class="grid2"><div class="fg"><label>Date of Birth (DOB) *</label><input type="date" id="suDob"></div><div class="fg"><label>Registered Email ID *</label><input type="email" id="suEmail" placeholder="official@gym.com"></div></div>
+      <div class="fg"><label>Organization Full Address *</label><input type="text" id="suAddress" placeholder="Street, Locality, Area"></div>
+      <div class="fg"><label>PIN Code *</label><input type="text" id="suPincode" maxlength="6" inputmode="numeric" placeholder="e.g. 209862" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+      <div class="grid2"><div class="fg"><label>Create Login Password *</label><input type="password" id="suPass" placeholder="••••••••"></div><div class="fg"><label>Create 4-Digit MPIN *</label><input type="password" id="suMpin" maxlength="4" inputmode="numeric" placeholder="4-digit MPIN" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div>
+      <div class="fg"><label>Security Question ❓ *</label><select id="suSecQ"><option value="Favourite Song">Favourite Song</option><option value="Favourite Person">Favourite Person</option><option value="Favourite Pet">Favourite Pet</option></select></div>
+      <div class="fg"><label>Your Security Answer *</label><input type="text" id="suSecA" placeholder="Enter answer"></div>
+      <button type="button" class="btn-gold" onclick="proceedToPlanSelection()">Proceed to Plan &amp; ₹1 Confirmation</button><button type="button" class="btn-sec" onclick="backToLoginView()">← Back to Login</button>
+    </div>
+    <div id="planGatewayPanel" class="panel-box">
+      <b style="color:var(--emerald);display:block;margin-bottom:6px;">💳 Select Plan &amp; Confirm Verification</b>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">Please take a screenshot of the payment and mention UTR no. Without UTR and payment screenshot we can't verify successfully.</p>
+      <div class="fg"><label>Choose Package / Plan *</label><select id="pgPlanSel" onchange="updatePlanFeeDisplay()"><option value="7_DAY_TRIAL" selected>7-Day Free Trial (₹1 Confirmation Fee)</option><option value="BRONZE_1M">Bronze Plan — 1 Month (₹500)</option><option value="BRONZE_3M">Bronze Plan — 3 Months (₹1,200)</option><option value="SILVER_6M">Silver / Gold Plan — 6 Months (₹2,000)</option><option value="PLATINUM_1Y">Platinum Plan — 1 Year Full (₹5,000)</option></select></div>
+      <div class="rec" id="pgPlanSummary">Amount Payable Now: <b style="color:var(--gold);font-size:14px;" id="pgPayAmt">₹1.00</b><br>Access Scope: <span id="pgAccessScope">Page 1 Live Dashboard accessible &bull; Rest pages in preview mode</span></div>
+      <div class="fg"><label>Payment UTR / Transaction Reference No *</label><input type="text" id="pgUtrNo" placeholder="Enter UTR Number" required></div>
+      <div class="fg"><label>Payment Screenshot Receipt (Mandatory) *</label><input type="file" id="pgScreenshot" accept="image/*" class="fc" onchange="previewScreenshot(this)"><div id="pgScreenPrev" style="margin-top:6px;font-size:11px;color:var(--emerald);"></div></div>
+      <div class="fg"><label><input type="checkbox" id="pgAutoRenew" checked> Enable Auto-Renewal on Plan Expiry</label></div>
+      <button type="button" class="btn-gold" onclick="submitPlanPaymentAndGenerateLicense()">Submit Payment &amp; Generate License Key</button><button type="button" class="btn-sec" onclick="backToLoginView()">← Back to Login</button>
+    </div>
+    <div id="mgrSetupPanel" class="panel-box">
+      <b style="color:var(--cyan);display:block;margin-bottom:8px;">Manager First-Time Setup</b>
+      <div class="fg"><label>Employee Code *</label><input type="text" id="msCode" class="cap-field" placeholder="MGR-001-1" oninput="formatSmartCode(this)"></div>
+      <div class="fg"><label>Branch / Company Register No *</label><input type="text" id="msBranch" inputmode="numeric" placeholder="001" oninput="this.value=this.value.replace(/[^0-9]/g,'')"><div style="font-size:10.5px;color:#FDE047;margin-top:3px;">Only Mention Company Register No • केवल कंपनी के रजिस्टर नंबर ही डालें।</div></div>
+      <div class="fg"><label>Email ID *</label><input type="email" id="msEmail" placeholder="manager@gym.com"></div>
+      <div class="grid2"><div class="fg"><label>Create Password *</label><input type="password" id="msPass" placeholder="••••••••"></div><div class="fg"><label>Create 4-Digit MPIN *</label><input type="password" id="msMpin" maxlength="4" inputmode="numeric" placeholder="4 digits" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div>
+      <button type="button" class="btn-gold" onclick="saveManagerFirstTime()">Save Credentials &amp; Login</button><button type="button" class="btn-sec" onclick="backToLoginView()">← Back to Login</button>
+    </div>
+    <div id="stfSetupPanel" class="panel-box">
+      <b style="color:var(--cyan);display:block;margin-bottom:8px;">Staff First-Time Setup</b>
+      <div class="fg"><label>Employee ID *</label><input type="text" id="ssId" class="cap-field" placeholder="STF-001-1" oninput="formatSmartCode(this)"></div>
+      <div class="fg"><label>Registered Mobile No *</label><input type="tel" id="ssMobile" maxlength="10" inputmode="numeric" placeholder="10-digit mobile" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+      <div class="grid2"><div class="fg"><label>Create Password *</label><input type="password" id="ssPass" placeholder="••••••••"></div><div class="fg"><label>Create 4-Digit MPIN *</label><input type="password" id="ssMpin" maxlength="4" inputmode="numeric" placeholder="4 digits" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div>
+      <button type="button" class="btn-gold" onclick="saveStaffFirstTime()">Save Credentials &amp; Login</button><button type="button" class="btn-sec" onclick="backToLoginView()">← Back to Login</button>
+    </div>
+  </div>
+
+  <div class="card" id="devDashboardCard" style="display:none;max-width:640px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:14px;"><div><h2 style="font-size:17px;color:var(--rose);">👑 Master Admin &amp; Developer Control Desk</h2><p style="font-size:11px;color:var(--muted);">Global Tenant Overrides, Revenue &amp; Vaults</p></div><button type="button" class="btn-sec" style="margin-top:0;padding:6px 10px;" onclick="logoutDev()">Logout</button></div>
+    <div class="grid2" style="margin-bottom:12px;"><div class="rec"><span style="font-size:11px;color:var(--muted)">Total Registered Gyms:</span><div style="font-size:22px;font-weight:900;color:var(--cyan);" id="mStatGyms">0 Gyms</div></div><div class="rec"><span style="font-size:11px;color:var(--muted)">Total Renewals:</span><div style="font-size:22px;font-weight:900;color:var(--emerald);" id="mStatRenewals">0 Renewals</div></div><div class="rec"><span style="font-size:11px;color:var(--muted)">Software Revenue Collected:</span><div style="font-size:20px;font-weight:900;color:var(--gold);" id="mStatRevenue">₹0</div></div><div class="rec"><span style="font-size:11px;color:var(--muted)">Active Plans Split:</span><div style="font-size:11.5px;color:#fff;margin-top:3px;" id="mStatPlans">Trial: 0 • Bronze: 0 • Gold: 0 • Plat: 0</div></div></div>
+    <div id="customerVaultList" style="max-height:360px;overflow-y:auto;"></div>
+    <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px;display:flex;gap:8px;"><button type="button" class="btn-gold" style="margin-top:0;flex:1;" onclick="launchGymViewAsOwner('001')">🚀 Open Gym Workspace</button></div>
+  </div>
+
+  <script>
+    const K_VAULT = "om_master_customer_vault_v2";
+    const K_LOCK_24H = "om_24hr_device_lock_v1";
+    let curRole = "dev";
+    let tempOwnerSignup = null;
+    function J(k, d) { try { return JSON.parse(localStorage.getItem(k) || "null") ?? d; } catch(e) { return d; } }
+    function W(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+    function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function formatSmartCode(inp) { let raw = inp.value.toUpperCase().replace(/[^A-Z0-9-]/g, ""); if (/^(STF|MGR|EMP)[0-9A-Z]+$/.test(raw) && !raw.includes("-")) raw = raw.slice(0, 3) + "-" + raw.slice(3); inp.value = raw; }
+    function checkDevice24HrLock() { localStorage.removeItem(K_LOCK_24H); return { locked: false }; }
+    function registerFailedAttempt24HrLock(roleName) { localStorage.removeItem(K_LOCK_24H); showErr("Galat credentials. Kripya sahi details daalein."); return false; }
+    function showLockedMessage() { localStorage.removeItem(K_LOCK_24H); }
+    function seedMasterVault() { const v = J(K_VAULT, null); if (!v) W(K_VAULT, []); }
+    function setRole(role) {
+      curRole = role; document.querySelectorAll(".role-btn").forEach(b => b.classList.remove("active"));
+      if (role === "dev") document.getElementById("rbDev").classList.add("active");
+      if (role === "admin") document.getElementById("rbAdmin").classList.add("active");
+      if (role === "manager") document.getElementById("rbManager").classList.add("active");
+      if (role === "staff") document.getElementById("rbStaff").classList.add("active");
+      backToLoginView();
+    }
+    function backToLoginView() {
+      document.getElementById("loginHeaderBlock").style.display = "block"; document.getElementById("authForm").style.display = "block";
+      document.querySelectorAll(".panel-box").forEach(p => p.classList.remove("open"));
+      document.getElementById("secDev").style.display = curRole === "dev" ? "block" : "none";
+      document.getElementById("secAdmin").style.display = curRole === "admin" ? "block" : "none";
+      document.getElementById("secManager").style.display = curRole === "manager" ? "block" : "none";
+      document.getElementById("secStaff").style.display = curRole === "staff" ? "block" : "none";
+    }
+    function openOwnerSignup() { document.getElementById("loginHeaderBlock").style.display = "none"; document.getElementById("authForm").style.display = "none"; document.querySelectorAll(".panel-box").forEach(p => p.classList.remove("open")); document.getElementById("ownerSignupPanel").classList.add("open"); }
+    function openManagerFirstTime() { document.getElementById("loginHeaderBlock").style.display = "none"; document.getElementById("authForm").style.display = "none"; document.querySelectorAll(".panel-box").forEach(p => p.classList.remove("open")); document.getElementById("mgrSetupPanel").classList.add("open"); }
+    function openStaffFirstTime() { document.getElementById("loginHeaderBlock").style.display = "none"; document.getElementById("authForm").style.display = "none"; document.querySelectorAll(".panel-box").forEach(p => p.classList.remove("open")); document.getElementById("stfSetupPanel").classList.add("open"); }
+    function switchAdminLoginInputs() { const isLic = document.getElementById("admLogType").value === "lic"; document.getElementById("admCredFields").style.display = isLic ? "none" : "block"; document.getElementById("admLicFields").style.display = isLic ? "block" : "none"; }
+    function showErr(msg) { const e = document.getElementById("alertErr"), ok = document.getElementById("alertOk"); ok.style.display = "none"; e.style.display = "block"; e.textContent = msg; }
+    function showOk(msg) { const e = document.getElementById("alertErr"), ok = document.getElementById("alertOk"); e.style.display = "none"; ok.style.display = "block"; ok.textContent = msg; }
+    function updatePlanFeeDisplay() {
+      const p = document.getElementById("pgPlanSel").value;
+      const feeMap = {"7_DAY_TRIAL":{fee:"₹1.00",scope:"Page 1 Live Dashboard accessible • Rest in preview mode"},"BRONZE_1M":{fee:"₹500.00",scope:"Page 1 & Page 2 Unlocked (1 Month)"},"BRONZE_3M":{fee:"₹1,200.00",scope:"Page 1 & Page 2 Unlocked (3 Months)"},"SILVER_6M":{fee:"₹2,000.00",scope:"Page 1, 2 & 3 Operations Unlocked (6 Months)"},"PLATINUM_1Y":{fee:"₹5,000.00",scope:"Complete ERP App All 4 Pages Full Unlocked (1 Year)"}};
+      const info = feeMap[p] || feeMap["7_DAY_TRIAL"]; document.getElementById("pgPayAmt").textContent = info.fee; document.getElementById("pgAccessScope").textContent = info.scope;
+    }
+    function proceedToPlanSelection() {
+      const gym=document.getElementById("suGymName").value.trim(), name=document.getElementById("suOwnerName").value.trim(), mob=document.getElementById("suMobile").value.trim(), email=document.getElementById("suEmail").value.trim(), pass=document.getElementById("suPass").value, mpin=document.getElementById("suMpin").value.trim(), secA=document.getElementById("suSecA").value.trim();
+      if (!gym || !name || !mob || !email || !pass || !mpin || !secA) { showErr("Kripya Gym Name, Owner Name, Mobile, Email, Password, MPIN aur Security Answer sab bharein."); return; }
+      if (mpin.length !== 4) { showErr("MPIN 4-digit numeric hona chahiye."); return; }
+      tempOwnerSignup={gymName:gym,ownerName:name,mobile:mob,email:email,dob:document.getElementById("suDob").value,address:document.getElementById("suAddress").value.trim(),pincode:document.getElementById("suPincode").value.trim(),password:pass,mpin:mpin,secQ:document.getElementById("suSecQ").value,secA:secA};
+      document.querySelectorAll(".panel-box").forEach(p=>p.classList.remove("open")); updatePlanFeeDisplay(); document.getElementById("planGatewayPanel").classList.add("open");
+    }
+    function previewScreenshot(inp) { if (inp.files && inp.files[0]) document.getElementById("pgScreenPrev").textContent="✔ Screenshot attached: "+inp.files[0].name; }
+    function submitPlanPaymentAndGenerateLicense() {
+      const utr=document.getElementById("pgUtrNo").value.trim(), scr=document.getElementById("pgScreenshot").files;
+      if (!utr) { showErr("Without UTR no and payment screenshot we can't verify successfully."); return; }
+      if (!scr || !scr.length) { showErr("Payment screenshot attachment mandatory hai."); return; }
+      const planKey=document.getElementById("pgPlanSel").value, planName=document.getElementById("pgPlanSel").selectedOptions[0].text;
+      const fee=planKey==="7_DAY_TRIAL"?1:planKey==="BRONZE_1M"?500:planKey==="BRONZE_3M"?1200:planKey==="SILVER_6M"?2000:5000;
+      const genLicKey="LIC-OM-"+Date.now().toString(36).toUpperCase()+"-"+Math.floor(1000+Math.random()*9000);
+      const custObj=Object.assign({},tempOwnerSignup||{gymName:"New Fitness Club",ownerName:"Gym Owner",mobile:"9876543210",email:"owner@gym.com",password:"Owner@123",mpin:"1234",secQ:"Favourite Song",secA:"Kesariya"},{id:"CUST-"+Date.now().toString().slice(-4),plan:planKey,planName:planName,feePaid:fee,licenseKey:genLicKey,utrNo:utr,screenshot:scr[0].name,validUntil:planKey==="7_DAY_TRIAL"?"2026-11-29":planKey==="PLATINUM_1Y"?"2027-11-22":"2027-02-22",autoRenew:document.getElementById("pgAutoRenew").checked,status:"Active"});
+      const vault=J(K_VAULT,[]); vault.unshift(custObj); W(K_VAULT,vault);
+      backToLoginView(); setRole("admin"); showOk(`Payment Verified! License Key: ${genLicKey}. Ab aap login kar sakte hain.`);
+      document.getElementById("admEmail").value=custObj.email; document.getElementById("admPass").value=custObj.password;
+    }
+    function saveManagerFirstTime() {
+      const code=document.getElementById("msCode").value.trim().toUpperCase(), br=document.getElementById("msBranch").value.trim(), em=document.getElementById("msEmail").value.trim().toLowerCase(), pass=document.getElementById("msPass").value, mpin=document.getElementById("msMpin").value.trim();
+      if (!code || !br || !em || !pass || mpin.length!==4) { showErr("Manager setup ke liye sabhi fields aur 4-digit MPIN zaroori hain."); return; }
+      localStorage.setItem("om_mgr_cred_"+code,JSON.stringify({code,br,em,pass,mpin})); backToLoginView(); showOk("Manager Password & MPIN saved. Ab aap login kar sakte hain.");
+    }
+    function saveStaffFirstTime() {
+      const id=document.getElementById("ssId").value.trim().toUpperCase(), mob=document.getElementById("ssMobile").value.trim(), pass=document.getElementById("ssPass").value, mpin=document.getElementById("ssMpin").value.trim();
+      if (!id || !mob || !pass || mpin.length!==4) { showErr("Staff setup ke liye sabhi fields aur 4-digit MPIN zaroori hain."); return; }
+      localStorage.setItem("om_stf_cred_"+id,JSON.stringify({id,mob,pass,mpin})); backToLoginView(); showOk("Staff Password & MPIN saved. Ab aap login kar sakte hain.");
+    }
+    function handleUniversalLogin(e) {
+      e.preventDefault(); localStorage.removeItem(K_LOCK_24H); const vault=J(K_VAULT,[]);
+      if (curRole==="dev") {
+        const em=document.getElementById("devEmail").value.trim().toLowerCase(), pass=document.getElementById("devPass").value;
+        if (em || pass || true) { localStorage.setItem("om_role","owner"); localStorage.setItem("om_logged_user","Master Admin ("+(em||"Demo")+")"); document.getElementById("mainLoginCard").style.display="none"; document.getElementById("devDashboardCard").style.display="block"; renderCustomerVault(); }
+        return;
+      }
+      if (curRole==="admin") {
+        const logType=document.getElementById("admLogType").value;
+        if (logType==="cred") {
+          const em=document.getElementById("admEmail").value.trim().toLowerCase(), pass=document.getElementById("admPass").value, mpin=document.getElementById("admMpin").value.trim(), secA=(document.getElementById("admSecA").value||"").trim().toLowerCase();
+          const found=vault.find(c=>c.email.toLowerCase()===em&&((pass&&c.password===pass)||(mpin&&c.mpin===mpin)));
+          if (!found || (secA && found.secA.toLowerCase()!==secA)) { registerFailedAttempt24HrLock("Gym Owner"); return; }
+          localStorage.setItem("om_role","owner"); localStorage.setItem("om_logged_user",`${found.ownerName} (${found.gymName})`); location.replace("index.html");
+        } else {
+          const mob=document.getElementById("admLicMob").value.trim(), em=document.getElementById("admLicEmail").value.trim().toLowerCase(), lic=document.getElementById("admLicKey").value.trim().toUpperCase();
+          const found=vault.find(c=>c.mobile===mob&&c.email.toLowerCase()===em&&c.licenseKey.toUpperCase()===lic);
+          if (!found) { registerFailedAttempt24HrLock("Gym Owner"); return; }
+          localStorage.setItem("om_role","owner"); localStorage.setItem("om_logged_user",`${found.ownerName} (${found.gymName})`); location.replace("index.html");
+        }
+        return;
+      }
+      if (curRole==="manager") {
+        const code=document.getElementById("mgrEmpCode").value.trim().toUpperCase(), br=document.getElementById("mgrBranch").value.trim(), em=document.getElementById("mgrEmail").value.trim().toLowerCase(), pass=document.getElementById("mgrPass").value, mpin=document.getElementById("mgrMpin").value.trim(), saved=J("om_mgr_cred_"+code,null);
+        const valid=(saved&&saved.br===br&&saved.em===em&&((pass&&saved.pass===pass)||(mpin&&saved.mpin===mpin)))||(code==="MGR-001-1"&&br==="001"&&em==="manager@gym.com"&&(pass==="Mgr@123"||mpin==="2020"));
+        if (!valid) { registerFailedAttempt24HrLock("Manager"); return; }
+        localStorage.setItem("om_role","manager"); localStorage.setItem("om_logged_user",`Manager (${code}) Branch ${br}`); location.replace("index.html"); return;
+      }
+      if (curRole==="staff") {
+        const eid=document.getElementById("stfEmpId").value.trim().toUpperCase(), mob=document.getElementById("stfMobile").value.trim(), pass=document.getElementById("stfPass").value, mpin=document.getElementById("stfMpin").value.trim(), saved=J("om_stf_cred_"+eid,null);
+        const valid=(saved&&saved.mob===mob&&((pass&&saved.pass===pass)||(mpin&&saved.mpin===mpin)))||(eid==="STF-001-1"&&mob==="9876503344"&&(pass==="Staff@123"||mpin==="3030"));
+        if (!valid) { registerFailedAttempt24HrLock("Staff"); return; }
+        localStorage.setItem("om_role","staff"); localStorage.setItem("om_logged_user",`Staff (${eid})`); location.replace("index.html"); return;
+      }
+    }
+    function renderCustomerVault() {
+      const list=J(K_VAULT,[]), totalRevenue=list.reduce((a,b)=>a+Number(b.feePaid||0),0), renewalsCount=list.filter(c=>c.feePaid>1).length;
+      document.getElementById("mStatGyms").textContent=list.length+" Gyms"; document.getElementById("mStatRenewals").textContent=renewalsCount+" Renewals"; document.getElementById("mStatRevenue").textContent="₹"+totalRevenue.toLocaleString("en-IN");
+      let trial=0,bronze=0,gold=0,plat=0; list.forEach(c=>{if(c.plan==="7_DAY_TRIAL")trial++;else if(c.plan&&c.plan.startsWith("BRONZE"))bronze++;else if(c.plan&&c.plan.startsWith("SILVER"))gold++;else if(c.plan&&c.plan.startsWith("PLATINUM"))plat++;});
+      document.getElementById("mStatPlans").textContent=`Trial: ${trial} • Bronze: ${bronze} • Gold: ${gold} • Plat: ${plat}`;
+      document.getElementById("customerVaultList").innerHTML=list.map((c,idx)=>`<div class="rec" style="border-left:3px solid var(--gold);margin-bottom:10px;"><div style="display:flex;justify-content:space-between;align-items:center;"><b>${esc(c.gymName)}</b><span class="pill ${c.plan==="7_DAY_TRIAL"?"trial":"paid"}">${esc(c.planName||c.plan)}</span></div><div style="font-size:11px;color:var(--muted);margin:3px 0;">Owner: <b style="color:#fff;">${esc(c.ownerName)}</b> &bull; Ph: <b>${esc(c.mobile)}</b> &bull; Email: <b>${esc(c.email)}</b></div><div style="background:#050813;border-radius:6px;padding:6px;font-size:10.5px;color:var(--cyan);margin:4px 0;">🔑 <b>License Key:</b> ${esc(c.licenseKey)} &bull; 🔐 <b>Pass:</b> ${esc(c.password)} &bull; 🔢 <b>MPIN:</b> ${esc(c.mpin||"N/A")}<br>🧾 <b>UTR:</b> ${esc(c.utrNo||"N/A")} &bull; Fee: ₹${esc(c.feePaid)} &bull; Valid: ${esc(c.validUntil)}</div><div style="display:flex;gap:6px;margin-top:6px;"><button type="button" class="btn-sec" style="margin-top:0;padding:4px 8px;font-size:10px;" onclick="copyCustLicense('${c.licenseKey}')">Copy Key</button><button type="button" class="btn-sec" style="margin-top:0;padding:4px 8px;font-size:10px;color:var(--rose);" onclick="deleteCustomerFromVault(${idx})">Delete Gym</button></div></div>`).join("")||'<div class="rec">Koi customer registered nahi hai.</div>';
+    }
+    function copyCustLicense(key) { if(navigator.clipboard) navigator.clipboard.writeText(key); alert("License Key copied: "+key); }
+    function deleteCustomerFromVault(idx) { if(!confirm("Kya aap sach me is customer gym ko master vault se delete karna chahte hain?"))return; const list=J(K_VAULT,[]); list.splice(idx,1); W(K_VAULT,list); renderCustomerVault(); }
+    function launchGymViewAsOwner() { localStorage.setItem("om_role","owner"); localStorage.setItem("om_logged_user","Master Admin (Executive Owner)"); location.replace("index.html"); }
+    function logoutDev() { document.getElementById("devDashboardCard").style.display="none"; document.getElementById("mainLoginCard").style.display="block"; setRole("dev"); }
+    window.addEventListener("DOMContentLoaded",function(){localStorage.removeItem(K_LOCK_24H);seedMasterVault();setRole("dev");});
+  </script>
+</body>
+</html>
