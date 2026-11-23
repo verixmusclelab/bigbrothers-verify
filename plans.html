@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plans &amp; Quick Demo — Gym SaaS</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --bg: #050814;
+      --surface: #0b1226;
+      --surface-2: #111c3a;
+      --border: rgba(255, 255, 255, 0.12);
+      --border-gold: rgba(245, 166, 35, 0.5);
+      --border-cyan: rgba(34, 211, 238, 0.45);
+      --gold: #f5a623;
+      --gold-bright: #ffd166;
+      --cyan: #22d3ee;
+      --emerald: #34d399;
+      --rose: #fb7185;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
+    body {
+      background:
+        radial-gradient(900px 420px at 50% -10%, rgba(245, 166, 35, 0.14), transparent 65%),
+        radial-gradient(700px 380px at 85% 15%, rgba(34, 211, 238, 0.1), transparent 65%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 18px 14px 80px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: rgba(11, 18, 38, 0.88); backdrop-filter: blur(14px);
+      border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; margin-bottom: 16px;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+      color: var(--text); font-size: 12.5px; font-weight: 700;
+      background: var(--surface-2); border: 1px solid var(--border); padding: 8px 13px; border-radius: 10px;
+    }
+    .lang-switch {
+      display: inline-flex; background: #060a17; border: 1px solid var(--border-gold);
+      border-radius: 11px; padding: 3px; gap: 3px;
+    }
+    .lang-btn {
+      border: 0; background: transparent; color: var(--muted); font-size: 12px; font-weight: 800;
+      padding: 6px 13px; border-radius: 8px; cursor: pointer;
+    }
+    .lang-btn.active { background: linear-gradient(135deg, var(--gold), #d97706); color: #050814; }
+
+    .status-banner {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      background: linear-gradient(135deg, rgba(52, 211, 153, 0.14), rgba(11, 18, 38, 0.94));
+      border: 1.5px solid rgba(52, 211, 153, 0.45); border-radius: 16px; padding: 14px 18px; margin-bottom: 18px;
+    }
+    .status-badge {
+      background: rgba(52, 211, 153, 0.2); color: var(--emerald); border: 1px solid var(--emerald);
+      font-size: 10.5px; font-weight: 900; letter-spacing: 0.6px; padding: 4px 10px; border-radius: 999px;
+    }
+    .status-text { font-size: 14px; font-weight: 800; color: #ffffff; }
+
+    /* Outer Plan Cards */
+    .plans-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 18px; }
+    @media (min-width: 640px) { .plans-grid { grid-template-columns: 1fr 1fr; } }
+
+    .plan-card {
+      background: linear-gradient(160deg, rgba(17, 28, 58, 0.96), rgba(11, 18, 38, 0.96));
+      border: 1.5px solid var(--border-gold); border-radius: 20px; padding: 20px;
+      cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .plan-card.cyan-card { border-color: var(--border-cyan); }
+    .plan-card:hover { transform: translateY(-2px); filter: brightness(1.04); }
+    .plan-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .pill {
+      display: inline-block; background: rgba(245, 166, 35, 0.16); color: var(--gold-bright);
+      border: 1px solid var(--border-gold); font-size: 10px; font-weight: 800;
+      padding: 3px 10px; border-radius: 999px; margin-bottom: 6px; text-transform: uppercase;
+    }
+    .cyan-card .pill { background: rgba(34, 211, 238, 0.16); color: var(--cyan); border-color: var(--border-cyan); }
+    .plan-name { font-size: 20px; font-weight: 900; color: #fff; }
+    .plan-desc { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.48; }
+    .price-box {
+      text-align: right; background: rgba(5, 8, 20, 0.75); border: 1px solid var(--border-gold);
+      border-radius: 14px; padding: 10px 14px; min-width: 108px;
+    }
+    .cyan-card .price-box { border-color: var(--border-cyan); }
+    .price-num { font-size: 26px; font-weight: 900; color: var(--gold-bright); }
+    .cyan-card .price-num { color: var(--cyan); }
+    .open-hint { margin-top: 14px; font-size: 12px; font-weight: 800; color: var(--gold-bright); }
+    .cyan-card .open-hint { color: var(--cyan); }
+
+    /* Inside Plan View (shown only when a plan is opened) */
+    .inside-view {
+      display: none;
+      background: rgba(11, 18, 38, 0.96); border: 1.5px solid var(--border-gold);
+      border-radius: 22px; padding: 20px; margin-bottom: 18px;
+    }
+    .inside-view.open { display: block; }
+    .inside-hdr { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .btn-sec {
+      background: #070d1d; color: var(--text); border: 1px solid var(--border);
+      border-radius: 10px; padding: 8px 13px; font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+    .btn-act {
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold)); color: #050814;
+      border: 0; border-radius: 10px; padding: 9px 15px; font-size: 12.5px; font-weight: 900; cursor: pointer;
+    }
+    .feat-card {
+      background: #070d1d; border: 1px solid var(--border); border-radius: 15px; padding: 14px; margin-bottom: 11px;
+    }
+    .feat-card.first-prio { border-color: var(--border-gold); background: rgba(245, 166, 35, 0.06); }
+    .feat-title { font-size: 14.5px; font-weight: 900; color: #fff; margin-bottom: 5px; }
+    .feat-body { font-size: 12px; color: #cbd5e1; line-height: 1.5; }
+
+    /* Bottom Quick Demo Bar */
+    .quick-demo-footer {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.16), rgba(11, 18, 38, 0.96));
+      border: 1.5px solid var(--border-cyan); border-radius: 20px; padding: 18px;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .btn-demo-start {
+      background: linear-gradient(135deg, var(--cyan), #0284c7); color: #050814;
+      border: 0; border-radius: 12px; padding: 12px 18px; font-size: 13.5px; font-weight: 900; cursor: pointer;
+    }
+
+    /* Quick Demo Guided Modal */
+    .demo-modal {
+      display: none; position: fixed; inset: 0; background: rgba(3, 6, 16, 0.92);
+      backdrop-filter: blur(8px); z-index: 9999; padding: 14px; overflow-y: auto;
+    }
+    .demo-modal.open { display: block; }
+    .demo-box {
+      max-width: 780px; margin: 12px auto; background: #0b1226;
+      border: 1.5px solid var(--border-cyan); border-radius: 22px; padding: 20px;
+    }
+    .voice-bar {
+      background: rgba(34, 211, 238, 0.12); border: 1px solid var(--border-cyan);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 14px;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .voice-msg { font-size: 12.5px; font-weight: 700; color: #e0f2fe; flex: 1; }
+    .grid2 { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+    @media (min-width: 640px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+    .inp {
+      width: 100%; background: #070d1d; border: 1px solid var(--border); color: #fff;
+      border-radius: 10px; padding: 9px 11px; font-size: 12.5px; margin-top: 4px;
+    }
+    label { font-size: 11px; color: var(--muted); font-weight: 700; }
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+    .stat-box { background: #070d1d; border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; }
+    .stat-box b { display: block; font-size: 17px; color: var(--gold-bright); }
+    .stat-box span { font-size: 10.5px; color: var(--muted); }
+    .log-item { background: #070d1d; border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; margin-top: 7px; font-size: 12px; }
+    .demo-tool-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+    .dtt {
+      background: #070d1d; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 9px; padding: 7px 11px; font-size: 11.5px; font-weight: 800; cursor: pointer;
+    }
+    .dtt.active { background: var(--gold); color: #050814; border-color: var(--gold); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a href="index.html" class="back-link" id="backLink">← Dashboard</a>
+      <div class="lang-switch">
+        <button type="button" class="lang-btn active" id="btnHi" onclick="setLang('hi')">हिन्दी</button>
+        <button type="button" class="lang-btn" id="btnEn" onclick="setLang('en')">English</button>
+      </div>
+    </div>
+
+    <div class="status-banner">
+      <div>
+        <span class="status-badge" id="statusPill">PLAN STATUS</span>
+        <div class="status-text" id="statusHeadline" style="margin-top:6px;">No active plan saved yet</div>
+      </div>
+      <div id="statusMeta" style="font-size:11.5px;color:var(--cyan);font-weight:700;">Cloud Sync Ready</div>
+    </div>
+
+    <!-- OUTER PLAN CARDS (Click to go INSIDE the plan) -->
+    <div class="plans-grid" id="outerPlansGrid">
+      <div class="plan-card" onclick="openInsidePlan(99)">
+        <div>
+          <div class="plan-top">
+            <div>
+              <span class="pill" id="p99Badge">FIRST / BASE PLAN</span>
+              <div class="plan-name" id="p99Title">First Plan — ₹99</div>
+            </div>
+            <div class="price-box">
+              <div class="price-num">₹99</div>
+              <div style="font-size:10.5px;color:var(--muted)" id="p99SubPrice">Starter</div>
+            </div>
+          </div>
+          <p class="plan-desc" id="p99Desc">QR self attendance first, member attendance &amp; expiry alert, instant fee receipt, and unique QR admission form.</p>
+        </div>
+        <div class="open-hint" id="p99OpenHintMain">Tap to open inside ₹99 plan →</div>
+      </div>
+
+      <div class="plan-card cyan-card" onclick="openInsidePlan(199)">
+        <div>
+          <div class="plan-top">
+            <div>
+              <span class="pill" id="p199Badge">VALUE FOR MONEY • UNIQUE</span>
+              <div class="plan-name" id="p199Title">Growth Value Plan — ₹199</div>
+            </div>
+            <div class="price-box">
+              <div class="price-num">₹199</div>
+              <div style="font-size:10.5px;color:var(--muted)" id="p199SubPrice">All ₹99 + 5 Tools</div>
+            </div>
+          </div>
+          <p class="plan-desc" id="p199Desc">All ₹99 features + Cash/Online/Supplement collection, Due reminder, Walk-in &amp; Lead enquiries, Staff attendance/leave &amp; Excel.</p>
+        </div>
+        <div class="open-hint" id="p199OpenHintMain">Tap to open inside ₹199 plan →</div>
+      </div>
+
+      <div class="plan-card" style="border-color:var(--emerald)" onclick="openInsidePlan(250)">
+        <div>
+          <div class="plan-top">
+            <div>
+              <span class="pill" style="background:rgba(52,211,153,0.16);color:var(--emerald);border-color:var(--emerald)" id="p250Badge">3RD PLAN • OPERATIONS &amp; STAFF</span>
+              <div class="plan-name" id="p250Title">Complete Operations Plan — ₹250</div>
+            </div>
+            <div class="price-box" style="border-color:var(--emerald)">
+              <div class="price-num" style="color:var(--emerald)">₹250</div>
+              <div style="font-size:10.5px;color:var(--muted)" id="p250SubPrice">Staff, Bills &amp; P&amp;L</div>
+            </div>
+          </div>
+          <p class="plan-desc" id="p250Desc">All ₹99 &amp; ₹199 features + Staff attendance/leave/salary, Maintenance &amp; light/vendor bill approval, P&amp;L summary &amp; Staff KYC.</p>
+        </div>
+        <div class="open-hint" style="color:var(--emerald)" id="p250OpenHintMain">Tap to open inside ₹250 plan →</div>
+      </div>
+    </div>
+
+    <!-- INSIDE PLAN VIEW (Shows full features of the opened plan) -->
+    <div class="inside-view" id="insidePlanView">
+      <div class="inside-hdr">
+        <div>
+          <span class="pill" id="insidePlanPill">INSIDE PLAN</span>
+          <h1 id="insidePlanTitle" style="font-size:21px;font-weight:900;color:#fff">First Plan — ₹99</h1>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn-sec" id="btnBackToPlans" onclick="closeInsidePlan()">← All Plans</button>
+          <button type="button" class="btn-act" id="btnActivateInside" onclick="activateCurrentInsidePlan()">Activate This Plan</button>
+        </div>
+      </div>
+      <div id="insideFeaturesContainer"></div>
+    </div>
+
+    <!-- QUICK DEMO BAR AT BOTTOM -->
+    <div class="quick-demo-footer">
+      <div>
+        <b style="color:var(--cyan);font-size:14.5px" id="qdFooterTitle">🎙️ Quick Demo (Sign Up → Login → Live Working Features + Voice)</b>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:3px" id="qdFooterSub">
+          Step-by-step voice guidance from Sign Up &amp; Login to QR Attendance &amp; plan tools. Closing resets demo data to 0.
+        </div>
+      </div>
+      <button type="button" class="btn-demo-start" id="btnStartQuickDemo" onclick="openQuickDemo()">▶ Quick Demo</button>
+    </div>
+  </div>
+
+  <!-- QUICK DEMO MODAL -->
+  <div class="demo-modal" id="quickDemoModal">
+    <div class="demo-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <div>
+          <span class="pill">INTERACTIVE VOICE DEMO</span>
+          <h2 id="demoModalHeading" style="font-size:19px;font-weight:900;color:#fff">Quick Demo Workspace</h2>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="demoPlanSelect" class="inp" style="margin-top:0;width:auto" onchange="changeDemoPlan(Number(this.value))">
+            <option value="99">Demo: ₹99 First Plan</option>
+            <option value="199">Demo: ₹199 Growth Plan</option>
+          </select>
+          <button type="button" class="btn-sec" style="border-color:var(--rose);color:var(--rose)" onclick="closeAndResetQuickDemo()">✕ Exit Demo (Reset to 0)</button>
+        </div>
+      </div>
+
+      <div class="voice-bar">
+        <div class="voice-msg" id="voiceSuggestionText">🔊 Voice Guide ready...</div>
+        <div style="display:flex;gap:6px">
+          <button type="button" class="btn-sec" onclick="speakCurrentGuidance()">🔊 Replay Voice</button>
+          <button type="button" class="btn-sec" id="btnMuteToggle" onclick="toggleVoiceMute()">🔈 Voice: ON</button>
+        </div>
+      </div>
+
+      <!-- STEP 1: SIGN UP -->
+      <div class="feat-card" id="demoStepSignup">
+        <div class="feat-title" id="dStep1Title">Step 1: Sign Up (Account Setup)</div>
+        <div class="feat-body" id="dStep1Desc" style="margin-bottom:8px">Pehle apna gym account sign up karein, uske baad login karke working features chala sakte hain.</div>
+        <div class="grid2">
+          <div><label>Gym Name *</label><input class="inp" id="dGymName" placeholder="e.g. Power Fit Gym"></div>
+          <div><label>Owner Name *</label><input class="inp" id="dOwnerName" placeholder="e.g. Rohan Verma"></div>
+        </div>
+        <div class="grid2">
+          <div><label>10-Digit Mobile Number *</label><input class="inp" id="dPhone10" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile (e.g. 9876543210)"></div>
+          <div><label>Email (@gmail.com auto)</label><input class="inp" id="dEmail" placeholder="yourname (@gmail.com auto)"></div>
+        </div>
+        <div class="grid2">
+          <div><label>Password *</label><input class="inp" type="password" id="dPass" placeholder="Create demo password"></div>
+          <div style="display:flex;align-items:flex-end">
+            <button type="button" class="btn-act" style="width:100%" onclick="completeDemoSignup()">1. Sign Up &amp; Continue to Login →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: LOGIN -->
+      <div class="feat-card" id="demoStepLogin" style="display:none">
+        <div class="feat-title" id="dStep2Title">Step 2: Login to Your Account</div>
+        <div class="feat-body" id="dStep2Desc" style="margin-bottom:8px">Apne registered mobile/email se login karein taaki aapke plan ka main page khul sake.</div>
+        <div class="grid2">
+          <div><label>Login ID (Mobile / Email)</label><input class="inp" id="dLoginId"></div>
+          <div><label>Password</label><input class="inp" type="password" id="dLoginPass"></div>
+        </div>
+        <button type="button" class="btn-act" style="margin-top:10px" onclick="completeDemoLogin()">2. Login &amp; Open Plan Features →</button>
+      </div>
+
+      <!-- STEP 3: WORKING PLAN FEATURES (QR FIRST) -->
+      <div id="demoWorkingArea" style="display:none">
+        <div class="stat-row">
+          <div class="stat-box"><b id="dStatAtt">0</b><span>QR Attendance</span></div>
+          <div class="stat-box"><b id="dStatMembers">0</b><span>Members / Admissions</span></div>
+          <div class="stat-box"><b id="dStatCol">₹0</b><span>Demo Collection</span></div>
+        </div>
+
+        <div class="demo-tool-tabs">
+          <button type="button" class="dtt active" id="dttQr" onclick="selectDemoTool('qr')">1. QR Attendance (First)</button>
+          <button type="button" class="dtt" id="dttAdm" onclick="selectDemoTool('adm')">2. Admission + QR</button>
+          <button type="button" class="dtt" id="dttFee" onclick="selectDemoTool('fee')">3. Fees Receipt</button>
+          <button type="button" class="dtt" id="dttExp" onclick="selectDemoTool('exp')">4. Expired / Due</button>
+          <button type="button" class="dtt" id="dtt199" onclick="selectDemoTool('p199')">5. ₹199 Extra Tools</button>
+        </div>
+
+        <div class="feat-card" id="demoToolPanel"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CFG = {
+      apiKey: "AIzaSyAHEMISEIDSzZz-m2OQT5EPyhTRF-mXqjQ",
+      authDomain: "bfc-gym-215ae.firebaseapp.com",
+      projectId: "bfc-gym-215ae",
+      storageBucket: "bfc-gym-215ae.firebasestorage.app",
+      messagingSenderId: "886920088571",
+      appId: "1:886920088571:web:c4bc478d246a2700b0d95e"
+    };
+    let db = null, auth = null;
+    try {
+      if (window.firebase) {
+        if (!firebase.apps.length) firebase.initializeApp(CFG);
+        auth = firebase.auth();
+        db = firebase.firestore();
+      }
+    } catch (e) {}
+
+    const PLAN_DETAILS = {
+      99: {
+        titleHi: "First Plan — ₹99 (अंदर की विशेषताएँ)",
+        titleEn: "First Plan — ₹99 (Inside Features)",
+        name: "First Plan (Base)",
+        amount: 99,
+        featuresHi: [
+          { prio: true, t: "1. Mark Your Attendance BY QR (सबसे पहले)", b: "QR स्कैन करते ही अटेंडेंस स्क्रीन; पहली बार Camera व Location अनुमति; नाम/नंबर चुनते ही 3 सेकंड में ऑटो-सेल्फ़ी क्लिक व सेव; जॉइनिंग तारीख से दिन गिनती (2 Oct → 30 Oct = 28 दिन) और Telegram पर सेल्फ़ी के साथ मैसेज।" },
+          { prio: false, t: "2. Member Attendance & Expired Alert", b: "कैलेंडर और ऑटो-सर्च के साथ मेंबर्स की सेल्फ़ी अटेंडेंस, Live Present/Absent, Total Gym Members, आसान Remove, Fees Expire फ़्लैशिंग बोर्ड और Expired Members सूची।" },
+          { prio: false, t: "3. Fees Payment & Instant Receipt", b: "नाम/मोबाइल/पिता के नाम से ऑटो-सर्च; Joining Date, Expiry, Next Fees Date, प्लान व महीने; Edit प्लान विकल्प; Online/Cash मोड; Pay करते ही रसीद डाउनलोड व WhatsApp पर भेजने की सुविधा।" },
+          { prio: false, t: "4. Instant Admission Form + Unique QR", b: "फ़ॉर्म सेव + तुरंत रसीद + Unique QR (स्कैन करके कभी भी फ़ॉर्म देखें) + हटाने तक स्थायी सेव + नाम/नंबर से सर्च।" }
+        ],
+        featuresEn: [
+          { prio: true, t: "1. Mark Your Attendance BY QR (First Priority)", b: "QR scan opens attendance directly; one-time Camera & Location permission; 3-sec auto selfie on name/mobile select; days counted from joining date (2 Oct → 30 Oct = 28 days) + instant Telegram selfie alert." },
+          { prio: false, t: "2. Member Attendance & Expired Alert", b: "Member selfie attendance with calendar & auto-search, Live Present/Absent, Total Members, easy remove, Fees Expire flashing board & Expired Members list." },
+          { prio: false, t: "3. Fees Payment & Instant Receipt", b: "Auto-search by name/phone/father name; shows Joining Date, Expiry, Next Fees Date, plan & months; instant Edit plan; Online/Cash → Pay → receipt download + WhatsApp share." },
+          { prio: false, t: "4. Instant Admission Form + Unique QR", b: "Save admission form + instant receipt + Unique QR (scan anytime to view form) + permanent save until removed + search by name/phone." }
+        ]
+      },
+      199: {
+        titleHi: "Growth Value Plan — ₹199 (अंदर की विशेषताएँ)",
+        titleEn: "Growth Value Plan — ₹199 (Inside Features)",
+        name: "Growth Value Plan",
+        amount: 199,
+        featuresHi: [
+          { prio: true, t: "1. ₹99 First Plan की सभी मुख्य सुविधाएँ (QR Attendance सबसे पहले)", b: "QR सेल्फ़ी अटेंडेंस, मेंबर अटेंडेंस व एक्सपायर बोर्ड, तुरंत फ़ीस रसीद + WhatsApp और यूनिक QR एडमिशन फ़ॉर्म शामिल।" },
+          { prio: false, t: "2. Live Cash + Online + Supplement / Extra Collection", b: "आज व महीने का Cash और Online अलग-अलग टोटल, साथ में Supplement, Shaker, Hand Grip या Extra Service की अलग collection।" },
+          { prio: false, t: "3. Due / Pending Fees Reminder & Walk-In / Lead Enquiry", b: "बाकी फ़ीस व जल्द एक्सपायर होने वालों का रिमाइंडर तथा Walk-in / Lead इन्क्वायरी ट्रैकर।" },
+          { prio: false, t: "4. Staff Attendance + Leave Basic View & Excel Export", b: "स्टाफ अटेंडेंस व लीव बेसिक व्यू और डेटा का Excel/CSV एक्सपोर्ट।" }
+        ],
+        featuresEn: [
+          { prio: true, t: "1. All ₹99 First Plan Features (QR Attendance First)", b: "Includes QR selfie attendance, member attendance & expiry board, instant fee receipt + WhatsApp, and unique QR admission form." },
+          { prio: false, t: "2. Live Cash + Online + Supplement / Extra Collection", b: "Separate Cash and Online totals for today/month plus separate supplement, shaker, hand grip, and extra service collection." },
+          { prio: false, t: "3. Due / Pending Fees Reminder & Walk-In / Lead Enquiry", b: "Due/pending & near-expiry reminders plus Walk-in & Lead enquiry tracking." },
+          { prio: false, t: "4. Staff Attendance + Leave Basic View & Excel Export", b: "Staff attendance & leave basic view plus Excel/CSV export." }
+        ]
+      },
+      250: {
+        titleHi: "Complete Operations Plan — ₹250 (3rd Plan • अंदर की विशेषताएँ)",
+        titleEn: "Complete Operations Plan — ₹250 (3rd Plan • Inside Features)",
+        name: "Complete Operations Plan (3rd)",
+        amount: 250,
+        featuresHi: [
+          { prio: true, t: "1. ₹99 + ₹199 की सभी सुविधाएँ (QR Attendance सबसे पहले)", b: "QR सेल्फ़ी अटेंडेंस, मेंबर अटेंडेंस व एक्सपायर बोर्ड, तुरंत फ़ीस रसीद + WhatsApp, यूनिक QR एडमिशन फ़ॉर्म, Cash/Online/Supplement हिसाब, Due रिमाइंडर, Walk-in/Lead इन्क्वायरी और Excel/CSV एक्सपोर्ट शामिल।" },
+          { prio: false, t: "2. Full Staff Attendance, Leave & Salary / Payroll", b: "स्टाफ की उपस्थिति, लेट मिनट्स, लीव रिक्वेस्ट और एडवांस/पेनल्टी/कटौती के साथ सैलरी व स्लिप का साफ़ हिसाब।" },
+          { prio: false, t: "3. Maintenance, Light & Vendor Bills Approval", b: "लाइट बिल (मीटर/यूनिट) और कंज्यूमेबल/वेंडर बिल की एंट्री, फ़ोटो/PDF रिकॉर्ड और Admin द्वारा Approve / Reject (कारण के साथ)।" },
+          { prio: false, t: "4. Profit & Loss (P&L) Summary & Staff KYC", b: "कुल कलेक्शन, स्वीकृत ख़र्च और Net Profit / Loss का साफ़ हिसाब तथा स्टाफ KYC और रोल-सुरक्षित रिकॉर्ड।" }
+        ],
+        featuresEn: [
+          { prio: true, t: "1. All ₹99 & ₹199 Features (QR Attendance First)", b: "Includes QR selfie attendance, member attendance & expiry board, instant fee receipt + WhatsApp, unique QR admission form, Cash/Online/Supplement split, due reminders, leads, and Excel/CSV export." },
+          { prio: false, t: "2. Full Staff Attendance, Leave & Salary / Payroll", b: "Staff attendance, late minutes, leave requests, and salary/slip calculation with advance and penalty/deductions." },
+          { prio: false, t: "3. Maintenance, Light & Vendor Bills Approval", b: "Light bill (meter/units) and consumable/vendor bill entry, photo/PDF records, and Admin Approve / Reject with reason." },
+          { prio: false, t: "4. Profit & Loss (P&L) Summary & Staff KYC", b: "Total collection, approved expenses, and Net Profit / Loss summary plus Staff KYC and role-safe records." }
+        ]
+      }
+    };
+
+    let lang = "hi";
+    let insidePlanAmt = null;
+    let activeCloudPlan = null;
+    let voiceMuted = false;
+    let currentTool = "qr";
+
+    // Ephemeral demo state — always starts at 0 and resets to 0 when demo closes
+    let demoState = createFreshDemoState();
+    let demoAdminUnlocked = false;
+    let demoAdminPinPromptOpen = false;
+    let demoAdminSubView = "menu";
+    let demoAdmStep = 1;
+    let demoSelectedMemberFor3s = null;
+    let demo3sTimer = null;
+    let demoCamStream = null;
+    let demoCapturedPhotoData = "";
+    let demoAdmMemberPhotoUrl = "";
+    let demoAdmIdPhotoUrl = "";
+    let demoIdleTimer = null;
+
+    function createFreshDemoState() {
+      return {
+        signedUp: false,
+        loggedIn: false,
+        gymName: "",
+        ownerName: "",
+        phone10: "",
+        email: "",
+        pass: "",
+        attCount: 0,
+        attLogs: [],
+        sampleMembers: [
+          { name: "Demo Member One", phone: "98******10", status: "PENDING", join: "2026-10-02", days: 28 },
+          { name: "Demo Member Two", phone: "97******20", status: "PAID", join: "2026-11-01", days: 22 }
+        ],
+        admissions: [],
+        lastAdmission: null,
+        lastReceipt: null,
+        feesPaid: 0,
+        cashTotal: 0,
+        onlineTotal: 0,
+        guideOpen: true
+      };
+    }
+
+    function esc(v) {
+      return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+
+    function activeDemoGymName() {
+      return (demoState.gymName && demoState.gymName.trim()) ? demoState.gymName.trim() : "Demo Gym";
+    }
+
+    function speakText(txt) {
+      var el = document.getElementById("voiceSuggestionText");
+      if (el) el.textContent = "🔊 AI: " + txt;
+      if (voiceMuted) return;
+      try {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          var u = new SpeechSynthesisUtterance(txt);
+          u.lang = lang === "hi" ? "hi-IN" : "en-US";
+          window.speechSynthesis.speak(u);
+        }
+      } catch (e) {}
+    }
+
+    function getAiNextStepSuggestion() {
+      if (!demoState.signedUp) {
+        return lang === "hi"
+          ? "आप रुके हुए हैं — Gym Name, Owner Name, 10 अंक का मोबाइल नंबर और Email भरकर '1. Sign Up' बटन दबाएं।"
+          : "You paused — fill Gym Name, Owner Name, 10-digit mobile, and Email, then click '1. Sign Up'.";
+      }
+      if (!demoState.loggedIn) {
+        return lang === "hi"
+          ? "साइन अप हो गया है — अब '2. Login' बटन दबाकर अपने वर्किंग डेमो पेज में जाएं।"
+          : "Sign up complete — click '2. Login' to open your working demo page.";
+      }
+      if (currentTool === "qr") {
+        if (demoAdminPinPromptOpen) {
+          return lang === "hi"
+            ? "Admin PIN 1234 डालें या 'Unlock Admin' दबाएं ताकि सेल्फ़ी गैलरी और कैलेंडर खुल सके।"
+            : "Enter Admin PIN 1234 and tap Unlock Admin to open Selfie Gallery and Calendar.";
+        }
+        if (demoSelectedMemberFor3s) {
+          return lang === "hi"
+            ? "कैमरे के सामने रहें या 'अभी क्लिक करें' दबाएं ताकि सेल्फ़ी फ़ोटो सेव होकर प्रेजेंट लग जाए।"
+            : "Stay in front of camera or tap Capture Now so selfie saves and marks Present.";
+        }
+        return lang === "hi"
+          ? "अटेंडेंस लगाने के लिए किसी सदस्य के सामने 'लोड करें' दबाएं; सेल्फ़ी और कैलेंडर देखने के लिए ऊपर 'Admin' दबाएं।"
+          : "Tap 'लोड करें' next to a member to mark attendance, or tap 'Admin' to view selfies and calendar.";
+      }
+      if (currentTool === "adm") {
+        if (demoAdmStep === 1) {
+          return lang === "hi"
+            ? "Joining Date और Plan चुनें, फिर 'NEXT (Personal Details & Photos)' दबाकर आगे बढ़ें।"
+            : "Select Joining Date and Plan, then click NEXT to enter personal details and photos.";
+        }
+        return lang === "hi"
+          ? "नाम व 10 अंक मोबाइल भरें, Member Photo और ID Photo अपलोड करें, फिर 'Save & Download Form' दबाएं।"
+          : "Fill Name & 10-digit mobile, upload Member Photo and ID Photo, then click Save & Download Form.";
+      }
+      if (currentTool === "fee") {
+        return lang === "hi"
+          ? "सदस्य का नाम, राशि और Cash/Online मोड चुनकर 'Pay & Generate Receipt' दबाएं, फिर JPG/PDF डाउनलोड या WhatsApp करें।"
+          : "Enter member name, amount, and Cash/Online mode, click Pay & Generate Receipt, then download JPG/PDF or share on WhatsApp.";
+      }
+      return lang === "hi"
+        ? "आगे बढ़ने के लिए ऊपर दिए गए किसी भी फ़ीचर टैब पर क्लिक करें या Exit Demo दबाएं।"
+        : "Click any feature tab above or tap Exit Demo when done.";
+    }
+
+    function armDemoIdleWatcher() {
+      if (demoIdleTimer) { clearTimeout(demoIdleTimer); demoIdleTimer = null; }
+      var modal = document.getElementById("quickDemoModal");
+      if (!modal || !modal.classList.contains("open")) return;
+      demoIdleTimer = setTimeout(function () {
+        var m2 = document.getElementById("quickDemoModal");
+        if (!m2 || !m2.classList.contains("open")) return;
+        speakText(getAiNextStepSuggestion());
+        armDemoIdleWatcher();
+      }, 6000);
+    }
+
+    function speakCurrentGuidance() {
+      speakText(getAiNextStepSuggestion());
+      armDemoIdleWatcher();
+    }
+
+    function toggleVoiceMute() {
+      voiceMuted = !voiceMuted;
+      if (voiceMuted && "speechSynthesis" in window) {
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+      }
+      document.getElementById("btnMuteToggle").textContent = voiceMuted ? "🔇 Voice: OFF" : "🔈 Voice: ON";
+    }
+
+    function setLang(l) {
+      lang = l === "en" ? "en" : "hi";
+      document.getElementById("btnHi").classList.toggle("active", lang === "hi");
+      document.getElementById("btnEn").classList.toggle("active", lang === "en");
+      document.getElementById("backLink").textContent = lang === "hi" ? "← डैशबोर्ड" : "← Dashboard";
+      document.getElementById("p99OpenHintMain").textContent = lang === "hi" ? "₹99 प्लान के अंदर जाने के लिए क्लिक करें →" : "Tap to open inside ₹99 plan →";
+      document.getElementById("p199OpenHintMain").textContent = lang === "hi" ? "₹199 प्लान के अंदर जाने के लिए क्लिक करें →" : "Tap to open inside ₹199 plan →";
+      if (document.getElementById("p250OpenHintMain")) document.getElementById("p250OpenHintMain").textContent = lang === "hi" ? "₹250 (3rd Plan) के अंदर जाने के लिए क्लिक करें →" : "Tap to open inside ₹250 (3rd Plan) →";
+      document.getElementById("btnBackToPlans").textContent = lang === "hi" ? "← सभी प्लान" : "← All Plans";
+      document.getElementById("btnActivateInside").textContent = lang === "hi" ? "यह प्लान एक्टिवेट करें" : "Activate This Plan";
+      document.getElementById("btnStartQuickDemo").textContent = lang === "hi" ? "▶ क्विक डेमो" : "▶ Quick Demo";
+      renderPlanStatus();
+      if (insidePlanAmt) renderInsidePlan();
+    }
+
+    function openInsidePlan(amt) {
+      insidePlanAmt = amt;
+      document.getElementById("outerPlansGrid").style.display = "none";
+      document.getElementById("insidePlanView").classList.add("open");
+      renderInsidePlan();
+    }
+
+    function closeInsidePlan() {
+      insidePlanAmt = null;
+      document.getElementById("insidePlanView").classList.remove("open");
+      document.getElementById("outerPlansGrid").style.display = "grid";
+    }
+
+    function renderInsidePlan() {
+      var p = PLAN_DETAILS[insidePlanAmt] || PLAN_DETAILS[99];
+      document.getElementById("insidePlanTitle").textContent = lang === "hi" ? p.titleHi : p.titleEn;
+      var list = lang === "hi" ? p.featuresHi : p.featuresEn;
+      document.getElementById("insideFeaturesContainer").innerHTML = list.map(function (f) {
+        return `<div class="feat-card ${f.prio ? "first-prio" : ""}"><div class="feat-title">${esc(f.t)}</div><div class="feat-body">${esc(f.b)}</div></div>`;
+      }).join("");
+    }
+
+    async function activateCurrentInsidePlan() {
+      var p = PLAN_DETAILS[insidePlanAmt] || PLAN_DETAILS[99];
+      var obj = { name: p.name, amount: p.amount, status: "active", activatedAt: new Date().toISOString() };
+      activeCloudPlan = obj;
+      try { localStorage.setItem("om_active_subscription_plan", JSON.stringify(obj)); } catch (e) {}
+      if (db) {
+        try {
+          var gid = localStorage.getItem("bfc_gid") || "default_gym";
+          await db.collection("subscriptions").doc(gid).set(Object.assign({}, obj, { gymId: gid, updatedAt: Date.now() }), { merge: true });
+        } catch (e) {}
+      }
+      renderPlanStatus();
+      alert("You have already a ₹" + p.amount + " plan");
+    }
+
+    function renderPlanStatus() {
+      var pill = document.getElementById("statusPill");
+      var head = document.getElementById("statusHeadline");
+      if (activeCloudPlan && activeCloudPlan.amount) {
+        pill.textContent = lang === "hi" ? "सक्रिय प्लान" : "ACTIVE PLAN";
+        head.textContent = "You have already a ₹" + activeCloudPlan.amount + " plan";
+      } else {
+        pill.textContent = lang === "hi" ? "प्लान स्थिति" : "PLAN STATUS";
+        head.textContent = lang === "hi" ? "अभी कोई प्लान सेव नहीं है — ₹99, ₹199 या ₹250 प्लान खोलें" : "No plan saved yet — Open ₹99, ₹199, or ₹250 plan";
+      }
+    }
+
+    function stopDemoCameraStream() {
+      if (demoCamStream) {
+        try { demoCamStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+        demoCamStream = null;
+      }
+    }
+
+    function openQuickDemo() {
+      stopDemoCameraStream();
+      demoState = createFreshDemoState();
+      demoAdminUnlocked = false;
+      demoAdminPinPromptOpen = false;
+      demoAdminSubView = "menu";
+      demoAdmStep = 1;
+      demoSelectedMemberFor3s = null;
+      demoCapturedPhotoData = "";
+      demoAdmMemberPhotoUrl = "";
+      demoAdmIdPhotoUrl = "";
+      currentTool = "qr";
+      document.getElementById("quickDemoModal").classList.add("open");
+      syncDemoStepsUI();
+      speakCurrentGuidance();
+    }
+
+    function closeAndResetQuickDemo() {
+      if (demo3sTimer) { clearInterval(demo3sTimer); demo3sTimer = null; }
+      if (demoIdleTimer) { clearTimeout(demoIdleTimer); demoIdleTimer = null; }
+      stopDemoCameraStream();
+      demoState = createFreshDemoState();
+      demoAdminUnlocked = false;
+      demoAdminPinPromptOpen = false;
+      demoAdminSubView = "menu";
+      demoAdmStep = 1;
+      demoSelectedMemberFor3s = null;
+      demoCapturedPhotoData = "";
+      demoAdmMemberPhotoUrl = "";
+      demoAdmIdPhotoUrl = "";
+      try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (e) {}
+      ["dGymName", "dOwnerName", "dPhone10", "dEmail", "dPass", "dLoginId", "dLoginPass"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+      document.getElementById("quickDemoModal").classList.remove("open");
+      syncDemoStats();
+    }
+
+    function changeDemoPlan(val) {
+      document.getElementById("demoPlanSelect").value = String(val);
+      if (demoState.loggedIn) {
+        renderDemoToolPanel();
+        speakText(activeDemoGymName() + " का डेमो प्लान ₹" + val + " पर स्विच हो गया है। क्यूआर अटेंडेंस से शुरू करें।");
+      }
+      armDemoIdleWatcher();
+    }
+
+    function syncDemoStepsUI() {
+      var suEl = document.getElementById("demoStepSignup");
+      var liEl = document.getElementById("demoStepLogin");
+      var wkEl = document.getElementById("demoWorkingArea");
+      if (suEl) suEl.style.display = (!demoState.signedUp && !demoState.loggedIn) ? "block" : "none";
+      if (liEl) liEl.style.display = (demoState.signedUp && !demoState.loggedIn) ? "block" : "none";
+      if (wkEl) wkEl.style.display = demoState.loggedIn ? "block" : "none";
+      var hEl = document.getElementById("demoModalHeading");
+      if (hEl) {
+        hEl.textContent = demoState.loggedIn
+          ? (activeDemoGymName() + " — Quick Demo Workspace")
+          : "Quick Demo Workspace";
+      }
+      syncDemoStats();
+      if (demoState.loggedIn) renderDemoToolPanel();
+    }
+
+    function formatDemoEmail(raw) {
+      var v = String(raw || "").trim();
+      if (!v) return "demo@gmail.com";
+      if (v.indexOf("@") === -1) return v + "@gmail.com";
+      return v;
+    }
+
+    function completeDemoSignup() {
+      var gym = (document.getElementById("dGymName").value || "").trim();
+      var own = (document.getElementById("dOwnerName").value || "").trim() || "Owner";
+      var phEl = document.getElementById("dPhone10");
+      var rawPh = (phEl ? phEl.value : "").replace(/\D/g, "");
+      var rawEmEl = document.getElementById("dEmail");
+      var em = formatDemoEmail(rawEmEl ? rawEmEl.value : "");
+      var pass = (document.getElementById("dPass").value || "").trim() || "1234";
+
+      if (!gym) {
+        alert("कृपया अपने जिम का नाम लिखें।");
+        return;
+      }
+      if (rawPh.length !== 10) {
+        alert("मोबाइल नंबर ठीक 10 अंकों का होना चाहिए।");
+        return;
+      }
+
+      demoState.signedUp = true;
+      demoState.gymName = gym;
+      demoState.ownerName = own;
+      demoState.phone10 = rawPh;
+      demoState.email = em;
+      demoState.pass = pass;
+      var loginIdEl = document.getElementById("dLoginId");
+      if (loginIdEl) loginIdEl.value = rawPh;
+      syncDemoStepsUI();
+      speakCurrentGuidance();
+    }
+
+    function completeDemoLogin() {
+      var lid = (document.getElementById("dLoginId").value || "").trim();
+      if (!lid) {
+        alert("कृपया लॉगिन के लिए 10 अंक मोबाइल या ईमेल दर्ज करें।");
+        return;
+      }
+      demoState.loggedIn = true;
+      syncDemoStepsUI();
+      speakCurrentGuidance();
+    }
+
+    function syncDemoStats() {
+      document.getElementById("dStatAtt").textContent = String(demoState.attCount);
+      document.getElementById("dStatMembers").textContent = String(demoState.admissions.length);
+      document.getElementById("dStatCol").textContent = "₹" + String(demoState.cashTotal + demoState.onlineTotal);
+    }
+
+    function selectDemoTool(tool) {
+      currentTool = tool;
+      demoSelectedMemberFor3s = null;
+      demoAdminPinPromptOpen = false;
+      demoAdminSubView = "menu";
+      ["qr", "adm", "fee", "exp", "p199"].forEach(function (t) {
+        var b = document.getElementById("dtt" + t.charAt(0).toUpperCase() + t.slice(1));
+        if (b) b.classList.toggle("active", t === tool);
+      });
+      renderDemoToolPanel();
+      speakCurrentGuidance();
+    }
+
+    async function loadMemberFor3sSelfie(memberName) {
+      var hit = demoState.sampleMembers.find(function (m) { return m.name === memberName; }) || { name: memberName, phone: "98******10", days: 28, join: "2026-10-02" };
+      demoCapturedPhotoData = "";
+      demoSelectedMemberFor3s = { name: hit.name, phone: hit.phone, days: hit.days, join: hit.join, sec: 3 };
+      renderDemoToolPanel();
+      speakText("स्टेप 3: " + hit.name + " की 3 सेकंड सेल्फ़ी शुरू हो गई है। फोटो क्लिक होते ही प्रेजेंट दर्ज होगी।");
+
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          demoCamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+          var vid = document.getElementById("demoLiveVideo");
+          if (vid) { vid.srcObject = demoCamStream; await vid.play(); }
+        }
+      } catch (e) {}
+
+      if (demo3sTimer) clearInterval(demo3sTimer);
+      demo3sTimer = setInterval(function () {
+        if (!demoSelectedMemberFor3s) { clearInterval(demo3sTimer); return; }
+        demoSelectedMemberFor3s.sec -= 1;
+        if (demoSelectedMemberFor3s.sec <= 0) {
+          clearInterval(demo3sTimer);
+          demo3sTimer = null;
+          finalizeDemo3sSelfie();
+        } else {
+          var cEl = document.getElementById("d3sCountNum");
+          if (cEl) cEl.textContent = String(demoSelectedMemberFor3s.sec);
+        }
+      }, 1000);
+    }
+
+    function captureSnapshotFromDemoVideoOrCanvas(name) {
+      try {
+        var vid = document.getElementById("demoLiveVideo");
+        var c = document.createElement("canvas");
+        c.width = 240; c.height = 240;
+        var ctx = c.getContext("2d");
+        if (vid && vid.videoWidth && vid.videoHeight) {
+          ctx.drawImage(vid, 0, 0, c.width, c.height);
+          return c.toDataURL("image/jpeg", 0.75);
+        }
+      } catch (e) {}
+      var c2 = document.createElement("canvas");
+      c2.width = 240; c2.height = 240;
+      var x2 = c2.getContext("2d");
+      x2.fillStyle = "#0b1226"; x2.fillRect(0, 0, 240, 240);
+      x2.fillStyle = "#34d399"; x2.font = "bold 16px Arial";
+      x2.fillText("SELFIE SAVED", 52, 110);
+      x2.fillStyle = "#ffd166"; x2.font = "13px Arial";
+      x2.fillText(String(name || "Member").slice(0, 20), 45, 140);
+      return c2.toDataURL("image/jpeg", 0.75);
+    }
+
+    function finalizeDemo3sSelfie() {
+      if (!demoSelectedMemberFor3s) return;
+      var m = demoSelectedMemberFor3s;
+      var snap = captureSnapshotFromDemoVideoOrCanvas(m.name);
+      stopDemoCameraStream();
+      demoCapturedPhotoData = snap;
+      demoState.attCount += 1;
+      demoState.attLogs.unshift({
+        name: m.name,
+        phone: m.phone,
+        date: "2026-11-23",
+        time: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true }),
+        days: m.days,
+        photo: snap
+      });
+      demoSelectedMemberFor3s = null;
+      syncDemoStats();
+      renderDemoToolPanel();
+      speakText(m.name + " की फोटो सेव हो गई है और प्रेजेंट दर्ज हो गई है। कुल " + m.days + " दिन गिने गए हैं।");
+      armDemoIdleWatcher();
+    }
+
+    function openDemoAdminModal() {
+      demoAdminPinPromptOpen = true;
+      renderDemoToolPanel();
+      speakText("एडमिन पिन 1234 डालें या Unlock Admin दबाएं ताकि सेल्फ़ी गैलरी और कैलेंडर खुल जाए।");
+      armDemoIdleWatcher();
+    }
+
+    function submitDemoAdminPin() {
+      var inp = document.getElementById("dAdminPinInp");
+      var pin = inp ? inp.value.trim() : "1234";
+      if (pin !== "1234") {
+        alert("Admin PIN 1234 डालें।");
+        return;
+      }
+      demoAdminPinPromptOpen = false;
+      demoAdminUnlocked = true;
+      demoAdminSubView = "menu";
+      renderDemoToolPanel();
+      speakText("एडमिन पैनल खुल गया है। अब Selfie Gallery या Member ki Attendance चुनें।");
+      armDemoIdleWatcher();
+    }
+
+    function handleDemoAdmFilePick(inp, kind) {
+      if (!inp || !inp.files || !inp.files[0]) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        if (kind === "member") demoAdmMemberPhotoUrl = ev.target.result || "";
+        else demoAdmIdPhotoUrl = ev.target.result || "";
+        renderDemoToolPanel();
+      };
+      reader.readAsDataURL(inp.files[0]);
+    }
+
+    function buildPrintablePdfBytes(titleText, lines) {
+      var escapedLines = lines.map(function (ln) {
+        return String(ln).replace(/\/g, "\\").replace(/\(/g, "\(").replace(/\)/g, "\)");
+      });
+      var streamOps = ["BT", "/F1 13 Tf", "40 740 Td", "18 TL", "(" + titleText.replace(/[()\]/g, "") + ") Tj", "T*"];
+      escapedLines.forEach(function (ln) {
+        streamOps.push("(" + ln + ") Tj");
+        streamOps.push("T*");
+      });
+      streamOps.push("ET");
+      var streamBody = streamOps.join("
+");
+      var pdf = "%PDF-1.4
+" +
+        "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+" +
+        "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+" +
+        "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj
+" +
+        "4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj
+" +
+        "5 0 obj << /Length " + streamBody.length + " >> stream
+" + streamBody + "
+endstream endobj
+" +
+        "xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000310 00000 n 
+" +
+        "trailer << /Size 6 /Root 1 0 R >>
+startxref
+" + (360 + streamBody.length) + "
+%%EOF";
+      return new Blob([pdf], { type: "application/pdf" });
+    }
+
+    function triggerRealDownloadAndWhatsApp(kind, payload) {
+      var gym = activeDemoGymName();
+      var lines = [
+        "Gym: " + gym,
+        "Name: " + (payload.name || "-"),
+        "Father: " + (payload.father || "-"),
+        "Phone: " + (payload.phone || "-"),
+        "Address: " + (payload.address || "-"),
+        "Plan & Fee: Rs. " + (payload.amount || 0),
+        "ID / Ref: " + (payload.code || "-")
+      ];
+      var summary = kind + "
+" + lines.join("
+");
+
+      var c = document.createElement("canvas");
+      c.width = 600; c.height = 420;
+      var ctx = c.getContext("2d");
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, 600, 420);
+      ctx.fillStyle = "#0b1226"; ctx.fillRect(0, 0, 600, 66);
+      ctx.fillStyle = "#f5a623"; ctx.font = "bold 20px Arial";
+      ctx.fillText(gym, 20, 42);
+      ctx.fillStyle = "#111111"; ctx.font = "bold 16px Arial";
+      ctx.fillText(kind, 20, 98);
+      ctx.font = "14px Arial";
+      lines.forEach(function (ln, idx) {
+        ctx.fillText(ln, 20, 132 + idx * 28);
+      });
+      ctx.fillText("Member Photo: " + (payload.hasMemberPhoto ? "Uploaded" : "Optional") + " | ID Photo: " + (payload.hasIdPhoto ? "Uploaded" : "Optional"), 20, 340);
+
+      c.toBlob(function (blob) {
+        if (blob) {
+          var aJpg = document.createElement("a");
+          aJpg.href = URL.createObjectURL(blob);
+          aJpg.download = (kind.replace(/\W+/g, "_") || "Document") + ".jpg";
+          aJpg.click();
+        }
+      }, "image/jpeg", 0.92);
+
+      var pdfBlob = buildPrintablePdfBytes(gym + " - " + kind, lines);
+      var aPdf = document.createElement("a");
+      aPdf.href = URL.createObjectURL(pdfBlob);
+      aPdf.download = (kind.replace(/\W+/g, "_") || "Document") + ".pdf";
+      aPdf.click();
+
+      var cleanPh = String(payload.phone || demoState.phone10 || "").replace(/\D/g, "").slice(-10);
+      if (cleanPh.length === 10) {
+        window.open("https://wa.me/91" + cleanPh + "?text=" + encodeURIComponent(summary), "_blank");
+      }
+    }
+
+    function demoAddAdmission() {
+      var nm = (document.getElementById("daName").value || "").trim();
+      var fa = (document.getElementById("daFather") ? document.getElementById("daFather").value.trim() : "") || "-";
+      var ph = (document.getElementById("daPhone").value || "").replace(/\D/g, "");
+      var addr = (document.getElementById("daAddr") ? document.getElementById("daAddr").value.trim() : "") || "-";
+      if (!nm) {
+        alert("कृपया पूरा नाम लिखें।");
+        return;
+      }
+      if (ph.length !== 10) {
+        alert("कृपया 10 अंक का मोबाइल नंबर भरें।");
+        return;
+      }
+      var fee = Number(document.getElementById("daFee").value || 500);
+      var code = "QR-" + String(101 + demoState.admissions.length);
+      var admRec = {
+        name: nm,
+        father: fa,
+        phone: ph,
+        address: addr,
+        fee: fee,
+        amount: fee,
+        code: code,
+        memberPhoto: demoAdmMemberPhotoUrl || "",
+        idPhoto: demoAdmIdPhotoUrl || "",
+        hasMemberPhoto: !!demoAdmMemberPhotoUrl,
+        hasIdPhoto: !!demoAdmIdPhotoUrl
+      };
+      demoState.admissions.unshift(admRec);
+      demoState.lastAdmission = admRec;
+      syncDemoStats();
+      renderDemoToolPanel();
+      speakText(nm + " का पूरा एडमिशन फॉर्म सेव हो गया है। अब आप JPG फोटो, PDF डाउनलोड या WhatsApp पर भेज सकते हैं।");
+      armDemoIdleWatcher();
+    }
+
+    function demoPayFee() {
+      var amt = Number(document.getElementById("dfAmt").value || 500);
+      var mode = document.getElementById("dfMode").value || "Cash";
+      var nm = (document.getElementById("dfName").value || "").trim() || "Member";
+      var ph = (document.getElementById("dfPhone").value || "").replace(/\D/g, "") || demoState.phone10;
+      if (mode === "Online") demoState.onlineTotal += amt;
+      else demoState.cashTotal += amt;
+      var recObj = { name: nm, phone: ph, amount: amt, code: "RCPT-" + String(Date.now()).slice(-4) + " (" + mode + ")" };
+      demoState.lastReceipt = recObj;
+      syncDemoStats();
+      renderDemoToolPanel();
+      speakText(nm + " की ₹" + amt + " " + mode + " फ़ीस रसीद बन गई है। JPG, PDF डाउनलोड या WhatsApp करें।");
+      armDemoIdleWatcher();
+    }
+
+    function renderGuideBox() {
+      var g = lang === "hi"
+        ? `<div class="log-item" style="border-color:var(--cyan);margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <b style="color:var(--cyan)">📖 Step-by-Step Guide (${esc(activeDemoGymName())})</b>
+              <button type="button" class="btn-sec" style="padding:4px 8px;font-size:10px" onclick="demoState.guideOpen=!demoState.guideOpen;renderDemoToolPanel()">${demoState.guideOpen ? "Hide" : "Show"}</button>
+            </div>
+            ${demoState.guideOpen ? `<div style="font-size:11.5px;color:#cbd5e1;margin-top:6px;line-height:1.55">
+              • <b>अटेंडेंस कैसे लगाएं:</b> सदस्य खोजें → 'लोड करें' दबाएं → 3 सेकंड में सेल्फ़ी फ़ोटो क्लिक होकर सेव व प्रेजेंट मार्क होगी।<br>
+              • <b>अटेंडेंस कैसे देखें व Admin कैसे चलाएं:</b> 'Admin' बटन दबाएं → PIN <b>1234</b> डालकर 'Unlock Admin' दबाएं → 'Selfie Gallery' में तारीख चुनें या 'Member ki Attendance' में पूरे महीने का कैलेंडर देखें।<br>
+              • <b>Admission Form कैसे भरें व डाउनलोड करें:</b> प्लान व तारीख चुनें → NEXT दबाएं → नाम, फ़ोन, Member Photo व ID Photo चुनें → Save करते ही JPG व PDF डाउनलोड और WhatsApp भेजें।
+            </div>` : ""}
+          </div>`
+        : `<div class="log-item" style="border-color:var(--cyan);margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <b style="color:var(--cyan)">📖 Step-by-Step Guide (${esc(activeDemoGymName())})</b>
+              <button type="button" class="btn-sec" style="padding:4px 8px;font-size:10px" onclick="demoState.guideOpen=!demoState.guideOpen;renderDemoToolPanel()">${demoState.guideOpen ? "Hide" : "Show"}</button>
+            </div>
+            ${demoState.guideOpen ? `<div style="font-size:11.5px;color:#cbd5e1;margin-top:6px;line-height:1.55">
+              • <b>Mark Attendance:</b> Search member → tap 'लोड करें' → 3s auto selfie saves photo & marks Present.<br>
+              • <b>View Attendance & Admin:</b> Tap 'Admin' → enter PIN <b>1234</b> → click Unlock Admin → view Selfie Gallery by date or full-month Member Calendar.<br>
+              • <b>Admission Form:</b> Pick plan & date → NEXT → fill details + upload Member Photo & ID Photo → Save to download JPG & PDF + WhatsApp share.
+            </div>` : ""}
+          </div>`;
+      return g;
+    }
+
+    function renderDemoToolPanel() {
+      var planAmt = Number(document.getElementById("demoPlanSelect").value || 99);
+      var box = document.getElementById("demoToolPanel");
+      if (!box) return;
+      var guideHtml = renderGuideBox();
+
+      if (currentTool === "qr") {
+        if (demoAdminPinPromptOpen && !demoAdminUnlocked) {
+          box.innerHTML = `
+            <div class="feat-title">🔒 Admin Access — PIN 1234</div>
+            <div class="feat-body" style="margin-bottom:8px">Selfie Gallery और Member Attendance Calendar खोलने के लिए PIN <b>1234</b> डालें और Unlock Admin दबाएं।</div>
+            <label>Admin PIN</label>
+            <input class="inp" id="dAdminPinInp" value="1234" placeholder="Enter 1234">
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button type="button" class="btn-sec" style="flex:1" onclick="demoAdminPinPromptOpen=false;renderDemoToolPanel()">← Back</button>
+              <button type="button" class="btn-act" style="flex:2" onclick="submitDemoAdminPin()">🔓 Unlock Admin</button>
+            </div>
+          `;
+          return;
+        }
+
+        if (demoSelectedMemberFor3s) {
+          box.innerHTML = `
+            <div style="text-align:center">
+              <div class="pill" style="margin-bottom:6px">STEP 3 OF 3 • 3-SEC AUTO SELFIE</div>
+              <div style="font-size:17px;font-weight:900;color:var(--gold-bright)">${esc(demoSelectedMemberFor3s.name)}</div>
+              <div style="font-size:12px;color:var(--cyan);margin-top:2px">⏳ 3 sec me automatic selfie...</div>
+              <div style="background:rgba(34,211,238,0.14);border:1px solid var(--cyan);border-radius:10px;padding:6px 10px;font-size:11.5px;margin:8px 0">
+                📅 इस महीने अब तक <b>${demoSelectedMemberFor3s.days} दिन</b> आ चुके हैं (Join: ${esc(demoSelectedMemberFor3s.join)})
+              </div>
+              <div id="d3sCountNum" style="width:46px;height:46px;line-height:46px;margin:8px auto;border-radius:50%;background:rgba(52,211,153,0.2);border:2px solid var(--emerald);color:var(--emerald);font-size:20px;font-weight:900">${demoSelectedMemberFor3s.sec}</div>
+              <div style="background:#000;border:2px dashed var(--emerald);border-radius:14px;padding:10px;color:#e2e8f0;font-size:12px">
+                <video id="demoLiveVideo" autoplay playsinline muted style="width:100%;max-height:200px;border-radius:10px;background:#111"></video>
+                <div style="margin-top:6px">📸 कैमरे के सामने रहें • 3 सेकंड में अपने आप क्लिक होगा</div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <button type="button" class="btn-sec" style="flex:1" onclick="if(demo3sTimer)clearInterval(demo3sTimer);stopDemoCameraStream();demoSelectedMemberFor3s=null;renderDemoToolPanel()">← Back</button>
+                <button type="button" class="btn-act" style="flex:2;background:#16a34a;color:#fff" onclick="if(demo3sTimer)clearInterval(demo3sTimer);finalizeDemo3sSelfie()">📸 अभी क्लिक करें (3s)</button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        if (demoAdminUnlocked && demoAdminSubView === "gallery") {
+          var selDate = (document.getElementById("dGalDate") && document.getElementById("dGalDate").value) || "2026-11-23";
+          var dayItems = demoState.attLogs.filter(function (x) { return x.date === selDate; });
+          box.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <b style="color:var(--emerald)">📸 Selfie Gallery (Calendar se date choose)</b>
+              <button type="button" class="btn-sec" onclick="demoAdminSubView='menu';renderDemoToolPanel()">← Admin Menu</button>
+            </div>
+            <label>Calendar se date</label>
+            <input type="date" class="inp" id="dGalDate" value="${esc(selDate)}" onchange="renderDemoToolPanel()">
+            <div class="log-item" style="text-align:center;border-color:var(--emerald)">
+              <div style="font-size:11px;color:var(--muted)">📅 ${esc(selDate)} — Attendance</div>
+              <div style="font-size:24px;font-weight:900;color:var(--emerald)">${dayItems.length}</div>
+              <div style="font-size:11px">लोगों की उपस्थिति लगी</div>
+            </div>
+            ${dayItems.length ? dayItems.map(function (it, i) {
+              return `<div class="log-item" style="display:flex;gap:10px;align-items:center">
+                ${it.photo ? `<img src="${it.photo}" alt="Selfie" style="width:52px;height:52px;border-radius:8px;object-fit:cover;border:1.5px solid var(--emerald)">` : ""}
+                <div><b>${i + 1}. ${esc(it.name)}</b> • 📞 ${esc(it.phone)} • 🕒 ${esc(it.time)} • <span style="color:var(--emerald)">Photo Saved &amp; Present</span></div>
+              </div>`;
+            }).join("") : `<div class="log-item" style="color:var(--muted)">इस तारीख की सेल्फ़ी देखने के लिए पहले QR Attendance से सेल्फ़ी लें।</div>`}
+          `;
+          return;
+        }
+
+        if (demoAdminUnlocked && demoAdminSubView === "memberCal") {
+          var qMem = ((document.getElementById("dCalMemQ") && document.getElementById("dCalMemQ").value) || "Demo Member One").trim();
+          var daysGrid = "";
+          for (var d = 1; d <= 23; d++) {
+            var presentDay = (d % 2 === 0) || (d >= 15 && d <= 23);
+            daysGrid += `<div style="padding:6px;border-radius:8px;text-align:center;font-size:11px;font-weight:800;background:${presentDay ? "rgba(52,211,153,0.18)" : "rgba(251,113,133,0.14)"};border:1px solid ${presentDay ? "var(--emerald)" : "var(--rose)"};color:${presentDay ? "#8dffb0" : "#fecdd3"}">${d}<br><span style="font-size:9px">${presentDay ? "P • Selfie" : "A"}</span></div>`;
+          }
+          box.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <b style="color:var(--gold-bright)">🔍 Member ki Attendance (Full Month Calendar)</b>
+              <button type="button" class="btn-sec" onclick="demoAdminSubView='menu';renderDemoToolPanel()">← Admin Menu</button>
+            </div>
+            <label>Member Name Search</label>
+            <input class="inp" id="dCalMemQ" value="${esc(qMem)}" oninput="renderDemoToolPanel()" placeholder="Search member name...">
+            <div class="log-item" style="margin-top:8px"><b>${esc(qMem)}</b> — Monthly Calendar Attendance</div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:8px">${daysGrid}</div>
+          `;
+          return;
+        }
+
+        if (demoAdminUnlocked && demoAdminSubView === "menu") {
+          box.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <b style="color:var(--gold-bright)">🔓 Admin Panel</b>
+              <button type="button" class="btn-sec" onclick="demoAdminUnlocked=false;renderDemoToolPanel()">Lock Admin</button>
+            </div>
+            <button type="button" class="btn-act" style="width:100%;background:#16a34a;color:#fff;margin-bottom:8px" onclick="demoAdminSubView='gallery';renderDemoToolPanel()">📸 Selfie Gallery (Calendar se date choose)</button>
+            <button type="button" class="btn-act" style="width:100%;margin-bottom:8px" onclick="demoAdminSubView='memberCal';renderDemoToolPanel()">🔍 Member ki Attendance (search karke dekho)</button>
+            <button type="button" class="btn-sec" style="width:100%" onclick="demoAdminUnlocked=false;renderDemoToolPanel()">Band karo</button>
+          `;
+          return;
+        }
+
+        var qAtt = ((document.getElementById("dQrSearch") && document.getElementById("dQrSearch").value) || "").trim().toLowerCase();
+        var matches = demoState.sampleMembers.filter(function (m) {
+          return !qAtt || m.name.toLowerCase().includes(qAtt) || m.phone.includes(qAtt);
+        });
+        var savedBanner = demoCapturedPhotoData
+          ? `<div class="log-item" style="border-color:var(--emerald);display:flex;gap:10px;align-items:center;margin-bottom:8px">
+               <img src="${demoCapturedPhotoData}" alt="Captured Selfie" style="width:52px;height:52px;border-radius:8px;object-fit:cover;border:1.5px solid var(--emerald)">
+               <div><b style="color:var(--emerald)">✅ Photo Saved &amp; Present Marked!</b><div style="font-size:11px;color:var(--muted)">Latest selfie saved in gallery.</div></div>
+             </div>`
+          : "";
+        box.innerHTML = guideHtml + savedBanner + `
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
+            <div>
+              <span class="pill" style="margin-bottom:3px">STEP 1 &amp; 2 • SEARCH &amp; LOAD</span>
+              <div class="feat-title" style="margin:0">1. Mark Your Attendance BY QR (${esc(activeDemoGymName())})</div>
+            </div>
+            <button type="button" class="btn-sec" onclick="openDemoAdminModal()">🔒 Admin</button>
+          </div>
+          <label>Step 1: नाम या नंबर खोजें</label>
+          <input class="inp" id="dQrSearch" value="${esc(qAtt)}" oninput="renderDemoToolPanel()" placeholder="नाम या नंबर खोजें...">
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Step 2: सदस्य के आगे 'लोड करें' दबाएं (3s सेल्फ़ी):</div>
+          ${matches.map(function (m) {
+            var stColor = m.status === "PAID" ? "var(--emerald)" : "var(--rose)";
+            return `<div class="log-item" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+              <div><b>${esc(m.name)}</b><div style="font-size:11px;color:var(--muted)">${esc(m.phone)} | <span style="color:${stColor};font-weight:800">${esc(m.status)}</span></div></div>
+              <button type="button" class="btn-act" onclick="loadMemberFor3sSelfie('${esc(m.name)}')">लोड करें</button>
+            </div>`;
+          }).join("")}
+        `;
+      } else if (currentTool === "adm") {
+        var admShareHtml = demoState.lastAdmission
+          ? `<div class="log-item" style="border-color:var(--emerald);margin-top:12px;background:rgba(52,211,153,0.08)">
+               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                 ${demoState.lastAdmission.memberPhoto ? `<img src="${demoState.lastAdmission.memberPhoto}" alt="Member Photo" style="width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--emerald)">` : ""}
+                 ${demoState.lastAdmission.idPhoto ? `<img src="${demoState.lastAdmission.idPhoto}" alt="ID Photo" style="width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--cyan)">` : ""}
+                 <div style="flex:1">
+                   <b style="color:var(--emerald)">✅ Admission Form Ready: ${esc(demoState.lastAdmission.name)}</b> (${esc(demoState.lastAdmission.code)})
+                   <div style="font-size:11px;color:var(--muted)">Father: ${esc(demoState.lastAdmission.father)} • Fee: ₹${esc(demoState.lastAdmission.fee)} • Phone: ${esc(demoState.lastAdmission.phone)}</div>
+                 </div>
+               </div>
+               <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+                 <button type="button" class="btn-act" onclick='triggerRealDownloadAndWhatsApp("Admission Form", ${JSON.stringify(demoState.lastAdmission)})'>📥 Download JPG + PDF + WhatsApp</button>
+               </div>
+             </div>`
+          : "";
+        if (demoAdmStep === 1) {
+          box.innerHTML = guideHtml + `
+            <div class="feat-title">2. Admission Form — 1. Plan &amp; Date (${esc(activeDemoGymName())})</div>
+            <div class="log-item" style="margin-bottom:10px;border-color:var(--gold)">
+              <b style="color:var(--gold-bright)">✨ इस Admission Form में मिलने वाली सुविधाएँ:</b>
+              <div style="font-size:11.5px;color:#cbd5e1;margin-top:4px;line-height:1.45">
+                • सदस्यता प्लान, अवधि व जॉइनिंग तारीख • सदस्य की फ़ोटो व ID फ़ोटो अपलोड • पूरा फ़ॉर्म सेव होने पर तुरंत JPG फोटो व PDF डाउनलोड और WhatsApp पर भेजने की सुविधा।
+              </div>
+            </div>
+            <div class="grid2">
+              <div><label>Joining Date *</label><input type="date" class="inp" id="daJoin" value="2026-11-23"></div>
+              <div><label>Plan &amp; Fee (₹) *</label><select class="inp" id="daFee"><option value="500">1 Month - ₹500</option><option value="1400">3 Months - ₹1400</option></select></div>
+            </div>
+            <button type="button" class="btn-act" style="width:100%;margin-top:10px" onclick="demoAdmStep=2;renderDemoToolPanel();speakCurrentGuidance()">NEXT (Personal Details &amp; Photos) →</button>
+            ${admShareHtml}
+          `;
+        } else {
+          box.innerHTML = guideHtml + `
+            <div class="feat-title">2. Admission Form — 2. Personal Details &amp; Photos</div>
+            <div class="grid2">
+              <div><label>Full Name *</label><input class="inp" id="daName" placeholder="Member Full Name"></div>
+              <div><label>Father / Parent Name</label><input class="inp" id="daFather" placeholder="Father Name"></div>
+            </div>
+            <div class="grid2">
+              <div><label>10-Digit Mobile *</label><input class="inp" id="daPhone" maxlength="10" placeholder="10-digit mobile"></div>
+              <div><label>Address / Village</label><input class="inp" id="daAddr" placeholder="Address / Village"></div>
+            </div>
+            <div class="grid2">
+              <div>
+                <label>Member Photo (Gallery / Camera)</label>
+                <input type="file" accept="image/*" class="inp" onchange="handleDemoAdmFilePick(this, 'member')">
+                ${demoAdmMemberPhotoUrl ? `<img src="${demoAdmMemberPhotoUrl}" alt="Member Photo Preview" style="width:58px;height:58px;border-radius:8px;object-fit:cover;margin-top:6px;border:1px solid var(--emerald)">` : ""}
+              </div>
+              <div>
+                <label>ID Proof Photo (Gallery / Camera)</label>
+                <input type="file" accept="image/*" class="inp" onchange="handleDemoAdmFilePick(this, 'id')">
+                ${demoAdmIdPhotoUrl ? `<img src="${demoAdmIdPhotoUrl}" alt="ID Photo Preview" style="width:58px;height:58px;border-radius:8px;object-fit:cover;margin-top:6px;border:1px solid var(--cyan)">` : ""}
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button type="button" class="btn-sec" style="flex:1" onclick="demoAdmStep=1;renderDemoToolPanel()">← Back</button>
+              <button type="button" class="btn-act" style="flex:2" onclick="demoAddAdmission()">Save &amp; Download Form (JPG + PDF)</button>
+            </div>
+            ${admShareHtml}
+          `;
+        }
+      } else if (currentTool === "fee") {
+        var rcptHtml = demoState.lastReceipt
+          ? `<div class="log-item" style="border-color:var(--emerald);margin-top:10px">
+               <b>✅ Receipt Ready: ${esc(demoState.lastReceipt.code)}</b> — ${esc(demoState.lastReceipt.name)} (₹${demoState.lastReceipt.amount})
+               <div style="margin-top:8px">
+                 <button type="button" class="btn-act" onclick='triggerRealDownloadAndWhatsApp("Fee Receipt", ${JSON.stringify(demoState.lastReceipt)})'>📥 Download JPG + PDF + WhatsApp</button>
+               </div>
+             </div>`
+          : "";
+        box.innerHTML = guideHtml + `
+          <div class="feat-title">3. Fees Payment &amp; Instant Receipt</div>
+          <div class="grid2">
+            <div><label>Member Name</label><input class="inp" id="dfName" placeholder="Member name"></div>
+            <div><label>10-Digit Mobile (WhatsApp)</label><input class="inp" id="dfPhone" maxlength="10" value="${esc(demoState.phone10)}"></div>
+          </div>
+          <div class="grid2">
+            <div><label>Amount (₹)</label><input class="inp" type="number" id="dfAmt" value="500"></div>
+            <div><label>Mode</label><select class="inp" id="dfMode"><option value="Cash">Cash</option><option value="Online">Online</option></select></div>
+          </div>
+          <button type="button" class="btn-act" style="margin-top:10px" onclick="demoPayFee()">Pay &amp; Generate Receipt</button>
+          <div class="log-item">Cash: <b>₹${demoState.cashTotal}</b> • Online: <b>₹${demoState.onlineTotal}</b></div>
+          ${rcptHtml}
+        `;
+      } else if (currentTool === "exp") {
+        box.innerHTML = guideHtml + `
+          <div class="feat-title">4. Expired Members &amp; Calendar View</div>
+          <div class="log-item">⚠️ <b>Fees Expire Alert Board:</b> Expired list &amp; calendar-wise member attendance ready in demo.</div>
+        `;
+      } else {
+        if (planAmt < 199) {
+          box.innerHTML = guideHtml + `
+            <div class="feat-title">5. ₹199 Growth Value Tools</div>
+            <div class="log-item" style="border-color:var(--rose);color:#fecdd3">
+              यह टूल्स ₹199 Growth Value Plan में उपलब्ध हैं। ऊपर dropdown से <b>Demo: ₹199 Growth Plan</b> चुनकर इन्हें आज़माएं।
+            </div>
+          `;
+        } else {
+          box.innerHTML = guideHtml + `
+            <div class="feat-title">5. ₹199 Value Tools (Collection Split, Due Reminder, Leads, Staff &amp; Excel)</div>
+            <div class="log-item">💰 Cash: <b>₹${demoState.cashTotal}</b> | Online: <b>₹${demoState.onlineTotal}</b> | Supplement/Extra tracked</div>
+            <div class="log-item">⚠️ Due Reminders, Walk-In/Lead Enquiry, Staff Attendance/Leave &amp; CSV Export active in ₹199 demo.</div>
+          `;
+        }
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", async function () {
+    window.addEventListener("DOMContentLoaded", async function () {
+      try {
+        var localP = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null");
+        if (localP && localP.amount) activeCloudPlan = localP;
+      } catch (e) {}
+      if (db) {
+        try {
+          var gid = localStorage.getItem("bfc_gid") || "default_gym";
+          var snap = await db.collection("subscriptions").doc(gid).get();
+          if (snap.exists && snap.data() && snap.data().amount) activeCloudPlan = snap.data();
+        } catch (e) {}
+      }
+      setLang("hi");
+    });
+  </script>
+
+<script>
+(function ensurePlansClicksAlwaysWork() {
+  document.addEventListener("click", function(ev) {
+    var t = ev.target;
+    if (!t || !t.closest) return;
+
+    var card99 = t.closest("#outerPlansGrid .plan-card:nth-child(1)");
+    if (card99 && typeof window.openInsidePlan === "function") {
+      window.openInsidePlan(99);
+      return;
+    }
+
+    var card199 = t.closest("#outerPlansGrid .plan-card:nth-child(2)");
+    if (card199 && typeof window.openInsidePlan === "function") {
+      window.openInsidePlan(199);
+      return;
+    }
+
+    if (t.closest("#btnStartQuickDemo") && typeof window.openQuickDemo === "function") {
+      window.openQuickDemo();
+      return;
+    }
+
+    if (t.closest("#btnBackToPlans") && typeof window.closeInsidePlan === "function") {
+      window.closeInsidePlan();
+      return;
+    }
+
+    if (t.closest("#btnActivateInside") && typeof window.activateCurrentInsidePlan === "function") {
+      window.activateCurrentInsidePlan();
+      return;
+    }
+
+    if (t.closest("#btnHi") && typeof window.setLang === "function") {
+      window.setLang("hi");
+      return;
+    }
+
+    if (t.closest("#btnEn") && typeof window.setLang === "function") {
+      window.setLang("en");
+      return;
+    }
+  });
+})();
+</script>
+
+
+<script>
+(function attachDemoIdleReset() {
+  ["click", "keydown", "input", "touchstart"].forEach(function (evName) {
+    document.addEventListener(evName, function (ev) {
+      var m = document.getElementById("quickDemoModal");
+      if (m && m.classList.contains("open") && typeof window.armDemoIdleWatcher === "function") {
+        window.armDemoIdleWatcher();
+      }
+    }, true);
+  });
+})();
+</script>
+
+</body>
+</html>
