@@ -7,6 +7,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-functions-compat.js"></script>
   <script src="auth-gate.js"></script>
   <style>
     :root {
@@ -195,12 +199,10 @@
       <select id="branchSel" class="mini" style="font-size:12px; padding:7px 10px; background:#070D1C; border:1.5px solid var(--border); border-radius:8px; color:#fff; font-weight:700;">
         <option value="ALL" selected>All Branches</option>
         <option value="001">Branch 001 (Main Branch)</option>
-        <option value="002">Branch 002 (Kanpur)</option>
-        <option value="003">Branch 003 (Lucknow)</option>
-        <option value="004">Branch 004 (Agra)</option>
-        <option value="005">Branch 005 (Varanasi)</option>
+
       </select>
       <button type="button" class="sub-btn" style="background:var(--gold); color:#050813; font-weight:900; padding:7px 14px; border:none; border-radius:8px; cursor:pointer;" onclick="applyBranchFilter()">Submit</button>
+      <button type="button" id="masterConsoleBtn" style="display:none;background:#22D3EE;color:#050813;font-size:11px;font-weight:900;padding:7px 10px;border:0;border-radius:8px;cursor:pointer;" onclick="location.href='master-admin.html'">MASTER CONSOLE</button>
       <button type="button" style="background:rgba(239,68,68,0.22); border:1.5px solid #EF4444; color:#FCA5A5; font-size:12px; font-weight:900; padding:7px 16px; border-radius:8px; cursor:pointer; margin-left:6px;" onclick="logoutUser()">🚪 Logout</button>
     </div>
   </header>
@@ -225,43 +227,43 @@
   <section id="page1" class="page-sec active">
     <div class="live-strip">
       <span class="tag-red">&bull; LIVE BOARD</span>
-      <span id="liveBoardMeta">Collection: ₹2,23,200 &bull; Pro</span>
+      <span id="liveBoardMeta">Collection: ₹0 &bull; No Paid Plan</span>
       <span class="tag-cyan">AUTO FETCH</span>
     </div>
 
     <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">💰 Total Collection</span><span class="dc-pill" id="pillBranches">5 Branches</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vTotalCol" style="color:var(--gold)">₹2,23,200</div><div class="dc-sub">All branches combined</div></div><span>📈</span></div>
+      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">💰 Total Collection</span><span class="dc-pill" id="pillBranches">0 Branches</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vTotalCol" style="color:var(--gold)">₹0</div><div class="dc-sub">All branches combined</div></div><span>📈</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">💳 Total Fees Collection</span><span class="dc-pill">5 Branches</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vFeesCol" style="color:var(--emerald)">₹1,84,800</div><div class="dc-sub">Membership &amp; renewals</div></div><span>📈</span></div>
+      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">💳 Total Fees Collection</span><span class="dc-pill">0 Branches</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vFeesCol" style="color:var(--emerald)">₹0</div><div class="dc-sub">Membership &amp; renewals</div></div><span>📈</span></div>
     </div>
 
     <div class="d-card" onclick="switchPage(4)">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--cyan)">🏋️ Total Gym Members</span><span class="dc-pill">Live Count</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vMembers" style="color:var(--cyan)">148</div><div class="dc-sub">Across all branches</div></div><span>📶</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vMembers" style="color:var(--cyan)">0</div><div class="dc-sub">Across all branches</div></div><span>📶</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modAdmission')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--cyan)">📝 New Admissions</span><span class="dc-pill">Live Board</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vAdmissions" style="color:var(--cyan)">42</div><div class="dc-sub">Tap: admission &amp; services</div></div><span>📈</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vAdmissions" style="color:var(--cyan)">0</div><div class="dc-sub">Tap: admission &amp; services</div></div><span>📈</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modExtra')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--purple)">💊 Supplement Collection</span><span class="dc-pill">POS Store</span></div>
-      <div class="dc-row"><div><div class="dc-num" style="color:var(--purple)">₹38,400</div><div class="dc-sub">Whey, creatine &amp; shakers</div></div><span>📈</span></div>
+      <div class="dc-row"><div><div class="dc-num" style="color:var(--purple)">₹0</div><div class="dc-sub">Whey, creatine &amp; shakers</div></div><span>📈</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modPnl')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">💵 Cash / Online</span><span class="dc-pill">Split Mode</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vCashOnline" style="font-size:19px;color:var(--emerald)">₹1,43,000 Cash / ₹75,000 Online</div><div class="dc-sub">Click for branch-wise split</div></div><span>🟩🟦</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vCashOnline" style="font-size:19px;color:var(--emerald)">₹0 Cash / ₹0 Online</div><div class="dc-sub">Click for branch-wise split</div></div><span>🟩🟦</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modPnl')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">⚖️ Total Loss &amp; Profit</span><span class="dc-pill">Net P&amp;L</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vNetPnl" style="color:var(--emerald)">+₹1,44,800</div><div class="dc-sub" id="vExpSub">Exp: ₹78,400 &bull; Net Profit</div></div><span>📉📈</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vNetPnl" style="color:var(--emerald)">₹0</div><div class="dc-sub" id="vExpSub">Exp: ₹0 &bull; Net Profit</div></div><span>📉📈</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modExtra')">
@@ -271,7 +273,7 @@
 
     <div class="d-card" onclick="openMod('modDeptStaff')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--cyan)">👥 Total No. of Employees</span><span class="dc-pill">Admin Vault</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vEmpCount" style="color:var(--cyan)">5 Staff</div><div class="dc-sub">Branch count, KYC, joining &amp; bank/PF/UAN</div></div><span>🗂️</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vEmpCount" style="color:var(--cyan)">0 Staff</div><div class="dc-sub">Branch count, KYC, joining &amp; bank/PF/UAN</div></div><span>🗂️</span></div>
     </div>
 
     <button type="button" class="big-btn" onclick="switchPage(2)">Next Page &rarr; (Page 2: Trial &amp; Enterprise Control Grid)</button>
@@ -280,7 +282,7 @@
   <!-- PAGE 2: 7-DAY TRIAL AT TOP + ENTERPRISE CONTROL GRID -->
   <section id="page2" class="page-sec">
     <div class="box-card">
-      <div style="font-size:12px;font-weight:800;color:var(--emerald);">&bull; 7-Day Free Trial Active</div>
+      <div style="font-size:12px;font-weight:800;color:var(--emerald);">&bull; No Paid Plan Active</div>
       <div style="font-size:11px;color:var(--muted);margin:3px 0 10px;">Enterprise multi-branch workspace &bull; Cloud sync ready</div>
       <button type="button" class="big-btn" style="margin-top:0;padding:10px;font-size:12px;" onclick="openMod('modLicense')">Upgrade Plan</button>
     </div>
@@ -299,6 +301,7 @@
       <button type="button" class="tile" onclick="switchPage(1)">&larr; Back to Dashboard</button>
       <button type="button" class="tile" onclick="openMod('modLicense')">🔑 License</button>
       <button type="button" class="tile" onclick="openMod('modCodes')">🛡️ Code</button>
+      <button type="button" class="tile" onclick="location.href='team-access-admin.html'">👥 Manager / Staff Login &amp; Invite Codes</button>
       <button type="button" class="tile" onclick="openMod('modPnl')">📁 Branch Collection &amp; Report</button>
       <button type="button" class="tile" onclick="openMod('modCodes')">📁 Staff Codes</button>
       <button type="button" class="tile" onclick="openMod('modCodes')">🆔 View Your Employee Code</button>
@@ -508,7 +511,7 @@
       </div>
 
       <div class="rec">
-        <b>📊 Aaj ka Live Count:</b> Total Members: <b>148</b> &bull; Present: <b style="color:var(--emerald)">52</b> &bull; Absent: <b style="color:var(--rose)">96</b>
+        <b>📊 Aaj ka Live Count:</b> Total Members: <b>0</b> &bull; Present: <b style="color:var(--emerald)">0</b> &bull; Absent: <b style="color:var(--rose)">0</b>
       </div>
 
       <button type="button" class="big-btn" style="background:rgba(251,113,133,0.18);border:1px solid var(--rose);color:#FECDD3;margin-top:0;margin-bottom:8px" onclick="openMod('modExpired')">
@@ -648,7 +651,7 @@
         <form class="rec" onsubmit="createInstantSalarySlip(event)">
           <b style="color:var(--cyan);display:block;margin-bottom:8px">➕ Instant Salary Slip Creator (Auto-Formula)</b>
           <div class="grid2">
-            <div class="fg"><label>Gym / Enterprise Name *</label><input class="fc" id="cstGymName" value="UNIVERSAL FITNESS CLUB &amp; NUTRITION" required></div>
+            <div class="fg"><label>Gym / Enterprise Name *</label><input class="fc" id="cstGymName" value="" required></div>
             <div class="fg"><label>Branch / Location *</label><input class="fc" id="cstBranch" value="Main Road, City Center Main (Branch 001)" required></div>
           </div>
           <div class="grid2">
@@ -838,12 +841,32 @@
     let curBr = "ALL";
     let chartObj = null;
 
-    function J(k, d) { try { return JSON.parse(localStorage.getItem(k) || "null") ?? d; } catch(e) { return d; } }
-    function W(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+    function omDataScope() {
+      const ss = window.omSecureSession || {};
+      return String(ss.gymId || localStorage.getItem("bfc_gid") || "unassigned").replace(/[^a-zA-Z0-9_-]/g, "_");
+    }
+    function omScopedKey(k) { return "om_tenant_v2:" + omDataScope() + ":" + k; }
+    function omRequiredAmountForKey(k) {
+      if ([K_STF, K_BILLS, K_VEND].includes(k)) return 399;
+      if ([K_EXT, K_ENQ].includes(k)) return 199;
+      return 99;
+    }
+    function J(k, d) {
+      const ss = window.omSecureSession;
+      if (ss && !ss.isMasterAdmin && (!ss.planActive || Number(ss.planAmount || 0) < omRequiredAmountForKey(k))) return d;
+      try { return JSON.parse(localStorage.getItem(omScopedKey(k)) || "null") ?? d; } catch(e) { return d; }
+    }
+    function W(k, v) {
+      const ss = window.omSecureSession;
+      if (ss && !ss.isMasterAdmin && (!ss.planActive || Number(ss.planAmount || 0) < omRequiredAmountForKey(k))) return;
+      localStorage.setItem(omScopedKey(k), JSON.stringify(v));
+    }
     function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-    function isAdmin() { const r = (localStorage.getItem("bfc_role") || "owner").toLowerCase(); return r === "owner" || r === "admin"; }
+    function isAdmin() { const s = window.omSecureSession || {}; return !!(s.isMasterAdmin || s.role === "owner"); }
 
     function switchPage(n) {
+      const secureRole = (window.omSecureSession && window.omSecureSession.role) || (localStorage.getItem("bfc_role") || "guest").toLowerCase();
+      if ((secureRole === "manager" || secureRole === "staff") && Number(n) !== 1) { alert("Aapke role ko is page ka access nahi diya gaya hai."); return; }
       [1,2,3,4].forEach(i => {
         document.getElementById("page" + i).classList.toggle("active", i === n);
         document.getElementById("tb" + i).classList.toggle("active", i === n);
@@ -853,6 +876,7 @@
 
     function setBranch(b) { curBr = b; syncDashboard(); }
     function openMod(id) {
+      if (window.omSecureSession && typeof window.omSecureSession.canOpenModule === "function" && !window.omSecureSession.canOpenModule(id)) { alert("Is module ka access aapke role mein nahi hai."); return; }
       document.getElementById(id).classList.add("open");
       if (id === "modMaint") { renderBillCard(); renderMaintList(); }
       if (id === "modDeptStaff") renderDeptStaff();
@@ -865,7 +889,7 @@
       if (id === "modEnq") renderEnq();
     }
     function closeMod(id) { document.getElementById(id).classList.remove("open"); }
-    function logoutUser() { localStorage.removeItem("om_logged_user"); location.replace("login.html"); }
+    function logoutUser() { ["om_logged_user","bfc_role","om_active_role","bfc_gid","om_team_session","om_active_subscription_plan","om_session_active"].forEach(k => localStorage.removeItem(k)); if (window.firebase && firebase.auth) firebase.auth().signOut().finally(() => location.replace("login.html")); else location.replace("login.html"); }
 
     function showThumb(inp, targetId) {
       const box = document.getElementById(targetId);
@@ -892,30 +916,14 @@
       a.click();
     }
 
+    // No demo/sample data is inserted. A newly registered gym starts with empty records.
     function seedData() {
-      if (!localStorage.getItem(K_STF)) {
-        W(K_STF, [
-          { id: "STF-001-MGR", name: "Gym Owner", gymName: "UNIVERSAL FITNESS CLUB", branch: "001", branchName: "Main Road, City Center Main", dept: "Management", role: "Branch Manager", manager: "Self (Executive Owner)", mobile: "9876501100", email: "owner@gym.com", father: "Late Shri Chandel", wife: "Reet Singh", pan: "HBGPS6001D", aadhaar: "6437-4987-7588", bankName: "KOTAK MAHINDRA BANK", bank: "1913450661", pf: "GGN/1572727/0010132", uan: "100761344191", mode: "Bank", salary: 35000, allowance: 7000, bonus: 2000, totalDays: 30, presentDays: 30, paidLeave: 0, unpaidLeave: 0, lateMins: 0, penalty: 0, advance: 0, paidReason: "None (Full Attendance)", unpaidReason: "None" },
-          { id: "STF-001-TR1", name: "Vikram Yadav", gymName: "UNIVERSAL FITNESS CLUB", branch: "001", branchName: "Main Road, City Center Main", dept: "Training", role: "Senior Floor Coach", manager: "Gym Owner (9876501100)", mobile: "9876503344", email: "vikram.yadav@gmail.com", father: "Ram Kishore Yadav", wife: "Sunita Yadav", pan: "BXPYS9876K", aadhaar: "4920-1122-3344", bankName: "STATE BANK OF INDIA", bank: "30192847561", pf: "N/A (Cash/Daily)", uan: "N/A", mode: "Cash", salary: 18000, allowance: 3000, bonus: 1000, totalDays: 30, presentDays: 28, paidLeave: 1, unpaidLeave: 1, lateMins: 25, penalty: 250, advance: 2000, paidReason: "1 Day (Diwali Festival Paid Leave)", unpaidReason: "1 Day (Personal Emergency - Loss of Pay)" },
-          { id: "STF-001-FD1", name: "Pooja Sharma", gymName: "UNIVERSAL FITNESS CLUB", branch: "001", branchName: "Main Road, City Center Main", dept: "Front Desk", role: "Reception Executive", manager: "Gym Owner (9876501100)", mobile: "9876504455", email: "pooja.sharma@gmail.com", father: "Rajesh Sharma", wife: "N/A", pan: "CKJPS4567M", aadhaar: "8901-2345-6789", bankName: "HDFC BANK", bank: "501002345678", pf: "PF83921", uan: "100928192811", mode: "Bank", salary: 14000, allowance: 2500, bonus: 500, totalDays: 30, presentDays: 29, paidLeave: 1, unpaidLeave: 0, lateMins: 10, penalty: 100, advance: 1000, paidReason: "1 Day (Casual Leave Approved)", unpaidReason: "None" },
-          { id: "STF-001-CL1", name: "Rameshwar Prasad", gymName: "UNIVERSAL FITNESS CLUB", branch: "001", branchName: "Main Road, City Center Main", dept: "Cleaning", role: "Morning Sweeper", manager: "Gym Owner (9876501100)", mobile: "9876504411", email: "rameshwar.p@gmail.com", father: "Shri Ram Prasad", wife: "Sunita Devi", pan: "N/A", aadhaar: "3344-5566-7788", bankName: "Cash in Hand", bank: "N/A (Cash)", pf: "N/A", uan: "N/A", mode: "Cash", salary: 10500, allowance: 1500, bonus: 300, totalDays: 30, presentDays: 27, paidLeave: 2, unpaidLeave: 1, lateMins: 30, penalty: 300, advance: 800, paidReason: "2 Days (Family Function Paid Leave)", unpaidReason: "1 Day (Health Issue - Unpaid Cut)" },
-          { id: "STF-002-TR1", name: "Kuldeep Verma", gymName: "OM FITNESS KANPUR", branch: "002", branchName: "Kanpur Road / Swaroop Nagar", dept: "Training", role: "Strength Coach", manager: "Rohan Bajpai (9876502200)", mobile: "9876502211", email: "kuldeep.verma@gmail.com", father: "Suresh Verma", wife: "Anjali", pan: "DZKPV7788L", aadhaar: "9988-7766-5544", bankName: "ICICI BANK", bank: "001122334455", pf: "PF77102", uan: "100771882991", mode: "Bank", salary: 16000, allowance: 2800, bonus: 500, totalDays: 30, presentDays: 27, paidLeave: 2, unpaidLeave: 1, lateMins: 15, penalty: 150, advance: 1500, paidReason: "2 Days (Festival Leave)", unpaidReason: "1 Day (Personal Leave)" }
-        ]);
-      }
-      if (!localStorage.getItem(K_BILLS)) {
-        W(K_BILLS, {
-          "001": { cur: 14850, prev: 13200, pRead: 18420, cRead: 20185, kw: "4 kW", dt: "2026-11-05" },
-          "002": { cur: 50000, prev: 48000, pRead: 24500, cRead: 28900, kw: "12 kW", dt: "2026-11-05" },
-          "003": { cur: 50000, prev: 47500, pRead: 31000, cRead: 35400, kw: "12 kW", dt: "2026-11-05" },
-          "004": { cur: 50000, prev: 49000, pRead: 19000, cRead: 23200, kw: "10 kW", dt: "2026-11-05" },
-          "005": { cur: 12000, prev: 11500, pRead: 14000, cRead: 15400, kw: "3 kW", dt: "2026-11-05" }
-        });
-      }
-      if (!localStorage.getItem(K_VEND)) {
-        W(K_VEND, [
-          { id: "V1", br: "001", cat: "Handwash", amt: 650, status: "Approved", reason: "Approved by Admin", dt: "2026-11-20" }
-        ]);
-      }
+      if (J(K_STF, null) === null) W(K_STF, []);
+      if (J(K_BILLS, null) === null) W(K_BILLS, {});
+      if (J(K_VEND, null) === null) W(K_VEND, []);
+      if (J(K_ADM, null) === null) W(K_ADM, []);
+      if (J(K_EXT, null) === null) W(K_EXT, []);
+      if (J(K_ENQ, null) === null) W(K_ENQ, []);
     }
 
     function applyBranchFilter() {
@@ -923,44 +931,31 @@
       syncDashboard();
     }
     function syncDashboard() {
-      const stf = J(K_STF, []);
-      const ext = J(K_EXT, []);
-      const adm = J(K_ADM, []);
-      const fStf = curBr === "ALL" ? stf : stf.filter(x => x.branch === curBr);
-      const fExt = curBr === "ALL" ? ext : ext.filter(x => x.br === curBr);
-      const extSum = fExt.reduce((a,b) => a + Number(b.amt || 0), 0);
-
-      const brStats = {
-        "ALL": { totalCol: 223200, feesCol: 184800, members: 148, newAdm: 42, suppCol: 38400, cash: 143000, online: 75000, exp: 78400, pill: "5 Branches" },
-        "001": { totalCol: 112000, feesCol: 92000, members: 64, newAdm: 18, suppCol: 20000, cash: 72000, online: 40000, exp: 34000, pill: "Branch 001 (City Center)" },
-        "002": { totalCol: 48200, feesCol: 40200, members: 36, newAdm: 10, suppCol: 8000, cash: 30000, online: 18200, exp: 18000, pill: "Branch 002 (Kanpur)" },
-        "003": { totalCol: 34000, feesCol: 28000, members: 24, newAdm: 7, suppCol: 6000, cash: 22000, online: 12000, exp: 14000, pill: "Branch 003 (Lucknow)" },
-        "004": { totalCol: 17000, feesCol: 14000, members: 14, newAdm: 4, suppCol: 3000, cash: 11000, online: 6000, exp: 7400, pill: "Branch 004 (Agra)" },
-        "005": { totalCol: 12000, feesCol: 10600, members: 10, newAdm: 3, suppCol: 1400, cash: 8000, online: 4000, exp: 5000, pill: "Branch 005 (Varanasi)" }
-      };
-
-      const b = brStats[curBr] || brStats["ALL"];
-      const netVal = b.totalCol + extSum - b.exp;
-      const empDisplay = curBr === "ALL" ? (stf.length + " Staff") : (fStf.length + " Staff");
-
-      document.getElementById("vEmpCount").textContent = empDisplay;
-      document.getElementById("vExtraCol").textContent = "₹" + extSum.toLocaleString("en-IN");
-      document.getElementById("vMembers").textContent = String(b.members + adm.length);
-      document.getElementById("vAdmissions").textContent = String(b.newAdm + adm.length);
-      document.getElementById("pillBranches").textContent = b.pill;
-
-      const elTot = document.getElementById("vTotalCol");
-      if (elTot) elTot.textContent = "₹" + (b.totalCol + extSum).toLocaleString("en-IN");
-      const elFees = document.getElementById("vFeesCol");
-      if (elFees) elFees.textContent = "₹" + b.feesCol.toLocaleString("en-IN");
-      const elCash = document.getElementById("vCashOnline");
-      if (elCash) elCash.textContent = "₹" + b.cash.toLocaleString("en-IN") + " Cash / ₹" + b.online.toLocaleString("en-IN") + " Online";
-      const elNet = document.getElementById("vNetPnl");
-      if (elNet) elNet.textContent = (netVal >= 0 ? "+₹" : "-₹") + Math.abs(netVal).toLocaleString("en-IN");
-      const elExpSub = document.getElementById("vExpSub");
-      if (elExpSub) elExpSub.textContent = "Exp: ₹" + b.exp.toLocaleString("en-IN") + " • " + (netVal >= 0 ? "Net Profit" : "Net Loss");
-      const elLiveMeta = document.getElementById("liveBoardMeta");
-      if (elLiveMeta) elLiveMeta.textContent = "Collection: ₹" + (b.totalCol + extSum).toLocaleString("en-IN") + " • Pro";
+      const stf = J(K_STF, []), adm = J(K_ADM, []), ext = J(K_EXT, []), bills = J(K_BILLS, {}), vend = J(K_VEND, []);
+      const fStf = curBr === "ALL" ? stf : stf.filter(x => String(x.branch || x.br || "") === curBr);
+      const fAdm = curBr === "ALL" ? adm : adm.filter(x => String(x.branch || x.br || "") === curBr);
+      const fExt = curBr === "ALL" ? ext : ext.filter(x => String(x.branch || x.br || "") === curBr);
+      const extSum = fExt.reduce((a,b) => a + Number(b.amt || b.amount || 0), 0);
+      const fees = 0; // Fees appear only after the authenticated cloud payment feed is connected.
+      const total = 0;
+      const cash = 0, online = 0, expenses = 0;
+      const cloudStats = window.omCloudStats || null;
+      const staffCount = cloudStats ? Math.max(Number(cloudStats.staff || 0), fStf.filter(x => x.status !== "removed" && x.active !== false).length) : fStf.filter(x => x.status !== "removed" && x.active !== false).length;
+      const memberCount = cloudStats ? Math.max(Number(cloudStats.members || 0), Number(cloudStats.admissions || 0), fAdm.filter(x => x.status !== "removed" && x.active !== false).length) : fAdm.filter(x => x.status !== "removed" && x.active !== false).length;
+      const net = total - expenses;
+      const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+      setText("vEmpCount", staffCount + " Staff");
+      setText("vExtraCol", "₹" + extSum.toLocaleString("en-IN"));
+      setText("vMembers", String(memberCount));
+      setText("vAdmissions", String(memberCount));
+      setText("pillBranches", curBr === "ALL" ? "0 Branches" : "Branch " + curBr);
+      setText("vTotalCol", "₹" + total.toLocaleString("en-IN"));
+      setText("vFeesCol", "₹" + fees.toLocaleString("en-IN"));
+      setText("vCashOnline", "₹" + cash.toLocaleString("en-IN") + " Cash / ₹" + online.toLocaleString("en-IN") + " Online");
+      setText("vNetPnl", "₹" + net.toLocaleString("en-IN"));
+      setText("vExpSub", "Exp: ₹" + expenses.toLocaleString("en-IN") + " • Net Profit");
+      setText("liveBoardMeta", "Collection: ₹" + total.toLocaleString("en-IN") + " • " + ((window.omSecureSession && window.omSecureSession.planName) || "No Paid Plan"));
+      setText("pillBranches", curBr === "ALL" ? "0 Branches" : "Branch " + curBr);
     }
 
     function renderBillCard() {
@@ -1178,7 +1173,7 @@ Telegram notification sent to Manager.`);
       document.getElementById("pnlEntries").innerHTML = `
         <div class="rec"><b>2026-11-01</b> &bull; Membership Fees (Cash) &bull; <span style="color:var(--emerald)">+₹1,43,000</span></div>
         <div class="rec"><b>2026-11-02</b> &bull; Online Fees &amp; Renewals &bull; <span style="color:var(--emerald)">+₹75,000</span></div>
-        <div class="rec"><b>2026-11-03</b> &bull; Supplement POS Sale &bull; <span style="color:var(--emerald)">+₹38,400</span></div>
+        <div class="rec">Abhi koi supplement sale record upload nahi hua hai.</div>
         <div class="rec"><b>2026-11-04</b> &bull; Expenses &bull; <span style="color:var(--rose)">-₹78,400</span></div>
       `;
     }
@@ -1420,7 +1415,7 @@ Telegram notification sent to Manager.`);
       const totalDeductions = penalty + advance + pf + unpaidCut;
       const net = Math.max(0, gross - totalDeductions);
 
-      const gymName = s.gymName || "UNIVERSAL FITNESS CLUB";
+      const gymName = s.gymName || "Gym";
       const branchName = s.branchName || (s.branch === "001" ? "Main Road, City Center Main" : "Branch " + s.branch);
       const managerName = s.manager || "Gym Owner (9876501100)";
       const paidReason = s.paidReason || (s.paidLeave ? `${s.paidLeave} Days (Casual Leave / Holiday)` : "None");
@@ -1592,7 +1587,7 @@ Telegram notification sent to Manager.`);
       const net = Math.max(0, gross - totalDeductions);
 
       const phone = (s.mobile || "").replace(/[^0-9]/g, "");
-      const textMsg = `*${s.gymName || "UNIVERSAL FITNESS CLUB"} - SALARY SLIP*\n` +
+      const textMsg = `*${s.gymName || "Gym"} - SALARY SLIP*\n` +
         `----------------------------------------\n` +
         `👤 *Employee:* ${s.name} (${s.id})\n` +
         `🏢 *Branch:* ${s.branchName || s.branch}\n` +
@@ -1624,7 +1619,7 @@ Telegram notification sent to Manager.`);
       const s = currentVoucherStaff;
       const email = s.email || "employee@omsoftware.com";
       const subject = `Official Pay Slip - ${currentVoucherPeriod} | ${s.name} (${s.id})`;
-      const body = `Dear ${s.name},\n\nPlease find your salary summary for ${currentVoucherPeriod} at ${s.gymName || "UNIVERSAL FITNESS CLUB"} (${s.branchName || s.branch}).\n\nReporting Manager: ${s.manager || "Gym Owner"}\nMode: ${s.mode}\n\nDetailed breakdown is available in your employee portal.\n\nRegards,\nAccounts & HR Department`;
+      const body = `Dear ${s.name},\n\nPlease find your salary summary for ${currentVoucherPeriod} at ${s.gymName || "Gym"} (${s.branchName || s.branch}).\n\nReporting Manager: ${s.manager || "Gym Owner"}\nMode: ${s.mode}\n\nDetailed breakdown is available in your employee portal.\n\nRegards,\nAccounts & HR Department`;
       
       window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
@@ -1788,7 +1783,7 @@ Telegram notification sent to Manager.`);
     
     // Role-specific portal & attendance/selfie/fees engine (Staff, Manager, Admin/Owner)
     (function setupRolePortalsAndAttendance() {
-      const role = (localStorage.getItem("bfc_role") || "owner").toLowerCase();
+      const role = (localStorage.getItem("bfc_role") || "guest").toLowerCase();
       const loggedUser = localStorage.getItem("om_logged_user") || "Staff (STF-001-1)";
 
       const isStaff = (role === "staff");
@@ -1803,11 +1798,11 @@ Telegram notification sent to Manager.`);
       const branchCode = rawBr;
 
       const BRANCH_NAMES = {
-        "001": "Universal Fitness Club (001 — Main Branch)",
-        "002": "Universal Fitness Club (002 — Kanpur)",
-        "003": "Universal Fitness Club (003 — Lucknow)",
-        "004": "Universal Fitness Club (004 — Agra)",
-        "005": "Universal Fitness Club (005 — Varanasi)"
+        "001": "Branch 001",
+        "002": "Branch 002",
+        "003": "Branch 003",
+        "004": "Branch 004",
+        "005": "Branch 005"
       };
       const gymOrBranchName = BRANCH_NAMES[branchCode] || ("Branch " + branchCode);
 
@@ -2165,7 +2160,7 @@ Telegram notification sent to Manager.`);
                 </div>
 
                 <div id="spShare" style="display:none;margin-top:10px;">
-                  <div class="rec">Share Link: <b style="color:var(--cyan)">https://5brothersfitnessclubunnao-sys.github.io/orgdesk-web/login.html</b></div>
+                  <div class="rec">Share Link: <b style="color:var(--cyan)">login.html</b></div>
                 </div>
 
                 <button type="button" class="big-btn" onclick="logoutUser()">Logout</button>
@@ -2193,14 +2188,14 @@ Telegram notification sent to Manager.`);
                 </div>
 
                 <div class="grid2" style="margin-bottom:10px;">
-                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Branch Live Collection</span><div style="font-size:17px;font-weight:900;color:var(--gold);">₹3,00,000</div></div>
-                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Total Gym Members</span><div style="font-size:17px;font-weight:900;color:var(--cyan);">50 Members</div></div>
-                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Gym Members Present / Absent</span><div style="font-size:12px;font-weight:800;"><span style="color:var(--emerald)">Present: 32</span> / <span style="color:var(--rose)">Absent: 18</span></div></div>
-                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Total Staff (Present / Absent)</span><div style="font-size:12px;font-weight:800;">10 (<span style="color:var(--emerald)">P: 9</span> / <span style="color:var(--rose)">A: 1</span>)</div></div>
+                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Branch Live Collection</span><div style="font-size:17px;font-weight:900;color:var(--gold);">₹0</div></div>
+                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Total Gym Members</span><div style="font-size:17px;font-weight:900;color:var(--cyan);">0 Members</div></div>
+                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Gym Members Present / Absent</span><div style="font-size:12px;font-weight:800;"><span style="color:var(--emerald)">Present: 0</span> / <span style="color:var(--rose)">Absent: 0</span></div></div>
+                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Total Staff (Present / Absent)</span><div style="font-size:12px;font-weight:800;">0 (<span style="color:var(--emerald)">P: 0</span> / <span style="color:var(--rose)">A: 0</span>)</div></div>
                 </div>
 
                 <div class="rec" style="border-color:var(--rose);">
-                  <b style="color:var(--rose);">💸 Fees Baaki Register:</b> Member Name (21 din late — ₹1,200), Deepak Chauhan (₹500)
+                  <b style="color:var(--rose);">💸 Fees Baaki Register:</b> अभी कोई बकाया रिकॉर्ड उपलब्ध नहीं है
                   <button type="button" class="big-btn" style="padding:10px;font-size:12px;margin-top:8px;" onclick="openQuickFeeDesk('Member Name')">💳 2-Min Fees Collect / Receipt</button>
                 </div>
 
@@ -2220,8 +2215,8 @@ Telegram notification sent to Manager.`);
                 <div class="rec">
                   <b style="color:var(--gold);">👥 Staff List (Reason Mandatory on Remove)</b>
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-                    <span>Vikram Yadav (STF-001-TR1)</span>
-                    <button type="button" class="sub-btn" style="color:var(--rose);" onclick="removeStaffWithReason('Vikram Yadav')">Remove</button>
+                    <span>Staff records upload hone par yahan dikhenge</span>
+                    <button type="button" class="sub-btn" style="color:var(--rose);" onclick="alert('Staff list upload hone ke baad action available hoga.')">Remove</button>
                   </div>
                 </div>
               </div>
@@ -2354,7 +2349,7 @@ seedData();
         const stf = J(K_STF, []);
         const adm = J(K_ADM, []);
         if (q.includes("due") || q.includes("bakaya") || q.includes("fees") || q.includes("collection")) {
-          out.innerHTML = `<b>Live Collection &amp; Dues:</b> Total Collection ₹2,23,200 • Fees Collection ₹1,84,800 • Supplement ₹38,400.`;
+          out.innerHTML = `<b>Live Collection &amp; Dues:</b> Total Collection ₹0 • Fees Collection ₹0 • Supplement ₹0. Data upload hone ke baad totals dikhenge.`;
         } else if (q.includes("staff") || q.includes("employee") || q.includes("salary")) {
           out.innerHTML = `<b>Staff Summary:</b> Total Staff Records: <b>${stf.length}</b> • Use "Staff Salary &amp; Payroll" or "Department-Wise Staff" for full details.`;
         } else {
@@ -2374,7 +2369,7 @@ seedData();
 <script>
 (function enhanceRolePortalsV2() {
   function getRoleInfo() {
-    var role = String(localStorage.getItem("bfc_role") || localStorage.getItem("om_active_role") || "owner").toLowerCase();
+    var role = String(localStorage.getItem("bfc_role") || localStorage.getItem("om_active_role") || "guest").toLowerCase();
     var loggedUser = String(localStorage.getItem("om_logged_user") || "");
     var tSess = {};
     try { tSess = JSON.parse(localStorage.getItem("om_team_session") || "{}") || {}; } catch (e) {}
@@ -2388,7 +2383,7 @@ seedData();
       branch: String(tSess.orgId || prof.orgId || "001"),
       gymName: prof.gymName || prof.orgName || "Gym",
       address: prof.address || "Main Road, City Center",
-      ownerEmail: prof.email || "owner@gym.com"
+      ownerEmail: prof.email || ""
     };
   }
 
@@ -2577,47 +2572,75 @@ seedData();
 </script>
 
 <script>
-(function enhanceFirstPlan99AndLicense() {
-  function refreshActivePlanBanner() {
-    var box = document.getElementById("activePlanBanner");
-    if (!box) return;
-    var activePlan = null;
-    try { activePlan = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null"); } catch (e) {}
-    if (activePlan && activePlan.amount) {
-      box.innerHTML = `<span class="pill-ok">ACTIVE PLAN</span> <b style="color:var(--emerald)">You have already a ₹${esc(activePlan.amount)} plan (${esc(activePlan.name || "First Plan")})</b>`;
-    } else {
-      box.innerHTML = `<span class="pill-pd">TRIAL / NO PAID PLAN YET</span> <span style="color:var(--muted)">Select ₹99 First Plan or enter a License Key below.</span>`;
-    }
-  }
-
-  window.activateBasePlan99 = function() {
-    var planObj = { name: "First Plan (Base)", amount: 99, activatedAt: new Date().toISOString() };
-    try { localStorage.setItem("om_active_subscription_plan", JSON.stringify(planObj)); } catch (e) {}
-    refreshActivePlanBanner();
-    alert("You have already a ₹99 plan — First Plan activated!");
-  };
-
-  var origLockLic = window.lockLic;
-  window.lockLic = function() {
-    var inp = document.getElementById("licInp");
-    var val = inp ? inp.value.trim() : "";
-    if (val) {
-      var planObj = { name: "Licensed Plan (" + val + ")", amount: 99, key: val, activatedAt: new Date().toISOString() };
-      try { localStorage.setItem("om_active_subscription_plan", JSON.stringify(planObj)); } catch (e) {}
-    }
-    if (typeof origLockLic === "function") origLockLic();
-    refreshActivePlanBanner();
-  };
-
-  window.addEventListener("DOMContentLoaded", refreshActivePlanBanner);
-  document.addEventListener("click", function(ev) {
-    if (ev.target && ev.target.closest && ev.target.closest('[onclick*="modLicense"]')) {
-      setTimeout(refreshActivePlanBanner, 50);
-    }
-  });
+// Plan activation is server-confirmed only. LocalStorage/license text cannot unlock features.
+(function () {
+  window.activateBasePlan99 = function () { alert("Plan activate karne ke liye Plans page par request bhejein. Payment verification ke baad plan unlock hoga."); location.href = "plans.html"; };
+  window.lockLic = function () { alert("License key ko browser mein save karke plan unlock nahi kiya ja sakta. Master Admin verification zaroori hai."); };
 })();
 </script>
 
 <script src="plan-bridge.js"></script>
+
+<script src="tenant-access.js"></script>
+<script>
+(function omPreviewAndRoleGuard(){
+  function sess(){ return window.omSecureSession || {}; }
+  function isMaster(){ return !!sess().isMasterAdmin; }
+  function requiredPlan(context){
+    const v=String(context||"").toLowerCase();
+    if(/modrouter|multibranch|centralcommand|cloudbackup/.test(v)) return 999;
+    if(/modmaint|modslip|modpnl|moddeptstaff|staffjoining|salary|payroll|expense|lightbill|vendorbill|kyc/.test(v)) return 399;
+    if(/modenq|modextra|enquir|lead|export|supplement/.test(v)) return 199;
+    if(/modcodes|gps|geofence|audit|security|branchsel/.test(v)) return 499;
+    return 99;
+  }
+  function hasPaidPlan(required){ return isMaster() || (!!sess().planActive && Number(sess().planAmount||0) >= Number(required||99)); }
+  function showPlanWall(required){
+    const minPlan = Number(required || 99);
+    alert("Please purchase / upgrade to the ₹"+minPlan+" plan before using this feature. Aap feature ka preview dekh sakte hain; final action plan activate hone ke baad chalega.");
+    if (confirm("Plans dekhna chahte hain?")) location.href = "plans.html";
+  }
+  window.omShowPlanWall = showPlanWall;
+  document.addEventListener("submit", function(ev){
+    const form=ev.target;
+    const context=(form && (form.id||"")) + " " + (form && form.closest && form.closest(".modal-ov") ? form.closest(".modal-ov").id : "");
+    const minPlan=requiredPlan(context);
+    if (!hasPaidPlan(minPlan)) { ev.preventDefault(); ev.stopImmediatePropagation(); showPlanWall(minPlan); }
+  }, true);
+  document.addEventListener("click", function(ev){
+    const el = ev.target && ev.target.closest ? ev.target.closest("button,[role=button],input[type=submit]") : null;
+    if (!el || el.disabled) return;
+    const attr = (el.getAttribute("onclick") || "").toLowerCase();
+    const label = (el.innerText || el.value || "").toLowerCase();
+    if (/logout|closemod|switchpage|openmod|plans|back|view|preview|details|language|setlang|toggle|render|search|filter|cancel/.test(attr + " " + label)) return;
+    if (/submit|save|receive|payment|pay\(|markattendance|remove|delete|approve|reject|upload|import|generate|add[a-z]*|create|update|decide|collect|renew|joining|admission|activate|locklic|applyleave|requestleave/.test(attr)) {
+      const context=attr + " " + label + " " + ((el.closest(".modal-ov")||{}).id||"");
+      const minPlan=requiredPlan(context);
+      if (!hasPaidPlan(minPlan)) { ev.preventDefault(); ev.stopImmediatePropagation(); showPlanWall(minPlan); }
+    }
+  }, true);
+  function applyVerifiedRole(){
+    const role = String(sess().role || "").toLowerCase();
+    if (!role) return;
+    const masterBtn=document.getElementById("masterConsoleBtn"); if(masterBtn) masterBtn.style.display=sess().isMasterAdmin?"inline-block":"none";
+    if (role === "staff") {
+      ["tb2","tb3","tb4"].forEach(id => { const e=document.getElementById(id); if(e)e.style.display="none"; });
+      const b=document.getElementById("branchSel"); if(b)b.style.display="none";
+    } else if (role === "manager") {
+      ["tb2","tb3","tb4"].forEach(id => { const e=document.getElementById(id); if(e)e.style.display="none"; });
+      const b=document.getElementById("branchSel"); if(b){b.value=sess().branchId || b.value;b.disabled=true;}
+    }
+    if (!hasPaidPlan() && role === "owner") {
+      const strip=document.querySelector(".live-strip");
+      if(strip) strip.innerHTML='<span class="tag-red">PREVIEW MODE</span><span>Plan purchase ke baad data entry aur operations unlock honge</span><span class="tag-cyan">READ ONLY</span>';
+    }
+    if (typeof syncDashboard === "function") syncDashboard();
+  }
+  document.addEventListener("DOMContentLoaded", applyVerifiedRole);
+  window.addEventListener("om:session-ready", applyVerifiedRole);
+  window.addEventListener("om:stats-ready", function(){ if(typeof syncDashboard==="function") syncDashboard(); });
+})();
+</script>
+
 </body>
 </html>

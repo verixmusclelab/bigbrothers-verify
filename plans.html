@@ -173,7 +173,7 @@
         <span class="status-badge" id="statusPill">PLAN STATUS</span>
         <div class="status-text" id="statusHeadline" style="margin-top:6px;">No active plan saved yet</div>
       </div>
-      <div id="statusMeta" style="font-size:11.5px;color:var(--cyan);font-weight:700;">Cloud Sync Ready</div>
+      <div id="statusMeta" style="font-size:11.5px;color:var(--cyan);font-weight:700;">Account verification required</div>
     </div>
 
     <div class="header-intro">
@@ -285,7 +285,7 @@
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" class="btn-sec" id="btnBackToPlans" onclick="closeInsidePlan()">← All Plans</button>
-          <button type="button" class="btn-act" id="btnActivateInside" onclick="activateCurrentInsidePlan()">Activate This Plan</button>
+          <button type="button" class="btn-act" id="btnActivateInside" onclick="activateCurrentInsidePlan()">Request This Plan</button>
         </div>
       </div>
       <div id="insideFeaturesContainer"></div>
@@ -435,7 +435,7 @@
       });
 
       document.getElementById("btnBackToPlans").textContent = lang === "hi" ? "← सभी प्लान" : "← All Plans";
-      document.getElementById("btnActivateInside").textContent = lang === "hi" ? "यह प्लान एक्टिवेट करें" : "Activate This Plan";
+      document.getElementById("btnActivateInside").textContent = lang === "hi" ? "इस प्लान के लिए अनुरोध करें" : "Request This Plan";
       
       document.getElementById("introTitle").textContent = lang === "hi" ? "Gym Management Plans & Scalability" : "Gym Management Plans & Scalability";
       document.getElementById("introSub").textContent = lang === "hi" 
@@ -471,45 +471,103 @@
 
     async function activateCurrentInsidePlan() {
       const p = PLAN_DETAILS[insidePlanAmt] || PLAN_DETAILS[99];
-      const obj = { name: p.name, amount: p.amount, status: "active", activatedAt: new Date().toISOString() };
-      activeCloudPlan = obj;
-      try { localStorage.setItem("om_active_subscription_plan", JSON.stringify(obj)); } catch (e) {}
-      if (db) {
-        try {
-          const gid = localStorage.getItem("bfc_gid") || "default_gym";
-          await db.collection("subscriptions").doc(gid).set(Object.assign({}, obj, { gymId: gid, updatedAt: Date.now() }), { merge: true });
-        } catch (e) {}
+      if (!auth || !auth.currentUser || !db) {
+        alert("Pehle Gym Owner account se login karein. Plan request ke liye verified account aur Firebase connection zaroori hai.");
+        location.href = "login.html";
+        return;
       }
-      renderPlanStatus();
-      alert(lang === "hi" ? "You have already a ₹" + p.amount + " plan" : "You have already a ₹" + p.amount + " plan");
+      const uid = auth.currentUser.uid;
+      let claims = {};
+      try { claims = (await auth.currentUser.getIdTokenResult(true)).claims || {}; } catch (e) {}
+      const gymId = String(claims.gymId || claims.orgId || uid);
+      if (claims.masterAdmin === true) {
+        alert("Master Admin account par plans purchase ki zaroorat nahi hai.");
+        return;
+      }
+      if (claims.role && claims.role !== "owner") {
+        alert("Plan purchase request sirf Gym Owner bhej sakta hai. Manager/Staff apne Gym Owner se contact karein.");
+        return;
+      }
+      const ownerCheck = await db.collection("owner_accounts").doc(uid).get();
+      if (!ownerCheck.exists) {
+        alert("Sirf verified Gym Owner plan purchase request bhej sakta hai.");
+        return;
+      }
+      const request = {
+        uid: uid,
+        gymId: gymId,
+        planName: p.name,
+        amount: p.amount,
+        status: "pending",
+        requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        source: "plans-page"
+      };
+      try {
+        await db.collection("plan_requests").doc(uid).set(request, { merge: true });
+        document.getElementById("statusPill").textContent = "REQUEST PENDING";
+        document.getElementById("statusHeadline").textContent = p.name + " — approval pending";
+        document.getElementById("statusMeta").textContent = "Payment verification ke baad Master Admin plan activate karega.";
+        alert("Plan request submit ho gayi. Payment verify hone ke baad Master Admin aapka plan activate karega. Abhi features locked rahenge.");
+      } catch (e) {
+        console.error(e);
+        alert("Plan request save nahi hui. Firebase login aur Firestore rules check karein.");
+      }
     }
 
     function renderPlanStatus() {
       const pill = document.getElementById("statusPill");
       const head = document.getElementById("statusHeadline");
-      if (activeCloudPlan && activeCloudPlan.amount) {
+      if (activeCloudPlan && activeCloudPlan.status === "active" && activeCloudPlan.amount) {
         pill.textContent = lang === "hi" ? "सक्रिय प्लान" : "ACTIVE PLAN";
-        head.textContent = "You have already a ₹" + activeCloudPlan.amount + " plan";
+        head.textContent = (activeCloudPlan.name || "Plan") + " — ₹" + activeCloudPlan.amount;
+        document.getElementById("statusMeta").textContent = "Verified cloud subscription";
+      } else if (activeCloudPlan && activeCloudPlan.status === "pending") {
+        pill.textContent = "REQUEST PENDING";
+        head.textContent = (activeCloudPlan.name || "Selected plan") + " — approval pending";
+        document.getElementById("statusMeta").textContent = "Features remain locked until approval";
       } else {
         pill.textContent = lang === "hi" ? "प्लान स्थिति" : "PLAN STATUS";
-        head.textContent = lang === "hi" ? "अभी कोई प्लान सेव नहीं है — 5 में से अपनी पसंद का प्लान चुनें" : "No plan saved yet — Choose from the 5 plans below";
+        head.textContent = lang === "hi" ? "अभी कोई सक्रिय प्लान नहीं है — प्लान चुनकर अनुरोध भेजें" : "No active plan — choose a plan to request activation";
+        document.getElementById("statusMeta").textContent = "Preview only • Purchase required to use features";
       }
     }
 
-    window.addEventListener("DOMContentLoaded", async function () {
-      try {
-        const localP = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null");
-        if (localP && localP.amount) activeCloudPlan = localP;
-      } catch (e) {}
-      if (db) {
-        try {
-          const gid = localStorage.getItem("bfc_gid") || "default_gym";
-          const snap = await db.collection("subscriptions").doc(gid).get();
-          if (snap.exists && snap.data() && snap.data().amount) activeCloudPlan = snap.data();
-        } catch (e) {}
+    window.addEventListener("DOMContentLoaded", function () {
+      if (!auth || !db) {
+        document.getElementById("statusMeta").textContent = "Firebase unavailable — login required";
+        setLang("hi"); return;
       }
-      setLang("hi");
+      auth.onAuthStateChanged(async function(user) {
+        if (!user) {
+          activeCloudPlan = null;
+          document.getElementById("statusMeta").textContent = "Login required to view your gym plan";
+          setLang("hi"); return;
+        }
+        try {
+          const token = await user.getIdTokenResult(true);
+          if (token.claims && token.claims.masterAdmin === true) {
+            activeCloudPlan = { name: "Master Admin", amount: 999, status: "active" };
+            document.getElementById("statusMeta").textContent = "Developer / Master Admin • All features";
+            setLang("hi"); return;
+          }
+          const gymId = String((token.claims && (token.claims.gymId || token.claims.orgId)) || user.uid);
+          const snap = await db.collection("subscriptions").doc(gymId).get();
+          activeCloudPlan = snap.exists ? snap.data() : null;
+          setLang("hi");
+          const req = await db.collection("plan_requests").doc(user.uid).get();
+          if ((!activeCloudPlan || activeCloudPlan.status !== "active") && req.exists) {
+            activeCloudPlan = req.data();
+            renderPlanStatus();
+          }
+        } catch (e) {
+          console.error(e);
+          activeCloudPlan = null;
+          document.getElementById("statusMeta").textContent = "Cloud plan status could not be verified";
+          renderPlanStatus();
+        }
+      });
     });
+
   </script>
 </body>
 </html>

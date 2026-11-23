@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>5 Brother's Fitness Club - Fees Portal</title>
+<title>Universal Gym ERP — Fees &amp; Billing Portal</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -16,12 +16,27 @@
 window.__esc=function(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
 window.__jq=function(v){return window.__esc(JSON.stringify(String(v==null?"":v)))};
 window.__csv=function(v){var s=String(v==null?"":v).replace(/"/g,'""');return /^[=+\-@\t\r]/.test(s)?"'"+s:s};
+window.bfcTenantId = window.bfcTenantId || function () {
+  var u = window.firebase && firebase.auth && firebase.auth().currentUser;
+  return String(localStorage.getItem("bfc_gid") || (u && u.uid) || "");
+};
+window.bfcTenantStorageKey = function (key) {
+  var gid = window.bfcTenantId() || "unassigned";
+  return "om_member_tenant_v2:" + gid.replace(/[^a-zA-Z0-9_-]/g, "_") + ":" + key;
+};
 window.bfcLoadMembersSnap = window.bfcLoadMembersSnap || async function (db) {
-  try { var s = await db.collection("public_members").get(); if (!s.empty) return s; } catch (e) {}
-  return await db.collection("members").get();
+  var gid = window.bfcTenantId();
+  if (!gid) throw new Error("Verified Gym ID missing. Please login again.");
+  // No global fallback: a tenant must never read every gym's member collection.
+  var q = db.collection("members");
+  var sec = window.omSecureSession || {};
+  if (!sec.isMasterAdmin) q = q.where("gymId", "==", gid);
+  if (sec.role === "manager") q = q.where("branchId", "==", String(sec.branchId));
+  return await q.get();
 };
 </script>
 <script src="tg-notify.js"></script>
+<script src="tenant-access.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 
@@ -187,10 +202,10 @@ th{color:#ffcc00;}
     <div class="welcome-slide-in" style="animation-delay:0.15s">
       <div style="background:#ffcc00;color:#000;font-size:11px;font-weight:900;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:12px;">OFFICIAL PORTAL</div>
     </div>
-    <h1 class="welcome-title welcome-slide-in" style="animation-delay:0.3s">Welcome To<br>5 Brother's Fitness Club</h1>
-    <p class="welcome-sub welcome-slide-in" style="animation-delay:0.45s">आपका 5 Brother's Fitness Club में स्वागत है</p>
+    <h1 class="welcome-title welcome-slide-in" style="animation-delay:0.3s">Welcome To<br><span id='welcomeGymTitle'>Gym &amp; Fitness Club</span></h1>
+    <p class="welcome-sub welcome-slide-in" style="animation-delay:0.45s">आपका <span id='welcomeGymSub'>Gym &amp; Fitness Club</span> में स्वागत है</p>
     <p class="welcome-slide-in" style="animation-delay:0.55s;color:#aaa;font-size:13px;text-align:center;line-height:1.5;margin:0;">
-      उमराव खेड़ा, अकरमपुर, उन्नाव<br>फीस जमा · रसीद · रजिस्टर
+      <span id='welcomeGymAddress'>शाखा पता व संपर्क</span><br>फीस जमा · रसीद · रजिस्टर
     </p>
     <button type="button" class="welcome-btn welcome-slide-in" style="animation-delay:0.7s" onclick="closeFeesWelcome()">✔ आगे बढ़ें</button>
   </div>
@@ -199,8 +214,8 @@ th{color:#ffcc00;}
 <div class="main-card">
   <div class="header">
     <div style="background:#ffcc00;color:#000;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:4px;">OFFICIAL PORTAL</div>
-    <h1>5 Brother's Fitness Club</h1>
-    <div class="tagline">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</div>
+    <h1 id='hdrGymName'>Gym &amp; Fitness Club</h1>
+    <div class="tagline" id="hdrGymTagline">Branch Address | Official Contact</div>
   </div>
 
   <div class="nav-tabs">
@@ -486,7 +501,7 @@ th{color:#ffcc00;}
       <div style="background:#fff; border-radius:10px; padding:10px; margin-bottom:10px; text-align:center;">
         <div id="upiQrBox" style="display:inline-block; min-height:180px; min-width:180px;"></div>
         <div style="color:#000; font-size:11px; font-weight:bold; margin-top:4px;">📷 दूसरे फोन के UPI ऐप से स्कैन करें — रकम अपने-आप भरी होगी</div>
-        <div style="color:#555; font-size:10px;">UPI ID: 9140417259@okbizaxis</div>
+        <div style="color:#555; font-size:10px;">UPI ID: <span id='dispUpiId'>merchant@upi</span></div>
       </div>
       <button type="button" onclick="openUpiApp()" style="width:100%; background:#ffcc00; color:#000; border:none; padding:10px; border-radius:6px; font-weight:bold; font-size:13px; cursor:pointer; margin-bottom:12px;">🚀 UPI App खोलें (GPay / PhonePe / Paytm)</button>
 
@@ -497,7 +512,7 @@ th{color:#ffcc00;}
         <label style="font-size:11px; color:#ffcc00; display:block; margin-top:8px;">📸 या पेमेंट का स्क्रीनशॉट:</label>
         <input type="file" id="payProofFile" accept="image/*" onchange="onProofPicked(this)" style="margin-top:4px; width:100%; font-size:12px; color:#fff;">
         <img id="payProofPreview" alt="" style="display:none; max-width:100%; max-height:160px; margin-top:6px; border-radius:6px; border:1px solid #444;">
-        <button type="button" id="btnConfirmUtr" onclick="confirmOnlinePayment()" style="width:100%; background:#25D366; color:#000; border:none; padding:12px; border-radius:6px; font-weight:900; margin-top:10px; cursor:pointer;">✅ Sent to 5 Brother's Fitness Club Owner<br>for confirmation — Your Payment Receive</button>
+        <button type="button" id="btnConfirmUtr" onclick="confirmOnlinePayment()" style="width:100%; background:#25D366; color:#000; border:none; padding:12px; border-radius:6px; font-weight:900; margin-top:10px; cursor:pointer;">✅ Sent to Gym Owner / Management<br>for confirmation — Your Payment Receive</button>
         <button type="button" onclick="closeUpiModal()" style="width:100%; background:#333; color:#fff; border:none; padding:8px; border-radius:6px; margin-top:6px; cursor:pointer;">रद्द करें (Cancel)</button>
       </div>
     </div>
@@ -505,7 +520,7 @@ th{color:#ffcc00;}
     <div id="upiStepWait" style="display:none; padding:10px 0;">
       <div style="font-size:42px; margin-bottom:8px;">⌛</div>
       <h3 style="color:#ffcc00; margin-bottom:6px;">Payment Details Sent!</h3>
-      <p style="font-size:13px; color:#00ff99; font-weight:bold; margin-bottom:8px;">Sent to 5 Brother's Fitness Club Owner<br>for confirmation — Your Payment Receive</p>
+      <p style="font-size:13px; color:#00ff99; font-weight:bold; margin-bottom:8px;">Sent to Gym Owner / Management<br>for confirmation — Your Payment Receive</p>
       <p style="font-size:12px; color:#ccc; margin-bottom:14px;">Owner चेक करके Approve करेंगे।<br>Approve होते ही Receipt अपने-आप डाउनलोड होगी।</p>
       <div style="background:#222; border:2px solid #ffcc00; border-radius:12px; padding:16px; margin-bottom:12px;">
         <div style="font-size:11px; color:#aaa; margin-bottom:4px;">⏳ Live Verification Wait</div>
@@ -526,7 +541,7 @@ th{color:#ffcc00;}
     <h2 style="color:#25D366; font-size:20px; font-weight:900; margin-bottom:6px;">HURRAY! PAYMENT SUCCESSFUL!</h2>
     <h3 style="color:#ffcc00; font-size:15px; font-weight:800; margin-bottom:10px;">Thanks So Much For Payment</h3>
     <div style="background:#1e1e1e; border:1px dashed #ffcc00; border-radius:8px; padding:10px; margin-bottom:14px;">
-      <p style="font-size:13px; color:#fff; font-weight:bold; margin-bottom:4px;">5 Brother's Fitness Club</p>
+      <p style="font-size:13px; color:#fff; font-weight:bold; margin-bottom:4px;" id="hurrayGymTitle">Gym &amp; Fitness Club</p>
       <p style="font-size:11px; color:#aaa;">आपकी सदस्यता सक्रिय कर दी गई है। हार्ड वर्क और रिजल्ट्स जारी रखें!</p>
     </div>
     <button type="button" onclick="proceedToReceiptFromHurray()" style="width:100%; background:#25D366; color:#000; border:none; padding:11px; border-radius:8px; font-weight:900; font-size:13px; cursor:pointer;">📄 रसीद देखें व डाउनलोड करें ➡️</button>
@@ -542,13 +557,13 @@ th{color:#ffcc00;}
 
     <div id="printablePages">
       <div class="receipt-card">
-        <div class="receipt-watermark">5 Brother's Fitness Club</div>
+        <div class="receipt-watermark" id="rWatermark">FITNESS CLUB</div>
 
         <div class="receipt-header">
           <div style="background:#ffcc00; color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; display:inline-block;">PAGE 1 : OFFICIAL INVOICE</div>
-          <h2 style="font-size:16px; margin-top:4px; font-weight:900;">5 Brother's Fitness Club</h2>
+          <h2 style="font-size:16px; margin-top:4px; font-weight:900;" id="rGymHeadTitle">Gym &amp; Fitness Club</h2>
           <div style="font-size:10px; font-weight:bold; color:#555; margin-top:2px;">"100% असली और असरदार रिजल्ट"</div>
-          <p style="font-size:10px; color:#777; margin-top:2px;">उमराव खेड़ा, अकरमपुर, उन्नाव | Ph: 9140417259</p>
+          <p style="font-size:10px; color:#777; margin-top:2px;" id="rGymHeadAddr">Branch Address | Ph: Contact</p>
         </div>
 
         <div class="r-row"><span>Bill ID:</span><b id="billId" style="color:#b37400;"></b></div>
@@ -575,14 +590,14 @@ th{color:#ffcc00;}
             <div style="font-size:8px;font-weight:900;color:#000;margin-top:2px;">SCAN TO VIEW/DL</div>
           </div>
           <div class="receipt-sign-box">
-            <img src="https://i.ibb.co/mVtxCHkp/IMG-20261021-164158.jpg" alt="Signature" crossorigin="anonymous" class="receipt-sign-img">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><circle cx='40' cy='40' r='36' stroke='%23000' stroke-width='3' fill='none'/><text x='40' y='36' font-size='9' font-weight='bold' text-anchor='middle' fill='%23000'>VERIFIED</text><text x='40' y='48' font-size='8' text-anchor='middle' fill='%23000'>FITNESS</text></svg>" alt="Signature" crossorigin="anonymous" class="receipt-sign-img">
             <div class="receipt-owner-txt">
-              <strong>Saurabh Singh Chandel</strong>
-              Owner<br>5 Brother's Fitness Club
+              <strong id='rOwnerStrong'>Authorized Manager</strong>
+              <span id='rOwnerRole'>Management</span><br><span id='rOwnerGymName'>Fitness Club</span>
             </div>
           </div>
           <div class="receipt-stamp-box">
-            <img src="https://i.ibb.co/mVtxCHkp/IMG-20261021-164158.jpg" alt="Authorized Stamp" crossorigin="anonymous" class="receipt-stamp-img">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><circle cx='40' cy='40' r='36' stroke='%23000' stroke-width='3' fill='none'/><text x='40' y='36' font-size='9' font-weight='bold' text-anchor='middle' fill='%23000'>VERIFIED</text><text x='40' y='48' font-size='8' text-anchor='middle' fill='%23000'>FITNESS</text></svg>" alt="Authorized Stamp" crossorigin="anonymous" class="receipt-stamp-img">
           </div>
         </div>
       </div>
@@ -648,12 +663,12 @@ th{color:#ffcc00;}
 
 // --- FIREBASE CLOUD SYNC (taaki attendance kiosk par sabhi members dikhein) ---
 const firebaseConfig = {
-  apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",
-  authDomain: "brother-s-fitness-club.firebaseapp.com",
-  projectId: "brother-s-fitness-club",
-  storageBucket: "brother-s-fitness-club.firebasestorage.app",
-  messagingSenderId: "781489019006",
-  appId: "1:781489019006:web:4a230698f2195e7208202f"
+  apiKey: "AIzaSyAHEMISEIDSzZz-m2OQT5EPyhTRF-mXqjQ",
+  authDomain: "bfc-gym-215ae.firebaseapp.com",
+  projectId: "bfc-gym-215ae",
+  storageBucket: "bfc-gym-215ae.firebasestorage.app",
+  messagingSenderId: "886920088571",
+  appId: "1:886920088571:web:c4bc478d246a2700b0d95e"
 };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -670,7 +685,7 @@ function bfcStripImgs(list) {
 }
 // Phone ki memory bhar jaye to bhi rasid na ruke: pehle poora, fir bina photo ke, fir kuch nahi
 function bfcSafeSetLocal(list) {
-  var keys = ["bbf_master_records_v4", "5BFC_MEMBERS"];
+  var keys = [window.bfcTenantStorageKey("bbf_master_records_v4"), window.bfcTenantStorageKey("5BFC_MEMBERS")];
   try {
     var full = JSON.stringify(list);
     keys.forEach(function (k) { localStorage.setItem(k, full); });
@@ -691,7 +706,10 @@ function bfcSafeSetLocal(list) {
 async function syncListToCloud(list) {
   try {
     // cloud par sirf admin likhe (public customer ka phone nahi)
-    if (!(typeof bfcIsAdmin === "function" && await bfcIsAdmin())) return;
+    var sec = window.omSecureSession || {};
+    // Master Admin is cross-tenant read-only in this member portal; writes require selecting a tenant in the master console.
+    if (!(sec.role === "owner" || sec.role === "manager")) return;
+    const gid = window.bfcTenantId();
     const items = (list || []).filter(m => m && m.name && (m.id || m.phone));
     for (let i = 0; i < items.length; i += 400) {
       const batch = db.batch();
@@ -699,8 +717,12 @@ async function syncListToCloud(list) {
         const clean = JSON.parse(JSON.stringify(m));
         BFC_IMG_KEYS.forEach(function (k) { delete clean[k]; });
         clean.id = String(m.id || m.phone).trim();
+        clean.gymId = gid;
+        var sec = window.omSecureSession || {};
+        clean.branchId = String(m.branchId || m.branch || sec.branchId || "001");
+        clean.ownerUid = (firebase.auth().currentUser && firebase.auth().currentUser.uid) || "";
         if (!clean.manualStatus) clean.manualStatus = clean.status || "Paid";
-        batch.set(db.collection("members").doc(clean.id), clean, { merge: true });
+        batch.set(db.collection("members").doc(gid + "__" + clean.id), clean, { merge: true });
       });
       await batch.commit();
     }
@@ -717,7 +739,7 @@ async function loadMembersFromCloud() {
   try {
     const snap = await bfcLoadMembersSnap(db);
     const cloud = [];
-    snap.forEach(d => cloud.push({ id: d.id, ...d.data() }));
+    snap.forEach(d => { const data = d.data() || {}; cloud.push({ ...data, id: data.id || d.id }); });
 
     const cloudIds = new Set(cloud.map(c => String(c.id)));
     const cloudPhones = new Set(cloud.map(c => String(c.phone || "").trim()).filter(Boolean));
@@ -747,8 +769,10 @@ async function loadMembersFromCloud() {
 // Customer wali screen "public_members" se data padhti hai: wahan bhi nayi due date / advance update karo (sirf existing doc, fail ho to chup)
 function bfcMirrorPublic(m) {
   try {
-    if (!m || m.id == null || typeof bfcIsAdmin !== "function") return;
-    bfcIsAdmin().then(function (ok) {
+    if (!m || m.id == null) return;
+    var sec = window.omSecureSession || {};
+    if (!(sec.role === "owner" || sec.role === "manager")) return;
+    Promise.resolve(true).then(function (ok) {
       if (!ok) return;
       const f = {
         validTill: m.validTill || "", dueV: m.dueV || 2, advance: Number(m.advance) || 0,
@@ -756,7 +780,9 @@ function bfcMirrorPublic(m) {
         lastPaid: m.lastPaid || "", amount: m.amount || 0, payMode: m.payMode || "",
         planBase: m.planBase || 0, planMonths: m.planMonths || 1
       };
-      db.collection("public_members").doc(String(m.id)).update(f).catch(function () {});
+      var gid = window.bfcTenantId();
+      f.gymId = gid;
+      db.collection("public_members").doc(gid + "__" + String(m.id)).update(f).catch(function () {});
     }).catch(function () {});
   } catch (e) {}
 }
@@ -783,9 +809,9 @@ const itemsPerPage = 12;
 const INITIAL_MEMBERS = [];  // asli data cloud se (public_members) aata hai
 
 function getMasterList() {
-  let masterSaved = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
-  let bfcSaved = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
-  let admSaved = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+  let masterSaved = JSON.parse(localStorage.getItem(window.bfcTenantStorageKey("bbf_master_records_v4")) || "[]");
+  let bfcSaved = JSON.parse(localStorage.getItem(window.bfcTenantStorageKey("5BFC_MEMBERS")) || "[]");
+  let admSaved = JSON.parse(localStorage.getItem(window.bfcTenantStorageKey("5bfc_admissions")) || "[]");
 
   let combined = [...masterSaved, ...bfcSaved, ...admSaved];
   let uniqueMap = new Map();
@@ -802,14 +828,14 @@ function getMasterList() {
 
   let finalList = Array.from(uniqueMap.values());
   if (finalList.length === 0) {
-    localStorage.setItem("bbf_master_records_v4", JSON.stringify(INITIAL_MEMBERS));
+    localStorage.setItem(window.bfcTenantStorageKey("bbf_master_records_v4"), JSON.stringify(INITIAL_MEMBERS));
     return INITIAL_MEMBERS;
   }
   return finalList;
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  loadMembersFromCloud();
+  window.addEventListener("om:session-ready", function () { loadMembersFromCloud(); }, { once: true });
   const today = todayStr();
   document.getElementById("mFeePaidDate").value = today;
   document.getElementById("mFeePrevPaidDate").value = today;
@@ -1369,7 +1395,7 @@ async function startPaymentFlow(mode, paidAmt) {
 function upiLink() {
   const d = pendingPaymentData;
   const note = "Fee " + String(d.name || "").replace(/[^A-Za-z0-9 ]/g, "").trim().slice(0, 25);
-  return "upi://pay?pa=" + encodeURIComponent("9140417259@okbizaxis") + "&pn=" + encodeURIComponent("5 Brothers Fitness Club") +
+  return "upi://pay?pa=" + encodeURIComponent("merchant@upi") + "&pn=" + encodeURIComponent("Fitness Club") +
          "&am=" + encodeURIComponent(String(d.paidAmt)) + "&cu=INR&tn=" + encodeURIComponent(note);
 }
 function renderUpiQr() {
@@ -1487,12 +1513,12 @@ async function confirmOnlinePayment() {
     if (hasProof) bfcNotifyPhoto(window.__proofData, _cap); else bfcNotify(_cap);
   } catch (e) {}
 
-  // WhatsApp Owner 9990954574
-  const waMsg = `🏋️ *5 Brother's Fitness Club – New Payment*\n\n*सदस्य:* ${d.name}\n*मोबाइल:* ${d.phone}\n*राशि:* ₹${d.paidAmt}\n*प्लान:* ${d.cat} | ${d.planText}\n` +
+  // WhatsApp Owner 9876543210
+  const waMsg = `🏋️ *Fitness Club – New Payment*\n\n*सदस्य:* ${d.name}\n*मोबाइल:* ${d.phone}\n*राशि:* ₹${d.paidAmt}\n*प्लान:* ${d.cat} | ${d.planText}\n` +
     (hasRef ? `*UTR:* ${ref}\n` : `*Proof:* Screenshot\n`) +
     `*तारीख:* ${d.paidDateVal || ""}\n*समय:* ${fmtIST(nowIso)}\n\n⚠️ Approve बाकी है।`;
   const apprLink = proofId ? (location.origin + location.pathname + "?approve=" + proofId) : "";
-  window.open("https://wa.me/919990954574?text=" + encodeURIComponent(waMsg + (apprLink ? "\n\n👉 सीधा Approve करने के लिए यह लिंक खोलें:\n" + apprLink : "")), "_blank");
+  window.open("https://wa.me/919876543210?text=" + encodeURIComponent(waMsg + (apprLink ? "\n\n👉 सीधा Approve करने के लिए यह लिंक खोलें:\n" + apprLink : "")), "_blank");
 
   // Owner khud (admin login ke saath) fees le raha ho to wait nahi: seedha approve + receipt
   try {
@@ -1558,7 +1584,7 @@ function startApprovalWait(proofId, paymentData) {
       if (snap.exists && snap.data().status === "rejected") {
         clearInterval(waitTimerInterval); clearInterval(waitPollInterval);
         waitTimerInterval = null; waitPollInterval = null;
-        if (statusEl) statusEl.innerHTML = "<b style='color:#ff6666'>❌ Owner ने यह पेमेंट Reject किया।" + (snap.data().rejectReason ? "<br>कारण: " + esc(snap.data().rejectReason) : "") + "<br>कृपया Owner से संपर्क करें: 9140417259</b>";
+        if (statusEl) statusEl.innerHTML = "<b style='color:#ff6666'>❌ Owner ने यह पेमेंट Reject किया।" + (snap.data().rejectReason ? "<br>कारण: " + esc(snap.data().rejectReason) : "") + "<br>कृपया Owner से संपर्क करें: 9876543210</b>";
         return;
       }
       if (snap.exists && snap.data().checked === true) {
@@ -1708,7 +1734,7 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray, opts) {
     const receiptRecord = {
       billId: billId,
       receiptKey: receiptKey,
-      gymName: "5 Brother's Fitness Club",
+      gymName: (typeof getActiveGymProfile === 'function' ? getActiveGymProfile().gymName : "Fitness Club"),
       memberName: data.name,
       fatherName: data.father || "-",
       planDetails: data.cat + " | " + data.planText,
@@ -1778,7 +1804,7 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray, opts) {
     prevPayMsg = `• *पिछला भुगतान:* ${prevDateFormatted}\n`;
   }
 
-  const msg = data.advanceOnly ? (`🏋️‍♂️ *5 BROTHER'S FITNESS CLUB*\n*Advance जमा रसीद*\n━━━━━━━━━━━━━━━━━━━━\n*सदस्य:* ${data.name}\n*रसीद संख्या:* #${billId}\n• *तारीख:* ${paidDateFormatted}\n• *Advance जमा:* ₹${data.advanceAdd} (${modeText})\n• *अगली फीस तारीख:* ${validTill} (बदली नहीं)\n━━━━━━━━━━━━━━━━━━━━\n📍 उमराव खेड़ा, अकरमपुर, उन्नाव\n📞 संपर्क: 9140417259`) : `🏋️‍♂️ *5 BROTHER'S FITNESS CLUB*
+  const msg = data.advanceOnly ? (`🏋️‍♂️ *FITNESS CLUB*\n*Advance जमा रसीद*\n━━━━━━━━━━━━━━━━━━━━\n*सदस्य:* ${data.name}\n*रसीद संख्या:* #${billId}\n• *तारीख:* ${paidDateFormatted}\n• *Advance जमा:* ₹${data.advanceAdd} (${modeText})\n• *अगली फीस तारीख:* ${validTill} (बदली नहीं)\n━━━━━━━━━━━━━━━━━━━━\n📍 उमराव खेड़ा, अकरमपुर, उन्नाव\n📞 संपर्क: 9876543210`) : `🏋️‍♂️ *FITNESS CLUB*
 *Official Payment & Fee Slip*
 ━━━━━━━━━━━━━━━━━━━━
 *सदस्य:* ${data.name}
@@ -1798,7 +1824,7 @@ ${specialDiscountMsg}${advMsg}• *बकाया राशि:* ₹${data.dueA
 • *खाता स्थिति:* सक्रिय (Active)
 ━━━━━━━━━━━━━━━━━━━━
 📍 उमराव खेड़ा, अकरमपुर, उन्नाव
-📞 संपर्क: 9140417259`;
+📞 संपर्क: 9876543210`;
 
   document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + data.phone + "?text=" + encodeURIComponent(msg), "_blank");
 
@@ -1931,7 +1957,7 @@ function cleanDuplicateMembers() {
 
   const finalList = [...keep, ...noPhone];
   persistList(finalList);
-  removedItems.forEach(x => { if (x.id != null) db.collection("members").doc(String(x.id)).delete().catch(e => console.error("Cloud delete failed", e)); });
+  removedItems.forEach(x => { if (x.id != null) db.collection("members").doc(window.bfcTenantId() + "__" + String(x.id)).delete().catch(e => console.error("Cloud delete failed", e)); });
   currentAdminPage = 1;
   renderAdminTable();
   alert(removed > 0
@@ -2521,5 +2547,103 @@ window.addEventListener("DOMContentLoaded", async function () {
   } catch (e) {}
 });
 </script>
+
+<script>
+// --- UNIVERSAL MULTI-TENANT DYNAMIC PROFILE RESOLVER ---
+function getActiveGymProfile() {
+  try {
+    const custom = JSON.parse(localStorage.getItem("om_active_gym_profile") || "null");
+    if (custom && custom.gymName) return custom;
+  } catch (e) {}
+
+  try {
+    const vault = JSON.parse(localStorage.getItem("om_master_customer_vault_v2") || "[]");
+    const logged = localStorage.getItem("om_logged_user") || "";
+    if (vault.length && logged) {
+      const match = vault.find(c => logged.includes(c.gymName) || logged.includes(c.ownerName));
+      if (match) {
+        return {
+          gymName: match.gymName,
+          ownerName: match.ownerName,
+          phone: match.mobile,
+          address: match.address || (match.pincode ? "PIN: " + match.pincode : "Main Road"),
+          upiId: match.upiId || (match.mobile ? match.mobile + "@upi" : "gymowner@upi"),
+          ownerWa: match.mobile || "9876543210"
+        };
+      }
+    }
+    if (vault.length > 0) {
+      const first = vault[0];
+      return {
+        gymName: first.gymName,
+        ownerName: first.ownerName,
+        phone: first.mobile,
+        address: first.address || "Main Road",
+        upiId: first.mobile ? first.mobile + "@upi" : "gymowner@upi",
+        ownerWa: first.mobile || "9876543210"
+      };
+    }
+  } catch (e) {}
+
+  return {
+    gymName: "Gym",
+    ownerName: "Gym Owner / Manager",
+    phone: "9876543210",
+    address: "Fitness Center Campus",
+    upiId: "merchant@upi",
+    ownerWa: "9876543210"
+  };
+}
+
+(function applyUniversalTenantProfile() {
+  window.addEventListener("DOMContentLoaded", function() {
+    const prof = getActiveGymProfile();
+    document.title = `${prof.gymName} — Fees Portal`;
+
+    const elWelcomeTitle = document.getElementById("welcomeGymTitle");
+    if (elWelcomeTitle) elWelcomeTitle.textContent = prof.gymName;
+    const elWelcomeSub = document.getElementById("welcomeGymSub");
+    if (elWelcomeSub) elWelcomeSub.textContent = prof.gymName;
+    const elWelcomeAddr = document.getElementById("welcomeGymAddress");
+    if (elWelcomeAddr) elWelcomeAddr.textContent = `${prof.address} | Ph: ${prof.phone}`;
+
+    const elHdrName = document.getElementById("hdrGymName");
+    if (elHdrName) elHdrName.textContent = prof.gymName;
+    const elHdrTagline = document.getElementById("hdrGymTagline");
+    if (elHdrTagline) elHdrTagline.textContent = `${prof.address} | Ph: ${prof.phone}`;
+
+    const elHurrayTitle = document.getElementById("hurrayGymTitle");
+    if (elHurrayTitle) elHurrayTitle.textContent = prof.gymName;
+
+    const elWatermark = document.getElementById("rWatermark");
+    if (elWatermark) elWatermark.textContent = prof.gymName;
+    const elRHeadTitle = document.getElementById("rGymHeadTitle");
+    if (elRHeadTitle) elRHeadTitle.textContent = prof.gymName;
+    const elRHeadAddr = document.getElementById("rGymHeadAddr");
+    if (elRHeadAddr) elRHeadAddr.textContent = `${prof.address} | Ph: ${prof.phone}`;
+
+    const elROwnerStrong = document.getElementById("rOwnerStrong");
+    if (elROwnerStrong) elROwnerStrong.textContent = prof.ownerName;
+    const elROwnerRole = document.getElementById("rOwnerRole");
+    if (elROwnerRole) elROwnerRole.textContent = "Owner / Manager";
+    const elROwnerGym = document.getElementById("rOwnerGymName");
+    if (elROwnerGym) elROwnerGym.textContent = prof.gymName;
+
+    const elDispUpi = document.getElementById("dispUpiId");
+    if (elDispUpi) elDispUpi.textContent = prof.upiId;
+
+    // Override upiLink dynamically
+    window.upiLink = function() {
+      const d = pendingPaymentData || {};
+      const note = "Fee " + String(d.name || "").replace(/[^A-Za-z0-9 ]/g, "").trim().slice(0, 25);
+      return "upi://pay?pa=" + encodeURIComponent(prof.upiId) +
+             "&pn=" + encodeURIComponent(prof.gymName) +
+             "&am=" + encodeURIComponent(String(d.paidAmt || 0)) +
+             "&cu=INR&tn=" + encodeURIComponent(note);
+    };
+  });
+})();
+</script>
 </body>
 </html>
+
