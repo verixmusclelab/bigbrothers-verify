@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gym SaaS Plans &amp; Pricing — Om Software ERP</title>
+  <title>Gym SaaS Plans (₹99, ₹199, ₹399, ₹499, ₹999)</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -74,9 +74,8 @@
 
     .header-intro { text-align: center; margin-bottom: 22px; }
     .header-intro h1 { font-size: 24px; font-weight: 900; color: #fff; margin-bottom: 6px; }
-    .header-intro p { font-size: 13px; color: var(--muted); max-width: 620px; margin: 0 auto; line-height: 1.5; }
+    .header-intro p { font-size: 13px; color: var(--muted); max-width: 640px; margin: 0 auto; line-height: 1.5; }
 
-    /* Outer Plan Cards Grid (5 Tiers) */
     .plans-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 24px; }
     @media (min-width: 640px) { .plans-grid { grid-template-columns: 1fr 1fr; } }
     @media (min-width: 860px) { .plans-grid { grid-template-columns: 1fr 1fr 1fr; } }
@@ -85,7 +84,6 @@
       background: linear-gradient(160deg, rgba(17, 28, 58, 0.96), rgba(11, 18, 38, 0.96));
       border: 1.5px solid var(--border); border-radius: 20px; padding: 20px;
       cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between;
-      position: relative;
     }
     .plan-card:hover { transform: translateY(-3px); filter: brightness(1.05); }
 
@@ -133,7 +131,6 @@
     .tier-499 .open-hint { color: var(--purple); }
     .tier-999 .open-hint { color: var(--rose); }
 
-    /* Inside Plan View */
     .inside-view {
       display: none;
       background: rgba(11, 18, 38, 0.98); border: 1.5px solid var(--border-gold);
@@ -173,18 +170,15 @@
         <span class="status-badge" id="statusPill">PLAN STATUS</span>
         <div class="status-text" id="statusHeadline" style="margin-top:6px;">No active plan saved yet</div>
       </div>
-      <div id="statusMeta" style="font-size:11.5px;color:var(--cyan);font-weight:700;">Account verification required</div>
+      <div id="statusMeta" style="font-size:11.5px;color:var(--cyan);font-weight:700;">Cloud Sync Ready</div>
     </div>
 
     <div class="header-intro">
       <h1 id="introTitle">Gym Management Plans &amp; Scalability</h1>
-      <p id="introSub">5 सरल और पारदर्शी प्लान — शुरुआत से लेकर मल्टी-ब्रांच एंटरप्राइज़ तक, अपनी ज़रूरत के अनुसार सही प्लान चुनें।</p>
+      <p id="introSub">5 स्पष्ट प्लान — ₹99, ₹199, ₹399, ₹499 और ₹999। बिना प्लान लिए फीचर खुलेंगे व दिखेंगे, लेकिन इस्तेमाल/सेव करने पर प्लान लेने का संदेश आएगा।</p>
     </div>
 
-    <!-- 5 PLAN TIERS (Cards on the outside) -->
     <div class="plans-grid" id="outerPlansGrid">
-      
-      <!-- Tier 1: ₹99 -->
       <div class="plan-card tier-99" onclick="openInsidePlan(99)">
         <div>
           <div class="plan-top">
@@ -202,7 +196,6 @@
         <div class="open-hint" id="p99OpenHint">विस्तार से देखें →</div>
       </div>
 
-      <!-- Tier 2: ₹199 -->
       <div class="plan-card tier-199" onclick="openInsidePlan(199)">
         <div>
           <div class="plan-top">
@@ -220,7 +213,6 @@
         <div class="open-hint" id="p199OpenHint">विस्तार से देखें →</div>
       </div>
 
-      <!-- Tier 3: ₹399 -->
       <div class="plan-card tier-399" onclick="openInsidePlan(399)">
         <div>
           <div class="plan-top">
@@ -238,7 +230,6 @@
         <div class="open-hint" id="p399OpenHint">विस्तार से देखें →</div>
       </div>
 
-      <!-- Tier 4: ₹499 -->
       <div class="plan-card tier-499" onclick="openInsidePlan(499)">
         <div>
           <div class="plan-top">
@@ -256,7 +247,6 @@
         <div class="open-hint" id="p499OpenHint">विस्तार से देखें →</div>
       </div>
 
-      <!-- Tier 5: ₹999 -->
       <div class="plan-card tier-999" style="grid-column: 1 / -1;" onclick="openInsidePlan(999)">
         <div>
           <div class="plan-top">
@@ -273,10 +263,8 @@
         </div>
         <div class="open-hint" id="p999OpenHint">विस्तार से देखें →</div>
       </div>
-
     </div>
 
-    <!-- INSIDE PLAN VIEW (Opened when a card is clicked) -->
     <div class="inside-view" id="insidePlanView">
       <div class="inside-hdr">
         <div>
@@ -285,12 +273,11 @@
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" class="btn-sec" id="btnBackToPlans" onclick="closeInsidePlan()">← All Plans</button>
-          <button type="button" class="btn-act" id="btnActivateInside" onclick="activateCurrentInsidePlan()">Request This Plan</button>
+          <button type="button" class="btn-act" id="btnActivateInside" onclick="activateCurrentInsidePlan()">Activate This Plan</button>
         </div>
       </div>
       <div id="insideFeaturesContainer"></div>
     </div>
-
   </div>
 
   <script>
@@ -318,13 +305,13 @@
         name: "First Plan (₹99)",
         amount: 99,
         featuresHi: [
-          { prio: true, t: "1. Mark Your Attendance BY QR (सबसे पहले)", b: "QR स्कैन करते ही अटेंडेंस स्क्रीन; पहली बार Camera व Location अनुमति; नाम/नंबर चुनते ही 3 सेकंड में ऑटो-सेल्फ़ी क्लिक व सेव; जॉइनिंग तारीख से दिन गिनती (2 Oct → 30 Oct = 28 दिन) और Telegram पर सेल्फ़ी अलर्ट।" },
+          { prio: true, t: "1. Mark Your Attendance BY QR (सबसे पहले)", b: "QR स्कैन करते ही अटेंडेंस स्क्रीन; पहली बार Camera व Location अनुमति; नाम/नंबर चुनते ही 3 सेकंड में ऑटो-सेल्फ़ी क्लिक व सेव; जॉइनिंग तारीख से दिन गिनती और Telegram पर सेल्फ़ी अलर्ट।" },
           { prio: false, t: "2. Member Attendance & Expired Alert", b: "कैलेंडर और ऑटो-सर्च के साथ मेंबर्स की सेल्फ़ी अटेंडेंस, Live Present/Absent, Total Gym Members, आसान Remove, Fees Expire फ़्लैशिंग बोर्ड और Expired Members सूची।" },
           { prio: false, t: "3. Fees Payment & Instant Receipt", b: "नाम/मोबाइल/पिता के नाम से ऑटो-सर्च; Joining Date, Expiry, Next Fees Date, प्लान व महीने; Edit प्लान विकल्प; Online/Cash मोड; Pay करते ही रसीद डाउनलोड व WhatsApp पर भेजने की सुविधा।" },
           { prio: false, t: "4. Instant Admission Form + Unique QR", b: "फ़ॉर्म सेव + तुरंत रसीद + Unique QR (स्कैन करके कभी भी फ़ॉर्म देखें) + हटाने तक स्थायी सुरक्षित डेटा + नाम/नंबर से सर्च।" }
         ],
         featuresEn: [
-          { prio: true, t: "1. Mark Your Attendance BY QR (First Priority)", b: "QR scan opens attendance directly; one-time Camera & Location permission; 3-sec auto selfie on name/mobile select; days counted from joining date (2 Oct → 30 Oct = 28 days) + instant Telegram selfie alert." },
+          { prio: true, t: "1. Mark Your Attendance BY QR (First Priority)", b: "QR scan opens attendance directly; one-time Camera & Location permission; 3-sec auto selfie on name/mobile select; days counted from joining date + instant Telegram selfie alert." },
           { prio: false, t: "2. Member Attendance & Expired Alert", b: "Member selfie attendance with calendar & auto-search, Live Present/Absent, Total Members, easy remove, Fees Expire flashing board & Expired Members list." },
           { prio: false, t: "3. Fees Payment & Instant Receipt", b: "Auto-search by name/phone/father name; shows Joining Date, Expiry, Next Fees Date, plan & months; instant Edit plan; Online/Cash → Pay → receipt download + WhatsApp share." },
           { prio: false, t: "4. Instant Admission Form + Unique QR", b: "Save admission form + instant receipt + Unique QR (scan anytime to view form) + permanent save until removed + search by name/phone." }
@@ -427,21 +414,12 @@
       document.getElementById("btnHi").classList.toggle("active", lang === "hi");
       document.getElementById("btnEn").classList.toggle("active", lang === "en");
       document.getElementById("backLink").textContent = lang === "hi" ? "← डैशबोर्ड" : "← Dashboard";
-      
-      const hints = ["p99OpenHint", "p199OpenHint", "p399OpenHint", "p499OpenHint", "p999OpenHint"];
-      hints.forEach(id => {
+      ["p99OpenHint", "p199OpenHint", "p399OpenHint", "p499OpenHint", "p999OpenHint"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = lang === "hi" ? "विस्तार से देखें →" : "View Details →";
       });
-
       document.getElementById("btnBackToPlans").textContent = lang === "hi" ? "← सभी प्लान" : "← All Plans";
-      document.getElementById("btnActivateInside").textContent = lang === "hi" ? "इस प्लान के लिए अनुरोध करें" : "Request This Plan";
-      
-      document.getElementById("introTitle").textContent = lang === "hi" ? "Gym Management Plans & Scalability" : "Gym Management Plans & Scalability";
-      document.getElementById("introSub").textContent = lang === "hi" 
-        ? "5 सरल और पारदर्शी प्लान — शुरुआत से लेकर मल्टी-ब्रांच एंटरप्राइज़ तक, अपनी ज़रूरत के अनुसार सही प्लान चुनें।"
-        : "5 clear, transparent plans — from single-desk starter to multi-branch enterprise scale, pick what fits your gym best.";
-
+      document.getElementById("btnActivateInside").textContent = lang === "hi" ? "यह प्लान एक्टिवेट करें" : "Activate This Plan";
       renderPlanStatus();
       if (insidePlanAmt) renderInsidePlan();
     }
@@ -471,103 +449,45 @@
 
     async function activateCurrentInsidePlan() {
       const p = PLAN_DETAILS[insidePlanAmt] || PLAN_DETAILS[99];
-      if (!auth || !auth.currentUser || !db) {
-        alert("Pehle Gym Owner account se login karein. Plan request ke liye verified account aur Firebase connection zaroori hai.");
-        location.href = "login.html";
-        return;
+      const obj = { name: p.name, amount: p.amount, status: "active", activatedAt: new Date().toISOString() };
+      activeCloudPlan = obj;
+      try { localStorage.setItem("om_active_subscription_plan", JSON.stringify(obj)); } catch (e) {}
+      if (db) {
+        try {
+          const gid = localStorage.getItem("bfc_gid") || "default_gym";
+          await db.collection("subscriptions").doc(gid).set(Object.assign({}, obj, { gymId: gid, updatedAt: Date.now() }), { merge: true });
+        } catch (e) {}
       }
-      const uid = auth.currentUser.uid;
-      let claims = {};
-      try { claims = (await auth.currentUser.getIdTokenResult(true)).claims || {}; } catch (e) {}
-      const gymId = String(claims.gymId || claims.orgId || uid);
-      if (claims.masterAdmin === true) {
-        alert("Master Admin account par plans purchase ki zaroorat nahi hai.");
-        return;
-      }
-      if (claims.role && claims.role !== "owner") {
-        alert("Plan purchase request sirf Gym Owner bhej sakta hai. Manager/Staff apne Gym Owner se contact karein.");
-        return;
-      }
-      const ownerCheck = await db.collection("owner_accounts").doc(uid).get();
-      if (!ownerCheck.exists) {
-        alert("Sirf verified Gym Owner plan purchase request bhej sakta hai.");
-        return;
-      }
-      const request = {
-        uid: uid,
-        gymId: gymId,
-        planName: p.name,
-        amount: p.amount,
-        status: "pending",
-        requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        source: "plans-page"
-      };
-      try {
-        await db.collection("plan_requests").doc(uid).set(request, { merge: true });
-        document.getElementById("statusPill").textContent = "REQUEST PENDING";
-        document.getElementById("statusHeadline").textContent = p.name + " — approval pending";
-        document.getElementById("statusMeta").textContent = "Payment verification ke baad Master Admin plan activate karega.";
-        alert("Plan request submit ho gayi. Payment verify hone ke baad Master Admin aapka plan activate karega. Abhi features locked rahenge.");
-      } catch (e) {
-        console.error(e);
-        alert("Plan request save nahi hui. Firebase login aur Firestore rules check karein.");
-      }
+      renderPlanStatus();
+      alert("You have already a ₹" + p.amount + " plan");
     }
 
     function renderPlanStatus() {
       const pill = document.getElementById("statusPill");
       const head = document.getElementById("statusHeadline");
-      if (activeCloudPlan && activeCloudPlan.status === "active" && activeCloudPlan.amount) {
+      if (activeCloudPlan && activeCloudPlan.amount) {
         pill.textContent = lang === "hi" ? "सक्रिय प्लान" : "ACTIVE PLAN";
-        head.textContent = (activeCloudPlan.name || "Plan") + " — ₹" + activeCloudPlan.amount;
-        document.getElementById("statusMeta").textContent = "Verified cloud subscription";
-      } else if (activeCloudPlan && activeCloudPlan.status === "pending") {
-        pill.textContent = "REQUEST PENDING";
-        head.textContent = (activeCloudPlan.name || "Selected plan") + " — approval pending";
-        document.getElementById("statusMeta").textContent = "Features remain locked until approval";
+        head.textContent = "You have already a ₹" + activeCloudPlan.amount + " plan";
       } else {
         pill.textContent = lang === "hi" ? "प्लान स्थिति" : "PLAN STATUS";
-        head.textContent = lang === "hi" ? "अभी कोई सक्रिय प्लान नहीं है — प्लान चुनकर अनुरोध भेजें" : "No active plan — choose a plan to request activation";
-        document.getElementById("statusMeta").textContent = "Preview only • Purchase required to use features";
+        head.textContent = lang === "hi" ? "अभी कोई प्लान सेव नहीं है — ₹99, ₹199, ₹399, ₹499 या ₹999 प्लान चुनें" : "No plan saved yet — Choose ₹99, ₹199, ₹399, ₹499, or ₹999";
       }
     }
 
-    window.addEventListener("DOMContentLoaded", function () {
-      if (!auth || !db) {
-        document.getElementById("statusMeta").textContent = "Firebase unavailable — login required";
-        setLang("hi"); return;
-      }
-      auth.onAuthStateChanged(async function(user) {
-        if (!user) {
-          activeCloudPlan = null;
-          document.getElementById("statusMeta").textContent = "Login required to view your gym plan";
-          setLang("hi"); return;
-        }
+    window.addEventListener("DOMContentLoaded", async function () {
+      try {
+        const localP = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null");
+        if (localP && localP.amount) activeCloudPlan = localP;
+      } catch (e) {}
+      if (db) {
         try {
-          const token = await user.getIdTokenResult(true);
-          if (token.claims && token.claims.masterAdmin === true) {
-            activeCloudPlan = { name: "Master Admin", amount: 999, status: "active" };
-            document.getElementById("statusMeta").textContent = "Developer / Master Admin • All features";
-            setLang("hi"); return;
-          }
-          const gymId = String((token.claims && (token.claims.gymId || token.claims.orgId)) || user.uid);
-          const snap = await db.collection("subscriptions").doc(gymId).get();
-          activeCloudPlan = snap.exists ? snap.data() : null;
-          setLang("hi");
-          const req = await db.collection("plan_requests").doc(user.uid).get();
-          if ((!activeCloudPlan || activeCloudPlan.status !== "active") && req.exists) {
-            activeCloudPlan = req.data();
-            renderPlanStatus();
-          }
-        } catch (e) {
-          console.error(e);
-          activeCloudPlan = null;
-          document.getElementById("statusMeta").textContent = "Cloud plan status could not be verified";
-          renderPlanStatus();
-        }
-      });
+          const gid = localStorage.getItem("bfc_gid") || "default_gym";
+          const snap = await db.collection("subscriptions").doc(gid).get();
+          if (snap.exists && snap.data() && snap.data().amount) activeCloudPlan = snap.data();
+        } catch (e) {}
+      }
+      setLang("hi");
     });
-
   </script>
 </body>
 </html>
