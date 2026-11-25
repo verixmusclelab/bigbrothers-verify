@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>5BFC — Supplement Udhar Baaki</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="auth-gate.js" data-mode="ondemand"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#050505;color:#fff;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh;padding:12px}
+.wrap{max-width:560px;margin:0 auto}
+.card{background:#111;border:1.5px solid #ffcc00;border-radius:12px;padding:14px;margin-bottom:12px}
+.gold{color:#ffcc00}.green{color:#00ff66}.red{color:#ff5555}.muted{color:#888;font-size:11px}
+input{width:100%;background:#181818;border:1px solid #444;color:#fff;padding:11px;border-radius:8px;font-size:14px;outline:none}
+input:focus{border-color:#ffcc00}
+.btn{border:none;border-radius:8px;padding:9px 12px;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-gold{background:#ffcc00;color:#000}.btn-green{background:#00ff66;color:#000}.btn-dark{background:#333;color:#fff}.btn-wa{background:#25D366;color:#fff}.btn-blue{background:#1e88e5;color:#fff}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
+.tab{text-align:center;padding:9px 2px;border-radius:8px;background:#1a1a1a;border:1px solid #333;color:#aaa;font-size:11px;font-weight:700;cursor:pointer}
+.tab.on{background:#ffcc00;color:#000;border-color:#ffcc00}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat{background:#181818;border-radius:8px;padding:9px;text-align:center}
+.stat b{display:block;font-size:18px;color:#ffcc00}.stat span{font-size:10px;color:#888}
+.p{background:#0e0e0e;border:1px solid #333;border-left:4px solid #ffcc00;border-radius:10px;padding:12px;margin-bottom:10px}
+.p.late{border-left-color:#ff3333;background:#170a0a}
+.bill{background:#181818;border-radius:8px;padding:8px;margin-top:8px;font-size:12px}
+.bill .l{display:flex;justify-content:space-between;gap:8px;margin-top:3px}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.b-red{background:#440000;color:#ff9a9a}.b-ok{background:#003322;color:#00ff66}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.hide{display:none!important}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+a.home{background:#ffcc00;color:#000;text-decoration:none;font-weight:700;font-size:11px;padding:6px 12px;border-radius:6px}
+h1{font-size:16px;color:#ffcc00;text-align:center;margin-bottom:4px}
+.login{max-width:360px;margin:80px auto;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="loginScreen" class="login card">
+    <div style="font-size:28px;margin-bottom:8px">🔒</div>
+    <h1>Supplement Udhar Baaki</h1>
+    <p class="muted" style="margin-bottom:12px">5 Brother's Fitness Club — Admin Only</p>
+    <button class="btn btn-gold" style="width:100%" onclick="tryLogin()">🔐 Secure Login</button>
+    <p class="muted" id="loginMsg" style="margin-top:10px"></p>
+  </div>
+
+  <div id="mainScreen" class="hide">
+    <div class="topbar">
+      <a class="home" href="app.html">⬅ Home</a>
+      <span class="gold" style="font-size:11px;font-weight:700">5 BROTHER'S FITNESS</span>
+      <button class="btn btn-dark" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="card">
+      <h1>🧴 Supplement उधार — बाकी</h1>
+      <p class="muted" style="text-align:center;margin-bottom:10px">सिर्फ़ उन्हीं का जिन्होंने supplement उधार लिया है और पैसे बाकी हैं</p>
+      <div class="stats">
+        <div class="stat"><b id="sPeople">0</b><span>लोग</span></div>
+        <div class="stat"><b id="sDue" class="red">₹0</b><span>कुल बाकी</span></div>
+        <div class="stat"><b id="sLate" style="color:#ff9900">0</b><span>Late (वादा निकला)</span></div>
+      </div>
+      <input id="q" type="search" placeholder="🔍 नाम / मोबाइल / Bill No लिखते ही खोज..." oninput="render()" autocomplete="off">
+      <div class="tabs">
+        <div class="tab on" data-t="all" onclick="setTab('all')">सभी बाकी</div>
+        <div class="tab" data-t="late" onclick="setTab('late')">⛔ Late</div>
+        <div class="tab" data-t="week" onclick="setTab('week')">📅 7 दिन में वादा</div>
+      </div>
+      <button class="btn btn-dark" style="width:100%" onclick="load()">🔄 Refresh</button>
+      <p class="muted" id="loadMsg" style="margin-top:6px;text-align:center"></p>
+    </div>
+
+    <div id="list"></div>
+  </div>
+</div>
+
+<script>
+/* ---- App/WebView me prompt/confirm/alert block ho jaate hain -> apne dialog ---- */
+(function(){
+  var css=document.createElement("style");
+  css.textContent=".bfcov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px}.bfcdg{background:#181818;border:2px solid #ffcc00;border-radius:14px;padding:16px;width:100%;max-width:340px;color:#fff;font-size:14px}.bfcdg .m{white-space:pre-line;margin-bottom:12px;line-height:1.5}.bfcdg input{width:100%;background:#000;border:1.5px solid #555;color:#fff;padding:12px;border-radius:8px;font-size:18px;text-align:center;margin-bottom:12px;outline:none}.bfcdg .b{display:flex;gap:8px;justify-content:flex-end}.bfcdg button{border:0;border-radius:8px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer;background:#333;color:#fff}.bfcdg button.ok{background:#ffcc00;color:#000}";
+  document.head.appendChild(css);
+  function dlg(msg,o){return new Promise(function(res){
+    var x=document.createElement("div");x.className="bfcov";
+    var d=document.createElement("div");d.className="bfcdg";
+    var m=document.createElement("div");m.className="m";m.textContent=msg;d.appendChild(m);
+    var inp=null;
+    if(o.input){inp=document.createElement("input");inp.value=o.value||"";if(o.pin){inp.type="password";inp.inputMode="numeric";inp.autocomplete="off";}d.appendChild(inp);}
+    var b=document.createElement("div");b.className="b";
+    function done(v){x.remove();res(v);}
+    if(!o.alertOnly){var c=document.createElement("button");c.textContent="रद्द";c.onclick=function(){done(o.input?null:false)};b.appendChild(c);}
+    var k=document.createElement("button");k.className="ok";k.textContent="ठीक है";k.onclick=function(){done(o.input?inp.value:true)};b.appendChild(k);
+    d.appendChild(b);x.appendChild(d);document.body.appendChild(x);
+    if(inp){inp.focus();inp.addEventListener("keydown",function(e){if(e.key==="Enter")k.click()});}
+  });}
+  window.bfcPrompt=function(m,v,pin){return dlg(m,{input:1,value:v,pin:pin})};
+  window.bfcConfirm=function(m){return dlg(m,{})};
+  window.alert=function(m){dlg(String(m),{alertOnly:1})};
+})();
+</script>
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",
+  authDomain: "brother-s-fitness-club.firebaseapp.com",
+  projectId: "brother-s-fitness-club",
+  storageBucket: "brother-s-fitness-club.firebasestorage.app",
+  messagingSenderId: "781489019006",
+  appId: "1:781489019006:web:4a230698f2195e7208202f"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+var LS_REC = "5BFC_SUPP_CREDIT", LS_KHATA = "gym_khata_records";
+var GYM_NO = "9140417259";
+var BILLS = [], TAB = "all";
+
+var $ = function(id){ return document.getElementById(id); };
+function num(x){ var n = Number(x); return isNaN(n) ? 0 : n; }
+function pad(n){ return String(n).padStart(2,"0"); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function rs(n){ return "₹" + Math.round(num(n)).toLocaleString("en-IN"); }
+function parseD(s){ var m = String(s||"").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(+m[1],+m[2]-1,+m[3]) : null; }
+function showD(s){ var d = parseD(s); return d ? pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear() : "—"; }
+function todayISO(){ var d = new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function overdueDays(promise){
+  var d = parseD(promise); if(!d) return 0;
+  var t = new Date(); t.setHours(0,0,0,0);
+  return Math.floor((t-d)/86400000);
+}
+function daysTo(promise){ var d = parseD(promise); if(!d) return 9999; return -overdueDays(promise); }
+/* वादा तारीख के बाद: 1-7 दिन ₹100 | 8-29 दिन ₹200 | 30+ दिन ₹300 या अधिक */
+function lateFee(days){ return days<=0 ? 0 : days<=7 ? 100 : days<=29 ? 200 : 300; }
+function gbDate(s){ var m = String(s||"").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? m[3]+"-"+pad(m[2])+"-"+pad(m[1]) : ""; }
+
+/* ---------- login ---------- */
+async function tryLogin(){
+  if(!window.bfcLogin){ $("loginMsg").textContent = "auth-gate.js नहीं मिली — यह फ़ाइल members-portal वाले folder में रखें"; return; }
+  var ok = await window.bfcLogin();
+  if(ok) openMain();
+}
+function openMain(){ $("loginScreen").classList.add("hide"); $("mainScreen").classList.remove("hide"); load(); }
+async function logout(){ if(window.bfcLogout) await window.bfcLogout(); location.reload(); }
+(async function(){ try{ if(window.bfcIsAdmin && (await window.bfcIsAdmin())) openMain(); }catch(e){} })();
+
+/* ---------- load: supplement-udhar (cloud+local) + purana supplement-due khata ---------- */
+async function load(){
+  $("list").innerHTML = '<p class="muted" style="text-align:center;padding:20px">Loading...</p>';
+  var map = new Map(), msg = "";
+  try{ var a = JSON.parse(localStorage.getItem(LS_REC)||"[]"); if(Array.isArray(a)) a.forEach(function(r){ if(r && r.id) map.set(String(r.id), r); }); }catch(e){}
+  try{
+    var snap = await db.collection("supplement_credit").get();
+    snap.forEach(function(d){
+      var r = d.data(); if(!r) return; r.id = r.id || d.id;
+      var o = map.get(String(r.id));
+      if(!o || (r.editedAt||r.createdAt||0) >= (o.editedAt||o.createdAt||0)) map.set(String(r.id), r);
+    });
+  }catch(e){ console.error(e); msg = "⚠️ Cloud से data नहीं आया — सिर्फ़ इस फोन का data दिख रहा है"; }
+  var out = [];
+  map.forEach(function(r){
+    out.push({ src:"udhar", id:String(r.id), name:r.name||"", phone:String(r.phone||"").replace(/\D/g,"").slice(-10),
+      date:r.date||"", total:num(r.total), paid:num(r.paid), due:num(r.due), promise:r.promise||"",
+      items:(r.items||[]).map(function(x){ return (x.name||"")+" "+(x.size&&x.size!=="—"?x.size:"")+" ×"+(x.qty||1); }).join(", "),
+      rec:r });
+  });
+  try{
+    var kh = JSON.parse(localStorage.getItem(LS_KHATA)||"[]");
+    if(Array.isArray(kh)) kh.forEach(function(x){
+      if(x && x.mode === "Supplement"){
+        var pr = /^\d{4}-\d{2}-\d{2}$/.test(String(x.validTill||"")) ? x.validTill : "";
+        out.push({ src:"khata", id:String(x.id), name:x.name||"", phone:String(x.phone||"").replace(/\D/g,"").slice(-10),
+          date:gbDate(x.date), total:num(x.paid)+num(x.due), paid:num(x.paid), due:num(x.due), promise:pr, items:x.details||"", rec:x });
+      }
+    });
+  }catch(e){}
+  BILLS = out.filter(function(b){ return b.due > 0; });
+  $("loadMsg").textContent = msg || ("कुल उधार bills बाकी: " + BILLS.length);
+  render();
+}
+
+/* ---------- group by person ---------- */
+function groups(){
+  var q = ($("q").value||"").toLowerCase().trim();
+  var g = new Map();
+  BILLS.forEach(function(b){
+    var key = (b.phone||"") + "|" + b.name.trim().toLowerCase();
+    if(!g.has(key)) g.set(key, { name:b.name, phone:b.phone, bills:[] });
+    g.get(key).bills.push(b);
+  });
+  var arr = Array.from(g.values()).map(function(p){
+    p.due = p.bills.reduce(function(a,b){ return a + b.due; }, 0);
+    p.maxLate = Math.max.apply(null, p.bills.map(function(b){ return b.due>0 ? overdueDays(b.promise) : 0; }));
+    p.fee = p.bills.reduce(function(a,b){ return a + lateFee(overdueDays(b.promise)); }, 0);
+    p.nextPromise = p.bills.map(function(b){ return daysTo(b.promise); }).reduce(function(a,b){ return Math.min(a,b); }, 9999);
+    return p;
+  });
+  return arr.filter(function(p){
+    if(TAB==="late" && p.maxLate <= 0) return false;
+    if(TAB==="week" && !(p.nextPromise >= 0 && p.nextPromise <= 7)) return false;
+    if(!q) return true;
+    var bag = (p.name+" "+p.phone+" "+p.bills.map(function(b){ return b.id; }).join(" ")).toLowerCase();
+    return q.split(/\s+/).every(function(w){ return bag.indexOf(w) >= 0; });
+  }).sort(function(a,b){ return b.maxLate - a.maxLate || b.due - a.due; });
+}
+function setTab(t){
+  TAB = t;
+  document.querySelectorAll(".tab").forEach(function(el){ el.classList.toggle("on", el.getAttribute("data-t")===t); });
+  render();
+}
+function render(){
+  var all = BILLS;
+  var people = new Set(all.map(function(b){ return (b.phone||"")+"|"+b.name.trim().toLowerCase(); }));
+  $("sPeople").textContent = people.size;
+  $("sDue").textContent = rs(all.reduce(function(a,b){ return a+b.due; }, 0));
+  $("sLate").textContent = all.filter(function(b){ return overdueDays(b.promise) > 0; }).length;
+
+  var list = groups();
+  if(!list.length){ $("list").innerHTML = '<div class="card"><p class="muted" style="text-align:center">🎉 कोई उधार बाकी नहीं मिला</p></div>'; return; }
+  $("list").innerHTML = list.map(function(p, pi){
+    var late = p.maxLate > 0;
+    var bills = p.bills.map(function(b){
+      var od = overdueDays(b.promise), lf = lateFee(od);
+      return '<div class="bill"><div class="l"><b>'+esc(b.id)+'</b><span class="muted">'+showD(b.date)+'</span></div>'
+        + '<div class="muted" style="margin-top:3px">'+esc(b.items||"—")+'</div>'
+        + '<div class="l"><span>कुल '+rs(b.total)+' · जमा '+rs(b.paid)+'</span><b class="red">बाकी '+rs(b.due)+'</b></div>'
+        + '<div class="l"><span>वादा: <b>'+showD(b.promise)+'</b></span>'
+        + (od>0 ? '<span class="badge b-red">'+od+' दिन Late · शुल्क '+rs(lf)+(od>=30?'+':'')+'</span>' : '<span class="badge b-ok">समय बाकी</span>')+'</div>'
+        + '<div class="row" style="margin-top:8px"><button class="btn btn-green" data-a="pay" data-k="'+esc(b.src+"::"+b.id)+'">💰 पैसा मिला</button></div></div>';
+    }).join("");
+    return '<div class="p '+(late?"late":"")+'">'
+      + '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div>'
+      + '<div style="font-weight:700;font-size:15px">'+esc(p.name||"—")+'</div><div class="muted">'+esc(p.phone||"—")+' · '+p.bills.length+' bill</div></div>'
+      + '<div style="text-align:right"><div class="red" style="font-weight:800;font-size:16px">'+rs(p.due)+'</div>'
+      + (p.fee>0 ? '<div class="muted">+ देरी शुल्क '+rs(p.fee)+'</div>' : '')+'</div></div>'
+      + bills
+      + '<div class="row">'
+      + (p.phone.length===10 ? '<button class="btn btn-wa" data-a="wa" data-p="'+pi+'">💬 Reminder</button><a class="btn btn-blue" href="tel:'+esc(p.phone)+'">📞 Call</a>' : '')
+      + '</div></div>';
+  }).join("");
+  window.__LIST = list;
+}
+$("list").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-a]"); if(!b) return;
+  var a = b.getAttribute("data-a");
+  if(a==="wa"){ var p = (window.__LIST||[])[+b.getAttribute("data-p")]; if(p) remind(p); }
+  else if(a==="pay"){
+    var k = b.getAttribute("data-k").split("::");
+    var bill = BILLS.find(function(x){ return x.src===k[0] && x.id===k[1]; });
+    if(bill) receive(bill);
+  }
+});
+
+function remind(p){
+  var lines = p.bills.map(function(b){
+    var od = overdueDays(b.promise);
+    return "• "+b.id+": बाकी "+rs(b.due)+" (वादा "+showD(b.promise)+(od>0?", "+od+" दिन लेट":"")+")";
+  }).join("\n");
+  var t = "नमस्ते "+p.name+" जी,\n\n5 Brother's Fitness Club से सूचना:\nआपके सप्लीमेंट उधार का कुल *"+rs(p.due)+"* बकाया है।\n"+lines+"\n"
+    + (p.maxLate>0 ? "\nवादा तारीख निकल चुकी है, इसलिए अतिरिक्त देरी शुल्क लागू है ("+rs(p.fee)+(p.maxLate>=30?" या अधिक":"")+"). कृपया जल्द भुगतान करें।\n" : "\nकृपया वादा तारीख तक भुगतान कर दें।\n")
+    + "\nसुविधा का लाभ उठाएं, दुरुपयोग न करें।\n📞 "+GYM_NO;
+  window.open("https://wa.me/91"+p.phone+"?text="+encodeURIComponent(t), "_blank");
+}
+
+/* ---------- पैसा मिला: local + cloud update ---------- */
+async function receive(b){
+  var v = await bfcPrompt(b.name+" — बाकी "+rs(b.due)+"\nकितना पैसा मिला (₹)?", String(b.due));
+  if(v === null) return;
+  var amt = num(v);
+  if(amt <= 0 || amt > b.due){ alert("सही राशि डालें (बाकी से ज़्यादा नहीं)"); return; }
+  var cloudOk = true;
+  if(b.src === "udhar"){
+    var r = b.rec;
+    r.paid = num(r.paid) + amt; r.due = num(r.due) - amt;
+    (r.payments = r.payments || []).push({ date: todayISO(), amt: amt, mode: "Cash" });
+    if(r.due <= 0){ r.due = 0; r.promise = ""; r.payType = "full"; }
+    r.editedAt = Date.now();
+    try{ var a = JSON.parse(localStorage.getItem(LS_REC)||"[]"); if(!Array.isArray(a)) a = [];
+      var i = a.findIndex(function(x){ return String(x.id)===String(r.id); }); if(i>=0) a[i] = r; else a.unshift(r);
+      localStorage.setItem(LS_REC, JSON.stringify(a)); }catch(e){}
+    try{ await db.collection("supplement_credit").doc(String(r.id)).set(JSON.parse(JSON.stringify(r))); }catch(e){ cloudOk = false; console.error(e); }
+  } else {
+    try{
+      var kh = JSON.parse(localStorage.getItem(LS_KHATA)||"[]");
+      kh.forEach(function(x){ if(String(x.id)===b.id && x.mode==="Supplement"){ x.paid = num(x.paid)+amt; x.due = Math.max(0, num(x.due)-amt); } });
+      localStorage.setItem(LS_KHATA, JSON.stringify(kh));
+    }catch(e){}
+  }
+  alert(cloudOk ? "✅ "+rs(amt)+" जमा हो गया" : "⚠️ इस फोन में सेव हुआ, पर Cloud में नहीं (internet देखें)");
+  await load();
+}
+</script>
+</body>
+</html>

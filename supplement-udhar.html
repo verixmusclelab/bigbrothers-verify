@@ -307,6 +307,30 @@ table.it td{padding:4px 3px;border-bottom:1px solid #ddd;vertical-align:top}
 </div>
 
 <script>
+/* ---- App/WebView me prompt/confirm/alert block ho jaate hain -> apne dialog ---- */
+(function(){
+  var css=document.createElement("style");
+  css.textContent=".bfcov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px}.bfcdg{background:#181818;border:2px solid #ffcc00;border-radius:14px;padding:16px;width:100%;max-width:340px;color:#fff;font-size:14px}.bfcdg .m{white-space:pre-line;margin-bottom:12px;line-height:1.5}.bfcdg input{width:100%;background:#000;border:1.5px solid #555;color:#fff;padding:12px;border-radius:8px;font-size:18px;text-align:center;margin-bottom:12px;outline:none}.bfcdg .b{display:flex;gap:8px;justify-content:flex-end}.bfcdg button{border:0;border-radius:8px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer;background:#333;color:#fff}.bfcdg button.ok{background:#ffcc00;color:#000}";
+  document.head.appendChild(css);
+  function dlg(msg,o){return new Promise(function(res){
+    var x=document.createElement("div");x.className="bfcov";
+    var d=document.createElement("div");d.className="bfcdg";
+    var m=document.createElement("div");m.className="m";m.textContent=msg;d.appendChild(m);
+    var inp=null;
+    if(o.input){inp=document.createElement("input");inp.value=o.value||"";if(o.pin){inp.type="password";inp.inputMode="numeric";inp.autocomplete="off";}d.appendChild(inp);}
+    var b=document.createElement("div");b.className="b";
+    function done(v){x.remove();res(v);}
+    if(!o.alertOnly){var c=document.createElement("button");c.textContent="रद्द";c.onclick=function(){done(o.input?null:false)};b.appendChild(c);}
+    var k=document.createElement("button");k.className="ok";k.textContent="ठीक है";k.onclick=function(){done(o.input?inp.value:true)};b.appendChild(k);
+    d.appendChild(b);x.appendChild(d);document.body.appendChild(x);
+    if(inp){inp.focus();inp.addEventListener("keydown",function(e){if(e.key==="Enter")k.click()});}
+  });}
+  window.bfcPrompt=function(m,v,pin){return dlg(m,{input:1,value:v,pin:pin})};
+  window.bfcConfirm=function(m){return dlg(m,{})};
+  window.alert=function(m){dlg(String(m),{alertOnly:1})};
+})();
+</script>
+<script>
 const ADMIN_PIN = "5555";
 /* Udhar Register lock — PIN code me likha nahi hai, sirf uska hash hai */
 const REG_HASH = "217edi8l2t1";
@@ -390,10 +414,10 @@ function overdueDays(promise){
 function lateFee(days){ return days<=0 ? 0 : days<=7 ? 100 : days<=29 ? 200 : 300; }
 
 /* ---------- Admin ---------- */
-function toggleAdmin(){
+async function toggleAdmin(){
   if(isAdmin){ isAdmin = false; if ($("chkUdharSpecialDisc")) $("chkUdharSpecialDisc").checked = false; }
   else{
-    const p = prompt("🔒 केवल एडमिन के लिए — PIN डालें:");
+    const p = await bfcPrompt("🔒 केवल एडमिन के लिए — PIN डालें:","",true);
     if(p !== ADMIN_PIN){ if(p!==null) alert("❌ गलत PIN"); return; }
     isAdmin = true;
   }
@@ -963,13 +987,13 @@ async function saveEdit(){
   r.editedAt = Date.now();
   await saveRecord(r);
   closeEdit(); renderRegister();
-  if(confirm("✅ रसीद Update हो गई। अपडेटेड रसीद देखें?")) openReceipt(r);
+  if(await bfcConfirm("✅ रसीद Update हो गई। अपडेटेड रसीद देखें?")) openReceipt(r);
 }
 
 function reopen(id){ const r = getRec(id); if(r) openReceipt(r); }
 async function receivePay(id){
   const r = getRec(id); if(!r) return;
-  const v = prompt(`${r.name} — बाकी ${rs(r.due)}\nकितना पैसा मिला (₹)?`, r.due);
+  const v = await bfcPrompt(`${r.name} — बाकी ${rs(r.due)}\nकितना पैसा मिला (₹)?`, r.due);
   if(v===null) return;
   const amt = num(v);
   if(amt<=0 || amt>r.due){ alert("सही राशि डालें (बाकी से ज़्यादा नहीं)"); return; }
@@ -977,7 +1001,7 @@ async function receivePay(id){
   (r.payments = r.payments||[]).push({date:todayISO(), amt, mode:"Cash"});
   await saveRecord(r);
   renderRegister();
-  if(confirm(r.due===0 ? "✅ पूरा भुगतान हो गया! नई रसीद देखें?" : "✅ जमा हो गया। अपडेटेड रसीद देखें?")) openReceipt(r);
+  if(await bfcConfirm(r.due===0 ? "✅ पूरा भुगतान हो गया! नई रसीद देखें?" : "✅ जमा हो गया। अपडेटेड रसीद देखें?")) openReceipt(r);
 }
 function remind(id){
   const r = getRec(id); if(!r) return;
@@ -989,16 +1013,16 @@ function remind(id){
 }
 async function delRec(id){
   if(!regUnlocked && !isAdmin) return;
-  if(!confirm("यह रिकॉर्ड DELETE करना है? वापस नहीं आएगा.")) return;
+  if(!(await bfcConfirm("यह रिकॉर्ड DELETE करना है? वापस नहीं आएगा."))) return;
   RECORDS = RECORDS.filter(r=>r.id!==id); saveLocal();
   try{ if(db) await db.collection("supplement_credit").doc(id).delete(); }catch(e){}
   renderRegister();
 }
 
 /* ---------- Tabs / init ---------- */
-function showTab(t){
+async function showTab(t){
   if(t==="reg" && !regUnlocked){
-    const p = prompt("🔒 उधार रजिस्टर — केवल एडमिन। PIN डालें:");
+    const p = await bfcPrompt("🔒 उधार रजिस्टर — केवल एडमिन। PIN डालें:","",true);
     if(p===null) return;
     if(pinHash(p.trim()) !== REG_HASH){ alert("❌ गलत PIN"); return; }
     regUnlocked = true;
