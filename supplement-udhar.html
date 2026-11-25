@@ -1021,12 +1021,15 @@ async function delRec(id){
 
 /* ---------- Tabs / init ---------- */
 async function showTab(t){
-  if(t==="reg" && !regUnlocked){
+  if(t==="reg" && !regUnlocked && !isAdmin){
     const p = await bfcPrompt("🔒 उधार रजिस्टर — केवल एडमिन। PIN डालें:","",true);
     if(p===null) return;
-    if(pinHash(p.trim()) !== REG_HASH){ alert("❌ गलत PIN"); return; }
+    const pp = p.trim();
+    /* Admin PIN ya register ka PIN — dono chalenge */
+    if(pp !== ADMIN_PIN && pinHash(pp) !== REG_HASH){ alert("❌ गलत PIN"); return; }
     regUnlocked = true;
   }
+  if(t==="reg" && isAdmin) regUnlocked = true;
   if(t!=="reg") regUnlocked = false;
   $("secNew").classList.toggle("hide", t!=="new");
   $("secReg").classList.toggle("hide", t!=="reg");

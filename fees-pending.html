@@ -18,8 +18,8 @@ input{width:100%;background:#181818;border:1px solid #444;color:#fff;padding:11p
 input:focus{border-color:#ffcc00}
 .btn{border:none;border-radius:8px;padding:9px 12px;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
 .btn-gold{background:#ffcc00;color:#000}.btn-green{background:#00ff66;color:#000}.btn-dark{background:#333;color:#fff}.btn-wa{background:#25D366;color:#fff}.btn-blue{background:#1e88e5;color:#fff}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
-.tab{text-align:center;padding:9px 2px;border-radius:8px;background:#1a1a1a;border:1px solid #333;color:#aaa;font-size:11px;font-weight:700;cursor:pointer}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+.tab{text-align:center;padding:9px 1px;border-radius:8px;background:#1a1a1a;border:1px solid #333;color:#aaa;font-size:10px;font-weight:700;cursor:pointer}
 .tab.on{background:#ffcc00;color:#000;border-color:#ffcc00}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
 .stat{background:#181818;border-radius:8px;padding:9px;text-align:center}
@@ -73,6 +73,7 @@ h1{font-size:16px;color:#ffcc00;text-align:center;margin-bottom:4px}
         <div class="tab" data-t="due" onclick="setTab('due')">💸 बकाया</div>
         <div class="tab" data-t="expired" onclick="setTab('expired')">⛔ Expired</div>
         <div class="tab" data-t="soon" onclick="setTab('soon')">⚠️ ≤3 दिन</div>
+        <div class="tab" data-t="left" onclick="setTab('left')">🚪 Left</div>
       </div>
       <button class="btn btn-dark" style="width:100%" onclick="load()">🔄 Refresh</button>
       <p class="muted" id="loadMsg" style="margin-top:6px;text-align:center"></p>
@@ -120,7 +121,7 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var LS_KEYS = ["5BFC_MEMBERS", "bbf_master_records_v4", "bbf_members_v1"];
 var GYM_NO = "9140417259";
-var ROWS = [], TAB = "all";
+var ROWS = [], EX = [], TAB = "all", LS_EX = "5BFC_EX_MEMBERS";
 
 var $ = function(id){ return document.getElementById(id); };
 function num(x){ var n = Number(x); return isNaN(n) ? 0 : n; }
@@ -200,9 +201,10 @@ function feeState(r){
   else due = 0;
   var flaggedPending = !markedPaid && /pend|unpaid|part|due|बाकी/.test(e);
   var dl = daysLeft(r.end);
-  var expired = dl < 0;
+  var acked = !!(r.raw && r.raw.paidAckEnd && String(r.raw.paidAckEnd) === String(r.end));
+  var expired = dl < 0 && !acked;
   return { due: due, flagged: flaggedPending, dl: dl, expired: expired, soon: dl >= 0 && dl <= 3,
-           pending: due > 0 || flaggedPending || expired };
+           pending: due > 0 || flaggedPending || expired, acked: acked };
 }
 
 /* ---------- load ---------- */
@@ -226,7 +228,7 @@ function readLocal(){
 function newer(a, b){ return (b.editedAt||0) >= (a.editedAt||0) ? b : a; }
 async function load(){
   $("list").innerHTML = '<p class="muted" style="text-align:center;padding:20px">Loading...</p>';
-  var map = new Map(), msg = "";
+  var map = new Map(), msg = ""; EX = [];
   readLocal().forEach(function(r){ if(r.name || r.phone){ var k = r.id || r.code; map.set(k, map.has(k) ? newer(map.get(k), r) : r); } });
   var exSet = { ids: new Set(), codes: new Set(), pn: new Map() };
   try{
@@ -241,13 +243,15 @@ async function load(){
     ex.forEach(function(d){
       var x = d.data() || {};
       var rec = { left: x.leftDate || "" };
+      EX.push(normalizeEx(x, d.id));
       if(x.id) exSet.ids.add(String(x.id)+"|"+rec.left);
       exSet.ids.add("id:"+String(x.id||d.id)); exSet.pn.set("id:"+String(x.id||d.id), rec.left);
       if(x.code){ exSet.pn.set("code:"+x.code, rec.left); }
       var ph = String(x.phone||"").replace(/\D/g,"").slice(-10), nm = String(x.name||"").trim().toLowerCase();
       if(ph && nm) exSet.pn.set("pn:"+ph+"|"+nm, rec.left);
     });
-  }catch(e){ console.error(e); msg = "⚠️ Cloud से data नहीं आया — सिर्फ़ इस फोन का data दिख रहा है"; }
+  }catch(e){ console.error(e); msg = "⚠️ Cloud से data नहीं आया ("+(e && e.code ? e.code : "error")+") — Logout/Login करके Refresh दबाएँ. अभी सिर्फ़ इस फोन का data दिख रहा है"; }
+  readLocalEx().forEach(function(x){ if(!EX.some(function(y){ return y.id===x.id; })) EX.push(x); });
   var hidden = 0;
   ROWS = Array.from(map.values()).filter(function(r){
     if(r.khata) return true;
@@ -256,7 +260,7 @@ async function load(){
       if(keys[i] && exSet.pn.has(keys[i])){
         var left = exSet.pn.get(keys[i]);
         var jd = parseDate(r.join), ld = parseDate(left);
-        if(!(jd && ld && jd > ld)) { hidden++; return false; }   // wapas join hua ho to dikhao
+        if(!(jd && ld && jd >= ld)) { hidden++; return false; }   // wapas join hua ho to dikhao
       }
     }
     return true;
@@ -278,6 +282,7 @@ function render(){
   $("sCount").textContent = all.length;
   $("sDue").textContent = rs(totalDue);
   $("sExp").textContent = all.filter(function(x){ return x.s.expired; }).length;
+  if(TAB==="left"){ renderLeft(q); return; }
 
   var list = all.filter(function(x){
     if(TAB==="due" && !(x.s.due>0 || x.s.flagged)) return false;
@@ -303,12 +308,14 @@ function render(){
       + '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div>'
       + '<div style="font-weight:700;font-size:15px">'+esc(r.name||"—")+'</div>'
       + '<div class="muted">S/O: '+esc(r.parent||"—")+' · '+esc(r.phone||"—")+'</div>'
-      + '<div class="muted">'+esc(r.code)+(r.plan?" · "+esc(r.plan):"")+'</div></div><div>'+badge+'</div></div>'
+      + '<div class="muted">'+esc(r.code)+(r.plan?" · "+esc(r.plan):"")+'</div>'
+      + (r.raw && r.raw.prevJoinDate ? '<div class="muted">🔁 पुरानी Joining: '+esc(showDate(r.raw.prevJoinDate))+' · नई: '+esc(showDate(r.join))+'</div>' : '')
+      + '</div><div>'+badge+'</div></div>'
       + '<div class="dates">'+dateBox+'</div>'
       + '<div class="amts"><span>Total: <b>'+(r.total?rs(r.total):"—")+'</b></span><span>जमा: <b class="green">'+rs(r.paid)+'</b></span><span>बाकी: <b class="red">'+(s.due>0?rs(s.due):"—")+'</b></span></div>'
       + '<div class="row">'
       + (r.phone.length===10 ? '<button class="btn btn-wa" data-a="wa" data-k="'+esc(r.id)+'">💬 WhatsApp</button><a class="btn btn-blue" href="tel:'+esc(r.phone)+'">📞 Call</a>' : '')
-      + (r.khata ? '' : '<button class="btn btn-green" data-a="paid" data-k="'+esc(r.id)+'">✅ Paid मार्क</button><button class="btn btn-gold" data-a="renew" data-k="'+esc(r.id)+'">🔁 Renew 1 माह</button>')
+      + (r.khata ? '' : '<button class="btn btn-green" data-a="paid" data-k="'+esc(r.id)+'">✅ Paid मार्क</button><button class="btn btn-gold" data-a="renew" data-k="'+esc(r.id)+'">🔁 Renew 1 माह</button><button class="btn btn-dark" data-a="left" data-k="'+esc(r.id)+'">🚪 Gym छोड़ दिया</button>')
       + '</div></div>';
   }).join("");
 }
@@ -316,18 +323,22 @@ $("list").addEventListener("click", function(e){
   var b = e.target.closest("button[data-a]"); if(!b) return;
   var r = ROWS.find(function(x){ return x.id === b.getAttribute("data-k"); }); if(!r) return;
   var a = b.getAttribute("data-a");
-  if(a==="wa") remind(r); else if(a==="paid") markPaid(r,false); else if(a==="renew") markPaid(r,true);
+  if(a==="wa") remind(r); else if(a==="paid") markPaid(r,false); else if(a==="renew") markPaid(r,true); else if(a==="left") markLeft(r);
 });
 
 function remind(r){
-  var s = feeState(r), dl = s.dl;
-  var when = dl < 0 ? "aapki membership "+Math.abs(dl)+" din pehle ("+showDate(r.end)+") poori ho chuki hai"
-           : dl === 0 ? "aapki membership AAJ poori ho rahi hai"
-           : dl <= 3 ? "aapki membership "+dl+" din me ("+showDate(r.end)+") poori hone wali hai"
-           : "aapki fees baaki hai";
-  var msg = "Namaste "+(r.name||"Member")+" ji,\n\n5 Brother's Fitness Club se zaroori suchna:\n\n"+when+"."
-    + (s.due>0 ? "\nBaaki fees: "+rs(s.due)+"." : "")
-    + "\n\nKripya samay se fees jama kar dijiye. Gym me entry ke liye active membership zaroori hai.\n\nDhanyavaad\n5 Brother's Fitness Club\nUmrao Kheda, Akramapur, Unnao\nPh: "+GYM_NO;
+  var s = feeState(r), dl = s.dl, nm = r.name || "सदस्य", end = showDate(r.end);
+  var when = dl < 0 ? "आपकी जिम सदस्यता "+end+" को समाप्त हो चुकी है ("+Math.abs(dl)+" दिन पहले)।"
+           : dl === 0 ? "आपकी जिम सदस्यता आज ("+end+") समाप्त हो रही है।"
+           : dl <= 3 ? "आपकी जिम सदस्यता "+end+" को ("+dl+" दिन में) समाप्त होने वाली है।"
+           : "आपकी जिम फीस अभी बाकी है।";
+  var msg = "🙏 नमस्ते "+nm+" जी,\n\n"
+    + "*5 Brother's Fitness Club* की ओर से आपके लिए एक ज़रूरी सूचना:\n\n"
+    + when + (s.due>0 ? "\n💰 बकाया फीस: *"+rs(s.due)+"*" : "") + "\n\n"
+    + "आप हमारे जिम परिवार का हिस्सा हैं और हम चाहते हैं कि आपकी फिटनेस यात्रा बिना रुकावट चलती रहे। इसलिए विनम्र निवेदन है कि अपनी फीस *जल्द से जल्द जमा* करके सदस्यता चालू करा लें। समय पर फीस जमा करना हर सदस्य की अपनी ज़िम्मेदारी है, इसी से जिम की सुविधाएँ और व्यवस्था बेहतर बनी रहती हैं।\n\n"
+    + "📌 कृपया ध्यान दें: प्रवेश फॉर्म में लिखे नियम के अनुसार जिम में प्रवेश के लिए सक्रिय सदस्यता ज़रूरी है। सदस्यता समाप्त होने के बाद फीस जमा किए बिना प्रवेश नहीं दिया जा सकेगा।\n\n"
+    + "यदि आप फीस जमा कर चुके हैं तो कृपया हमें बता दें, और कोई भी समस्या हो तो बेझिझक संपर्क करें।\n\n"
+    + "धन्यवाद 🙏\n*5 Brother's Fitness Club*\nउमराव खेड़ा, अकरमपुर, उन्नाव\n📞 "+GYM_NO;
   window.open("https://wa.me/91"+r.phone+"?text="+encodeURIComponent(msg), "_blank");
 }
 
@@ -337,7 +348,8 @@ async function markPaid(r, renew){
   if(!(await bfcConfirm(txt))) return;
   var now = Date.now(), patch = {
     paidFee: r.total > 0 ? r.total : r.paid, dueFee: 0,
-    status: "Full Paid", fees: "Paid", manualStatus: "Paid", editedAt: now
+    status: "Full Paid", fees: "Paid", manualStatus: "Paid", editedAt: now,
+    paidOn: iso(new Date()), paidAckEnd: renew ? "" : (r.end || "")
   };
   if(renew){
     var today = iso(new Date());
@@ -354,7 +366,86 @@ async function markPaid(r, renew){
   var cloudOk = true;
   try{ await db.collection("members").doc(String(r.docId || r.id)).set(JSON.parse(JSON.stringify(patch)), { merge:true }); }
   catch(e){ cloudOk = false; console.error(e); }
-  alert(cloudOk ? "✅ "+r.name+" — Paid मार्क हो गया" : "⚠️ इस फोन में सेव हुआ, पर Cloud में नहीं (internet देखें)");
+  try{ await db.collection("fees_log").add({ memberId:String(r.id), name:r.name, phone:r.phone, amount: patch.paidFee, renew: !!renew, date: patch.paidOn, at: now }); }catch(e){}
+  alert(cloudOk ? "✅ "+r.name+" — Paid मार्क हो गया (Cloud में सेव)" : "⚠️ इस फोन में सेव हुआ, पर Cloud में नहीं (internet देखें)");
+  await load();
+}
+/* ---------- Left / Ex members ---------- */
+function clean(o){ return JSON.parse(JSON.stringify(o)); }
+function normalizeEx(x, docId){
+  var n = normalize(x, docId);
+  return { id: String(x.id || docId || ""), docId: docId || "", name: n.name, parent: n.parent, phone: n.phone, code: n.code, plan: n.plan,
+    oldJoin: x.lastJoinDate || n.join, oldEnd: x.lastEndDate || n.end, left: x.leftDate || "", total: n.total, raw: x };
+}
+function readLocalEx(){ try{ var a = JSON.parse(localStorage.getItem(LS_EX)||"[]"); return Array.isArray(a) ? a.map(function(x){ return normalizeEx(x, x.id); }) : []; }catch(e){ return []; } }
+function saveLocalEx(arr){ try{ localStorage.setItem(LS_EX, JSON.stringify(arr)); }catch(e){} }
+
+async function markLeft(r){
+  if(!(await bfcConfirm(r.name+" ने जिम छोड़ दिया?\n\nइन्हें Pending list से हटाकर 🚪 Left (Ex) members में भेज दिया जाएगा। बाद में कभी भी Rejoin करके पूरा data वापस ला सकते हैं."))) return;
+  var now = Date.now();
+  var full = Object.assign({}, r.raw, { id: r.id, code: r.code, name: r.name, phone: r.phone, parentName: r.parent,
+    leftDate: iso(new Date()), lastJoinDate: r.join, lastEndDate: r.end, exSavedAt: now });
+  var cloudOk = true;
+  try{
+    await db.collection("ex_members").doc(String(r.id)).set(clean(full));
+    await db.collection("members").doc(String(r.docId || r.id)).delete();
+    if(r.docId && r.docId !== r.id) { try{ await db.collection("members").doc(String(r.id)).delete(); }catch(e){} }
+  }catch(e){ cloudOk = false; console.error(e); }
+  LS_KEYS.forEach(function(k){
+    try{ var arr = JSON.parse(localStorage.getItem(k)||"[]"); if(!Array.isArray(arr)) return;
+      var out = arr.filter(function(x){ return !(String(x.id)===r.id || (r.code && String(x.code||"")===r.code)); });
+      if(out.length !== arr.length) localStorage.setItem(k, JSON.stringify(out)); }catch(e){}
+  });
+  var ex = readLocalEx().map(function(x){ return x.raw; }).filter(function(x){ return String(x.id) !== r.id; });
+  ex.push(clean(full)); saveLocalEx(ex);
+  alert(cloudOk ? "🚪 "+r.name+" — Left members में चले गए (Cloud में सेव)" : "⚠️ इस फोन में सेव हुआ, पर Cloud में नहीं (internet / login देखें)");
+  await load();
+}
+
+function renderLeft(q){
+  var list = EX.filter(function(x){
+    if(!q) return true;
+    return q.split(/\s+/).every(function(w){ return [x.name,x.parent,x.phone,x.code].join(" ").toLowerCase().indexOf(w) >= 0; });
+  }).sort(function(a,b){ return String(b.left).localeCompare(String(a.left)); });
+  if(!list.length){ $("list").innerHTML = '<div class="card"><p class="muted" style="text-align:center">कोई Left member नहीं मिला</p></div>'; return; }
+  $("list").innerHTML = list.map(function(x){
+    return '<div class="m"><div style="font-weight:700;font-size:15px">'+esc(x.name||"—")+'</div>'
+      + '<div class="muted">S/O: '+esc(x.parent||"—")+' · '+esc(x.phone||"—")+'</div>'
+      + '<div class="muted">'+esc(x.code)+(x.plan?" · "+esc(x.plan):"")+'</div>'
+      + '<div class="dates"><div><b>पुरानी JOINING</b>'+showDate(x.oldJoin)+'</div><div><b>पुरानी EXPIRY</b>'+showDate(x.oldEnd)+'</div><div class="red"><b>छोड़ा</b>'+showDate(x.left)+'</div></div>'
+      + '<div class="row"><button class="btn btn-gold" data-xa="rejoin" data-k="'+esc(x.id)+'">🔁 Rejoining</button></div></div>';
+  }).join("");
+}
+$("list").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-xa]"); if(!b) return;
+  var x = EX.find(function(y){ return y.id === b.getAttribute("data-k"); }); if(x) rejoin(x);
+});
+
+async function rejoin(x){
+  var today = iso(new Date());
+  var inp = await bfcPrompt("🔁 "+x.name+" — Rejoining\n\nपुरानी Joining: "+showDate(x.oldJoin)+"\nनई Joining तारीख (YYYY-MM-DD):", today);
+  if(inp === null) return;
+  var nd = parseDate(String(inp).trim()); if(!nd){ alert("❌ तारीख सही नहीं है"); return; }
+  var nj = iso(nd), now = Date.now(), old = x.raw || {};
+  var hist = Array.isArray(old.joinHistory) ? old.joinHistory.slice() : [];
+  hist.push({ join: x.oldJoin, end: x.oldEnd, left: x.left });
+  var rec = Object.assign({}, old);
+  ["leftDate","lastJoinDate","lastEndDate","exSavedAt"].forEach(function(k){ delete rec[k]; });
+  var total = x.total || num(rec.totalFee) || 0, plan = x.plan || "1 Month", end = calcEnd(nj, plan);
+  Object.assign(rec, { id: x.id, joinDate: nj, endDate: end, expiryDate: end, prevJoinDate: x.oldJoin, joinHistory: hist,
+    totalFee: total, paidFee: 0, dueFee: total, status: "Pending", fees: "Pending", manualStatus: "Pending", paidAckEnd: "", editedAt: now });
+  var cloudOk = true;
+  try{
+    await db.collection("members").doc(String(x.id)).set(clean(rec));
+    await db.collection("ex_members").doc(String(x.docId || x.id)).delete();
+  }catch(e){ cloudOk = false; console.error(e); }
+  try{
+    var k = LS_KEYS[0], arr = JSON.parse(localStorage.getItem(k)||"[]"); if(!Array.isArray(arr)) arr = [];
+    arr = arr.filter(function(m){ return String(m.id) !== x.id; }); arr.push(clean(rec)); localStorage.setItem(k, JSON.stringify(arr));
+  }catch(e){}
+  saveLocalEx(readLocalEx().map(function(y){ return y.raw; }).filter(function(y){ return String(y.id) !== x.id; }));
+  alert((cloudOk ? "✅ " : "⚠️ (सिर्फ़ फोन में सेव) ")+x.name+" वापस जुड़ गए\nपुरानी Joining: "+showDate(x.oldJoin)+"\nनई Joining: "+showDate(nj)+(total ? "\nफीस "+rs(total)+" बाकी है — जमा होने पर Paid मार्क करें" : ""));
+  TAB = "all"; document.querySelectorAll(".tab").forEach(function(el){ el.classList.toggle("on", el.getAttribute("data-t")==="all"); });
   await load();
 }
 </script>
