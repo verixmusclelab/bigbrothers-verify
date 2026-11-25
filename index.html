@@ -1,1388 +1,328 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Om Software ERP — Multi-Branch Operations &amp; Business Control Desk</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-functions-compat.js"></script>
-  <script src="auth-gate.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>5 Brother's Fitness Club</title>
   <style>
     :root {
-      --bg: #050813; --card: #0A1124; --card2: #0E172F; --border: #1B294B; --border-hl: #2A3F70;
-      --gold: #F5A623; --gold-dark: #D97706; --cyan: #22D3EE; --emerald: #34D399;
-      --rose: #FB7185; --purple: #A78BFA; --tx: #FFFFFF; --muted: #94A3B8;
+      --bg: #050505;
+      --card: #121212;
+      --border: #333333;
+      --gold: #ffcc00;
+      --emerald: #00ff66;
+      --cyan: #22d3ee;
+      --purple: #a78bfa;
+      --rose: #fb7185;
+      --text: #ffffff;
+      --muted: #a1a1aa;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--tx); max-width: 580px; margin: 0 auto; padding-bottom: 90px; overflow-x: hidden; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 14px 12px 60px;
+      max-width: 540px;
+      margin: 0 auto;
+    }
     .hdr {
-      background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 14px;
-      position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+      text-align: center;
+      padding: 14px 10px 16px;
+      border-bottom: 1.5px solid #262626;
+      margin-bottom: 14px;
+      cursor: pointer;
+      user-select: none;
     }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .om-badge {
-      width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: #050813; font-size: 19px; font-weight: 900; display: flex; align-items: center; justify-content: center;
+    .hdr h1 {
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
     }
-    .brand h1 { font-size: 15px; font-weight: 800; }
-    .brand p { font-size: 11px; color: var(--muted); }
-    .hdr-act { display: flex; gap: 6px; align-items: center; }
-    select.mini, button.mini {
-      background: #101B35; border: 1px solid var(--border); color: #fff; border-radius: 8px;
-      padding: 6px 9px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+    .hdr p {
+      color: var(--muted);
+      font-size: 11.5px;
+      margin-top: 4px;
     }
-    button.mini.danger { background: rgba(251,113,133,0.14); border-color: var(--rose); color: var(--rose); }
+    .mode-pill {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 204, 0, 0.12);
+      color: var(--gold);
+      border: 1px solid rgba(255, 204, 0, 0.35);
+    }
+    .mode-pill.unlocked {
+      background: rgba(0, 255, 102, 0.15);
+      color: var(--emerald);
+      border-color: var(--emerald);
+    }
 
-    .tabs { display: flex; gap: 5px; padding: 10px 14px 4px; }
-    .tab-btn {
-      flex: 1; background: var(--card); border: 1px solid var(--border); color: var(--muted);
-      border-radius: 10px; padding: 8px 6px; font-size: 11.5px; font-weight: 800; cursor: pointer;
+    .grid-tiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
-    .tab-btn.active { background: var(--gold); color: #050813; border-color: var(--gold); }
-    .tab-btn.hl { border-color: var(--cyan); color: var(--cyan); }
-
-    .alert-bar {
-      display: none; margin: 8px 14px 0; background: rgba(34,211,238,0.12); border: 1px solid var(--cyan);
-      color: #E0F2FE; border-radius: 12px; padding: 10px 12px; font-size: 12px;
+    .tile-box {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.12s, border-color 0.15s;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 104px;
     }
+    .tile-box:active { transform: scale(0.98); }
+    .tile-box.c-gold { border-color: #ffcc00; }
+    .tile-box.c-cyan { border-color: #22d3ee; }
+    .tile-box.c-green { border-color: #00ff66; }
+    .tile-box.c-orange { border-color: #ff9900; }
+    .tile-box.c-purple { border-color: #a78bfa; }
+    .tile-box.c-pink { border-color: #f472b6; }
 
-    .page-sec { display: none; padding: 10px 14px; }
-    .page-sec.active { display: block; }
+    .tile-ico { font-size: 26px; margin-bottom: 6px; }
+    .tile-title { font-size: 14px; font-weight: 800; color: #fff; }
+    .tile-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-    .live-strip {
-      display: flex; justify-content: space-between; align-items: center; background: #111A30;
-      border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 11px; font-size: 12px;
-    }
-    .tag-red { background: #E11D48; color: #fff; padding: 2px 7px; border-radius: 6px; font-size: 10.5px; font-weight: 800; }
-    .tag-cyan { background: rgba(34,211,238,0.15); color: var(--cyan); padding: 2px 7px; border-radius: 6px; font-size: 10.5px; font-weight: 800; }
-
-    .d-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.15s;
-    }
-    .d-card:hover { border-color: var(--gold); background: var(--card2); }
-    .dc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .dc-lbl { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-    .dc-pill { font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: rgba(34,211,238,0.12); color: var(--cyan); }
-    .dc-row { display: flex; justify-content: space-between; align-items: flex-end; }
-    .dc-num { font-size: 23px; font-weight: 900; }
-    .dc-sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-
-    .big-btn {
-      width: 100%; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #050813;
-      border: 0; border-radius: 14px; padding: 13px; font-size: 13.5px; font-weight: 900; cursor: pointer; margin-top: 10px;
-    }
-    .big-btn.sec { background: #132142; color: var(--cyan); border: 1px solid var(--border-hl); }
-
-    .box-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
-    .sec-head { font-size: 11.5px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.9px; margin: 14px 0 9px; }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 10px; }
-    .tile {
-      background: var(--card); border: 1px solid var(--border); border-radius: 13px; padding: 13px 11px;
-      color: #fff; font-size: 12.5px; font-weight: 700; text-align: left; cursor: pointer;
-    }
-    .tile:hover { border-color: var(--cyan); background: var(--card2); }
-    .tile.red { border-color: rgba(251,113,133,0.45); color: var(--rose); text-align: center; grid-column: span 2; }
-
-    .m-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 13px 15px;
-      margin-bottom: 9px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;
-    }
-    .m-card:hover { border-color: var(--gold); background: var(--card2); }
-    .m-title { font-size: 14px; font-weight: 800; }
-    .m-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .admin-only-tile { display: none; }
+    body.full-unlocked .admin-only-tile { display: flex; }
 
     .modal-ov {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(7px);
-      z-index: 99999; align-items: center; justify-content: center; padding: 12px;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
     }
     .modal-ov.open { display: flex; }
     .modal-box {
-      background: var(--card); border: 1.5px solid var(--border-hl); border-radius: 18px;
-      width: 100%; max-width: 550px; max-height: 89vh; overflow-y: auto; padding: 18px;
+      background: #141414;
+      border: 1.5px solid var(--gold);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 460px;
+      max-height: 86vh;
+      overflow-y: auto;
+      padding: 16px;
     }
-    .m-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 14px; }
-    .m-top h3 { font-size: 15.5px; color: var(--gold); }
-    .x-btn { background: none; border: 0; color: var(--rose); font-size: 19px; font-weight: 900; cursor: pointer; }
-    .fg { margin-bottom: 11px; }
-    .fg label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; font-weight: 700; }
-    .fc { width: 100%; background: #070D1C; border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; color: #fff; font-size: 13px; }
-    .sub-btn { background: #111D38; color: var(--cyan); border: 1px solid var(--border); border-radius: 9px; padding: 7px 11px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
-    .rec { background: #080F22; border: 1px solid var(--border); border-radius: 11px; padding: 11px; margin-bottom: 9px; font-size: 12px; }
-    .pill-ok { background: rgba(52,211,153,0.15); color: var(--emerald); border: 1px solid var(--emerald); padding: 2px 7px; border-radius: 6px; font-size: 10px; font-weight: 800; }
-    .pill-no { background: rgba(251,113,133,0.15); color: var(--rose); border: 1px solid var(--rose); padding: 2px 7px; border-radius: 6px; font-size: 10px; font-weight: 800; }
-    .pill-pd { background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid var(--gold); padding: 2px 7px; border-radius: 6px; font-size: 10px; font-weight: 800; }
-    .preview-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-    .preview-img { width: 62px; height: 62px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-hl); }
-
-    /* Animated Om Splash */
-    #omSplash {
-      display: flex; position: fixed; inset: 0; background: radial-gradient(circle at center, #1B2B50 0%, #050813 85%);
-      z-index: 999999; flex-direction: column; align-items: center; justify-content: center; padding: 34px 18px; text-align: center;
-      transition: opacity 0.5s ease;
-    }
-    .orbit-box { position: relative; width: 240px; height: 240px; margin: 18px auto; display: flex; align-items: center; justify-content: center; }
-    .om-glyph { font-size: 68px; font-weight: 900; color: var(--gold); text-shadow: 0 0 28px rgba(245,166,35,0.8); z-index: 2; }
-    .ring { position: absolute; border: 1.5px solid rgba(245,166,35,0.28); border-radius: 50%; }
-    .r1 { width: 140px; height: 140px; animation: rotCW 8s linear infinite; }
-    .r2 { width: 192px; height: 192px; border-color: rgba(34,211,238,0.28); animation: rotCCW 13s linear infinite; }
-    .r3 { width: 240px; height: 240px; border-color: rgba(167,139,250,0.25); animation: rotCW 19s linear infinite; }
-    .dot-p { position: absolute; width: 14px; height: 14px; border-radius: 50%; top: -7px; left: 56px; background: var(--gold); }
-    .r2 .dot-p { background: var(--cyan); top: 88px; left: -7px; }
-    .r3 .dot-p { background: var(--rose); top: auto; bottom: 8px; left: auto; right: 34px; }
-    @keyframes rotCW { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes rotCCW { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+    .m-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #2b2b2b; padding-bottom: 8px; }
+    .m-top h3 { color: var(--gold); font-size: 15px; }
+    .x-btn { background: none; border: 0; color: var(--rose); font-size: 20px; font-weight: 900; cursor: pointer; }
+    .fg { margin-bottom: 10px; }
+    .fg label { display: block; font-size: 11.5px; color: #ccc; margin-bottom: 4px; font-weight: 700; }
+    .fc { width: 100%; background: #0c0c0c; border: 1px solid #444; color: #fff; padding: 9px; border-radius: 8px; font-size: 13px; }
+    .btn-act { width: 100%; background: var(--gold); color: #000; border: 0; border-radius: 8px; padding: 10px; font-weight: 900; font-size: 13px; cursor: pointer; margin-top: 6px; }
+    .btn-ok { width: 100%; background: var(--emerald); color: #000; border: 0; border-radius: 8px; padding: 10px; font-weight: 900; font-size: 13px; cursor: pointer; margin-top: 6px; }
   </style>
-
-<script>
-(function hydrateActiveGym() {
-  function applyActiveGym() {
-    try {
-      const p = JSON.parse(localStorage.getItem("om_active_gym_profile") || "null");
-      if (p && p.gymName) {
-        document.title = p.gymName + " — Operations & ERP Workspace";
-        const brandHeaders = document.querySelectorAll(".brand h1, #headerGymTitle, .brand-title");
-        brandHeaders.forEach(el => el.textContent = p.gymName.toUpperCase());
-        const subHeaders = document.querySelectorAll(".brand p, #headerGymSub");
-        subHeaders.forEach(el => el.textContent = (p.role || "Admin") + " Portal • " + p.gymName);
-      }
-    } catch(e) {}
-  }
-  window.addEventListener("DOMContentLoaded", applyActiveGym);
-})();
-</script>
-
 </head>
 <body>
 
-  
-<script>
-window.addEventListener("DOMContentLoaded", function() {
-  setTimeout(function() {
-    var s = document.getElementById("omSplash");
-    if (s) {
-      s.style.opacity = "0";
-      setTimeout(function() { s.style.display = "none"; }, 500);
-    }
-  }, 2000);
-});
-function hideSplash() {
-  var s = document.getElementById("omSplash");
-  if (s) { s.style.opacity = "0"; setTimeout(function() { s.style.display = "none"; }, 500); }
-}
-</script>
-
-  <div id="omSplash">
-    <div>
-      <div style="font-size:10.5px;font-weight:800;letter-spacing:2px;color:var(--gold);">OFFICIAL PORTAL &bull; ENTERPRISE EXPERIENCE</div>
-      <h1 style="font-size:22px;font-weight:900;margin-top:6px;">WELCOME TO OM SOFTWARE</h1>
-      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:4px;">TRUST &bull; TECHNOLOGY &bull; POWER OF INNOVATION</div>
-      <div style="font-size:11.5px;color:var(--muted);margin-top:3px;">Universal Gym &amp; Business Management System</div>
-    </div>
-
-    <div class="orbit-box">
-      <div class="om-glyph">ॐ</div>
-      <div class="ring r1"><div class="dot-p"></div></div>
-      <div class="ring r2"><div class="dot-p"></div></div>
-      <div class="ring r3"><div class="dot-p"></div></div>
-    </div>
-
-    <div style="max-width:430px;">
-      <div style="font-size:12.5px;color:#FDE047;line-height:1.55;margin-bottom:16px;">
-        यदा यदा हि धर्मस्य ग्लानिर्भवति भारत।<br>अभ्युत्थानमधर्मस्य तदात्मानं सृजाम्यहम्।।
-      </div>
-      <div style="width:100%;height:5px;background:rgba(255,255,255,0.12);border-radius:99px;overflow:hidden;margin-bottom:8px;">
-        <div id="splashBar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--cyan),var(--gold));transition:width 0.3s;"></div>
-      </div>
-      <div id="splashTxt" style="font-size:11px;color:var(--muted);margin-bottom:10px;">ॐ ब्रह्माण्ड — Dashboard खुल रहा है... (3s)</div>
-      <button type="button" class="big-btn" style="background:#16A34A;color:#fff;margin-top:0;" onclick="hideSplash()">Dashboard पर चलें &rarr;</button>
-    </div>
-  </div>
-
-  <header class="hdr" style="padding:12px 14px; background:var(--card); border-bottom:1.5px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-    <div class="brand" style="display:flex; align-items:center; gap:10px;">
-      <div class="om-badge" style="width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:#050813; font-size:19px; font-weight:900; display:flex; align-items:center; justify-content:center;">ॐ</div>
-      <div>
-        <h1 style="font-size:15px; font-weight:800; color:#fff; margin:0;">Om Software ERP</h1>
-        <p style="font-size:11px; color:var(--muted); margin:1px 0 0;">Enterprise Multi-Branch Workspace</p>
-      </div>
-    </div>
-    <div class="hdr-act" style="display:flex; align-items:center; gap:8px;">
-      <select id="branchSel" class="mini" style="font-size:12px; padding:7px 10px; background:#070D1C; border:1.5px solid var(--border); border-radius:8px; color:#fff; font-weight:700;">
-        <option value="ALL" selected>All Branches</option>
-        <option value="001">Branch 001 (Main Branch)</option>
-
-      </select>
-      <button type="button" class="sub-btn" style="background:var(--gold); color:#050813; font-weight:900; padding:7px 14px; border:none; border-radius:8px; cursor:pointer;" onclick="applyBranchFilter()">Submit</button>
-      <button type="button" class="sub-btn" style="background:#111D38; color:var(--cyan); border:1.5px solid var(--cyan); font-weight:800; padding:7px 12px; border-radius:8px; cursor:pointer;" onclick="openMod('modProfile')">👤 Gym Profile</button>
-      
-      <button type="button" style="background:rgba(239,68,68,0.22); border:1.5px solid #EF4444; color:#FCA5A5; font-size:12px; font-weight:900; padding:7px 16px; border-radius:8px; cursor:pointer; margin-left:6px;" onclick="logoutUser()">🚪 Logout</button>
-    </div>
+  <header class="hdr" id="tapHeader" onclick="registerFiveTap()">
+    <h1>5 BROTHER'S FITNESS CLUB</h1>
+    <p>उमराव खेड़ा, अकरमपुर, उन्नाव</p>
+    <span class="mode-pill" id="modeBadge">Admission &amp; Fees Mode</span>
   </header>
 
-  <nav class="tabs">
-    <button type="button" class="tab-btn active" id="tb1" onclick="switchPage(1)">Page 1: Live</button>
-    <button type="button" class="tab-btn hl" id="tb2" onclick="switchPage(2)">Page 2: Trial &amp; Grid</button>
-    <button type="button" class="tab-btn" id="tb3" onclick="switchPage(3)">Page 3: Ops</button>
-    <button type="button" class="tab-btn" id="tb4" onclick="switchPage(4)">Page 4: Modules</button>
-  </nav>
-
-  
-  <div id="roleIdentityBanner" style="display:none;margin:8px 14px 0;background:#0A1124;border:1.5px solid var(--gold);border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.55;">
-    <div id="ribTitle" style="font-size:15px;font-weight:900;color:var(--gold);"></div>
-    <div id="ribMeta" style="color:var(--tx);font-weight:700;margin-top:2px;"></div>
-    <div id="ribAddr" style="color:var(--muted);font-size:11.5px;margin-top:2px;"></div>
-  </div>
-
-  <div id="adminAlertBar" class="alert-bar"></div>
-
-  <!-- PAGE 1: LIVE CARDS -->
-  <section id="page1" class="page-sec active">
-    <div class="live-strip">
-      <span class="tag-red">&bull; LIVE BOARD</span>
-      <span id="liveBoardMeta">Collection: ₹0 &bull; No Paid Plan</span>
-      <span class="tag-cyan">AUTO FETCH</span>
+  <main class="grid-tiles" id="tilesGrid">
+    <!-- DEFAULT VISIBLE FOR EVERYONE: ADMISSION & PAYMENT FEES -->
+    <div class="tile-box c-gold" onclick="openQuickAdmission()">
+      <div class="tile-ico">📝</div>
+      <div class="tile-title">Admission Form</div>
+      <div class="tile-sub">नया सदस्य / फॉर्म</div>
     </div>
 
-    <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">💰 Total Collection</span><span class="dc-pill" id="pillBranches">0 Branches</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vTotalCol" style="color:var(--gold)">₹0</div><div class="dc-sub">All branches combined</div></div><span>📈</span></div>
+    <div class="tile-box c-green" onclick="openQuickPayment()">
+      <div class="tile-ico">💳</div>
+      <div class="tile-title">Payment Fees</div>
+      <div class="tile-sub">Fees जमा / रसीद</div>
     </div>
 
-    <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">💳 Total Fees Collection</span><span class="dc-pill">0 Branches</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vFeesCol" style="color:var(--emerald)">₹0</div><div class="dc-sub">Membership &amp; renewals</div></div><span>📈</span></div>
+    <!-- REVEALED AFTER 5 TAPS -->
+    <a class="tile-box c-cyan admin-only-tile" href="admission (51).html">
+      <div class="tile-ico">👥</div>
+      <div class="tile-title">Members Portal</div>
+      <div class="tile-sub">Student • Job • Edit</div>
+    </a>
+
+    <div class="tile-box c-green admin-only-tile" onclick="openInfoModal('Attendance', 'हाजिरी / Selfie module ready.')">
+      <div class="tile-ico">✅</div>
+      <div class="tile-title">Attendance</div>
+      <div class="tile-sub">हाजिरी / Selfie</div>
     </div>
 
-    <div class="d-card" onclick="switchPage(4)">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--cyan)">🏋️ Total Gym Members</span><span class="dc-pill">Live Count</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vMembers" style="color:var(--cyan)">0</div><div class="dc-sub">Across all branches</div></div><span>📶</span></div>
+    <div class="tile-box c-orange admin-only-tile" onclick="openInfoModal('Master', 'Admin dashboard & records.')">
+      <div class="tile-ico">📊</div>
+      <div class="tile-title">Master</div>
+      <div class="tile-sub">Admin dashboard</div>
     </div>
 
-    <div class="d-card" onclick="openMod('modAdmission')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--cyan)">📝 New Admissions</span><span class="dc-pill">Live Board</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vAdmissions" style="color:var(--cyan)">0</div><div class="dc-sub">Tap: admission &amp; services</div></div><span>📈</span></div>
+    <div class="tile-box c-purple admin-only-tile" onclick="openInfoModal('Supplement Store', 'Products / Shop inventory.')">
+      <div class="tile-ico">🛒</div>
+      <div class="tile-title">Supplement Store</div>
+      <div class="tile-sub">Products / Shop</div>
     </div>
 
-    <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--purple)">💊 Supplement Collection</span><span class="dc-pill">POS Store</span></div>
-      <div class="dc-row"><div><div class="dc-num" style="color:var(--purple)">₹0</div><div class="dc-sub">Whey, creatine &amp; shakers</div></div><span>📈</span></div>
+    <div class="tile-box c-purple admin-only-tile" onclick="openInfoModal('Store Orders', 'Approve / Ship orders.')">
+      <div class="tile-ico">📦</div>
+      <div class="tile-title">Store Orders</div>
+      <div class="tile-sub">Approve / Ship</div>
     </div>
 
-    <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">💵 Cash / Online</span><span class="dc-pill">Split Mode</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vCashOnline" style="font-size:19px;color:var(--emerald)">₹0 Cash / ₹0 Online</div><div class="dc-sub">Click for branch-wise split</div></div><span>🟩🟦</span></div>
+    <div class="tile-box c-cyan admin-only-tile" onclick="openInfoModal('Store Admin', 'Photo + Price management.')">
+      <div class="tile-ico">🖼️</div>
+      <div class="tile-title">Store Admin</div>
+      <div class="tile-sub">Photo + Price</div>
     </div>
 
-    <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">⚖️ Total Loss &amp; Profit</span><span class="dc-pill">Net P&amp;L</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vNetPnl" style="color:var(--emerald)">₹0</div><div class="dc-sub" id="vExpSub">Exp: ₹0 &bull; Net Profit</div></div><span>📉📈</span></div>
+    <div class="tile-box c-green admin-only-tile" onclick="openInfoModal('Product Verify', 'Code check verification.')">
+      <div class="tile-ico">🔑</div>
+      <div class="tile-title">Product Verify</div>
+      <div class="tile-sub">Code check</div>
     </div>
 
-    
-    <!-- GYM PROFILE & STAMP STUDIO DIRECT ON PAGE 1 -->
-    <div class="d-card" onclick="openMod('modProfile')" style="border-color:var(--gold);background:rgba(245,166,35,0.06)">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">🏢 Complete Gym Profile &amp; Stamp Studio</span><span class="dc-pill" style="background:rgba(245,166,35,0.2);color:var(--gold)">Direct Setup</span></div>
-      <div class="dc-row"><div><div class="dc-num" style="color:var(--gold-bright);font-size:18px">Gym Details &amp; Stamp &rarr;</div><div class="dc-sub">Logo, GST, Udyam, Food License &amp; Digital Stamp</div></div><span>🔏</span></div>
+    <div class="tile-box c-orange admin-only-tile" onclick="openInfoModal('Health & Diet', 'BMI & Diet Chart.')">
+      <div class="tile-ico">🥗</div>
+      <div class="tile-title">Health &amp; Diet</div>
+      <div class="tile-sub">BMI &amp; Diet Chart</div>
     </div>
 
-    <div class="d-card" onclick="openPay('pay')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">&#128179; Pay Fees</span><span class="dc-pill">Collect</span></div>
-      <div class="dc-row"><div><div class="dc-num" style="color:var(--gold);font-size:18px">Fees lo &rarr;</div><div class="dc-sub">Member fees, receipt &amp; dues</div></div><span>&#128179;</span></div>
-    </div>
-    <div class="d-card om-owner-only" onclick="openPay('records')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">&#128210; Fees Records</span><span class="dc-pill">Owner</span></div>
-      <div class="dc-row"><div><div class="dc-num" style="color:var(--emerald);font-size:18px">Records &rarr;</div><div class="dc-sub">Kisne kitni fees di, pending &amp; renewal</div></div><span>&#128210;</span></div>
+    <div class="tile-box c-pink admin-only-tile" onclick="openInfoModal('Diet Orders', 'Approve UTR requests.')">
+      <div class="tile-ico">🧾</div>
+      <div class="tile-title">Diet Orders</div>
+      <div class="tile-sub">Approve UTR</div>
     </div>
 
-    <button type="button" class="big-btn" onclick="switchPage(2)">Next Page &rarr; (Page 2: Trial &amp; Enterprise Control Grid)</button>
-  </section>
+    <a class="tile-box c-gold admin-only-tile" href="supplement-udhar.html">
+      <div class="tile-ico">📒</div>
+      <div class="tile-title">Supplement Udhar</div>
+      <div class="tile-sub">Bill / Register</div>
+    </a>
+  </main>
 
-  <!-- PAGE 2: 7-DAY TRIAL AT TOP + ENTERPRISE CONTROL GRID -->
-  <section id="page2" class="page-sec">
-    <div class="box-card">
-      <div style="font-size:12px;font-weight:800;color:var(--emerald);">&bull; No Paid Plan Active</div>
-      <div style="font-size:11px;color:var(--muted);margin:3px 0 10px;">Enterprise multi-branch workspace &bull; Cloud sync ready</div>
-      <button type="button" class="big-btn" style="margin-top:0;padding:10px;font-size:12px;" onclick="openMod('modLicense')">Upgrade Plan</button>
-    </div>
-
-    <div class="sec-head">ENTERPRISE CONTROL GRID</div>
-    <div class="grid2">
-      <button type="button" class="tile" onclick="openPay('pay')">&#128179; Pay Fees</button>
-      <button type="button" class="tile om-owner-only" onclick="openPay('records')">&#128210; Fees Records</button>
-      <button type="button" class="tile" onclick="openMod('modMaint')">Maintenance &amp; Bills</button>
-      <button type="button" class="tile" onclick="openMod('modDeptStaff')">Department Staff</button>
-      <button type="button" class="tile" onclick="openMod('modAtt')">Smart Attendance</button>
-      <button type="button" class="tile" onclick="openMod('modRouter')">Unified Data Upload</button>
-      <button type="button" class="tile" onclick="openMod('modSlip')">Salary Slip</button>
-      <button type="button" class="tile" onclick="openMod('modPnl')">5-Point Security &amp; P&amp;L</button>
-      <button type="button" class="tile" onclick="openMod('modEnq')">Audit &amp; Enquiries</button>
-      <button type="button" class="tile" onclick="openMod('modLicense')">Licenses (LIC-OM-OPE2HK)</button>
-      <button type="button" class="tile" onclick="switchPage(1)">&larr; Back to Dashboard</button>
-      <button type="button" class="tile" onclick="openMod('modLicense')">🔑 License</button>
-      <button type="button" class="tile" onclick="openMod('modCodes')">🛡️ Code</button>
-      <button type="button" class="tile" onclick="location.href='team-access-admin.html'">👥 Manager / Staff Login &amp; Invite Codes</button>
-      <button type="button" class="tile" onclick="openMod('modPnl')">📁 Branch Collection &amp; Report</button>
-      <button type="button" class="tile" onclick="openMod('modCodes')">📁 Staff Codes</button>
-      <button type="button" class="tile" onclick="openMod('modCodes')">🆔 View Your Employee Code</button>
-      <button type="button" class="tile" onclick="openMod('modCodes')">🪪 View Your Staff Code</button>
-      <button type="button" class="tile" onclick="openMod('modCodes')">🔍 Branch &amp; Staff Codes</button>
-      <button type="button" class="tile" onclick="openMod('modSelfie')">📸 Selfie Gallery</button>
-      <button type="button" class="tile red" onclick="logoutUser()">🚪 Logout</button>
-    </div>
-    <button type="button" class="big-btn sec" onclick="switchPage(3)">Next Page (Page 3: Operations &amp; Maintenance) &rarr;</button>
-  </section>
-
-  <!-- PAGE 3: OPERATIONS, MAINTENANCE, ENQUIRIES, P&L & SALARY -->
-  <section id="page3" class="page-sec">
-    <div class="box-card">
-      <h2 style="font-size:15.5px;color:var(--gold);">Operations &amp; Maintenance Command</h2>
-      <p style="font-size:11.5px;color:var(--muted);margin-top:3px;">Branch light bills, approval/rejection, staff KYC, attendance &amp; P&amp;L</p>
-    </div>
-    <div class="grid2">
-      <button type="button" class="tile" onclick="openMod('modMaint')">⚡ Maintenance &amp; Light Bills<br><span style="font-size:10.5px;color:var(--gold)">Meter, units, PDF &amp; photo</span></button>
-      <button type="button" class="tile" onclick="openMod('modMaint')">✅ Bill Approval / Rejection<br><span style="font-size:10.5px;color:var(--emerald)">Approve/Reject with reason</span></button>
-      <button type="button" class="tile" onclick="openMod('modDeptStaff')">🏢 Department-Wise Staff<br><span style="font-size:10.5px;color:var(--cyan)">Full KYC card &amp; actions</span></button>
-      <button type="button" class="tile" onclick="openMod('modAtt')">📋 Smart Attendance<br><span style="font-size:10.5px;color:var(--purple)">QR, batches &amp; expired fees</span></button>
-      <button type="button" class="tile" onclick="openMod('modEnq')">📞 Walk-In &amp; Lead Enquiries<br><span style="font-size:10.5px;color:var(--cyan)">Call, WhatsApp &amp; age</span></button>
-      <button type="button" class="tile" onclick="openMod('modPnl')">📉📈 P&amp;L Charts &amp; Excel<br><span style="font-size:10.5px;color:var(--gold)">Date filter &amp; chart sheet</span></button>
-      <button type="button" class="tile" onclick="openMod('modSlip')">🧾 Office &amp; HR Salary<br><span style="font-size:10.5px;color:var(--emerald)">Branch/Dept &amp; HR Excel</span></button>
-      <button type="button" class="tile" onclick="openMod('modStaffCheck')">🔎 40-Staff Selfie Check<br><span style="font-size:10.5px;color:var(--rose)">Present / Jao beta Absent</span></button>
-    </div>
-    <button type="button" class="big-btn sec" onclick="switchPage(4)">Next Page (Page 4: Core Modules &amp; Folders) &rarr;</button>
-  </section>
-
-  <!-- PAGE 4: CORE MODULES & FOLDERS (ADMISSION FORM + JOINING FORM + ATTENDANCE & TOOLS) -->
-  <section id="page4" class="page-sec">
-    <div class="sec-head" style="margin-top:0">Page 4: Admission Form, Joining Form &amp; Core Modules</div>
-
-    <div class="grid2" style="margin-bottom:10px">
-      <button type="button" class="sub-btn" id="p4TabAdmBtn" style="background:var(--gold);color:#050813;font-weight:900;padding:10px" onclick="switchP4SubView('adm')">📝 Admission Form (Member)</button>
-      <button type="button" class="sub-btn" id="p4TabJnBtn" style="padding:10px" onclick="switchP4SubView('jn')">🧑‍💼 Joining Form (Staff)</button>
-    </div>
-
-    <!-- SUBVIEW A: ADMISSION FORM (MEMBER) -->
-    <div id="p4SubAdm" class="box-card" style="border-color:var(--gold)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <b style="color:var(--gold);font-size:13.5px">📝 Gym Member Admission Form</b>
-        <button type="button" class="sub-btn" onclick="openMod('modAdmission')">Full Modal</button>
-      </div>
-      <div class="fg">
-        <label>Search Saved Members (Name / Mobile)</label>
-        <input class="fc" id="p4MemSearch" oninput="renderP4Members()" placeholder="Search member name or phone...">
-        <div id="p4MemSearchOut" style="margin-top:6px"></div>
-      </div>
-      <form onsubmit="p4SaveMemberAdmission(event)">
-        <div class="fg"><label>Member Name *</label><input class="fc" id="p4mName" required placeholder="Full Name"></div>
-        <div class="grid2">
-          <div class="fg"><label>Gender *</label><select class="fc" id="p4mGender"><option value="Male">Male</option><option value="Female">Female</option></select></div>
-          <div class="fg"><label>DOB</label><input type="date" class="fc" id="p4mDob"></div>
-        </div>
-        <div class="grid2">
-          <div class="fg"><label>Mobile *</label><input type="tel" class="fc" id="p4mPhone" required maxlength="10" placeholder="10-digit mobile"></div>
-          <div class="fg"><label>Plan &amp; Fee (₹) *</label><input class="fc" id="p4mPlan" required value="1 Month - ₹500"></div>
-        </div>
-        <div class="fg"><label>Address</label><input class="fc" id="p4mAddr" placeholder="Member Address"></div>
-        <button type="submit" class="big-btn" style="margin-top:0">Save Member Admission</button>
-      </form>
-    </div>
-
-    <!-- SUBVIEW B: JOINING FORM (STAFF - MANAGER & ADMIN ACCESS) -->
-    <div id="p4SubJn" class="box-card" style="display:none;border-color:var(--cyan)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <b style="color:var(--cyan);font-size:13.5px">🧑‍💼 Staff Joining Form (Manager &amp; Admin Access)</b>
-        <button type="button" class="sub-btn" onclick="openMod('modJoining')">Full Modal</button>
-      </div>
-      <form onsubmit="p4SaveStaffJoining(event)">
-        <div class="grid2">
-          <div class="fg"><label>Staff Name *</label><input class="fc" id="p4jName" required placeholder="Staff Full Name"></div>
-          <div class="fg"><label>Employee ID *</label><input class="fc" id="p4jId" required placeholder="e.g. STF-009"></div>
-        </div>
-        <div class="grid2">
-          <div class="fg"><label>Branch *</label><select class="fc" id="p4jBr"><option value="001">Branch 001</option><option value="002">Branch 002</option><option value="003">Branch 003</option></select></div>
-          <div class="fg"><label>Department *</label><select class="fc" id="p4jDept"><option value="Training">Training</option><option value="Front Desk">Front Desk</option><option value="Cleaning">Cleaning</option><option value="Management">Management</option></select></div>
-        </div>
-        <div class="grid2">
-          <div class="fg"><label>Role / Post *</label><input class="fc" id="p4jRole" required placeholder="e.g. Trainer / Helper"></div>
-          <div class="fg"><label>Payment Mode *</label><select class="fc" id="p4jMode"><option value="Bank">Bank</option><option value="Cash">Cash</option></select></div>
-        </div>
-        <div class="grid2">
-          <div class="fg"><label>Salary (₹) *</label><input type="number" class="fc" id="p4jSal" required value="12000"></div>
-          <div class="fg"><label>Mobile *</label><input type="tel" class="fc" id="p4jPhone" required maxlength="10" placeholder="10-digit mobile"></div>
-        </div>
-        <button type="submit" class="big-btn sec" style="margin-top:0">Save Staff Joining Form</button>
-      </form>
-    </div>
-
-    <div class="m-card" onclick="openPay('pay')"><div><div class="m-title">Pay Fees</div><div class="m-sub">Fees lena, receipt &amp; dues</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
-    <div class="m-card om-owner-only" onclick="openPay('records')"><div><div class="m-title">Fees Records</div><div class="m-sub">Manager ne jo fees li uske records</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
-    <div class="m-card" onclick="openMod('modAtt')"><div><div class="m-title">Attendance Kiosk</div><div class="m-sub">QR, Morning/Evening batch, Live Staff &amp; Fees Expired list</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
-    <div class="m-card" onclick="openMod('modSlip')"><div><div class="m-title">Staff Salary &amp; Payroll</div><div class="m-sub">Branch/Department salary, penalty &amp; HR Excel sheet</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
-    <div class="m-card" onclick="openMod('modRouter')"><div><div class="m-title">Upload Gym Data</div><div class="m-sub">Auto-router for CSV / Excel into isolated sections</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
-    <div class="m-card" onclick="openMod('modDeptStaff')"><div><div class="m-title">Admin Portal &amp; Staff Directory</div><div class="m-sub">Staff KYC, share login link &amp; firing reason</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
-    <button type="button" class="big-btn sec" onclick="switchPage(1)">&larr; Back to Page 1 (Live Dashboard)</button>
-  </section>
-
-  <!-- MODALS -->
-  <div class="modal-ov" id="modExtra">
-    <div class="modal-box" style="max-width:100%;width:100%;height:94vh;padding:0;overflow:hidden">
-      <div class="m-top" style="padding:10px 12px;margin:0"><h3 id="payTitle">&#128179; Pay Fees</h3><button type="button" class="x-btn" onclick="closeMod('modExtra')">&times;</button></div>
-      <iframe id="payFrame" title="Pay Fees" style="width:100%;height:calc(94vh - 52px);border:0;background:#000"></iframe>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modMaint">
+  <!-- ADMISSION MODAL -->
+  <div class="modal-ov" id="modQuickAdm">
     <div class="modal-box">
-      <div class="m-top"><h3>🔧 Maintenance, Light Bills &amp; Approval</h3><button type="button" class="x-btn" onclick="closeMod('modMaint')">&times;</button></div>
-      <div class="rec">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <b style="color:var(--gold)">⚡ Branch Light Bill Tracker</b>
-          <button type="button" class="sub-btn" onclick="toggleBillForm()">+ Bill Daalein</button>
-        </div>
-        <select class="fc" id="billBrSel" onchange="renderBillCard()">
-          <option value="001">Branch 001 (₹14,850)</option>
-          <option value="002">Branch 002 (₹50,000)</option>
-          <option value="003">Branch 003 (₹50,000)</option>
-          <option value="004">Branch 004 (₹50,000)</option>
-          <option value="005">Branch 005 (₹12,000)</option>
-        </select>
-        <div id="billCardBox" style="margin-top:8px"></div>
-        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
-          <button type="button" class="sub-btn" onclick="viewBillCopy('Image')">🖼️ View Image Copy</button>
-          <button type="button" class="sub-btn" onclick="viewBillCopy('PDF')">📄 View / Download PDF</button>
-        </div>
-      </div>
-
-      <div id="newBillForm" class="rec" style="display:none;border-color:var(--gold)">
-        <form onsubmit="submitLightBill(event)">
-          <div class="fg"><label>Current Bill (₹) *</label><input type="number" class="fc" id="nbCur" required value="15000"></div>
-          <div class="fg"><label>Previous Bill (₹) *</label><input type="number" class="fc" id="nbPrev" required value="13200"></div>
-          <div class="fg"><label>Prev Reading (kWh) *</label><input type="number" class="fc" id="nbPR" required value="18420"></div>
-          <div class="fg"><label>Curr Reading (kWh) *</label><input type="number" class="fc" id="nbCR" required value="20185"></div>
-          <div class="fg"><label>Load (kW) *</label><input class="fc" id="nbKw" required value="4 kW"></div>
-          <div class="fg"><label>Bill Photo / Upload *</label><input type="file" class="fc" accept="image/*,.pdf" capture="environment" onchange="showThumb(this,'nbPrevBox')"><div class="preview-row" id="nbPrevBox"></div></div>
-          <button type="submit" class="big-btn" style="margin-top:0">Submit Light Bill (Notify Admin)</button>
-        </form>
-      </div>
-
-      <form class="rec" onsubmit="submitConsumableBill(event)">
-        <b style="color:var(--cyan);display:block;margin-bottom:8px">Consumables / Vendor Bill (Jhadu, Pocha, Colin, Handwash, Sweeper)</b>
-        <div class="fg">
-          <label>Category / Auto-Search *</label>
-          <input list="catOpts" class="fc" id="cCat" required placeholder="Type or select e.g. Handwash, Colin, Sweeper">
-          <datalist id="catOpts">
-            <option value="Handwash">
-            <option value="Colin &amp; Glass Cleaner">
-            <option value="Jhadu &amp; Pocha">
-            <option value="Sweeper / Mali">
-            <option value="Equipment Maintenance">
-          </datalist>
-        </div>
-        <div class="fg"><label>Manual Amount (₹) *</label><input type="number" class="fc" id="cAmt" required value="650"></div>
-        <div class="fg"><label>Bill Photo (Upload or Live Camera) *</label><input type="file" class="fc" accept="image/*,.pdf" capture="environment" onchange="showThumb(this,'cPrevBox')"><div class="preview-row" id="cPrevBox"></div></div>
-        <button type="submit" class="big-btn" style="margin-top:0">Submit Bill for Admin Approval</button>
-      </form>
-
-      <div id="maintApprovalList"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modDeptStaff">
-    <div class="modal-box">
-      <div class="m-top"><h3>🏢 Department-Wise Staff &amp; KYC</h3><button type="button" class="x-btn" onclick="closeMod('modDeptStaff')">&times;</button></div>
-      <div class="fg"><label>Branch</label><select class="fc" id="dsBr" onchange="renderDeptStaff()"><option value="001">Branch 001 (City Center)</option><option value="002">Branch 002</option><option value="003">Branch 003</option></select></div>
-      <div class="fg"><label>Search Staff</label><input class="fc" id="dsSearch" oninput="renderDeptStaff()" placeholder="Name, role, department..."></div>
-      <div id="dsList"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modKycCard">
-    <div class="modal-box">
-      <div class="m-top"><h3>👑 Complete Staff KYC Certificate</h3><button type="button" class="x-btn" onclick="closeMod('modKycCard')">&times;</button></div>
-      <div id="kycCertBody" style="background:#fff;color:#0F172A;border-radius:12px;padding:15px;font-size:11.5px;"></div>
-      <button type="button" class="big-btn" onclick="window.print()">Print / Save KYC Certificate</button>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modAtt">
-    <div class="modal-box" style="max-width:100%;width:100%;height:94vh;padding:0;overflow:hidden">
-      <div class="m-top" style="padding:10px 12px;margin:0"><h3>&#128081; Attendance</h3><button type="button" class="x-btn" onclick="closeMod('modAtt')">&times;</button></div>
-      <div id="attStaffTools" class="grid2" style="display:none;padding:0 10px 8px;gap:6px">
-        <button type="button" class="sub-btn" onclick="openMod('modStaffPunch')">&#128338; Staff Late / Outside</button>
-        <button type="button" class="sub-btn" onclick="openMod('modStaffCheck')">&#128270; Staff Selfie Check</button>
-      </div>
-      <iframe id="attFrame" title="Attendance" style="width:100%;height:calc(94vh - 52px);border:0;background:#000"></iframe>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modStaffPunch">
-    <div class="modal-box">
-      <div class="m-top"><h3>&#128338; Staff Outside / Late Attendance</h3><button type="button" class="x-btn" onclick="closeMod('modStaffPunch')">&times;</button></div>
-      <div class="fg"><label>Staff Name</label><input class="fc" id="stfAttName" placeholder="Staff ka naam"></div>
-      <div class="fg"><label>Late Minutes</label><input type="number" class="fc" id="stfLateMin" value="0"></div>
-      <div class="fg"><label>Location Mode</label>
-        <select class="fc" id="stfLocMode"><option value="Inside Gym (150m)">Inside Gym (150m)</option><option value="Outside Gym (Remote)">Outside Gym (Remote)</option></select></div>
-      <div class="fg"><label>Live Photo</label><input type="file" class="fc" accept="image/*" capture="user" onchange="showThumb(this,'stfAttPrev')"><div class="preview-row" id="stfAttPrev"></div></div>
-      <button type="button" class="sub-btn" style="width:100%" onclick="omStaffPunchSubmit()">Submit Staff Attendance &amp; Notify Manager</button>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modExpired">
-    <div class="modal-box">
-      <div class="m-top"><h3>⚠️ Fees Expired Members</h3><button type="button" class="x-btn" onclick="closeMod('modExpired')">&times;</button></div>
-      <div id="expiredListBox"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modStaffCheck">
-    <div class="modal-box">
-      <div class="m-top"><h3>🔎 40-Staff Selfie Verification</h3><button type="button" class="x-btn" onclick="closeMod('modStaffCheck')">&times;</button></div>
-      <div class="fg"><label>Staff Name</label><input class="fc" id="chkName" placeholder="Type staff name..." oninput="checkStaffSelfie()"></div>
-      <div class="fg"><label>Date</label><input type="date" class="fc" id="chkDate" onchange="checkStaffSelfie()"></div>
-      <div id="chkResultBox" class="rec">Naam aur date chunein.</div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modSelfie">
-    <div class="modal-box">
-      <div class="m-top"><h3>📸 Selfie Gallery</h3><button type="button" class="x-btn" onclick="closeMod('modSelfie')">&times;</button></div>
-      <div class="fg"><label>Calendar Date</label><input type="date" class="fc" id="selfieDate" onchange="renderSelfies()"></div>
-      <div id="selfieListBox"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modPnl">
-    <div class="modal-box">
-      <div class="m-top"><h3>📉📈 Profit &amp; Loss Statement &amp; Charts</h3><button type="button" class="x-btn" onclick="closeMod('modPnl')">&times;</button></div>
-      <div class="grid2">
-        <div class="fg"><label>From</label><input type="date" class="fc" id="pFrom"></div>
-        <div class="fg"><label>To</label><input type="date" class="fc" id="pTo"></div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-        <button type="button" class="sub-btn" onclick="renderPnl()">Apply &amp; Chart</button>
-        <button type="button" class="sub-btn" style="color:var(--emerald)" onclick="downloadB64(PNL_B64,'Om_Software_Enterprise_Financial_Report.xlsx')">📊 Download Chart Excel</button>
-      </div>
-      <canvas id="pnlChart" style="max-height:210px;background:#070D1C;border-radius:10px;padding:6px"></canvas>
-      <div id="pnlEntries" style="margin-top:10px"></div>
-    </div>
-  </div>
-
-      <div class="modal-ov" id="modSlip">
-    <div class="modal-box" style="max-width:680px;">
-      <div class="m-top"><h3>🧾 Staff Salary Register &amp; Payroll Management</h3><button type="button" class="x-btn" onclick="closeMod('modSlip')">&times;</button></div>
-
-      <!-- Mode Selection Tabs -->
-      <div style="display:flex;gap:6px;margin-bottom:12px;">
-        <button type="button" class="tab-btn active" id="stTabBranch" style="flex:1;" onclick="setSalaryTab('branch')">🏢 Branch-Wise Salary</button>
-        <button type="button" class="tab-btn" id="stTabSearch" style="flex:1;" onclick="setSalaryTab('search')">🔍 Auto-Search</button>
-        <button type="button" class="tab-btn" id="stTabCreate" style="flex:1;" onclick="setSalaryTab('create')">➕ Salary Create</button>
-      </div>
-
-      <!-- TAB 1: BRANCH-WISE SALARY SHEET WITH LIVE EDIT & AUTO FORMULA -->
-      <div id="salSecBranch">
-        <div class="rec" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex:1;">
-            <select class="fc" id="salBr" style="width:140px;" onchange="renderSalaryBranch()">
-              <option value="001">Branch 001 (City Center)</option>
-              <option value="002">Branch 002 (Kanpur)</option>
-              <option value="003">Branch 003 (Lucknow)</option>
-            </select>
-            <select class="fc" id="salDept" style="width:130px;" onchange="renderSalaryBranch()">
-              <option value="ALL">All Depts</option>
-              <option value="Management">Management</option>
-              <option value="Training">Training</option>
-              <option value="Front Desk">Front Desk</option>
-              <option value="Cleaning">Cleaning</option>
-            </select>
-            <button type="button" class="sub-btn" style="background:var(--gold);color:#050813;font-weight:900" onclick="renderSalaryBranch()">Submit</button>
-          </div>
-          <button type="button" class="sub-btn" style="color:var(--emerald)" onclick="downloadB64(HR_B64,'All_Branch_Staff_Salary_HR_Sheet.xlsx')">📥 Master HR Excel</button>
-        </div>
-        <div id="salTotalBox" class="rec" style="color:var(--gold);font-weight:800"></div>
-        <div id="salRowsBox"></div>
-      </div>
-
-      <!-- TAB 2: AUTO-SEARCH (ID, MOBILE, EMAIL, BRANCH + STATEMENT DATE PICKER) -->
-      <div id="salSecSearch" style="display:none;">
-        <div class="rec">
-          <div class="fg">
-            <label>Search Criterion:</label>
-            <select class="fc" id="searchFilterType" onchange="document.getElementById('salSearchQuery').placeholder='Search by ' + this.value + '...';">
-              <option value="All">All Fields (Auto-Detect)</option>
-              <option value="Employee ID">Search with Employee ID</option>
-              <option value="Mobile No">Search with Mobile No</option>
-              <option value="Email ID">Search with Email ID</option>
-              <option value="Branch Name">Search with Branch Name</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>Enter Search Query:</label>
-            <input class="fc" id="salSearchQuery" placeholder="Search by name, ID, phone, email, branch..." oninput="filterStaffAutoSearch()">
-          </div>
-          <div class="grid2">
-            <div class="fg">
-              <label>From Date (Statement):</label>
-              <input type="date" class="fc" id="salDateFrom" value="2026-07-01">
-            </div>
-            <div class="fg">
-              <label>To Date (Statement):</label>
-              <input type="date" class="fc" id="salDateTo" value="2026-11-22">
-            </div>
-          </div>
-          <button type="button" class="big-btn" style="margin-top:2px" onclick="filterStaffAutoSearch()">Submit &amp; Fetch Statement</button>
-        </div>
-        <div id="salSearchResultsBox" style="margin-top:10px;max-height:280px;overflow-y:auto;"></div>
-      </div>
-
-      <!-- TAB 3: SALARY CREATE (INSTANT FORMULATION SLIP FOR UNREGISTERED / NEW STAFF) -->
-      <div id="salSecCreate" style="display:none;">
-        <form class="rec" onsubmit="createInstantSalarySlip(event)">
-          <b style="color:var(--cyan);display:block;margin-bottom:8px">➕ Instant Salary Slip Creator (Auto-Formula)</b>
-          <div class="grid2">
-            <div class="fg"><label>Gym / Enterprise Name *</label><input class="fc" id="cstGymName" value="" required></div>
-            <div class="fg"><label>Branch / Location *</label><input class="fc" id="cstBranch" value="Main Road, City Center Main (Branch 001)" required></div>
-          </div>
-          <div class="grid2">
-            <div class="fg"><label>Staff Full Name *</label><input class="fc" id="cstName" required placeholder="Employee Name"></div>
-            <div class="fg"><label>Employee ID *</label><input class="fc" id="cstId" required placeholder="e.g. STF-001-NEW"></div>
-          </div>
-          <div class="grid2">
-            <div class="fg"><label>Designation *</label><input class="fc" id="cstRole" value="Senior Floor Coach" required></div>
-            <div class="fg"><label>Department *</label><input class="fc" id="cstDept" value="Training" required></div>
-          </div>
-          <div class="grid2">
-            <div class="fg"><label>Reporting Manager *</label><input class="fc" id="cstManager" value="Gym Owner (9876501100)" required></div>
-            <div class="fg"><label>Bank / Payment Mode *</label><input class="fc" id="cstBank" value="KOTAK MAHINDRA BANK (1913450661)" required></div>
-          </div>
-          <div class="grid2">
-            <div class="fg"><label>Staff Mobile (WhatsApp) *</label><input class="fc" id="cstMobile" value="9876503344" required></div>
-            <div class="fg"><label>Staff Email ID</label><input class="fc" id="cstEmail" value="staff@omsoftware.com"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-            <div class="fg"><label>Base Salary (₹) *</label><input type="number" class="fc" id="cstBase" value="18000" oninput="recalcInstantSlip()"></div>
-            <div class="fg"><label>Special Allowance (₹)</label><input type="number" class="fc" id="cstAllow" value="3000" oninput="recalcInstantSlip()"></div>
-            <div class="fg"><label>Incentive / Bonus (₹)</label><input type="number" class="fc" id="cstBonus" value="1500" oninput="recalcInstantSlip()"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-            <div class="fg"><label>Late Penalty (₹)</label><input type="number" class="fc" id="cstPen" value="250" oninput="recalcInstantSlip()"></div>
-            <div class="fg"><label>Advance Taken (₹)</label><input type="number" class="fc" id="cstAdv" value="1500" oninput="recalcInstantSlip()"></div>
-            <div class="fg"><label>PF / Deductions (₹)</label><input type="number" class="fc" id="cstPf" value="1250" oninput="recalcInstantSlip()"></div>
-          </div>
-          <div class="grid2">
-            <div class="fg"><label>Paid Leaves (Days &amp; Reason)</label><input class="fc" id="cstPaidReason" value="2 Days (Casual / Diwali Paid Leave)"></div>
-            <div class="fg"><label>Unpaid Leaves (Days &amp; Reason)</label><input class="fc" id="cstUnpaidReason" value="1 Day (Medical Leave - Unpaid Loss of Pay)"></div>
-          </div>
-          <div class="grid2">
-            <div class="fg"><label>Festival Holidays Status</label><input class="fc" id="cstHolidayDuty" value="3 Days (Diwali &amp; Bhai Dooj) &bull; Duty: Optional (Paid OT)"></div>
-            <div class="fg"><label>Total Days / Paid Days</label><input class="fc" id="cstDaysSummary" value="Total: 30 Days | Paid Days: 28.00"></div>
-          </div>
-          <div class="fg">
-            <label>Calculated Net Transfer Amount:</label>
-            <input class="fc" id="cstNetCalc" value="₹19,500" readonly style="color:var(--emerald);font-weight:900;font-size:15px;">
-          </div>
-          <button type="submit" class="big-btn">Create &amp; Generate Salary Slip</button>
-        </form>
-      </div>
-
-      <!-- PROFESSIONAL SALARY SLIP VOUCHER & MULTI-ACTION TOOLBAR -->
-      <div id="salaryVoucherBox" style="display:none;margin-top:14px;background:#FFFFFF;color:#000000;border-radius:8px;padding:16px;border:1px solid #CBD5E1;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-        <div id="salarySlipPrintableContent"></div>
-
-        <!-- Action Buttons: Download + Send WhatsApp + Send Email -->
-        <div style="margin-top:14px;padding-top:12px;border-top:1px dashed #CBD5E1;">
-          <b style="color:#0F172A;display:block;margin-bottom:8px;font-size:12px;">📤 Download Slip / Send Directly to Employee:</b>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-            <button type="button" class="sub-btn" style="flex:1;background:#0F172A;color:#FFFFFF;font-weight:800;padding:9px;" onclick="downloadSlipFormat('PDF')">📄 Download PDF</button>
-            <button type="button" class="sub-btn" style="flex:1;background:#0369A1;color:#FFFFFF;font-weight:800;padding:9px;" onclick="downloadSlipFormat('IMAGE')">🖼️ Download Image (PNG)</button>
-            <button type="button" class="sub-btn" style="flex:1;background:#047857;color:#FFFFFF;font-weight:800;padding:9px;" onclick="downloadSlipFormat('EXCEL')">📊 Download Excel (.xlsx)</button>
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button type="button" class="sub-btn" style="flex:1;background:#16A34A;color:#FFFFFF;font-weight:800;padding:9px;" onclick="sendSalarySlipViaWhatsApp()">📲 Send to Employee WhatsApp</button>
-            <button type="button" class="sub-btn" style="flex:1;background:#2563EB;color:#FFFFFF;font-weight:800;padding:9px;" onclick="sendSalarySlipViaEmail()">✉️ Send to Employee Email</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modAdmission">
-    <div class="modal-box">
-      <div class="m-top"><h3>📝 Admission Form</h3><button type="button" class="x-btn" onclick="closeMod('modAdmission')">&times;</button></div>
-      <form onsubmit="saveAdmission(event)">
-        <div class="fg"><label>Branch *</label><select class="fc" id="admBr"><option value="001">Branch 001</option><option value="002">Branch 002</option><option value="003">Branch 003</option></select></div>
-        <div class="fg"><label>Member Name *</label><input class="fc" id="admNm" required></div>
-        <div class="fg"><label>Base Fee (₹) *</label><input type="number" class="fc" id="admFee" value="1200" oninput="calcAdm()"></div>
-        <div class="rec">
-          <div><label><input type="checkbox" class="s-chk" data-s="Sauna" onchange="calcAdm()"> Sauna</label> <input type="number" class="fc s-p" value="1000" style="width:90px;display:inline" oninput="calcAdm()"></div>
-          <div style="margin-top:6px"><label><input type="checkbox" class="s-chk" data-s="Ice Bath" onchange="calcAdm()"> Ice Bath</label> <input type="number" class="fc s-p" value="1500" style="width:90px;display:inline" oninput="calcAdm()"></div>
-          <div style="margin-top:6px"><label><input type="checkbox" class="s-chk" data-s="Locker" onchange="calcAdm()"> Locker</label> <input type="number" class="fc s-p" value="500" style="width:90px;display:inline" oninput="calcAdm()"></div>
-          <div style="margin-top:6px"><label><input type="checkbox" class="s-chk" data-s="Supplement" onchange="calcAdm()"> Supplement</label> <input type="number" class="fc s-p" value="2500" style="width:90px;display:inline" oninput="calcAdm()"></div>
-          <div style="margin-top:6px"><label><input type="checkbox" class="s-chk" data-s="Cardio/Cycle/Cross" onchange="calcAdm()"> Cardio / Cycle / Cross Trainer</label> <input type="number" class="fc s-p" value="800" style="width:90px;display:inline" oninput="calcAdm()"></div>
-          <div style="margin-top:6px"><label><input type="checkbox" class="s-chk" data-s="Zumba" onchange="calcAdm()"> Zumba</label> <input type="number" class="fc s-p" value="1000" style="width:90px;display:inline" oninput="calcAdm()"></div>
-        </div>
-        <div class="fg"><label>Payment Mode</label><select class="fc" id="admPay" onchange="document.getElementById('utrWrap').style.display=this.value==='Online'?'block':'none'"><option value="Cash">Cash</option><option value="Online">Online</option></select></div>
-        <div id="utrWrap" style="display:none"><div class="fg"><label>UTR Number *</label><input class="fc" id="admUtr"></div></div>
-        <div class="fg"><label>Photo &amp; Govt ID Upload</label><input type="file" class="fc" multiple accept="image/*,.pdf" onchange="showThumb(this,'admDocsPrev')"><div class="preview-row" id="admDocsPrev"></div></div>
-        <div class="fg"><label>Total (₹)</label><input class="fc" id="admTot" value="1200" readonly></div>
-        <button type="submit" class="big-btn">Save Admission</button>
+      <div class="m-top"><h3>📝 Admission Form</h3><button type="button" class="x-btn" onclick="closeQuickMod('modQuickAdm')">&times;</button></div>
+      <form onsubmit="submitQuickAdm(event)">
+        <div class="fg"><label>पूरा नाम *</label><input class="fc" id="qaName" required placeholder="सदस्य का नाम"></div>
+        <div class="fg"><label>मोबाइल नंबर (10 अंक) *</label><input type="tel" class="fc" id="qaPhone" required maxlength="10" placeholder="10 अंक मोबाइल"></div>
+        <div class="fg"><label>प्लान / फीस (₹) *</label><input type="number" class="fc" id="qaFee" required value="500"></div>
+        <div class="fg"><label>पता *</label><input class="fc" id="qaAddr" required placeholder="गांव / मोहल्ला"></div>
+        <button type="submit" class="btn-act">Admission Save करें</button>
       </form>
     </div>
   </div>
 
-  <div class="modal-ov" id="modJoining">
+  <!-- PAYMENT FEES MODAL -->
+  <div class="modal-ov" id="modQuickPay">
     <div class="modal-box">
-      <div class="m-top"><h3>👤 Staff Joining &amp; KYC</h3><button type="button" class="x-btn" onclick="closeMod('modJoining')">&times;</button></div>
-      <form onsubmit="saveJoining(event)">
-        <div class="fg"><label>Branch *</label><select class="fc" id="jnBr"><option value="001">Branch 001</option><option value="002">Branch 002</option><option value="003">Branch 003</option></select></div>
-        <div class="fg"><label>Name *</label><input class="fc" id="jnNm" required></div>
-        <div class="fg"><label>Department *</label><select class="fc" id="jnDept"><option value="Training">Training</option><option value="Front Desk">Front Desk</option><option value="Cleaning">Cleaning</option><option value="Management">Management</option></select></div>
-        <div class="fg"><label>Role *</label><input class="fc" id="jnRole" required></div>
-        <div class="fg"><label>Payment Mode *</label><select class="fc" id="jnMode" onchange="document.getElementById('jnBankWrap').style.display=this.value==='Cash'?'none':'block'"><option value="Bank">Bank</option><option value="Cash">Cash (No Bank/PF/UAN)</option></select></div>
-        <div id="jnBankWrap">
-          <div class="fg"><label>Bank Details</label><input class="fc" id="jnBank"></div>
-          <div class="fg"><label>PF / UAN</label><input class="fc" id="jnPfUan"></div>
+      <div class="m-top"><h3>💳 Payment Fees</h3><button type="button" class="x-btn" onclick="closeQuickMod('modQuickPay')">&times;</button></div>
+      <form onsubmit="submitQuickPay(event)">
+        <div class="fg"><label>सदस्य का नाम *</label><input class="fc" id="qpName" required placeholder="सदस्य का नाम"></div>
+        <div class="fg"><label>मोबाइल नंबर *</label><input type="tel" class="fc" id="qpPhone" required maxlength="10" placeholder="10 अंक मोबाइल"></div>
+        <div class="fg"><label>जमा फीस (₹) *</label><input type="number" class="fc" id="qpAmt" required value="500"></div>
+        <div class="fg"><label>माध्यम</label>
+          <select class="fc" id="qpMode">
+            <option value="Cash">Cash</option>
+            <option value="Online">Online / UPI</option>
+          </select>
         </div>
-        <div class="fg"><label>Photo, ID, Qualification &amp; Medical Docs</label><input type="file" class="fc" multiple accept="image/*,.pdf" capture="user" onchange="showThumb(this,'jnDocsPrev')"><div class="preview-row" id="jnDocsPrev"></div></div>
-        <button type="submit" class="big-btn">Save Staff Joining</button>
+        <button type="submit" class="btn-ok">Fees जमा करें</button>
       </form>
     </div>
   </div>
 
-  <div class="modal-ov" id="modEnq">
+  <!-- INFO MODAL FOR REVEALED MODULES -->
+  <div class="modal-ov" id="modInfo">
     <div class="modal-box">
-      <div class="m-top"><h3>📞 Enquiries &amp; Age</h3><button type="button" class="x-btn" onclick="closeMod('modEnq')">&times;</button></div>
-      <form onsubmit="saveEnq(event)">
-        <div class="fg"><label>Folder</label><select class="fc" id="enqFld"><option value="Walking Enquiry">Walking Enquiry</option><option value="Lead Enquiry">Lead Enquiry</option></select></div>
-        <div class="fg"><label>Name *</label><input class="fc" id="enqNm" required></div>
-        <div class="fg"><label>Phone *</label><input class="fc" id="enqPh" required></div>
-        <div class="fg"><label>Age *</label><input type="number" class="fc" id="enqAge" value="20" required></div>
-        <div class="fg"><label>Lead Source</label><input class="fc" id="enqSrc" placeholder="Walk-in / Instagram / WhatsApp"></div>
-        <button type="submit" class="big-btn">Save Enquiry</button>
-      </form>
-      <div id="enqBox" style="margin-top:10px"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modRouter">
-    <div class="modal-box">
-      <div class="m-top"><h3>📥 Upload Gym Data (Auto-Router)</h3><button type="button" class="x-btn" onclick="closeMod('modRouter')">&times;</button></div>
-      <div class="rec" style="font-size:12px;color:var(--muted);margin-bottom:10px">
-        Apna gym data CSV ya Excel file chunein aur <b>Upload Data</b> button par click karein.
-      </div>
-      <div class="fg">
-        <label>Select CSV / Excel File *</label>
-        <input type="file" class="fc" id="routerFileInput" accept=".csv,.xlsx,.xls">
-      </div>
-      <button type="button" class="big-btn" style="margin-top:0" onclick="startDataUpload(event)">📤 Submit &amp; Upload Data</button>
-      <div id="uploadStatusArea" style="margin-top:10px"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modCodes">
-    <div class="modal-box">
-      <div class="m-top"><h3>🆔 Staff &amp; Branch Codes</h3><button type="button" class="x-btn" onclick="closeMod('modCodes')">&times;</button></div>
-      <input class="fc" id="codeQ" placeholder="Search name, father, wife, mobile, branch..." oninput="renderCodes()">
-      <div id="codeResults" style="margin-top:10px"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="modLicense">
-    <div class="modal-box" style="max-width:600px">
-      <div class="m-top"><h3>🔑 All 5 Plans &amp; License Key</h3><button type="button" class="x-btn" onclick="closeMod('modLicense')">&times;</button></div>
-
-      <div id="activePlanBanner" class="rec" style="border-color:var(--emerald);background:rgba(52,211,153,0.08);margin-bottom:10px"></div>
-
-      <!-- Plan 1: ₹99 -->
-      <div class="rec" style="border-color:var(--gold)">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div>
-            <b style="color:var(--gold);font-size:14px">1. First / Base Plan — ₹99</b>
-            <div style="font-size:11px;color:var(--muted)">QR Self Attendance, Live Board &amp; Expiry, Instant Fees Receipt + WhatsApp, Admission Form + QR</div>
-          </div>
-          <button type="button" class="sub-btn" style="background:var(--gold);color:#050813;font-weight:900" onclick="requestPlanSelection(99, 'First Plan (₹99)')">Select ₹99</button>
-        </div>
-      </div>
-
-      <!-- Plan 2: ₹199 -->
-      <div class="rec" style="border-color:var(--cyan)">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div>
-            <b style="color:var(--cyan);font-size:14px">2. Growth Value Plan — ₹199</b>
-            <div style="font-size:11px;color:var(--muted)">All ₹99 + Cash/Online Split, Supplement Billing, Due Reminders, Walk-In/Lead Enquiry, CSV Export</div>
-          </div>
-          <button type="button" class="sub-btn" style="background:var(--cyan);color:#050813;font-weight:900" onclick="requestPlanSelection(199, 'Growth Value Plan (₹199)')">Select ₹199</button>
-        </div>
-      </div>
-
-      <!-- Plan 3: ₹399 -->
-      <div class="rec" style="border-color:var(--emerald)">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div>
-            <b style="color:var(--emerald);font-size:14px">3. Pro Business Plan — ₹399</b>
-            <div style="font-size:11px;color:var(--muted)">All ₹199 + Full Staff Payroll &amp; Salary Slips, Light/Vendor Bills Approval, Net P&amp;L Engine, Staff KYC Vault</div>
-          </div>
-          <button type="button" class="sub-btn" style="background:var(--emerald);color:#050813;font-weight:900" onclick="requestPlanSelection(399, 'Pro Business Plan (₹399)')">Select ₹399</button>
-        </div>
-      </div>
-
-      <!-- Plan 4: ₹499 -->
-      <div class="rec" style="border-color:var(--purple)">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div>
-            <b style="color:var(--purple);font-size:14px">4. Advanced Audit Plan — ₹499</b>
-            <div style="font-size:11px;color:var(--muted)">All ₹399 + GPS Geo-Fence &amp; Anti-Proxy, Manager Isolated Portal, Female Privacy Masking, Audit Trail</div>
-          </div>
-          <button type="button" class="sub-btn" style="background:var(--purple);color:#050813;font-weight:900" onclick="requestPlanSelection(499, 'Advanced Audit Plan (₹499)')">Select ₹499</button>
-        </div>
-      </div>
-
-      <!-- Plan 5: ₹999 -->
-      <div class="rec" style="border-color:var(--rose)">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div>
-            <b style="color:var(--rose);font-size:14px">5. Complete Enterprise ERP — ₹999</b>
-            <div style="font-size:11px;color:var(--muted)">All Features Unlocked + Multi-Branch Central Command, Auto Data Router, Permanent Cloud Sync, Custom Branding</div>
-          </div>
-          <button type="button" class="sub-btn" style="background:var(--rose);color:#050813;font-weight:900" onclick="requestPlanSelection(999, 'Complete Enterprise ERP (₹999)')">Select ₹999</button>
-        </div>
-      </div>
-
-      <div style="margin-top:8px">
-        <button type="button" class="big-btn sec" onclick="location.href='plans.html'">Open Full Plans Page (plans.html) &rarr;</button>
-      </div>
-
-      <div class="rec" style="margin-top:10px">Active Key (Locked): <b style="color:var(--gold)" id="licDisp">LIC-OM-OPE2HK-LOCKED</b></div>
-      <div class="fg"><label>Renewal / License Key</label><input class="fc" id="licInp" placeholder="Enter license / renewal key"></div>
-      <button type="button" class="big-btn" onclick="lockLic()">Activate &amp; Lock Key</button>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="inactivitySessionModal">
-    <div class="modal-box" style="text-align:center">
-      <h3 style="color:var(--rose);margin-bottom:8px">10 Min Inactivity Lock</h3>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:12px">10 minute se koi button touch nahi hua.</p>
-      <button type="button" class="big-btn" onclick="localStorage.setItem('om_last_active_time',String(Date.now()));closeMod('inactivitySessionModal')">Resume Session</button>
-      <button type="button" class="big-btn sec" onclick="logoutUser()">New Session / Login</button>
+      <div class="m-top"><h3 id="infoTitle">Module</h3><button type="button" class="x-btn" onclick="closeQuickMod('modInfo')">&times;</button></div>
+      <p id="infoDesc" style="font-size:13px;color:#ddd;line-height:1.5"></p>
+      <button type="button" class="btn-act" style="margin-top:14px" onclick="closeQuickMod('modInfo')">ठीक है</button>
     </div>
   </div>
 
   <script>
-    const PNL_B64 = "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";
-    const HR_B64 = "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";
-    const K_STF = "om_final_staff_v1";
-    const K_BILLS = "om_final_bills_v1";
-    const K_VEND = "om_final_vend_v1";
-    const K_ADM = "om_final_adm_v1";
-    const K_EXT = "om_final_ext_v1";
-    const K_ENQ = "om_final_enq_v1";
+    let tapClicks = 0;
+    let tapResetTimer = null;
 
-    let curBr = "ALL";
-    let chartObj = null;
+    function registerFiveTap() {
+      tapClicks++;
+      clearTimeout(tapResetTimer);
+      tapResetTimer = setTimeout(function () {
+        tapClicks = 0;
+      }, 1500);
 
-    function omDataScope() {
-      const ss = window.omSecureSession || {};
-      return String(ss.gymId || localStorage.getItem("bfc_gid") || "unassigned").replace(/[^a-zA-Z0-9_-]/g, "_");
-    }
-    function omScopedKey(k) { return "om_tenant_v2:" + omDataScope() + ":" + k; }
-    function omRequiredAmountForKey(k) {
-      if ([K_STF, K_BILLS, K_VEND].includes(k)) return 399;
-      if ([K_EXT, K_ENQ].includes(k)) return 199;
-      return 99;
-    }
-    function J(k, d) {
-      const ss = window.omSecureSession;
-      if (ss && !ss.isMasterAdmin && (!ss.planActive || Number(ss.planAmount || 0) < omRequiredAmountForKey(k))) return d;
-      try { return JSON.parse(localStorage.getItem(omScopedKey(k)) || "null") ?? d; } catch(e) { return d; }
-    }
-    function W(k, v) {
-      const ss = window.omSecureSession;
-      if (ss && !ss.isMasterAdmin && (!ss.planActive || Number(ss.planAmount || 0) < omRequiredAmountForKey(k))) return;
-      localStorage.setItem(omScopedKey(k), JSON.stringify(v));
-    }
-    function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-    function isAdmin() { const s = window.omSecureSession || {}; return !!(s.isMasterAdmin || s.role === "owner"); }
-
-    function switchPage(n) {
-      const secureRole = (window.omSecureSession && window.omSecureSession.role) || (localStorage.getItem("bfc_role") || "guest").toLowerCase();
-      if ((secureRole === "manager" || secureRole === "staff") && Number(n) !== 1) { alert("Aapke role ko is page ka access nahi diya gaya hai."); return; }
-      [1,2,3,4].forEach(i => {
-        document.getElementById("page" + i).classList.toggle("active", i === n);
-        document.getElementById("tb" + i).classList.toggle("active", i === n);
-      });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function setBranch(b) { curBr = b; syncDashboard(); }
-    function openMod(id) {
-      if (window.omSecureSession && typeof window.omSecureSession.canOpenModule === "function" && !window.omSecureSession.canOpenModule(id)) { alert("Is module ka access aapke role mein nahi hai."); return; }
-      document.getElementById(id).classList.add("open");
-      if (id === "modMaint") { renderBillCard(); renderMaintList(); }
-      if (id === "modDeptStaff") renderDeptStaff();
-      if (id === "modExtra") loadPayFrame();
-      if (id === "modAtt") loadAttFrame();
-      if (id === "modPnl") renderPnl();
-      if (id === "modSlip") renderSalaryBranch();
-      if (id === "modExpired") renderExpired();
-      if (id === "modSelfie") renderSelfies();
-      if (id === "modCodes") renderCodes();
-      if (id === "modEnq") renderEnq();
-    }
-    function closeMod(id) { document.getElementById(id).classList.remove("open"); }
-    function logoutUser() {
-      try {
-        localStorage.setItem("om_logged_out_flag", "1");
-        ["om_logged_user","bfc_role","om_active_role","bfc_gid","om_team_session","om_active_subscription_plan",
-         "om_session_active","om_dev_master_access","om_prime_master_auth","om_is_master_admin",
-         "om_org_profile","om_last_org_profile","om_active_gym_profile","om_demo_preview_active"].forEach(function(k){
-          localStorage.removeItem(k);
-        });
-        sessionStorage.clear();
-      } catch(e) {}
-      if (window.firebase && firebase.auth) {
-        firebase.auth().signOut().catch(function(){}).finally(function(){
-          location.replace("login.html?logout=1");
-        });
-      } else {
-        location.replace("login.html?logout=1");
-      }
-    }
-</script>
-
-<script>
-(function p4AdmissionAndJoiningController() {
-  window.switchP4SubView = function(mode) {
-    var isJn = (mode === "jn");
-    var admBox = document.getElementById("p4SubAdm");
-    var jnBox = document.getElementById("p4SubJn");
-    var bAdm = document.getElementById("p4TabAdmBtn");
-    var bJn = document.getElementById("p4TabJnBtn");
-    if (admBox) admBox.style.display = isJn ? "none" : "block";
-    if (jnBox) jnBox.style.display = isJn ? "block" : "none";
-    if (bAdm) {
-      bAdm.style.background = isJn ? "#111D38" : "#F5A623";
-      bAdm.style.color = isJn ? "#22D3EE" : "#050813";
-    }
-    if (bJn) {
-      bJn.style.background = isJn ? "#22D3EE" : "#111D38";
-      bJn.style.color = isJn ? "#050813" : "#22D3EE";
-    }
-    if (!isJn) renderP4Members();
-  };
-
-  window.p4SaveMemberAdmission = function(ev) {
-    ev.preventDefault();
-    var nm = document.getElementById("p4mName").value.trim();
-    var gnd = document.getElementById("p4mGender").value;
-    var dob = document.getElementById("p4mDob").value;
-    var ph = document.getElementById("p4mPhone").value.replace(/\D/g, "").slice(-10);
-    var plan = document.getElementById("p4mPlan").value.trim();
-    var addr = document.getElementById("p4mAddr").value.trim();
-    var list = J("om_final_adm_v1", []);
-    list.unshift({ id: "ADM-" + Date.now().toString().slice(-5), name: nm, gender: gnd, dob: dob, phone: ph, plan: plan, address: addr });
-    W("om_final_adm_v1", list);
-    document.getElementById("p4mName").value = "";
-    document.getElementById("p4mPhone").value = "";
-    renderP4Members();
-    syncDashboard();
-    alert("Member Admission saved!");
-  };
-
-  window.renderP4Members = function() {
-    var box = document.getElementById("p4MemSearchOut");
-    if (!box) return;
-    var q = ((document.getElementById("p4MemSearch") || {}).value || "").trim().toLowerCase();
-    var role = String(localStorage.getItem("bfc_role") || "owner").toLowerCase();
-    var list = J("om_final_adm_v1", []).filter(function(m) {
-      return !q || String(m.name || "").toLowerCase().includes(q) || String(m.phone || "").includes(q);
-    });
-    box.innerHTML = list.slice(0, 5).map(function(m) {
-      var isFem = /^(f|female|महिला)/i.test(String(m.gender || ""));
-      var phDisp = (role === "manager" && isFem) ? ((m.phone || "").slice(0, 2) + "**" + (m.phone || "").slice(-2)) : (m.phone || "-");
-      var adDisp = (role === "manager" && isFem) ? ((m.address || "").slice(0, 4) + "***") : (m.address || "-");
-      return `<div class="rec"><b>${esc(m.name)}</b> • DOB: ${esc(m.dob || "-")} • Ph: ${esc(phDisp)} • Addr: ${esc(adDisp)}</div>`;
-    }).join("");
-  };
-
-  window.p4SaveStaffJoining = function(ev) {
-    ev.preventDefault();
-    var stf = J(K_STF, []);
-    stf.unshift({
-      id: document.getElementById("p4jId").value.trim(),
-      name: document.getElementById("p4jName").value.trim(),
-      branch: document.getElementById("p4jBr").value,
-      dept: document.getElementById("p4jDept").value,
-      role: document.getElementById("p4jRole").value.trim(),
-      mode: document.getElementById("p4jMode").value,
-      salary: Number(document.getElementById("p4jSal").value || 0),
-      mobile: document.getElementById("p4jPhone").value.replace(/\D/g, "").slice(-10),
-      father: "KYC", wife: "KYC", qual: "Verified", med: "Fit",
-      bank: "Bank / Cash", pfUan: "N/A", advance: 0, paidLeave: 0, unpaidLeave: 0, lateMins: 0
-    });
-    W(K_STF, stf);
-    document.getElementById("p4jName").value = "";
-    document.getElementById("p4jId").value = "";
-    document.getElementById("p4jPhone").value = "";
-    syncDashboard();
-    alert("Staff Joining saved!");
-  };
-
-  window.addEventListener("DOMContentLoaded", renderP4Members);
-})();
-</script>
-
-<script>
-// Plan activation is server-confirmed only. LocalStorage/license text cannot unlock features.
-(function () {
-  window.activateBasePlan99 = function () { alert("Plan activate karne ke liye Plans page par request bhejein. Payment verification ke baad plan unlock hoga."); location.href = "plans.html"; };
-  window.lockLic = function () { alert("License key ko browser mein save karke plan unlock nahi kiya ja sakta. Master Admin verification zaroori hai."); };
-})();
-</script>
-
-<script src="plan-bridge.js"></script>
-
-<script src="tenant-access.js"></script>
-
-
-
-<script>
-window.requestPlanSelection = function(amt, label) {
-  try {
-    localStorage.setItem("om_selected_plan_preview", JSON.stringify({ amount: amt, name: label }));
-  } catch (e) {}
-  alert(label + " chuna gaya hai. Plans page (plans.html) par jaakar details aur activation request dekhein.");
-  location.href = "plans.html";
-};
-</script>
-
-
-
-
-
-<script>
-(function fullFeatureSuiteV5() {
-  window.addEventListener("DOMContentLoaded", function () {
-    // 6. Active plan banner at top when owner has an active plan
-    try {
-      var planObj = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null");
-      if (planObj && planObj.status === "active" && Number(planObj.amount || 0) > 0 && !document.getElementById("activePlanTopBanner")) {
-        var topB = document.createElement("div");
-        topB.id = "activePlanTopBanner";
-        topB.className = "box-card";
-        topB.style.cssText = "border-color:var(--emerald);background:rgba(52,211,153,0.08);margin:8px 14px 0";
-        topB.innerHTML = `<div style="font-size:16px;font-weight:900;color:var(--emerald)">Your This Plan: ${esc(planObj.name || ("Plan ₹" + planObj.amount))}</div>`;
-        var navEl = document.querySelector("nav.tabs");
-        if (navEl && navEl.parentNode) navEl.parentNode.insertBefore(topB, navEl.nextSibling);
-      }
-    } catch (e) {}
-
-    // 2. Clean professional demo preview copy
-    var demoBanner = document.getElementById("ownerTopActionBanner");
-    if (demoBanner) {
-      demoBanner.innerHTML = demoBanner.innerHTML.replace(
-        /Abhi aap ye plan dekh sakte hain demo ke roop me; logout karte hi saari detail reset ho jayegi\. Please purchase our ₹999 plan\./g,
-        "Demo Preview Mode: Aap is plan ke features ka preview dekh sakte hain; logout karne par demo session reset ho jayega. Poori suvidha ke liye kripya ₹999 plan purchase karein."
-      );
-    }
-
-    // 3 & 4. Add-On Extra Service & Unique QR / Smart Attendance inside Page 4
-    var p4 = document.getElementById("page4");
-    if (false) {
-      var box = document.createElement("div");
-      box.id = "p4AddOnAndQrBox";
-      box.className = "box-card";
-      box.style.borderColor = "var(--cyan)";
-      box.innerHTML = `
-        <b style="color:var(--cyan);font-size:13.5px;display:block;margin-bottom:8px">✨ Add-On Service &amp; Member Unique QR / Smart Attendance</b>
-        <div class="fg">
-          <label>Admitted Member Name / Mobile (Mandatory — Must Exist in Admission) *</label>
-          <input class="fc" id="aoMemberQuery" placeholder="Search admitted member name or mobile">
-        </div>
-        <div class="grid2">
-          <div class="fg">
-            <label>Add-On Service *</label>
-            <select class="fc" id="aoServiceSel">
-              <option value="Personal Training">Personal Training</option>
-              <option value="Sauna & Steam">Sauna &amp; Steam</option>
-              <option value="Diet & Transformation">Diet &amp; Transformation</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>Amount (₹) *</label>
-            <input type="number" class="fc" id="aoAmtInp" value="2500">
-          </div>
-        </div>
-        <div class="grid2">
-          <div class="fg">
-            <label>Trainer Name (or Friend / Family if none) *</label>
-            <input class="fc" id="aoTrainerInp" placeholder="Trainer Name or Friend / Family">
-          </div>
-          <div class="fg">
-            <label>Expiry Date *</label>
-            <input type="date" class="fc" id="aoExpDateInp" value="2026-12-24">
-          </div>
-        </div>
-        <button type="button" class="big-btn" style="margin-top:0" onclick="activateMemberAddOnService()">Activate Add-On Service &amp; Generate Receipt</button>
-        <div id="aoReceiptBox" style="margin-top:10px"></div>
-
-        <hr style="border-color:var(--border);margin:14px 0">
-        <b style="color:var(--gold);font-size:13px;display:block;margin-bottom:6px">🎫 Member Unique QR (DOB Check) &amp; Smart Attendance</b>
-        <div class="grid2">
-          <div class="fg"><label>Member DOB (for QR Fees View)</label><input type="date" class="fc" id="qrMemberDobInp"></div>
-          <div class="fg"><label>Attendance Mode</label>
-            <select class="fc" id="smartAttModeSel">
-              <option value="QR Scan">Attendance with QR Scan</option>
-              <option value="Mobile & Name">Attendance with Mobile No &amp; Name</option>
-              <option value="Unique QR Card">Attendance with Unique QR Card</option>
-            </select>
-          </div>
-        </div>
-        <button type="button" class="big-btn sec" style="margin-top:0" onclick="generateMemberUniqueQrAndAtt()">Generate Unique QR &amp; Mark Smart Attendance</button>
-        <div id="memberQrOut" style="margin-top:8px"></div>
-      `;
-      p4.insertBefore(box, p4.firstChild.nextSibling);
-    }
-  });
-
-  window.activateMemberAddOnService = function () {
-    var q = (document.getElementById("aoMemberQuery").value || "").trim().toLowerCase();
-    var admList = [];
-    try { admList = JSON.parse(localStorage.getItem("om_final_adm_v1") || "[]") || []; } catch (e) {}
-    var matched = admList.find(function (m) {
-      return (m.name && String(m.name).toLowerCase().includes(q)) || (m.phone && String(m.phone).includes(q));
-    });
-    if (!q || !matched) {
-      alert("Extra service keval pehle se admitted gym member ke liye active hogi. Kripya valid admitted member ka naam/mobile daalein.");
-      return;
-    }
-
-    var srv = document.getElementById("aoServiceSel").value;
-    var amt = Number(document.getElementById("aoAmtInp").value || 0);
-    var trainer = (document.getElementById("aoTrainerInp").value || "").trim() || "Friend / Family";
-    var expDt = document.getElementById("aoExpDateInp").value;
-    var startDt = new Date().toISOString().slice(0, 10);
-
-    var prof = {};
-    try { prof = JSON.parse(localStorage.getItem("om_active_gym_profile") || "{}") || {}; } catch (e) {}
-    var gymTitle = prof.gymName || "Gym";
-    var mgrSign = prof.ownerName || "Manager";
-
-    alert("Your service has been activated");
-
-    document.getElementById("aoReceiptBox").innerHTML = `
-      <div class="rec" style="background:#fff;color:#0f172a;border-radius:10px;padding:12px">
-        <div style="font-weight:900;font-size:14px">${esc(gymTitle)} — ADD-ON SERVICE RECEIPT</div>
-        <div>Member: <b>${esc(matched.name)}</b> • Status: <b>Already Plan Active</b></div>
-        <div>Add-On Service: <b>${esc(srv)}</b> • Amount: <b>₹${amt.toLocaleString("en-IN")}</b></div>
-        <div>Trainer / Assigned: <b>${esc(trainer)}</b></div>
-        <div>Start Date: <b>${esc(startDt)}</b> • Expiry Date: <b>${esc(expDt)}</b></div>
-        <div style="margin-top:6px;font-weight:800">Stamp / Authorized Signature: <i>${esc(mgrSign)}</i></div>
-      </div>
-    `;
-  };
-
-  window.generateMemberUniqueQrAndAtt = function () {
-    var mode = document.getElementById("smartAttModeSel").value;
-    var dob = document.getElementById("qrMemberDobInp").value || "Not Provided";
-    var qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=" + encodeURIComponent("OM_MEMBER_QR_" + Date.now());
-    document.getElementById("memberQrOut").innerHTML = `
-      <div class="rec">
-        <div><b>Mode:</b> ${esc(mode)} • <b>DOB:</b> ${esc(dob)}</div>
-        <img src="${qrCodeUrl}" alt="Unique Member QR" style="background:#fff;padding:4px;border-radius:8px;width:96px;height:96px;margin-top:6px">
-      </div>
-    `;
-  };
-})();
-</script>
-
-
-<script>
-(function upgradeModExtraAndAttendanceV7() {
-  window.esFilterMembers = function () {
-    var q = ((document.getElementById("esMemberSearch") || {}).value || "").trim().toLowerCase();
-    var out = document.getElementById("esMemberSugOut");
-    if (!out) return;
-    if (!q) { out.innerHTML = ""; return; }
-    var adm = (typeof J === "function" && typeof K_ADM !== "undefined") ? J(K_ADM, []) : [];
-    var hits = adm.filter(function (m) {
-      return String(m.name || "").toLowerCase().includes(q) || String(m.phone || "").includes(q);
-    });
-    out.innerHTML = hits.slice(0, 5).map(function (m) {
-      return `<div class="rec" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="esPickMember('${esc(m.name)}')">
-        <span><b>${esc(m.name)}</b> • ${esc(m.phone || "-")}</span>
-        <span class="pill-ok">Select</span>
-      </div>`;
-    }).join("") || '<div class="rec">No admitted member found.</div>';
-  };
-
-  window.esPickMember = function (nm) {
-    var nInp = document.getElementById("esName");
-    var sInp = document.getElementById("esMemberSearch");
-    var out = document.getElementById("esMemberSugOut");
-    if (nInp) nInp.value = nm;
-    if (sInp) sInp.value = nm;
-    if (out) out.innerHTML = "";
-  };
-
-  window.esRecalcTotal = function () {
-    var pAmt = Number((document.getElementById("esPlanAmt") || {}).value || 0);
-    var eAmt = Number((document.getElementById("esAmt") || {}).value || 0);
-    var totInp = document.getElementById("esTotalPayable");
-    if (totInp) totInp.value = String(pAmt + eAmt);
-  };
-
-  window.addEventListener("DOMContentLoaded", function () {
-    esRecalcTotal();
-    // Keep staff late/outside punch & 40-staff check hidden from quick attendance modal unless Admin opens it
-    var modAtt = document.getElementById("modAtt");
-    if (modAtt) {
-      var recs = modAtt.querySelectorAll(".rec");
-      recs.forEach(function (r) {
-        if (/Staff Outside \/ Late Attendance Punch/i.test(r.textContent || "")) {
-          r.style.display = "none";
+      if (tapClicks >= 5) {
+        tapClicks = 0;
+        var isUnlocked = document.body.classList.toggle("full-unlocked");
+        var badge = document.getElementById("modeBadge");
+        if (badge) {
+          badge.textContent = isUnlocked ? "Full Modules Unlocked (5-Tap)" : "Admission & Fees Mode";
+          badge.classList.toggle("unlocked", isUnlocked);
         }
-      });
-      var btns = modAtt.querySelectorAll("button");
-      btns.forEach(function (b) {
-        if (/40-Staff Selfie Check/i.test(b.textContent || "")) {
-          b.style.display = "none";
-        }
-      });
-    }
-  });
-})();
-</script>
-
-
-
-
-<script>
-(function(){
-  function role(){ return String((window.omSecureSession&&window.omSecureSession.role)||localStorage.getItem("bfc_role")||"guest").toLowerCase(); }
-  window.openPay=function(view){
-    if(view==="records" && role()!=="owner"){ alert("Fees Records sirf Owner ke liye hain."); return; }
-    window.__payView=view; document.getElementById("payTitle").innerHTML = view==="records" ? "&#128210; Fees Records" : "&#128179; Pay Fees";
-    openMod("modExtra");
-  };
-  window.loadPayFrame=function(){ document.getElementById("payFrame").src="pay.html"+(window.__payView==="records"?"?view=records":"")+"#"+Date.now(); };
-  window.loadAttFrame=function(){
-    document.getElementById("attFrame").src="attendance.html#"+Date.now();
-    var r=role(); document.getElementById("attStaffTools").style.display=(r==="owner"||r==="manager")?"grid":"none";
-  };
-  window.omStaffPunchSubmit=function(){ punchStaffAtt(); };
-  window.openQuickFeeDesk=function(){ openPay("pay"); };
-  window.addEventListener("load",function(){
-    if(role()!=="owner"){ var s=document.createElement("style"); s.textContent=".om-owner-only{display:none!important}"; document.head.appendChild(s); }
-  });
-})();
-</script>
-
-<script>
-(function(){
-  try {
-    if (localStorage.getItem("bfc_role") || localStorage.getItem("om_active_role") || localStorage.getItem("om_prime_master_auth") === "1") {
-      localStorage.setItem("om_session_active", "1");
-      localStorage.removeItem("om_logged_out_flag");
-    }
-  } catch(e){}
-  window.addEventListener("pageshow", function(event) {
-    try {
-      if (event.persisted && localStorage.getItem("om_logged_out_flag") === "1") {
-        window.location.replace("login.html?logout=1");
       }
-    } catch (e) {}
-  });
-})();
-</script>
-
-<script>
-function refreshLiveBoardMembershipStatus() {
-  try {
-    var sub = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null");
-    var metaEl = document.getElementById("liveBoardMeta");
-    if (!metaEl) return;
-    if (sub && String(sub.status).toLowerCase() === "active" && Number(sub.amount || 0) > 0) {
-      metaEl.innerHTML = '<b style="color:var(--emerald);font-size:12.5px">🟢 Active Membership: ' + (sub.name || ('Plan ₹' + sub.amount)) + '</b> <span style="font-size:11px;color:var(--cyan)">(' + (sub.licenseKey || 'Active') + ')</span>';
-    } else {
-      metaEl.innerHTML = '<b style="color:var(--rose);font-size:12.5px">🔴 No Active Plan</b> &bull; <a href="plans.html" style="color:var(--gold);text-decoration:underline;font-weight:700">Please Upgrade</a>';
     }
-  } catch(e) {}
-}
-window.addEventListener("DOMContentLoaded", refreshLiveBoardMembershipStatus);
-window.addEventListener("storage", refreshLiveBoardMembershipStatus);
-setInterval(refreshLiveBoardMembershipStatus, 2000);
-</script>
 
+    function openQuickAdmission() {
+      document.getElementById("modQuickAdm").classList.add("open");
+    }
 
-<script>
-let uploadTimer = null;
-let lastUploadedHash = localStorage.getItem("om_last_uploaded_data_hash") || "";
+    function openQuickPayment() {
+      document.getElementById("modQuickPay").classList.add("open");
+    }
 
-function startDataUpload(event) {
-  if (event) event.preventDefault();
-  const fileInput = document.getElementById("routerFileInput");
-  if (!fileInput || !fileInput.files.length) {
-    alert("Kripya CSV/Excel file select karein.");
-    return;
-  }
+    function openInfoModal(title, desc) {
+      document.getElementById("infoTitle").textContent = title;
+      document.getElementById("infoDesc").textContent = desc;
+      document.getElementById("modInfo").classList.add("open");
+    }
 
-  const file = fileInput.files[0];
-  const fileKey = file.name + "_" + file.size + "_" + file.lastModified;
+    function closeQuickMod(id) {
+      document.getElementById(id).classList.remove("open");
+    }
 
-  // Anti-Duplicate Check
-  if (fileKey === lastUploadedHash) {
-    alert("You are Already Uploaded this File or data");
-    return;
-  }
+    function submitQuickAdm(ev) {
+      ev.preventDefault();
+      var rec = {
+        id: Date.now(),
+        name: document.getElementById("qaName").value.trim(),
+        phone: document.getElementById("qaPhone").value.trim(),
+        totalFee: Number(document.getElementById("qaFee").value || 500),
+        village: document.getElementById("qaAddr").value.trim(),
+        joinDate: new Date().toISOString().slice(0, 10),
+        status: "Full Paid",
+        fees: "Paid"
+      };
+      var arr = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+      arr.unshift(rec);
+      localStorage.setItem("5BFC_MEMBERS", JSON.stringify(arr));
+      alert("Admission save ho gaya: " + rec.name);
+      closeQuickMod("modQuickAdm");
+      ev.target.reset();
+    }
 
-  const statusEl = document.getElementById("uploadStatusArea");
-  let seconds = 0;
-  statusEl.innerHTML = '<div class="rec" style="border-color:var(--gold)"><span style="color:var(--gold);font-weight:700">⌛ Processing &amp; Uploading: <b id="upSec">00:00</b>... Please wait</span></div>';
-  
-  if (uploadTimer) clearInterval(uploadTimer);
-  uploadTimer = setInterval(() => {
-    seconds++;
-    let s = seconds < 10 ? "0" + seconds : seconds;
-    let m = Math.floor(seconds / 60);
-    let ms = m < 10 ? "0" + m : m;
-    const secEl = document.getElementById("upSec");
-    if (secEl) secEl.innerText = `${ms}:${s}`;
-  }, 1000);
-
-  setTimeout(() => {
-    clearInterval(uploadTimer);
-    localStorage.setItem("om_last_uploaded_data_hash", fileKey);
-    localStorage.setItem("om_last_uploaded_filename", file.name);
-    lastUploadedHash = fileKey;
-    statusEl.innerHTML = `
-      <div class="rec" style="border-color:var(--emerald);background:rgba(52,211,153,0.1)">
-        <b style="color:var(--emerald);font-size:13.5px">✅ Your data has been uploaded</b>
-        <div style="font-size:11.5px;color:var(--muted);margin:4px 0 8px">File: <b>${file.name}</b> (${Math.round(file.size/1024)} KB)</div>
-        <button type="button" class="sub-btn" style="background:#7f1d1d;color:#fee2e2;border:1px solid #ef4444" onclick="deleteLastUploadedData()">
-          🗑️ Del Your Old last data
-        </button>
-      </div>
-    `;
-  }, 3000);
-}
-
-function deleteLastUploadedData() {
-  var lastFile = localStorage.getItem("om_last_uploaded_filename") || "selected file";
-  if (confirm("Kya aap file (" + lastFile + ") ka last data delete karna chahte hain?")) {
-    localStorage.removeItem("om_last_uploaded_data_hash");
-    localStorage.removeItem("om_last_uploaded_filename");
-    lastUploadedHash = "";
-    var fileInput = document.getElementById("routerFileInput");
-    if (fileInput) fileInput.value = "";
-    document.getElementById("uploadStatusArea").innerHTML = '<div class="rec" style="border-color:var(--rose);color:var(--rose)">Last uploaded data successfully removed.</div>';
-  }
-}
-</script>
-
+    function submitQuickPay(ev) {
+      ev.preventDefault();
+      var nm = document.getElementById("qpName").value.trim();
+      var amt = Number(document.getElementById("qpAmt").value || 500);
+      alert("₹" + amt + " fees jama ho gayi (" + nm + ").");
+      closeQuickMod("modQuickPay");
+      ev.target.reset();
+    }
+  </script>
 </body>
 </html>
