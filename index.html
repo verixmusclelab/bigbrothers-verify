@@ -7,6 +7,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-functions-compat.js"></script>
   <script src="auth-gate.js"></script>
   <style>
     :root {
@@ -119,8 +123,9 @@
 
     /* Animated Om Splash */
     #omSplash {
-      display: none; position: fixed; inset: 0; background: radial-gradient(circle at center, #1B2B50 0%, #050813 85%);
-      z-index: 999999; flex-direction: column; align-items: center; justify-content: space-between; padding: 34px 18px; text-align: center;
+      display: flex; position: fixed; inset: 0; background: radial-gradient(circle at center, #1B2B50 0%, #050813 85%);
+      z-index: 999999; flex-direction: column; align-items: center; justify-content: center; padding: 34px 18px; text-align: center;
+      transition: opacity 0.5s ease;
     }
     .orbit-box { position: relative; width: 240px; height: 240px; margin: 18px auto; display: flex; align-items: center; justify-content: center; }
     .om-glyph { font-size: 68px; font-weight: 900; color: var(--gold); text-shadow: 0 0 28px rgba(245,166,35,0.8); z-index: 2; }
@@ -155,6 +160,23 @@
 
 </head>
 <body>
+
+  
+<script>
+window.addEventListener("DOMContentLoaded", function() {
+  setTimeout(function() {
+    var s = document.getElementById("omSplash");
+    if (s) {
+      s.style.opacity = "0";
+      setTimeout(function() { s.style.display = "none"; }, 500);
+    }
+  }, 2000);
+});
+function hideSplash() {
+  var s = document.getElementById("omSplash");
+  if (s) { s.style.opacity = "0"; setTimeout(function() { s.style.display = "none"; }, 500); }
+}
+</script>
 
   <div id="omSplash">
     <div>
@@ -195,12 +217,11 @@
       <select id="branchSel" class="mini" style="font-size:12px; padding:7px 10px; background:#070D1C; border:1.5px solid var(--border); border-radius:8px; color:#fff; font-weight:700;">
         <option value="ALL" selected>All Branches</option>
         <option value="001">Branch 001 (Main Branch)</option>
-        <option value="002">Branch 002 (Kanpur)</option>
-        <option value="003">Branch 003 (Lucknow)</option>
-        <option value="004">Branch 004 (Agra)</option>
-        <option value="005">Branch 005 (Varanasi)</option>
+
       </select>
       <button type="button" class="sub-btn" style="background:var(--gold); color:#050813; font-weight:900; padding:7px 14px; border:none; border-radius:8px; cursor:pointer;" onclick="applyBranchFilter()">Submit</button>
+      <button type="button" class="sub-btn" style="background:#111D38; color:var(--cyan); border:1.5px solid var(--cyan); font-weight:800; padding:7px 12px; border-radius:8px; cursor:pointer;" onclick="openMod('modProfile')">👤 Gym Profile</button>
+      
       <button type="button" style="background:rgba(239,68,68,0.22); border:1.5px solid #EF4444; color:#FCA5A5; font-size:12px; font-weight:900; padding:7px 16px; border-radius:8px; cursor:pointer; margin-left:6px;" onclick="logoutUser()">🚪 Logout</button>
     </div>
   </header>
@@ -225,53 +246,59 @@
   <section id="page1" class="page-sec active">
     <div class="live-strip">
       <span class="tag-red">&bull; LIVE BOARD</span>
-      <span id="liveBoardMeta">Collection: ₹2,23,200 &bull; Pro</span>
+      <span id="liveBoardMeta">Collection: ₹0 &bull; No Paid Plan</span>
       <span class="tag-cyan">AUTO FETCH</span>
     </div>
 
     <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">💰 Total Collection</span><span class="dc-pill" id="pillBranches">5 Branches</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vTotalCol" style="color:var(--gold)">₹2,23,200</div><div class="dc-sub">All branches combined</div></div><span>📈</span></div>
+      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">💰 Total Collection</span><span class="dc-pill" id="pillBranches">0 Branches</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vTotalCol" style="color:var(--gold)">₹0</div><div class="dc-sub">All branches combined</div></div><span>📈</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modPnl')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">💳 Total Fees Collection</span><span class="dc-pill">5 Branches</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vFeesCol" style="color:var(--emerald)">₹1,84,800</div><div class="dc-sub">Membership &amp; renewals</div></div><span>📈</span></div>
+      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">💳 Total Fees Collection</span><span class="dc-pill">0 Branches</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vFeesCol" style="color:var(--emerald)">₹0</div><div class="dc-sub">Membership &amp; renewals</div></div><span>📈</span></div>
     </div>
 
     <div class="d-card" onclick="switchPage(4)">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--cyan)">🏋️ Total Gym Members</span><span class="dc-pill">Live Count</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vMembers" style="color:var(--cyan)">148</div><div class="dc-sub">Across all branches</div></div><span>📶</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vMembers" style="color:var(--cyan)">0</div><div class="dc-sub">Across all branches</div></div><span>📶</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modAdmission')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--cyan)">📝 New Admissions</span><span class="dc-pill">Live Board</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vAdmissions" style="color:var(--cyan)">42</div><div class="dc-sub">Tap: admission &amp; services</div></div><span>📈</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vAdmissions" style="color:var(--cyan)">0</div><div class="dc-sub">Tap: admission &amp; services</div></div><span>📈</span></div>
     </div>
 
-    <div class="d-card" onclick="openMod('modExtra')">
+    <div class="d-card" onclick="openMod('modPnl')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--purple)">💊 Supplement Collection</span><span class="dc-pill">POS Store</span></div>
-      <div class="dc-row"><div><div class="dc-num" style="color:var(--purple)">₹38,400</div><div class="dc-sub">Whey, creatine &amp; shakers</div></div><span>📈</span></div>
+      <div class="dc-row"><div><div class="dc-num" style="color:var(--purple)">₹0</div><div class="dc-sub">Whey, creatine &amp; shakers</div></div><span>📈</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modPnl')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">💵 Cash / Online</span><span class="dc-pill">Split Mode</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vCashOnline" style="font-size:19px;color:var(--emerald)">₹1,43,000 Cash / ₹75,000 Online</div><div class="dc-sub">Click for branch-wise split</div></div><span>🟩🟦</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vCashOnline" style="font-size:19px;color:var(--emerald)">₹0 Cash / ₹0 Online</div><div class="dc-sub">Click for branch-wise split</div></div><span>🟩🟦</span></div>
     </div>
 
     <div class="d-card" onclick="openMod('modPnl')">
       <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">⚖️ Total Loss &amp; Profit</span><span class="dc-pill">Net P&amp;L</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vNetPnl" style="color:var(--emerald)">+₹1,44,800</div><div class="dc-sub" id="vExpSub">Exp: ₹78,400 &bull; Net Profit</div></div><span>📉📈</span></div>
+      <div class="dc-row"><div><div class="dc-num" id="vNetPnl" style="color:var(--emerald)">₹0</div><div class="dc-sub" id="vExpSub">Exp: ₹0 &bull; Net Profit</div></div><span>📉📈</span></div>
     </div>
 
-    <div class="d-card" onclick="openMod('modExtra')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">✨ Extra Service Collection</span><span class="dc-pill">Add-On</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vExtraCol" style="color:var(--gold)">₹0</div><div class="dc-sub">PT, steam, diet &amp; extra services</div></div><span>📈</span></div>
+    
+    <!-- GYM PROFILE & STAMP STUDIO DIRECT ON PAGE 1 -->
+    <div class="d-card" onclick="openMod('modProfile')" style="border-color:var(--gold);background:rgba(245,166,35,0.06)">
+      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">🏢 Complete Gym Profile &amp; Stamp Studio</span><span class="dc-pill" style="background:rgba(245,166,35,0.2);color:var(--gold)">Direct Setup</span></div>
+      <div class="dc-row"><div><div class="dc-num" style="color:var(--gold-bright);font-size:18px">Gym Details &amp; Stamp &rarr;</div><div class="dc-sub">Logo, GST, Udyam, Food License &amp; Digital Stamp</div></div><span>🔏</span></div>
     </div>
 
-    <div class="d-card" onclick="openMod('modDeptStaff')">
-      <div class="dc-top"><span class="dc-lbl" style="color:var(--cyan)">👥 Total No. of Employees</span><span class="dc-pill">Admin Vault</span></div>
-      <div class="dc-row"><div><div class="dc-num" id="vEmpCount" style="color:var(--cyan)">5 Staff</div><div class="dc-sub">Branch count, KYC, joining &amp; bank/PF/UAN</div></div><span>🗂️</span></div>
+    <div class="d-card" onclick="openPay('pay')">
+      <div class="dc-top"><span class="dc-lbl" style="color:var(--gold)">&#128179; Pay Fees</span><span class="dc-pill">Collect</span></div>
+      <div class="dc-row"><div><div class="dc-num" style="color:var(--gold);font-size:18px">Fees lo &rarr;</div><div class="dc-sub">Member fees, receipt &amp; dues</div></div><span>&#128179;</span></div>
+    </div>
+    <div class="d-card om-owner-only" onclick="openPay('records')">
+      <div class="dc-top"><span class="dc-lbl" style="color:var(--emerald)">&#128210; Fees Records</span><span class="dc-pill">Owner</span></div>
+      <div class="dc-row"><div><div class="dc-num" style="color:var(--emerald);font-size:18px">Records &rarr;</div><div class="dc-sub">Kisne kitni fees di, pending &amp; renewal</div></div><span>&#128210;</span></div>
     </div>
 
     <button type="button" class="big-btn" onclick="switchPage(2)">Next Page &rarr; (Page 2: Trial &amp; Enterprise Control Grid)</button>
@@ -280,14 +307,15 @@
   <!-- PAGE 2: 7-DAY TRIAL AT TOP + ENTERPRISE CONTROL GRID -->
   <section id="page2" class="page-sec">
     <div class="box-card">
-      <div style="font-size:12px;font-weight:800;color:var(--emerald);">&bull; 7-Day Free Trial Active</div>
+      <div style="font-size:12px;font-weight:800;color:var(--emerald);">&bull; No Paid Plan Active</div>
       <div style="font-size:11px;color:var(--muted);margin:3px 0 10px;">Enterprise multi-branch workspace &bull; Cloud sync ready</div>
       <button type="button" class="big-btn" style="margin-top:0;padding:10px;font-size:12px;" onclick="openMod('modLicense')">Upgrade Plan</button>
     </div>
 
     <div class="sec-head">ENTERPRISE CONTROL GRID</div>
     <div class="grid2">
-      <button type="button" class="tile" onclick="openMod('modExtra')">Extra Service Collection</button>
+      <button type="button" class="tile" onclick="openPay('pay')">&#128179; Pay Fees</button>
+      <button type="button" class="tile om-owner-only" onclick="openPay('records')">&#128210; Fees Records</button>
       <button type="button" class="tile" onclick="openMod('modMaint')">Maintenance &amp; Bills</button>
       <button type="button" class="tile" onclick="openMod('modDeptStaff')">Department Staff</button>
       <button type="button" class="tile" onclick="openMod('modAtt')">Smart Attendance</button>
@@ -299,6 +327,7 @@
       <button type="button" class="tile" onclick="switchPage(1)">&larr; Back to Dashboard</button>
       <button type="button" class="tile" onclick="openMod('modLicense')">🔑 License</button>
       <button type="button" class="tile" onclick="openMod('modCodes')">🛡️ Code</button>
+      <button type="button" class="tile" onclick="location.href='team-access-admin.html'">👥 Manager / Staff Login &amp; Invite Codes</button>
       <button type="button" class="tile" onclick="openMod('modPnl')">📁 Branch Collection &amp; Report</button>
       <button type="button" class="tile" onclick="openMod('modCodes')">📁 Staff Codes</button>
       <button type="button" class="tile" onclick="openMod('modCodes')">🆔 View Your Employee Code</button>
@@ -391,7 +420,8 @@
       </form>
     </div>
 
-    <div class="m-card" onclick="openMod('modExtra')"><div><div class="m-title">Pay Fees Desk</div><div class="m-sub">Fee collection, dues &amp; add-on receipts</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
+    <div class="m-card" onclick="openPay('pay')"><div><div class="m-title">Pay Fees</div><div class="m-sub">Fees lena, receipt &amp; dues</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
+    <div class="m-card om-owner-only" onclick="openPay('records')"><div><div class="m-title">Fees Records</div><div class="m-sub">Manager ne jo fees li uske records</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
     <div class="m-card" onclick="openMod('modAtt')"><div><div class="m-title">Attendance Kiosk</div><div class="m-sub">QR, Morning/Evening batch, Live Staff &amp; Fees Expired list</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
     <div class="m-card" onclick="openMod('modSlip')"><div><div class="m-title">Staff Salary &amp; Payroll</div><div class="m-sub">Branch/Department salary, penalty &amp; HR Excel sheet</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
     <div class="m-card" onclick="openMod('modRouter')"><div><div class="m-title">Upload Gym Data</div><div class="m-sub">Auto-router for CSV / Excel into isolated sections</div></div><span style="color:var(--gold);font-weight:900">&rarr;</span></div>
@@ -401,18 +431,9 @@
 
   <!-- MODALS -->
   <div class="modal-ov" id="modExtra">
-    <div class="modal-box">
-      <div class="m-top"><h3>✨ Extra Service Collection</h3><button type="button" class="x-btn" onclick="closeMod('modExtra')">&times;</button></div>
-      <form onsubmit="addExtraService(event)">
-        <div class="fg"><label>Member / Client Name *</label><input class="fc" id="esName" required placeholder="Naam"></div>
-        <div class="fg"><label>Extra Service *</label><input class="fc" id="esSrv" required placeholder="PT / Steam / Diet"></div>
-        <div class="fg"><label>Amount (₹) *</label><input type="number" class="fc" id="esAmt" required value="1000"></div>
-        <div class="fg"><label>Branch *</label><select class="fc" id="esBr"><option value="001">Branch 001</option><option value="002">Branch 002</option><option value="003">Branch 003</option><option value="004">Branch 004</option><option value="005">Branch 005</option></select></div>
-        <div class="fg"><label>Payment Mode *</label><select class="fc" id="esMode"><option value="Cash">Cash</option><option value="Online">Online</option></select></div>
-        <button type="submit" class="big-btn" style="margin-top:0">Add Extra Service Collection</button>
-      </form>
-      <div class="rec" style="margin-top:12px" id="esSummary">Total Extra Service Collection: ₹0 (0 Entries)</div>
-      <div id="esList"></div>
+    <div class="modal-box" style="max-width:100%;width:100%;height:94vh;padding:0;overflow:hidden">
+      <div class="m-top" style="padding:10px 12px;margin:0"><h3 id="payTitle">&#128179; Pay Fees</h3><button type="button" class="x-btn" onclick="closeMod('modExtra')">&times;</button></div>
+      <iframe id="payFrame" title="Pay Fees" style="width:100%;height:calc(94vh - 52px);border:0;background:#000"></iframe>
     </div>
   </div>
 
@@ -490,49 +511,25 @@
   </div>
 
   <div class="modal-ov" id="modAtt">
+    <div class="modal-box" style="max-width:100%;width:100%;height:94vh;padding:0;overflow:hidden">
+      <div class="m-top" style="padding:10px 12px;margin:0"><h3>&#128081; Attendance</h3><button type="button" class="x-btn" onclick="closeMod('modAtt')">&times;</button></div>
+      <div id="attStaffTools" class="grid2" style="display:none;padding:0 10px 8px;gap:6px">
+        <button type="button" class="sub-btn" onclick="openMod('modStaffPunch')">&#128338; Staff Late / Outside</button>
+        <button type="button" class="sub-btn" onclick="openMod('modStaffCheck')">&#128270; Staff Selfie Check</button>
+      </div>
+      <iframe id="attFrame" title="Attendance" style="width:100%;height:calc(94vh - 52px);border:0;background:#000"></iframe>
+    </div>
+  </div>
+
+  <div class="modal-ov" id="modStaffPunch">
     <div class="modal-box">
-      <div class="m-top"><h3>👑 5 BROTHER'S ATTENDANCE &amp; EXPIRED FEES</h3><button type="button" class="x-btn" onclick="closeMod('modAtt')">&times;</button></div>
-      <div class="rec" style="text-align:center">
-        <div style="font-size:14px;font-weight:900;color:#FDE047">स्मार्ट बायोमेट्रिक उपस्थिति प्रणाली</div>
-        <div style="font-size:11px;color:var(--muted)" id="attClock">22-11-2026 | Live</div>
-        <button type="button" class="big-btn" onclick="punchMemberAtt()">👉 MARK YOUR ATTENDANCE</button>
-        <div style="margin-top:10px">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=5BFC_QR_ATTENDANCE" alt="QR" style="background:#fff;padding:4px;border-radius:8px;width:82px;height:82px">
-          <div style="font-size:10.5px;color:var(--cyan);margin-top:4px">QR Scan Attendance Ready</div>
-        </div>
-      </div>
-
-      <div class="grid2">
-        <button type="button" class="sub-btn" onclick="alert('Morning Batch: Total 60 | Present 22 | Absent 38')">🌅 Morning Batch</button>
-        <button type="button" class="sub-btn" onclick="alert('Evening Batch: Total 88 | Present 30 | Absent 58')">🌙 Evening Batch</button>
-      </div>
-
-      <div class="rec">
-        <b>📊 Aaj ka Live Count:</b> Total Members: <b>148</b> &bull; Present: <b style="color:var(--emerald)">52</b> &bull; Absent: <b style="color:var(--rose)">96</b>
-      </div>
-
-      <button type="button" class="big-btn" style="background:rgba(251,113,133,0.18);border:1px solid var(--rose);color:#FECDD3;margin-top:0;margin-bottom:8px" onclick="openMod('modExpired')">
-        ⚠️ Fees Expired Members (Last Visit Date &amp; Time)
-      </button>
-
-      <button type="button" class="big-btn sec" style="margin-top:0;margin-bottom:10px" onclick="openMod('modStaffCheck')">
-        🔎 40-Staff Selfie Check ("Jao beta Absent")
-      </button>
-
-      <div class="rec">
-        <b style="color:var(--cyan);display:block;margin-bottom:6px">Staff Outside / Late Attendance Punch</b>
-        <div class="fg"><label>Staff Name</label><input class="fc" id="stfAttName" placeholder="e.g. Rameshwar"></div>
-        <div class="fg"><label>Late Minutes</label><input type="number" class="fc" id="stfLateMin" value="0"></div>
-        <div class="fg">
-          <label>Location Mode</label>
-          <select class="fc" id="stfLocMode">
-            <option value="Inside Gym (150m)">Inside Gym (150m)</option>
-            <option value="Outside Gym (Remote)">Outside Gym (Remote)</option>
-          </select>
-        </div>
-        <div class="fg"><label>Live Photo</label><input type="file" class="fc" accept="image/*" capture="user" onchange="showThumb(this,'stfAttPrev')"><div class="preview-row" id="stfAttPrev"></div></div>
-        <button type="button" class="sub-btn" style="width:100%" onclick="punchStaffAtt()">Submit Staff Attendance &amp; Notify Manager</button>
-      </div>
+      <div class="m-top"><h3>&#128338; Staff Outside / Late Attendance</h3><button type="button" class="x-btn" onclick="closeMod('modStaffPunch')">&times;</button></div>
+      <div class="fg"><label>Staff Name</label><input class="fc" id="stfAttName" placeholder="Staff ka naam"></div>
+      <div class="fg"><label>Late Minutes</label><input type="number" class="fc" id="stfLateMin" value="0"></div>
+      <div class="fg"><label>Location Mode</label>
+        <select class="fc" id="stfLocMode"><option value="Inside Gym (150m)">Inside Gym (150m)</option><option value="Outside Gym (Remote)">Outside Gym (Remote)</option></select></div>
+      <div class="fg"><label>Live Photo</label><input type="file" class="fc" accept="image/*" capture="user" onchange="showThumb(this,'stfAttPrev')"><div class="preview-row" id="stfAttPrev"></div></div>
+      <button type="button" class="sub-btn" style="width:100%" onclick="omStaffPunchSubmit()">Submit Staff Attendance &amp; Notify Manager</button>
     </div>
   </div>
 
@@ -547,7 +544,7 @@
     <div class="modal-box">
       <div class="m-top"><h3>🔎 40-Staff Selfie Verification</h3><button type="button" class="x-btn" onclick="closeMod('modStaffCheck')">&times;</button></div>
       <div class="fg"><label>Staff Name</label><input class="fc" id="chkName" placeholder="Type staff name..." oninput="checkStaffSelfie()"></div>
-      <div class="fg"><label>Date</label><input type="date" class="fc" id="chkDate" value="2026-11-22" onchange="checkStaffSelfie()"></div>
+      <div class="fg"><label>Date</label><input type="date" class="fc" id="chkDate" onchange="checkStaffSelfie()"></div>
       <div id="chkResultBox" class="rec">Naam aur date chunein.</div>
     </div>
   </div>
@@ -555,7 +552,7 @@
   <div class="modal-ov" id="modSelfie">
     <div class="modal-box">
       <div class="m-top"><h3>📸 Selfie Gallery</h3><button type="button" class="x-btn" onclick="closeMod('modSelfie')">&times;</button></div>
-      <div class="fg"><label>Calendar Date</label><input type="date" class="fc" id="selfieDate" value="2026-11-04" onchange="renderSelfies()"></div>
+      <div class="fg"><label>Calendar Date</label><input type="date" class="fc" id="selfieDate" onchange="renderSelfies()"></div>
       <div id="selfieListBox"></div>
     </div>
   </div>
@@ -648,7 +645,7 @@
         <form class="rec" onsubmit="createInstantSalarySlip(event)">
           <b style="color:var(--cyan);display:block;margin-bottom:8px">➕ Instant Salary Slip Creator (Auto-Formula)</b>
           <div class="grid2">
-            <div class="fg"><label>Gym / Enterprise Name *</label><input class="fc" id="cstGymName" value="UNIVERSAL FITNESS CLUB &amp; NUTRITION" required></div>
+            <div class="fg"><label>Gym / Enterprise Name *</label><input class="fc" id="cstGymName" value="" required></div>
             <div class="fg"><label>Branch / Location *</label><input class="fc" id="cstBranch" value="Main Road, City Center Main (Branch 001)" required></div>
           </div>
           <div class="grid2">
@@ -774,9 +771,16 @@
 
   <div class="modal-ov" id="modRouter">
     <div class="modal-box">
-      <div class="m-top"><h3>📥 Auto-Router Upload</h3><button type="button" class="x-btn" onclick="closeMod('modRouter')">&times;</button></div>
-      <input type="file" class="fc" accept=".csv,.xlsx,.xls" onchange="runRouter(event)">
-      <div class="rec" style="margin-top:10px" id="routerOut">Select CSV / Excel file.</div>
+      <div class="m-top"><h3>📥 Upload Gym Data (Auto-Router)</h3><button type="button" class="x-btn" onclick="closeMod('modRouter')">&times;</button></div>
+      <div class="rec" style="font-size:12px;color:var(--muted);margin-bottom:10px">
+        Apna gym data CSV ya Excel file chunein aur <b>Upload Data</b> button par click karein.
+      </div>
+      <div class="fg">
+        <label>Select CSV / Excel File *</label>
+        <input type="file" class="fc" id="routerFileInput" accept=".csv,.xlsx,.xls">
+      </div>
+      <button type="button" class="big-btn" style="margin-top:0" onclick="startDataUpload(event)">📤 Submit &amp; Upload Data</button>
+      <div id="uploadStatusArea" style="margin-top:10px"></div>
     </div>
   </div>
 
@@ -789,28 +793,71 @@
   </div>
 
   <div class="modal-ov" id="modLicense">
-    <div class="modal-box" style="max-width:580px">
-      <div class="m-top"><h3>🔑 Plans &amp; Protected License Key</h3><button type="button" class="x-btn" onclick="closeMod('modLicense')">&times;</button></div>
+    <div class="modal-box" style="max-width:600px">
+      <div class="m-top"><h3>🔑 All 5 Plans &amp; License Key</h3><button type="button" class="x-btn" onclick="closeMod('modLicense')">&times;</button></div>
 
       <div id="activePlanBanner" class="rec" style="border-color:var(--emerald);background:rgba(52,211,153,0.08);margin-bottom:10px"></div>
 
+      <!-- Plan 1: ₹99 -->
       <div class="rec" style="border-color:var(--gold)">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
           <div>
-            <b style="color:var(--gold);font-size:14px">⭐ First / Base Plan — ₹99</b>
-            <div style="font-size:11px;color:var(--muted)">Essential Gym Starter Pack</div>
+            <b style="color:var(--gold);font-size:14px">1. First / Base Plan — ₹99</b>
+            <div style="font-size:11px;color:var(--muted)">QR Self Attendance, Live Board &amp; Expiry, Instant Fees Receipt + WhatsApp, Admission Form + QR</div>
           </div>
-          <button type="button" class="sub-btn" style="background:var(--gold);color:#050813;font-weight:900" onclick="activateBasePlan99()">Activate ₹99 Plan</button>
-        </div>
-        <div style="font-size:11.5px;line-height:1.55;margin-top:8px;color:#E2E8F0">
-          <div><b>1. Mark Your Attendance BY QR (First Priority):</b> Gym/Board QR scan → one-time Camera &amp; Location permission → search name/phone &amp; select → 3-sec auto selfie + save + joining-date-based present days count + instant Telegram alert with selfie.</div>
-          <div style="margin-top:4px"><b>2. Member Attendance &amp; Expired Alert:</b> Selfie with calendar, auto-search, Live Present &amp; Absent, Total Gym Members, easy remove, Fees Expire flashing board &amp; Expired Members list + calendar-wise member attendance.</div>
-          <div style="margin-top:4px"><b>3. Fees Payment &amp; Instant Receipt:</b> Auto-search by name/phone/father → shows Joining Date, Membership Expiry, Next Fees Date, Plan &amp; Months → instant Edit Plan option → Cash/Online mode → Pay → instant receipt download + auto WhatsApp message to member.</div>
-          <div style="margin-top:4px"><b>4. Instant Admission Form + Unique QR:</b> Fill &amp; save member admission + instant receipt + unique QR (scan anytime to view form) + permanent save until removed + search by name/phone.</div>
+          <button type="button" class="sub-btn" style="background:var(--gold);color:#050813;font-weight:900" onclick="requestPlanSelection(99, 'First Plan (₹99)')">Select ₹99</button>
         </div>
       </div>
 
-      <div class="rec">Active Key (Locked): <b style="color:var(--gold)" id="licDisp">LIC-OM-OPE2HK-LOCKED</b></div>
+      <!-- Plan 2: ₹199 -->
+      <div class="rec" style="border-color:var(--cyan)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div>
+            <b style="color:var(--cyan);font-size:14px">2. Growth Value Plan — ₹199</b>
+            <div style="font-size:11px;color:var(--muted)">All ₹99 + Cash/Online Split, Supplement Billing, Due Reminders, Walk-In/Lead Enquiry, CSV Export</div>
+          </div>
+          <button type="button" class="sub-btn" style="background:var(--cyan);color:#050813;font-weight:900" onclick="requestPlanSelection(199, 'Growth Value Plan (₹199)')">Select ₹199</button>
+        </div>
+      </div>
+
+      <!-- Plan 3: ₹399 -->
+      <div class="rec" style="border-color:var(--emerald)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div>
+            <b style="color:var(--emerald);font-size:14px">3. Pro Business Plan — ₹399</b>
+            <div style="font-size:11px;color:var(--muted)">All ₹199 + Full Staff Payroll &amp; Salary Slips, Light/Vendor Bills Approval, Net P&amp;L Engine, Staff KYC Vault</div>
+          </div>
+          <button type="button" class="sub-btn" style="background:var(--emerald);color:#050813;font-weight:900" onclick="requestPlanSelection(399, 'Pro Business Plan (₹399)')">Select ₹399</button>
+        </div>
+      </div>
+
+      <!-- Plan 4: ₹499 -->
+      <div class="rec" style="border-color:var(--purple)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div>
+            <b style="color:var(--purple);font-size:14px">4. Advanced Audit Plan — ₹499</b>
+            <div style="font-size:11px;color:var(--muted)">All ₹399 + GPS Geo-Fence &amp; Anti-Proxy, Manager Isolated Portal, Female Privacy Masking, Audit Trail</div>
+          </div>
+          <button type="button" class="sub-btn" style="background:var(--purple);color:#050813;font-weight:900" onclick="requestPlanSelection(499, 'Advanced Audit Plan (₹499)')">Select ₹499</button>
+        </div>
+      </div>
+
+      <!-- Plan 5: ₹999 -->
+      <div class="rec" style="border-color:var(--rose)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div>
+            <b style="color:var(--rose);font-size:14px">5. Complete Enterprise ERP — ₹999</b>
+            <div style="font-size:11px;color:var(--muted)">All Features Unlocked + Multi-Branch Central Command, Auto Data Router, Permanent Cloud Sync, Custom Branding</div>
+          </div>
+          <button type="button" class="sub-btn" style="background:var(--rose);color:#050813;font-weight:900" onclick="requestPlanSelection(999, 'Complete Enterprise ERP (₹999)')">Select ₹999</button>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <button type="button" class="big-btn sec" onclick="location.href='plans.html'">Open Full Plans Page (plans.html) &rarr;</button>
+      </div>
+
+      <div class="rec" style="margin-top:10px">Active Key (Locked): <b style="color:var(--gold)" id="licDisp">LIC-OM-OPE2HK-LOCKED</b></div>
       <div class="fg"><label>Renewal / License Key</label><input class="fc" id="licInp" placeholder="Enter license / renewal key"></div>
       <button type="button" class="big-btn" onclick="lockLic()">Activate &amp; Lock Key</button>
     </div>
@@ -838,12 +885,32 @@
     let curBr = "ALL";
     let chartObj = null;
 
-    function J(k, d) { try { return JSON.parse(localStorage.getItem(k) || "null") ?? d; } catch(e) { return d; } }
-    function W(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+    function omDataScope() {
+      const ss = window.omSecureSession || {};
+      return String(ss.gymId || localStorage.getItem("bfc_gid") || "unassigned").replace(/[^a-zA-Z0-9_-]/g, "_");
+    }
+    function omScopedKey(k) { return "om_tenant_v2:" + omDataScope() + ":" + k; }
+    function omRequiredAmountForKey(k) {
+      if ([K_STF, K_BILLS, K_VEND].includes(k)) return 399;
+      if ([K_EXT, K_ENQ].includes(k)) return 199;
+      return 99;
+    }
+    function J(k, d) {
+      const ss = window.omSecureSession;
+      if (ss && !ss.isMasterAdmin && (!ss.planActive || Number(ss.planAmount || 0) < omRequiredAmountForKey(k))) return d;
+      try { return JSON.parse(localStorage.getItem(omScopedKey(k)) || "null") ?? d; } catch(e) { return d; }
+    }
+    function W(k, v) {
+      const ss = window.omSecureSession;
+      if (ss && !ss.isMasterAdmin && (!ss.planActive || Number(ss.planAmount || 0) < omRequiredAmountForKey(k))) return;
+      localStorage.setItem(omScopedKey(k), JSON.stringify(v));
+    }
     function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-    function isAdmin() { const r = (localStorage.getItem("bfc_role") || "owner").toLowerCase(); return r === "owner" || r === "admin"; }
+    function isAdmin() { const s = window.omSecureSession || {}; return !!(s.isMasterAdmin || s.role === "owner"); }
 
     function switchPage(n) {
+      const secureRole = (window.omSecureSession && window.omSecureSession.role) || (localStorage.getItem("bfc_role") || "guest").toLowerCase();
+      if ((secureRole === "manager" || secureRole === "staff") && Number(n) !== 1) { alert("Aapke role ko is page ka access nahi diya gaya hai."); return; }
       [1,2,3,4].forEach(i => {
         document.getElementById("page" + i).classList.toggle("active", i === n);
         document.getElementById("tb" + i).classList.toggle("active", i === n);
@@ -853,10 +920,12 @@
 
     function setBranch(b) { curBr = b; syncDashboard(); }
     function openMod(id) {
+      if (window.omSecureSession && typeof window.omSecureSession.canOpenModule === "function" && !window.omSecureSession.canOpenModule(id)) { alert("Is module ka access aapke role mein nahi hai."); return; }
       document.getElementById(id).classList.add("open");
       if (id === "modMaint") { renderBillCard(); renderMaintList(); }
       if (id === "modDeptStaff") renderDeptStaff();
-      if (id === "modExtra") renderExtra();
+      if (id === "modExtra") loadPayFrame();
+      if (id === "modAtt") loadAttFrame();
       if (id === "modPnl") renderPnl();
       if (id === "modSlip") renderSalaryBranch();
       if (id === "modExpired") renderExpired();
@@ -865,1633 +934,24 @@
       if (id === "modEnq") renderEnq();
     }
     function closeMod(id) { document.getElementById(id).classList.remove("open"); }
-    function logoutUser() { localStorage.removeItem("om_logged_user"); location.replace("login.html"); }
-
-    function showThumb(inp, targetId) {
-      const box = document.getElementById(targetId);
-      if (!box || !inp.files || !inp.files.length) return;
-      box.innerHTML = "";
-      Array.from(inp.files).forEach(f => {
-        if (f.type.startsWith("image/")) {
-          const rd = new FileReader();
-          rd.onload = ev => { box.innerHTML += `<img src="${ev.target.result}" class="preview-img" title="${esc(f.name)}">`; };
-          rd.readAsDataURL(f);
-        } else {
-          box.innerHTML += `<span class="pill-ok">${esc(f.name)}</span>`;
-        }
-      });
-    }
-
-    function downloadB64(b64, filename) {
-      const bin = atob(b64);
-      const arr = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([arr], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
-      a.download = filename;
-      a.click();
-    }
-
-    function seedData() {
-      if (!localStorage.getItem(K_STF)) {
-        W(K_STF, [
-          { id: "STF-001-MGR", name: "Gym Owner", gymName: "UNIVERSAL FITNESS CLUB", branch: "001", branchName: "Main Road, City Center Main", dept: "Management", role: "Branch Manager", manager: "Self (Executive Owner)", mobile: "9876501100", email: "owner@gym.com", father: "Late Shri Chandel", wife: "Reet Singh", pan: "HBGPS6001D", aadhaar: "6437-4987-7588", bankName: "KOTAK MAHINDRA BANK", bank: "1913450661", pf: "GGN/1572727/0010132", uan: "100761344191", mode: "Bank", salary: 35000, allowance: 7000, bonus: 2000, totalDays: 30, presentDays: 30, paidLeave: 0, unpaidLeave: 0, lateMins: 0, penalty: 0, advance: 0, paidReason: "None (Full Attendance)", unpaidReason: "None" },
-          { id: "STF-001-TR1", name: "Vikram Yadav", gymName: "UNIVERSAL FITNESS CLUB", branch: "001", branchName: "Main Road, City Center Main", dept: "Training", role: "Senior Floor Coach", manager: "Gym Owner (9876501100)", mobile: "9876503344", email: "vikram.yadav@gmail.com", father: "Ram Kishore Yadav", wife: "Sunita Yadav", pan: "BXPYS9876K", aadhaar: "4920-1122-3344", bankName: "STATE BANK OF INDIA", bank: "30192847561", pf: "N/A (Cash/Daily)", uan: "N/A", mode: "Cash", salary: 18000, allowance: 3000, bonus: 1000, totalDays: 30, presentDays: 28, paidLeave: 1, unpaidLeave: 1, lateMins: 25, penalty: 250, advance: 2000, paidReason: "1 Day (Diwali Festival Paid Leave)", unpaidReason: "1 Day (Personal Emergency - Loss of Pay)" },
-          { id: "STF-001-FD1", name: "Pooja Sharma", gymName: "UNIVERSAL FITNESS CLUB", branch: "001", branchName: "Main Road, City Center Main", dept: "Front Desk", role: "Reception Executive", manager: "Gym Owner (9876501100)", mobile: "9876504455", email: "pooja.sharma@gmail.com", father: "Rajesh Sharma", wife: "N/A", pan: "CKJPS4567M", aadhaar: "8901-2345-6789", bankName: "HDFC BANK", bank: "501002345678", pf: "PF83921", uan: "100928192811", mode: "Bank", salary: 14000, allowance: 2500, bonus: 500, totalDays: 30, presentDays: 29, paidLeave: 1, unpaidLeave: 0, lateMins: 10, penalty: 100, advance: 1000, paidReason: "1 Day (Casual Leave Approved)", unpaidReason: "None" },
-          { id: "STF-001-CL1", name: "Rameshwar Prasad", gymName: "UNIVERSAL FITNESS CLUB", branch: "001", branchName: "Main Road, City Center Main", dept: "Cleaning", role: "Morning Sweeper", manager: "Gym Owner (9876501100)", mobile: "9876504411", email: "rameshwar.p@gmail.com", father: "Shri Ram Prasad", wife: "Sunita Devi", pan: "N/A", aadhaar: "3344-5566-7788", bankName: "Cash in Hand", bank: "N/A (Cash)", pf: "N/A", uan: "N/A", mode: "Cash", salary: 10500, allowance: 1500, bonus: 300, totalDays: 30, presentDays: 27, paidLeave: 2, unpaidLeave: 1, lateMins: 30, penalty: 300, advance: 800, paidReason: "2 Days (Family Function Paid Leave)", unpaidReason: "1 Day (Health Issue - Unpaid Cut)" },
-          { id: "STF-002-TR1", name: "Kuldeep Verma", gymName: "OM FITNESS KANPUR", branch: "002", branchName: "Kanpur Road / Swaroop Nagar", dept: "Training", role: "Strength Coach", manager: "Rohan Bajpai (9876502200)", mobile: "9876502211", email: "kuldeep.verma@gmail.com", father: "Suresh Verma", wife: "Anjali", pan: "DZKPV7788L", aadhaar: "9988-7766-5544", bankName: "ICICI BANK", bank: "001122334455", pf: "PF77102", uan: "100771882991", mode: "Bank", salary: 16000, allowance: 2800, bonus: 500, totalDays: 30, presentDays: 27, paidLeave: 2, unpaidLeave: 1, lateMins: 15, penalty: 150, advance: 1500, paidReason: "2 Days (Festival Leave)", unpaidReason: "1 Day (Personal Leave)" }
-        ]);
-      }
-      if (!localStorage.getItem(K_BILLS)) {
-        W(K_BILLS, {
-          "001": { cur: 14850, prev: 13200, pRead: 18420, cRead: 20185, kw: "4 kW", dt: "2026-11-05" },
-          "002": { cur: 50000, prev: 48000, pRead: 24500, cRead: 28900, kw: "12 kW", dt: "2026-11-05" },
-          "003": { cur: 50000, prev: 47500, pRead: 31000, cRead: 35400, kw: "12 kW", dt: "2026-11-05" },
-          "004": { cur: 50000, prev: 49000, pRead: 19000, cRead: 23200, kw: "10 kW", dt: "2026-11-05" },
-          "005": { cur: 12000, prev: 11500, pRead: 14000, cRead: 15400, kw: "3 kW", dt: "2026-11-05" }
+    function logoutUser() {
+      try {
+        localStorage.setItem("om_logged_out_flag", "1");
+        ["om_logged_user","bfc_role","om_active_role","bfc_gid","om_team_session","om_active_subscription_plan",
+         "om_session_active","om_dev_master_access","om_prime_master_auth","om_is_master_admin",
+         "om_org_profile","om_last_org_profile","om_active_gym_profile","om_demo_preview_active"].forEach(function(k){
+          localStorage.removeItem(k);
         });
-      }
-      if (!localStorage.getItem(K_VEND)) {
-        W(K_VEND, [
-          { id: "V1", br: "001", cat: "Handwash", amt: 650, status: "Approved", reason: "Approved by Admin", dt: "2026-11-20" }
-        ]);
-      }
-    }
-
-    function applyBranchFilter() {
-      curBr = document.getElementById("branchSel").value;
-      syncDashboard();
-    }
-    function syncDashboard() {
-      const stf = J(K_STF, []);
-      const ext = J(K_EXT, []);
-      const adm = J(K_ADM, []);
-      const fStf = curBr === "ALL" ? stf : stf.filter(x => x.branch === curBr);
-      const fExt = curBr === "ALL" ? ext : ext.filter(x => x.br === curBr);
-      const extSum = fExt.reduce((a,b) => a + Number(b.amt || 0), 0);
-
-      const brStats = {
-        "ALL": { totalCol: 223200, feesCol: 184800, members: 148, newAdm: 42, suppCol: 38400, cash: 143000, online: 75000, exp: 78400, pill: "5 Branches" },
-        "001": { totalCol: 112000, feesCol: 92000, members: 64, newAdm: 18, suppCol: 20000, cash: 72000, online: 40000, exp: 34000, pill: "Branch 001 (City Center)" },
-        "002": { totalCol: 48200, feesCol: 40200, members: 36, newAdm: 10, suppCol: 8000, cash: 30000, online: 18200, exp: 18000, pill: "Branch 002 (Kanpur)" },
-        "003": { totalCol: 34000, feesCol: 28000, members: 24, newAdm: 7, suppCol: 6000, cash: 22000, online: 12000, exp: 14000, pill: "Branch 003 (Lucknow)" },
-        "004": { totalCol: 17000, feesCol: 14000, members: 14, newAdm: 4, suppCol: 3000, cash: 11000, online: 6000, exp: 7400, pill: "Branch 004 (Agra)" },
-        "005": { totalCol: 12000, feesCol: 10600, members: 10, newAdm: 3, suppCol: 1400, cash: 8000, online: 4000, exp: 5000, pill: "Branch 005 (Varanasi)" }
-      };
-
-      const b = brStats[curBr] || brStats["ALL"];
-      const netVal = b.totalCol + extSum - b.exp;
-      const empDisplay = curBr === "ALL" ? (stf.length + " Staff") : (fStf.length + " Staff");
-
-      document.getElementById("vEmpCount").textContent = empDisplay;
-      document.getElementById("vExtraCol").textContent = "₹" + extSum.toLocaleString("en-IN");
-      document.getElementById("vMembers").textContent = String(b.members + adm.length);
-      document.getElementById("vAdmissions").textContent = String(b.newAdm + adm.length);
-      document.getElementById("pillBranches").textContent = b.pill;
-
-      const elTot = document.getElementById("vTotalCol");
-      if (elTot) elTot.textContent = "₹" + (b.totalCol + extSum).toLocaleString("en-IN");
-      const elFees = document.getElementById("vFeesCol");
-      if (elFees) elFees.textContent = "₹" + b.feesCol.toLocaleString("en-IN");
-      const elCash = document.getElementById("vCashOnline");
-      if (elCash) elCash.textContent = "₹" + b.cash.toLocaleString("en-IN") + " Cash / ₹" + b.online.toLocaleString("en-IN") + " Online";
-      const elNet = document.getElementById("vNetPnl");
-      if (elNet) elNet.textContent = (netVal >= 0 ? "+₹" : "-₹") + Math.abs(netVal).toLocaleString("en-IN");
-      const elExpSub = document.getElementById("vExpSub");
-      if (elExpSub) elExpSub.textContent = "Exp: ₹" + b.exp.toLocaleString("en-IN") + " • " + (netVal >= 0 ? "Net Profit" : "Net Loss");
-      const elLiveMeta = document.getElementById("liveBoardMeta");
-      if (elLiveMeta) elLiveMeta.textContent = "Collection: ₹" + (b.totalCol + extSum).toLocaleString("en-IN") + " • Pro";
-    }
-
-    function renderBillCard() {
-      const br = document.getElementById("billBrSel").value;
-      const b = J(K_BILLS, {})[br] || { cur: 0, prev: 0, pRead: 0, cRead: 0, kw: "-", dt: "-" };
-      const units = Math.max(0, Number(b.cRead) - Number(b.pRead));
-      document.getElementById("billCardBox").innerHTML = `
-        <div>Current Bill: <b style="color:var(--gold)">₹${Number(b.cur).toLocaleString("en-IN")}</b> &bull; Prev Bill: ₹${Number(b.prev).toLocaleString("en-IN")}</div>
-        <div>Load: <b>${esc(b.kw)}</b> &bull; Reading: ${b.pRead} &rarr; ${b.cRead} (Units: <b>${units}</b>) &bull; Date: ${esc(b.dt)}</div>
-      `;
-    }
-
-    function toggleBillForm() {
-      const f = document.getElementById("newBillForm");
-      f.style.display = f.style.display === "none" ? "block" : "none";
-    }
-
-    function submitLightBill(e) {
-      e.preventDefault();
-      const br = document.getElementById("billBrSel").value;
-      const bills = J(K_BILLS, {});
-      bills[br] = {
-        cur: Number(document.getElementById("nbCur").value || 0),
-        prev: Number(document.getElementById("nbPrev").value || 0),
-        pRead: Number(document.getElementById("nbPR").value || 0),
-        cRead: Number(document.getElementById("nbCR").value || 0),
-        kw: document.getElementById("nbKw").value.trim(),
-        dt: new Date().toISOString().slice(0, 10)
-      };
-      W(K_BILLS, bills);
-      const bar = document.getElementById("adminAlertBar");
-      bar.style.display = "block";
-      bar.textContent = `⚡ Light Bill Generate — Please check! Branch ${br} bill ₹${bills[br].cur.toLocaleString("en-IN")} updated.`;
-      toggleBillForm();
-      renderBillCard();
-      alert("Light Bill submitted & Admin live notification triggered!");
-    }
-
-    function viewBillCopy(type) {
-      const br = document.getElementById("billBrSel").value;
-      const b = J(K_BILLS, {})[br];
-      const txt = `BRANCH ${br} LIGHT BILL (${type} COPY)
-Current Bill: Rs. ${b.cur}
-Previous Bill: Rs. ${b.prev}
-Load: ${b.kw}
-Meter: ${b.pRead} -> ${b.cRead} kWh
-Date: ${b.dt}`;
-      if (type === "PDF") {
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(new Blob([txt], { type: "application/pdf" }));
-        a.download = `Light_Bill_Branch_${br}.pdf`;
-        a.click();
+        sessionStorage.clear();
+      } catch(e) {}
+      if (window.firebase && firebase.auth) {
+        firebase.auth().signOut().catch(function(){}).finally(function(){
+          location.replace("login.html?logout=1");
+        });
       } else {
-        alert(txt);
+        location.replace("login.html?logout=1");
       }
     }
-
-    function submitConsumableBill(e) {
-      e.preventDefault();
-      const br = document.getElementById("billBrSel").value;
-      const cat = document.getElementById("cCat").value.trim();
-      const amt = Number(document.getElementById("cAmt").value || 0);
-      const vList = J(K_VEND, []);
-      vList.unshift({ id: "V_" + Date.now(), br, cat, amt, status: "Pending", reason: "Awaiting Admin Approval", dt: new Date().toISOString().slice(0,10) });
-      W(K_VEND, vList);
-      const bar = document.getElementById("adminAlertBar");
-      bar.style.display = "block";
-      bar.textContent = `🔔 New Bill Submitted: Branch ${br} — ${cat} (₹${amt}) pending Admin approval.`;
-      renderMaintList();
-    }
-
-    function decideBill(id, ok) {
-      if (!isAdmin()) { alert("Keval Admin approve/reject kar sakta hai."); return; }
-      const vList = J(K_VEND, []);
-      const item = vList.find(x => x.id === id);
-      if (!item) return;
-      if (ok) {
-        item.status = "Approved";
-        item.reason = "Approved by Admin";
-      } else {
-        const r = prompt("Reject karne ka reason likhein:");
-        if (!r || !r.trim()) { alert("Reason mandatory hai."); return; }
-        item.status = "Rejected";
-        item.reason = r.trim();
-      }
-      W(K_VEND, vList);
-      renderMaintList();
-    }
-
-    function renderMaintList() {
-      const vList = J(K_VEND, []);
-      const appSum = vList.filter(x => x.status === "Approved").reduce((a,b) => a + Number(b.amt || 0), 0);
-      document.getElementById("maintApprovalList").innerHTML =
-        `<div class="rec"><b>Approved Maintenance Cost:</b> <span style="color:var(--emerald)">₹${appSum.toLocaleString("en-IN")}</span> (Rejected bills excluded)</div>` +
-        vList.map(x => {
-          const cls = x.status === "Approved" ? "pill-ok" : (x.status === "Rejected" ? "pill-no" : "pill-pd");
-          return `<div class="rec">
-            <div style="display:flex;justify-content:space-between"><b>${esc(x.cat)} (Branch ${esc(x.br)})</b><span class="${cls}">${esc(x.status)}</span></div>
-            <div style="margin:4px 0">Amount: <b>₹${Number(x.amt).toLocaleString("en-IN")}</b> &bull; Date: ${esc(x.dt)}</div>
-            <div style="font-size:11px;color:${x.status === 'Rejected' ? 'var(--rose)' : 'var(--muted)'}">Reason/Note: ${esc(x.reason)}</div>
-            ${isAdmin() && x.status === "Pending" ? `<div style="display:flex;gap:6px;margin-top:6px"><button type="button" class="sub-btn" style="color:var(--emerald)" onclick="decideBill('${x.id}',true)">Approve</button><button type="button" class="sub-btn" style="color:var(--rose)" onclick="decideBill('${x.id}',false)">Reject</button></div>` : ""}
-          </div>`;
-        }).join("");
-    }
-
-    function renderDeptStaff() {
-      const br = document.getElementById("dsBr").value;
-      const q = (document.getElementById("dsSearch").value || "").toLowerCase();
-      const list = J(K_STF, []).filter(s => s.branch === br && (!q || s.name.toLowerCase().includes(q) || s.dept.toLowerCase().includes(q) || s.role.toLowerCase().includes(q)));
-      document.getElementById("dsList").innerHTML = list.map(s => `
-        <div class="rec">
-          <b>${esc(s.name)}</b> (${esc(s.role)} &bull; ${esc(s.dept)})
-          <div style="font-size:11px;color:var(--muted)">ID: ${esc(s.id)} &bull; Mode: ${esc(s.mode)} &bull; Ph: ${esc(s.mobile)}</div>
-          <div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap">
-            <a class="sub-btn" style="text-decoration:none" href="tel:${esc(s.mobile)}">Call</a>
-            <a class="sub-btn" style="text-decoration:none" href="sms:${esc(s.mobile)}">SMS</a>
-            <a class="sub-btn" style="text-decoration:none;color:var(--emerald)" target="_blank" href="https://wa.me/91${esc(s.mobile)}">WhatsApp</a>
-            <button type="button" class="sub-btn" onclick="openKycCert('${s.id}')">Full KYC Card</button>
-          </div>
-        </div>
-      `).join("") || '<div class="rec">Koi staff nahi mila.</div>';
-    }
-
-    function openKycCert(id) {
-      const s = J(K_STF, []).find(x => x.id === id);
-      if (!s) return;
-      document.getElementById("kycCertBody").innerHTML = `
-        <div style="border-bottom:2px solid #0F172A;padding-bottom:8px;margin-bottom:10px"><b>OFFICIAL STAFF KYC &amp; JOINING RECORD</b></div>
-        <div><b>Name:</b> ${esc(s.name)} &bull; <b>ID:</b> ${esc(s.id)}</div>
-        <div><b>Branch:</b> ${esc(s.branch)} &bull; <b>Department:</b> ${esc(s.dept)} &bull; <b>Role:</b> ${esc(s.role)}</div>
-        <div><b>Father:</b> ${esc(s.father)} &bull; <b>Wife:</b> ${esc(s.wife)} &bull; <b>Mobile:</b> ${esc(s.mobile)}</div>
-        <div><b>Qualification:</b> ${esc(s.qual)} &bull; <b>Medical:</b> ${esc(s.med)}</div>
-        <div><b>Payment Mode:</b> ${esc(s.mode)} &bull; <b>Bank:</b> ${esc(s.bank)} &bull; <b>PF/UAN:</b> ${esc(s.pfUan)}</div>
-        <div style="margin-top:8px;color:#059669;font-weight:800">✔ KYC Verified &amp; Stamped</div>
-      `;
-      openMod("modKycCard");
-    }
-
-    function punchMemberAtt() {
-      const nm = prompt("Member Name ya Mobile daalein:");
-      if (!nm || !nm.trim()) return;
-      alert(`Present marked for ${nm.trim()} at ${new Date().toLocaleTimeString()}`);
-    }
-
-    function punchStaffAtt() {
-      const nm = document.getElementById("stfAttName").value.trim();
-      const mins = Number(document.getElementById("stfLateMin").value || 0);
-      const loc = document.getElementById("stfLocMode").value;
-      if (!nm) { alert("Staff name daalein."); return; }
-      let reason = "Inside Gym";
-      let inf = "Yes";
-      if (loc.includes("Outside")) {
-        reason = prompt("Outside Gym attendance ka reason likhein (mandatory):");
-        if (!reason || !reason.trim()) { alert("Reason mandatory hai."); return; }
-        inf = confirm("Kya Manager ko inform kiya? OK = Yes, Cancel = No") ? "Yes" : "No";
-      }
-      const bar = document.getElementById("adminAlertBar");
-      bar.style.display = "block";
-      bar.textContent = `📲 Telegram Alert to Manager: ${nm} (${loc}) | Late: ${mins}m | Informed: ${inf} | Reason: ${reason}`;
-      alert(`Attendance logged for ${nm}.
-Location: ${loc}
-Late Penalty: ₹${mins * 10}
-Informed Manager: ${inf}
-Reason: ${reason}
-Telegram notification sent to Manager.`);
-    }
-
-    function renderExpired() {
-      const rows = [
-        { name: "Rahul Singh", ph: "9876543210", em: "rahul@gym.com", join: "2026-01-02", exp: "2026-02-02", last: "2026-02-01 06:45 AM" },
-        { name: "Pooja Sharma", ph: "9988776655", em: "pooja@gym.com", join: "2026-01-10", exp: "2026-07-10", last: "2026-07-09 05:30 PM" }
-      ];
-      document.getElementById("expiredListBox").innerHTML = rows.map(r => `
-        <div class="rec" style="border-left:3px solid var(--rose)">
-          <b>${esc(r.name)}</b> &bull; Ph: ${esc(r.ph)} &bull; Email: ${esc(r.em)}
-          <div>Joining: ${esc(r.join)} &bull; Expired: <b style="color:var(--rose)">${esc(r.exp)}</b></div>
-          <div style="color:#FDE047;margin-top:3px">Last Attendance: <b>${esc(r.last)}</b></div>
-        </div>
-      `).join("");
-    }
-
-    function checkStaffSelfie() {
-      const nm = (document.getElementById("chkName").value || "").trim().toLowerCase();
-      const dt = document.getElementById("chkDate").value;
-      const box = document.getElementById("chkResultBox");
-      if (!nm) { box.textContent = "Naam type karein."; return; }
-      const presentNames = ["saurabh", "vikram", "pooja", "rameshwar", "kuldeep", "yash", "vishal", "ayush"];
-      const ok = presentNames.some(x => nm.includes(x));
-      box.innerHTML = ok
-        ? `<div style="color:var(--emerald);font-weight:800">✔ Present on ${dt} — Selfie &amp; Time Verified.</div>`
-        : `<div style="color:var(--rose);font-weight:900">❌ Jao beta Absent! (${esc(dt)} ko koi selfie record nahi hai)</div>`;
-    }
-
-    function renderSelfies() {
-      const dt = document.getElementById("selfieDate").value;
-      document.getElementById("selfieListBox").innerHTML = `
-        <div class="rec"><b>Date: ${esc(dt)} — 52 Selfies Logged</b></div>
-        <div class="rec">1. Yash Singh Chandel &bull; 9990954574 &bull; 12:01 am</div>
-        <div class="rec">2. Vishal Sharma &bull; 7652064461 &bull; 05:06 am</div>
-        <div class="rec">3. Ayush Yadav &bull; 9554546369 &bull; 05:08 am</div>
-      `;
-    }
-
-    function renderPnl() {
-      const ctx = document.getElementById("pnlChart");
-      if (chartObj) chartObj.destroy();
-      chartObj = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: ["Total Collection", "Total Expense", "Net Profit"],
-          datasets: [{ data: [223200, 78400, 144800], backgroundColor: ["#34D399", "#FB7185", "#F5A623"] }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false } } }
-      });
-      document.getElementById("pnlEntries").innerHTML = `
-        <div class="rec"><b>2026-11-01</b> &bull; Membership Fees (Cash) &bull; <span style="color:var(--emerald)">+₹1,43,000</span></div>
-        <div class="rec"><b>2026-11-02</b> &bull; Online Fees &amp; Renewals &bull; <span style="color:var(--emerald)">+₹75,000</span></div>
-        <div class="rec"><b>2026-11-03</b> &bull; Supplement POS Sale &bull; <span style="color:var(--emerald)">+₹38,400</span></div>
-        <div class="rec"><b>2026-11-04</b> &bull; Expenses &bull; <span style="color:var(--rose)">-₹78,400</span></div>
-      `;
-    }
-
-
-    
-    // --- COMPLETE GIRNAR SOFT VOUCHER & DISPATCH LOGIC ---
-    let currentVoucherStaff = null;
-    let currentVoucherPeriod = "November 2026";
-
-    function setSalaryTab(tab) {
-      document.getElementById('salSecBranch').style.display = (tab === 'branch') ? 'block' : 'none';
-      document.getElementById('salSecSearch').style.display = (tab === 'search') ? 'block' : 'none';
-      document.getElementById('salSecCreate').style.display = (tab === 'create') ? 'block' : 'none';
-
-      document.getElementById('stTabBranch').classList.toggle('active', tab === 'branch');
-      document.getElementById('stTabSearch').classList.toggle('active', tab === 'search');
-      document.getElementById('stTabCreate').classList.toggle('active', tab === 'create');
-
-      if (tab === 'branch') renderSalaryBranch();
-      if (tab === 'search') filterStaffAutoSearch();
-    }
-
-    function renderSalaryBranch() {
-      const br = document.getElementById("salBr").value;
-      const dept = document.getElementById("salDept").value;
-      const staffList = J(K_STF, []);
-      const rows = staffList.filter(s => s.branch === br && (dept === "ALL" || s.dept === dept));
-      let branchGross = 0;
-      let branchTotalNet = 0;
-
-      const container = document.getElementById("salRowsBox");
-      if (!rows.length) {
-        container.innerHTML = '<div class="rec" style="color:var(--muted)">Is branch aur department mein koi staff nahi mila.</div>';
-        document.getElementById("salTotalBox").textContent = `Total Net Salary Expense (Branch ${br}): ₹0`;
-        return;
-      }
-
-      container.innerHTML = rows.map(s => {
-        const base = Number(s.salary || 0);
-        const allow = Number(s.allowance || Math.round(base * 0.20));
-        const bonus = Number(s.bonus || 0);
-        const gross = base + allow + bonus;
-        branchGross += gross;
-
-        const penalty = Number(s.penalty ?? (Number(s.lateMins || 0) * 10));
-        const advance = Number(s.advance || 0);
-        const pf = (s.mode === "Cash") ? 0 : Number(s.pfNum ?? Math.round(base * 0.12));
-        const unpaidCut = Math.round((base / 30) * Number(s.unpaidLeave || 0));
-        const totalDeductions = penalty + advance + pf + unpaidCut;
-        const net = Math.max(0, gross - totalDeductions);
-        branchTotalNet += net;
-
-        return `
-          <div class="rec" style="border-left:3px solid var(--cyan); margin-bottom:10px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <b>${esc(s.name)}</b> <span class="pill-ok">${esc(s.id)}</span>
-                <div style="font-size:11px; color:var(--muted); margin-top:2px;">
-                  Dept: <b>${esc(s.dept)}</b> &bull; Role: <b>${esc(s.role)}</b> &bull; Manager: <b>${esc(s.manager || "Gym Owner")}</b>
-                </div>
-              </div>
-              <button type="button" class="sub-btn" style="background:#0F1A33; color:var(--gold); border-color:var(--gold)" onclick='openStaffSalarySlipById("${s.id}")'>
-                📄 View Salary Slip
-              </button>
-            </div>
-
-            <!-- Editable Inputs with Real-time Formulation -->
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin:8px 0;">
-              <div>
-                <label style="font-size:10px; color:var(--muted)">Base Salary (₹):</label>
-                <input type="number" class="fc" style="padding:5px 8px; font-size:11.5px;" value="${base}" onchange="editStaffField('${s.id}', 'salary', this.value)">
-              </div>
-              <div>
-                <label style="font-size:10px; color:var(--muted)">Allowance (₹):</label>
-                <input type="number" class="fc" style="padding:5px 8px; font-size:11.5px;" value="${allow}" onchange="editStaffField('${s.id}', 'allowance', this.value)">
-              </div>
-              <div>
-                <label style="font-size:10px; color:var(--muted)">Advance Taken (₹):</label>
-                <input type="number" class="fc" style="padding:5px 8px; font-size:11.5px;" value="${advance}" onchange="editStaffField('${s.id}', 'advance', this.value)">
-              </div>
-              <div>
-                <label style="font-size:10px; color:var(--muted)">Late Penalty (₹):</label>
-                <input type="number" class="fc" style="padding:5px 8px; font-size:11.5px;" value="${penalty}" onchange="editStaffField('${s.id}', 'penalty', this.value)">
-              </div>
-              <div>
-                <label style="font-size:10px; color:var(--muted)">Unpaid Leave Cut (₹):</label>
-                <input type="number" class="fc" style="padding:5px 8px; font-size:11.5px;" value="${unpaidCut}" readonly title="Auto-Calculated from Unpaid Days">
-              </div>
-              <div>
-                <label style="font-size:10px; color:var(--muted)">PF / ESIC (₹):</label>
-                <input type="number" class="fc" style="padding:5px 8px; font-size:11.5px;" value="${pf}" onchange="editStaffField('${s.id}', 'pfNum', this.value)">
-              </div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; background:#091226; border-radius:8px; padding:6px 10px; font-size:11.5px;">
-              <div>Gross: <b>₹${gross.toLocaleString('en-IN')}</b> &bull; Deductions: <b style="color:var(--rose)">₹${totalDeductions.toLocaleString('en-IN')}</b></div>
-              <div style="font-weight:900; color:var(--emerald); font-size:13px;">Net Payable: ₹${net.toLocaleString('en-IN')}</div>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      document.getElementById("salTotalBox").innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-          <span>Branch ${br} Total Gross: <b>₹${branchGross.toLocaleString("en-IN")}</b></span>
-          <span style="color:var(--emerald)">Net Payable Payout: <b>₹${branchTotalNet.toLocaleString("en-IN")}</b></span>
-        </div>
-      `;
-    }
-
-    function editStaffField(id, field, val) {
-      const staffList = J(K_STF, []);
-      const target = staffList.find(s => s.id === id);
-      if (target) {
-        target[field] = Number(val);
-        W(K_STF, staffList);
-        renderSalaryBranch();
-      }
-    }
-
-    // 1-Lakh Auto Search
-    function filterStaffAutoSearch() {
-      const filterType = document.getElementById("searchFilterType").value;
-      const q = (document.getElementById("salSearchQuery").value || "").trim().toLowerCase();
-      const fromDate = document.getElementById("salDateFrom").value;
-      const toDate = document.getElementById("salDateTo").value;
-      const staffList = J(K_STF, []);
-      const container = document.getElementById("salSearchResultsBox");
-
-      if (!q) {
-        container.innerHTML = '<div class="rec" style="color:var(--muted)">Search by Employee ID, Mobile, Email, or Branch above.</div>';
-        return;
-      }
-
-      let matches = staffList.filter(s => {
-        if (filterType === "Employee ID") return (s.id || "").toLowerCase().includes(q);
-        if (filterType === "Mobile No") return (s.mobile || "").includes(q);
-        if (filterType === "Email ID") return (s.email || "").toLowerCase().includes(q);
-        if (filterType === "Branch Name") return (s.branch || "").toLowerCase().includes(q);
-        return (s.name || "").toLowerCase().includes(q) || (s.id || "").toLowerCase().includes(q) || (s.mobile || "").includes(q) || (s.email || "").toLowerCase().includes(q) || (s.branch || "").toLowerCase().includes(q);
-      });
-
-      if (!matches.length) {
-        container.innerHTML = '<div class="rec" style="color:var(--rose)">Koi record nahi mila.</div>';
-        return;
-      }
-
-      container.innerHTML = matches.map(s => `
-        <div class="rec" style="border:1px solid var(--gold); margin-bottom:8px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <b>${esc(s.name)}</b> <span class="pill-ok">${esc(s.id)}</span>
-              <div style="font-size:11px; color:var(--muted); margin-top:2px;">
-                📞 ${esc(s.mobile)} &bull; ✉️ ${esc(s.email || 'N/A')} &bull; Branch: ${esc(s.branch)}
-              </div>
-            </div>
-            <button type="button" class="sub-btn" style="background:var(--gold); color:#050813; font-weight:900;" onclick='openStaffSalarySlipById("${s.id}", "${fromDate} to ${toDate}")'>
-              View Statement &rarr;
-            </button>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    // Instant Slip Generator
-    function recalcInstantSlip() {
-      const base = Number(document.getElementById("cstBase").value || 0);
-      const allow = Number(document.getElementById("cstAllow").value || 0);
-      const bonus = Number(document.getElementById("cstBonus").value || 0);
-      const pen = Number(document.getElementById("cstPen").value || 0);
-      const adv = Number(document.getElementById("cstAdv").value || 0);
-      const pf = Number(document.getElementById("cstPf").value || 0);
-      const gross = base + allow + bonus;
-      const net = Math.max(0, gross - (pen + adv + pf));
-      document.getElementById("cstNetCalc").value = "₹" + net.toLocaleString("en-IN");
-    }
-
-    function createInstantSalarySlip(e) {
-      e.preventDefault();
-      const base = Number(document.getElementById("cstBase").value || 0);
-      const allow = Number(document.getElementById("cstAllow").value || 0);
-      const bonus = Number(document.getElementById("cstBonus").value || 0);
-      const pen = Number(document.getElementById("cstPen").value || 0);
-      const adv = Number(document.getElementById("cstAdv").value || 0);
-      const pf = Number(document.getElementById("cstPf").value || 0);
-
-      const tempStaff = {
-        gymName: document.getElementById("cstGymName").value.trim(),
-        branchName: document.getElementById("cstBranch").value.trim(),
-        name: document.getElementById("cstName").value.trim(),
-        id: document.getElementById("cstId").value.trim(),
-        role: document.getElementById("cstRole").value.trim(),
-        dept: document.getElementById("cstDept").value.trim(),
-        manager: document.getElementById("cstManager").value.trim(),
-        bankName: document.getElementById("cstBank").value.trim(),
-        mobile: document.getElementById("cstMobile").value.trim(),
-        email: document.getElementById("cstEmail").value.trim(),
-        salary: base,
-        allowance: allow,
-        bonus: bonus,
-        penalty: pen,
-        advance: adv,
-        pfNum: pf,
-        paidReason: document.getElementById("cstPaidReason").value.trim(),
-        unpaidReason: document.getElementById("cstUnpaidReason").value.trim(),
-        mode: "Bank Transfer",
-        totalDays: 30,
-        presentDays: 28,
-        unpaidLeave: 1,
-        pan: "HBGPS6001D",
-        uan: "100761344191"
-      };
-
-      currentVoucherStaff = tempStaff;
-      currentVoucherPeriod = "November 2026";
-      renderSalarySlipVoucher(tempStaff, "November 2026");
-    }
-
-    function openStaffSalarySlipById(id, period) {
-      const staffList = J(K_STF, []);
-      const s = staffList.find(x => x.id === id);
-      if (!s) return;
-      currentVoucherStaff = s;
-      currentVoucherPeriod = period || "November 2026";
-      renderSalarySlipVoucher(s, currentVoucherPeriod);
-    }
-
-    // Exact Girnar Soft Voucher Renderer
-    function renderSalarySlipVoucher(s, periodStr) {
-      const base = Number(s.salary || 0);
-      const allow = Number(s.allowance || Math.round(base * 0.20));
-      const bonus = Number(s.bonus || 0);
-      const gross = base + allow + bonus;
-      const penalty = Number(s.penalty ?? (Number(s.lateMins || 0) * 10));
-      const advance = Number(s.advance || 0);
-      const pf = (s.mode === "Cash") ? 0 : Number(s.pfNum ?? Math.round(base * 0.12));
-      const unpaidCut = Math.round((base / 30) * Number(s.unpaidLeave || 0));
-      const totalDeductions = penalty + advance + pf + unpaidCut;
-      const net = Math.max(0, gross - totalDeductions);
-
-      const gymName = s.gymName || "UNIVERSAL FITNESS CLUB";
-      const branchName = s.branchName || (s.branch === "001" ? "Main Road, City Center Main" : "Branch " + s.branch);
-      const managerName = s.manager || "Gym Owner (9876501100)";
-      const paidReason = s.paidReason || (s.paidLeave ? `${s.paidLeave} Days (Casual Leave / Holiday)` : "None");
-      const unpaidReason = s.unpaidReason || (s.unpaidLeave ? `${s.unpaidLeave} Days (Loss of Pay - Medical/Leave)` : "None");
-
-      const htmlContent = `
-        <div id="voucherPrintRoot" style="background:#FFFFFF; color:#000000; font-family: Arial, sans-serif; padding: 12px; border: 1px solid #94A3B8;">
-          <!-- Header: Gym Name, Branch & Address -->
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
-            <div>
-              <div style="font-size:22px; font-weight:900; color:#0F172A; text-transform:uppercase; letter-spacing:0.5px;">${esc(gymName)}</div>
-              <div style="font-size:12px; font-weight:700; color:#2563EB;">Branch: ${esc(branchName)}</div>
-              <div style="font-size:10px; color:#475569;">Regd. Office: Main Road, City Center</div>
-            </div>
-            <div style="text-align:right; font-size:10.5px; color:#1E293B;">
-              <div style="font-size:14px; font-weight:900; color:#0F172A;">PAY SLIP</div>
-              <div>Period: <b>${esc(periodStr)}</b></div>
-              <div style="background:#F1F5F9; border:1px solid #CBD5E1; padding:2px 6px; border-radius:4px; margin-top:3px;">
-                Reporting Manager: <b>${esc(managerName)}</b>
-              </div>
-            </div>
-          </div>
-
-          <!-- Employee Details Grid (Girnar Soft Style) -->
-          <table style="width:100%; border-collapse:collapse; font-size:10.5px; border:1px solid #000000; margin-bottom:10px;">
-            <tr>
-              <td style="padding:4px 6px; border:1px solid #000; width:15%; background:#F8FAFC;"><b>Emp No:</b></td>
-              <td style="padding:4px 6px; border:1px solid #000; width:35%;"><b>${esc(s.id)}</b></td>
-              <td style="padding:4px 6px; border:1px solid #000; width:18%; background:#F8FAFC;"><b>Bank Name:</b></td>
-              <td style="padding:4px 6px; border:1px solid #000; width:32%;">${esc(s.bankName || 'KOTAK MAHINDRA BANK')}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 6px; border:1px solid #000; background:#F8FAFC;"><b>Name:</b></td>
-              <td style="padding:4px 6px; border:1px solid #000;"><b>${esc(s.name)}</b></td>
-              <td style="padding:4px 6px; border:1px solid #000; background:#F8FAFC;"><b>Bank Account #:</b></td>
-              <td style="padding:4px 6px; border:1px solid #000;">${esc(s.bank || '1913450661')}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 6px; border:1px solid #000; background:#F8FAFC;"><b>Department:</b></td>
-              <td style="padding:4px 6px; border:1px solid #000;">${esc(s.dept || 'Training')}</td>
-              <td style="padding:4px 6px; border:1px solid #000; background:#F8FAFC;"><b>Aadhaar #:</b></td>
-              <td style="padding:4px 6px; border:1px solid #000;">${esc(s.aadhaar || '643749877588')}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 6px; border:1px solid #000; background:#F8FAFC;"><b>Designation:</b></td>
-              <td style="padding:4px 6px; border:1px solid #000;">${esc(s.role)}</td>
-              <td style="padding:4px 6px; border:1px solid #000; background:#F8FAFC;"><b>PAN / UAN:</b></td>
-              <td style="padding:4px 6px; border:1px solid #000;">${esc(s.pan || 'HBGPS6001D')} / ${esc(s.uan || '100761344191')}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 6px; border:1px solid #000; background:#F8FAFC;"><b>Attendance:</b></td>
-              <td colspan="3" style="padding:4px 6px; border:1px solid #000;">
-                Total Days: <b>30</b> &bull; Paid Days: <b>${s.presentDays || 28}.00</b> &bull; Unpaid Days: <b>${s.unpaidLeave || 1}.00</b> &bull; Late Mins: <b>${s.lateMins || 0}m</b>
-              </td>
-            </tr>
-          </table>
-
-          <!-- Earnings & Deductions (Girnar Soft 2-Column Format) -->
-          <table style="width:100%; border-collapse:collapse; font-size:10.5px; border:1px solid #000000; margin-bottom:8px;">
-            <thead>
-              <tr style="border-bottom:1px solid #000; background:#F1F5F9;">
-                <th style="padding:5px 6px; border-right:1px solid #000; text-align:left; width:28%;">Earnings</th>
-                <th style="padding:5px 6px; border-right:1px solid #000; text-align:right; width:11%;">Master Rate</th>
-                <th style="padding:5px 6px; border-right:1px solid #000; text-align:right; width:11%;">Current Month</th>
-                <th style="padding:5px 6px; border-right:1px solid #000; text-align:left; width:35%;">Deductions</th>
-                <th style="padding:5px 6px; text-align:right; width:15%;">Current Month</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="padding:4px 6px; border-right:1px solid #000;">Basic Salary</td>
-                <td style="padding:4px 6px; border-right:1px solid #000; text-align:right;">${base.toLocaleString('en-IN')}.00</td>
-                <td style="padding:4px 6px; border-right:1px solid #000; text-align:right;">${base.toLocaleString('en-IN')}.00</td>
-                <td style="padding:4px 6px; border-right:1px solid #000;">Provident Fund (PF)</td>
-                <td style="padding:4px 6px; text-align:right;">${pf.toLocaleString('en-IN')}.00</td>
-              </tr>
-              <tr>
-                <td style="padding:4px 6px; border-right:1px solid #000;">Special Allowance</td>
-                <td style="padding:4px 6px; border-right:1px solid #000; text-align:right;">${allow.toLocaleString('en-IN')}.00</td>
-                <td style="padding:4px 6px; border-right:1px solid #000; text-align:right;">${allow.toLocaleString('en-IN')}.00</td>
-                <td style="padding:4px 6px; border-right:1px solid #000;">Advance Deductions</td>
-                <td style="padding:4px 6px; text-align:right;">${advance.toLocaleString('en-IN')}.00</td>
-              </tr>
-              <tr>
-                <td style="padding:4px 6px; border-right:1px solid #000;">Statutory Bonus / OT</td>
-                <td style="padding:4px 6px; border-right:1px solid #000; text-align:right;">${bonus.toLocaleString('en-IN')}.00</td>
-                <td style="padding:4px 6px; border-right:1px solid #000; text-align:right;">${bonus.toLocaleString('en-IN')}.00</td>
-                <td style="padding:4px 6px; border-right:1px solid #000;">Late Attendance Penalty</td>
-                <td style="padding:4px 6px; text-align:right;">${penalty.toLocaleString('en-IN')}.00</td>
-              </tr>
-              <tr>
-                <td style="padding:4px 6px; border-right:1px solid #000;">-</td>
-                <td style="padding:4px 6px; border-right:1px solid #000; text-align:right;">-</td>
-                <td style="padding:4px 6px; border-right:1px solid #000; text-align:right;">-</td>
-                <td style="padding:4px 6px; border-right:1px solid #000;">Unpaid Leave Loss of Pay</td>
-                <td style="padding:4px 6px; text-align:right;">${unpaidCut.toLocaleString('en-IN')}.00</td>
-              </tr>
-              <tr style="border-top:1px solid #000; font-weight:bold; background:#F8FAFC;">
-                <td style="padding:5px 6px; border-right:1px solid #000;">Total</td>
-                <td style="padding:5px 6px; border-right:1px solid #000; text-align:right;">${gross.toLocaleString('en-IN')}.00</td>
-                <td style="padding:5px 6px; border-right:1px solid #000; text-align:right;">${gross.toLocaleString('en-IN')}.00</td>
-                <td style="padding:5px 6px; border-right:1px solid #000;">Total Deductions</td>
-                <td style="padding:5px 6px; text-align:right; color:#DC2626;">${totalDeductions.toLocaleString('en-IN')}.00</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- Net Pay Row -->
-          <div style="border:1px solid #000; padding:6px 10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-            <div><b>Net Pay: Rs. <span style="font-size:14px;">${net.toLocaleString('en-IN')}.00</span></b></div>
-            <div style="font-size:10px; color:#475569;">Mode: <b>${esc(s.mode)}</b> (Processed &amp; Verified)</div>
-          </div>
-
-          <!-- Leaves Breakdown Sub-Section (Mandatory Audit) -->
-          <div style="background:#F8FAFC; border:1px solid #CBD5E1; padding:6px 8px; border-radius:4px; font-size:10px; line-height:1.45; margin-bottom:6px;">
-            <b style="color:#0F172A; text-decoration:underline;">Leave Record &amp; Reasons:</b><br>
-            &bull; <b>Paid Leaves:</b> ${esc(paidReason)}<br>
-            &bull; <b>Unpaid Leaves (Deducted):</b> ${esc(unpaidReason)}
-          </div>
-
-          <div style="font-size:9px; color:#64748B; text-align:center;">
-            Please Note: This is a system-generated payslip, does not require physical signature.
-          </div>
-        </div>
-      `;
-
-      document.getElementById("salarySlipPrintableContent").innerHTML = htmlContent;
-      const box = document.getElementById("salaryVoucherBox");
-      box.style.display = "block";
-      box.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Multi-Format Downloader
-    function downloadSlipFormat(fmt) {
-      if (!currentVoucherStaff) return;
-      const baseName = `SalarySlip_${currentVoucherStaff.name.replace(/\s+/g, '_')}_${currentVoucherPeriod.replace(/\s+/g, '_')}`;
-
-      if (fmt === 'PDF') {
-        window.print();
-      } else if (fmt === 'EXCEL') {
-        downloadB64(HR_B64, `${baseName}.xlsx`);
-      } else if (fmt === 'IMAGE') {
-        const target = document.getElementById("voucherPrintRoot");
-        if (window.html2canvas && target) {
-          html2canvas(target, { scale: 2 }).then(canvas => {
-            const link = document.createElement("a");
-            link.download = `${baseName}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-          });
-        } else {
-          window.print();
-        }
-      }
-    }
-
-    // Send via WhatsApp
-    function sendSalarySlipViaWhatsApp() {
-      if (!currentVoucherStaff) return;
-      const s = currentVoucherStaff;
-      const base = Number(s.salary || 0);
-      const allow = Number(s.allowance || Math.round(base * 0.20));
-      const gross = base + allow + Number(s.bonus || 0);
-      const penalty = Number(s.penalty ?? (Number(s.lateMins || 0) * 10));
-      const advance = Number(s.advance || 0);
-      const pf = (s.mode === "Cash") ? 0 : Number(s.pfNum ?? Math.round(base * 0.12));
-      const unpaidCut = Math.round((base / 30) * Number(s.unpaidLeave || 0));
-      const totalDeductions = penalty + advance + pf + unpaidCut;
-      const net = Math.max(0, gross - totalDeductions);
-
-      const phone = (s.mobile || "").replace(/[^0-9]/g, "");
-      const textMsg = `*${s.gymName || "UNIVERSAL FITNESS CLUB"} - SALARY SLIP*\n` +
-        `----------------------------------------\n` +
-        `👤 *Employee:* ${s.name} (${s.id})\n` +
-        `🏢 *Branch:* ${s.branchName || s.branch}\n` +
-        `👔 *Role:* ${s.role} | *Manager:* ${s.manager || "Gym Owner"}\n` +
-        `📅 *Period:* ${currentVoucherPeriod}\n` +
-        `----------------------------------------\n` +
-        `💵 *Basic Salary:* ₹${base.toLocaleString('en-IN')}\n` +
-        `➕ *Allowance/Bonus:* ₹${(allow + Number(s.bonus || 0)).toLocaleString('en-IN')}\n` +
-        `💰 *Gross Salary:* ₹${gross.toLocaleString('en-IN')}\n` +
-        `----------------------------------------\n` +
-        `➖ *Late Penalty:* ₹${penalty}\n` +
-        `➖ *Advance Cut:* ₹${advance}\n` +
-        `➖ *PF / Unpaid Cut:* ₹${pf + unpaidCut}\n` +
-        `❌ *Total Deductions:* ₹${totalDeductions.toLocaleString('en-IN')}\n` +
-        `----------------------------------------\n` +
-        `✅ *NET TAKE-HOME:* ₹${net.toLocaleString('en-IN')}\n` +
-        `----------------------------------------\n` +
-        `Paid Leaves: ${s.paidReason || "Casual Leave"}\n` +
-        `Unpaid Leaves: ${s.unpaidReason || "None"}\n\n` +
-        `_This is a verified system-generated slip._`;
-
-      const url = `https://wa.me/91${phone}?text=${encodeURIComponent(textMsg)}`;
-      window.open(url, "_blank");
-    }
-
-    // Send via Email
-    function sendSalarySlipViaEmail() {
-      if (!currentVoucherStaff) return;
-      const s = currentVoucherStaff;
-      const email = s.email || "employee@omsoftware.com";
-      const subject = `Official Pay Slip - ${currentVoucherPeriod} | ${s.name} (${s.id})`;
-      const body = `Dear ${s.name},\n\nPlease find your salary summary for ${currentVoucherPeriod} at ${s.gymName || "UNIVERSAL FITNESS CLUB"} (${s.branchName || s.branch}).\n\nReporting Manager: ${s.manager || "Gym Owner"}\nMode: ${s.mode}\n\nDetailed breakdown is available in your employee portal.\n\nRegards,\nAccounts & HR Department`;
-      
-      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    }
-
-    function calcAdm() {
-      let sum = Number(document.getElementById("admFee").value || 0);
-      const rows = document.querySelectorAll("#modAdmission .rec > div");
-      rows.forEach(d => {
-        const c = d.querySelector(".s-chk");
-        const p = Number(d.querySelector(".s-p").value || 0);
-        if (c && c.checked) sum += p;
-      });
-      document.getElementById("admTot").value = sum;
-      return sum;
-    }
-
-    function saveAdmission(e) {
-      e.preventDefault();
-      const tot = calcAdm();
-      if (document.getElementById("admPay").value === "Online" && !document.getElementById("admUtr").value.trim()) {
-        alert("UTR zaroori hai."); return;
-      }
-      const adm = J(K_ADM, []);
-      adm.unshift({ name: document.getElementById("admNm").value.trim(), br: document.getElementById("admBr").value, fee: tot });
-      W(K_ADM, adm);
-      closeMod("modAdmission");
-      syncDashboard();
-      alert("Admission saved!");
-    }
-
-    function saveJoining(e) {
-      e.preventDefault();
-      const mode = document.getElementById("jnMode").value;
-      const stf = J(K_STF, []);
-      stf.unshift({
-        id: "STF-" + Date.now().toString().slice(-4),
-        name: document.getElementById("jnNm").value.trim(),
-        branch: document.getElementById("jnBr").value,
-        dept: document.getElementById("jnDept").value,
-        role: document.getElementById("jnRole").value.trim(),
-        mobile: "9876500000", father: "KYC", wife: "KYC", qual: "Verified", med: "Fit",
-        mode, bank: mode === "Cash" ? "N/A (Cash)" : document.getElementById("jnBank").value.trim(),
-        pfUan: mode === "Cash" ? "N/A (Cash)" : document.getElementById("jnPfUan").value.trim(),
-        salary: 15000, advance: 0, paidLeave: 0, unpaidLeave: 0, lateMins: 0
-      });
-      W(K_STF, stf);
-      closeMod("modJoining");
-      syncDashboard();
-      alert("Staff joining saved!");
-    }
-
-    function addExtraService(e) {
-      e.preventDefault();
-      const ext = J(K_EXT, []);
-      ext.unshift({
-        name: document.getElementById("esName").value.trim(),
-        srv: document.getElementById("esSrv").value.trim(),
-        amt: Number(document.getElementById("esAmt").value || 0),
-        br: document.getElementById("esBr").value,
-        mode: document.getElementById("esMode").value
-      });
-      W(K_EXT, ext);
-      renderExtra();
-      syncDashboard();
-    }
-
-    function renderExtra() {
-      const ext = J(K_EXT, []);
-      const tot = ext.reduce((a,b) => a + Number(b.amt || 0), 0);
-      document.getElementById("esSummary").textContent = `Total Extra Service Collection: ₹${tot.toLocaleString("en-IN")} (${ext.length} Entries)`;
-      document.getElementById("esList").innerHTML = ext.map(x => `<div class="rec"><b>${esc(x.name)}</b> &bull; ${esc(x.srv)} (Br ${esc(x.br)}) &bull; ₹${x.amt} (${esc(x.mode)})</div>`).join("");
-    }
-
-    function saveEnq(e) {
-      e.preventDefault();
-      const list = J(K_ENQ, []);
-      list.unshift({ fld: document.getElementById("enqFld").value, nm: document.getElementById("enqNm").value.trim(), ph: document.getElementById("enqPh").value.trim(), age: document.getElementById("enqAge").value, src: document.getElementById("enqSrc").value.trim() });
-      W(K_ENQ, list);
-      renderEnq();
-    }
-
-    function renderEnq() {
-      const list = J(K_ENQ, []);
-      document.getElementById("enqBox").innerHTML = list.map(x => `
-        <div class="rec"><b>${esc(x.nm)}</b> [${esc(x.fld)}] &bull; Age: ${esc(x.age)} &bull; Source: ${esc(x.src || "-")}
-        <div style="margin-top:5px;display:flex;gap:6px"><a class="sub-btn" style="text-decoration:none" href="tel:${esc(x.ph)}">Call</a><a class="sub-btn" style="text-decoration:none" target="_blank" href="https://wa.me/91${esc(x.ph)}">WhatsApp</a></div></div>
-      `).join("") || '<div class="rec">No enquiries yet.</div>';
-    }
-
-    function runRouter(ev) {
-      const f = ev.target.files[0];
-      if (!f) return;
-      const rd = new FileReader();
-      rd.onload = e => {
-        const wb = XLSX.read(new Uint8Array(e.target.result), { type: "array" });
-        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" });
-        document.getElementById("routerOut").textContent = `Auto-Routed ${rows.length} rows into active gym sections.`;
-      };
-      rd.readAsArrayBuffer(f);
-    }
-
-    function renderCodes() {
-      const q = (document.getElementById("codeQ").value || "").toLowerCase();
-      const list = J(K_STF, []).filter(s => !q || s.name.toLowerCase().includes(q) || s.father.toLowerCase().includes(q) || s.wife.toLowerCase().includes(q) || s.mobile.includes(q) || s.branch.includes(q));
-      document.getElementById("codeResults").innerHTML = list.map(s => `
-        <div class="rec"><b>${esc(s.name)}</b> [Branch ${esc(s.branch)}] &bull; ID: <b style="color:var(--gold)">${esc(s.id)}</b>
-        <div style="font-size:11px;color:var(--muted)">Father: ${esc(s.father)} &bull; Wife: ${esc(s.wife)} &bull; Ph: ${esc(s.mobile)}</div></div>
-      `).join("");
-    }
-
-    function lockLic() {
-      const v = document.getElementById("licInp").value.trim();
-      if (!v) return;
-      localStorage.setItem("om_locked_lic", v);
-      document.getElementById("licDisp").textContent = v;
-      alert("License Key Locked!");
-    }
-
-    function runSplash() {
-      if (localStorage.getItem("om_splash_shown")) return;
-      const sp = document.getElementById("omSplash");
-      sp.style.display = "flex";
-      let p = 0;
-      const iv = setInterval(() => {
-        p += 34;
-        document.getElementById("splashBar").style.width = Math.min(100, p) + "%";
-        document.getElementById("splashTxt").textContent = `ॐ ब्रह्माण्ड — Dashboard खुल रहा है... (${Math.max(0, Math.ceil((100-p)/34))}s)`;
-        if (p >= 100) { clearInterval(iv); setTimeout(hideSplash, 400); }
-      }, 800);
-    }
-    function hideSplash() { document.getElementById("omSplash").style.display = "none"; localStorage.setItem("om_splash_shown", "1"); }
-
-    setInterval(() => {
-      const el = document.getElementById("attClock");
-      if (el) el.textContent = new Date().toLocaleString("en-IN");
-    }, 1000);
-
-    
-    // Anti-screenshot deterrent (PrintScreen block, contextmenu block, background/blur veil)
-    (function enableAntiScreenshotShield() {
-      const veil = document.createElement("div");
-      veil.id = "ssShieldVeil";
-      veil.style.cssText = "display:none;position:fixed;inset:0;background:#050813;z-index:2147483647;align-items:center;justify-content:center;color:#FB7185;font-weight:900;font-size:14px;text-align:center;padding:20px;";
-      veil.textContent = "SCREENSHOT / CAPTURE PROTECTED";
-      document.body.appendChild(veil);
-
-      window.addEventListener("keyup", function(e) {
-        if (e.key === "PrintScreen" || e.keyCode === 44) {
-          veil.style.display = "flex";
-          setTimeout(() => { veil.style.display = "none"; }, 1800);
-        }
-      });
-      document.addEventListener("contextmenu", e => e.preventDefault());
-      document.addEventListener("visibilitychange", () => {
-        veil.style.display = document.hidden ? "flex" : "none";
-      });
-      window.addEventListener("blur", () => { veil.style.display = "flex"; });
-      window.addEventListener("focus", () => { veil.style.display = "none"; });
-    })();
-
-    
-    // Role-specific portal & attendance/selfie/fees engine (Staff, Manager, Admin/Owner)
-    (function setupRolePortalsAndAttendance() {
-      const role = (localStorage.getItem("bfc_role") || "owner").toLowerCase();
-      const loggedUser = localStorage.getItem("om_logged_user") || "Staff (STF-001-1)";
-
-      const isStaff = (role === "staff");
-      const isMgr = (role === "manager");
-
-      // Extract Employee Code and Branch Code; if branch code looks like a 10-digit mobile, map cleanly to 001
-      const codeMatch = loggedUser.match(/\(([^)]+)\)/);
-      const empCode = codeMatch ? codeMatch[1] : (isMgr ? "MGR-001-1" : "STF-001-1");
-      const brMatch = loggedUser.match(/Branch\s+([0-9A-Za-z-]+)/i);
-      let rawBr = brMatch ? brMatch[1] : "001";
-      if (/^\d{10}$/.test(rawBr)) rawBr = "001";
-      const branchCode = rawBr;
-
-      const BRANCH_NAMES = {
-        "001": "Universal Fitness Club (001 — Main Branch)",
-        "002": "Universal Fitness Club (002 — Kanpur)",
-        "003": "Universal Fitness Club (003 — Lucknow)",
-        "004": "Universal Fitness Club (004 — Agra)",
-        "005": "Universal Fitness Club (005 — Varanasi)"
-      };
-      const gymOrBranchName = BRANCH_NAMES[branchCode] || ("Branch " + branchCode);
-
-      function triggerTelegramAlert(msg) {
-        const bar = document.getElementById("adminAlertBar");
-        if (bar) {
-          bar.style.display = "block";
-          bar.textContent = "📲 Telegram Live Alert: " + msg;
-        }
-        const logs = J("om_tg_live_alerts_v1", []);
-        logs.unshift({ time: new Date().toLocaleTimeString("en-IN"), msg: msg });
-        W("om_tg_live_alerts_v1", logs.slice(0, 30));
-      }
-
-      window.markAttendanceWithSelfie = function(typeLabel, previewId, statusOutId) {
-        const fileInput = document.getElementById(typeLabel === "OUT" ? "selfExitSelfieInp" : "selfEntrySelfieInp");
-        const rsnInp = document.getElementById("selfLocModeSel");
-        const locMode = rsnInp ? rsnInp.value : "Inside Gym";
-        let extraNote = "";
-
-        if (locMode === "Outside Gym") {
-          const reason = prompt("Outside Gym attendance ka reason likhein (mandatory):");
-          if (!reason || !reason.trim()) {
-            alert("Outside gym attendance ke liye reason likhna zaroori hai.");
-            return;
-          }
-          const informed = confirm("Kya Manager ko inform kiya? OK = Yes, Cancel = No") ? "Yes" : "No";
-          extraNote = " | Outside Reason: " + reason.trim() + " | Manager Informed: " + informed;
-        }
-
-        const nowTime = new Date().toLocaleTimeString("en-IN");
-        const todayStr = new Date().toISOString().slice(0, 10);
-        const selfieName = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : "Live_Camera_Selfie.jpg";
-
-        const logs = J("om_att_selfie_logs_v1", []);
-        logs.unshift({
-          empCode: empCode,
-          branchCode: branchCode,
-          gymName: gymOrBranchName,
-          punchType: typeLabel,
-          time: nowTime,
-          date: todayStr,
-          locMode: locMode,
-          selfieName: selfieName,
-          note: extraNote
-        });
-        W("om_att_selfie_logs_v1", logs);
-
-        triggerTelegramAlert(`${empCode} (${gymOrBranchName}) marked ${typeLabel} at ${nowTime} [${locMode}]`);
-
-        const outEl = document.getElementById(statusOutId || "selfPunchStatus");
-        if (outEl) {
-          outEl.innerHTML = `<span class="pill-ok">✔ ${esc(typeLabel)} Marked at ${esc(nowTime)}</span> <span style="color:var(--muted);font-size:11px;">(${esc(locMode)} • Selfie: ${esc(selfieName)}${esc(extraNote)})</span>`;
-        }
-        alert(`${typeLabel} Attendance & Selfie recorded at ${nowTime} for ${empCode} (${gymOrBranchName}).`);
-      };
-
-      window.handleSelfieFilePreview = function(inputEl, previewBoxId) {
-        const box = document.getElementById(previewBoxId);
-        if (!box || !inputEl || !inputEl.files || !inputEl.files[0]) return;
-        const f = inputEl.files[0];
-        if (f.type.startsWith("image/")) {
-          const reader = new FileReader();
-          reader.onload = function(ev) {
-            box.innerHTML = `<img src="${ev.target.result}" class="preview-img" alt="Selfie"><span style="font-size:11px;color:var(--emerald);align-self:center;">Selfie Ready: ${esc(f.name)}</span>`;
-          };
-          reader.readAsDataURL(f);
-        } else {
-          box.innerHTML = `<span class="pill-ok">Attached: ${esc(f.name)}</span>`;
-        }
-      };
-
-      window.showSelfDateInfo = function() {
-        const dt = document.getElementById("spDateInp").value;
-        const logs = J("om_att_selfie_logs_v1", []);
-        const dayLogs = logs.filter(l => l.date === dt && l.empCode === empCode);
-        const out = document.getElementById("spDateOut");
-        if (!out) return;
-        if (dayLogs.length) {
-          out.innerHTML = `<b>${esc(dt)}</b> — <span style="color:var(--emerald)">Present (${dayLogs.length} Punch)</span> • Last: ${esc(dayLogs[0].time)} • Selfie: ${esc(dayLogs[0].selfieName)}`;
-        } else if (dt === "2026-11-22") {
-          out.innerHTML = `<b>${esc(dt)}</b> — <span style="color:var(--emerald)">Present (1st Selfie Priority)</span> • Entry: 07:15 AM • Exit: 05:30 PM`;
-        } else {
-          out.innerHTML = `<b>${esc(dt)}</b> — <span style="color:var(--gold)">Absent / No Selfie on Selected Date</span>`;
-        }
-      };
-
-      window.switchSelfTab = function(tabId) {
-        ["spAtt", "spSal", "spLeave", "spAdv", "spBonus", "spShare"].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.style.display = (id === tabId) ? "block" : "none";
-        });
-      };
-
-      window.toggleSpRemark = function() {
-        const val = document.getElementById("spLvReason").value;
-        document.getElementById("spRemarkWrap").style.display = (val === "Personal Reason") ? "block" : "none";
-      };
-
-      window.renderSelfLeaveHistory = function() {
-        const box = document.getElementById("spLvList");
-        if (!box) return;
-        const list = J("om_staff_leave_apps_" + empCode, []);
-        box.innerHTML = list.map(item => `
-          <div class="rec" style="border-left:3px solid var(--cyan);">
-            <b>Leave (${esc(item.from)} to ${esc(item.to)})</b> — <span class="pill-pd">${esc(item.status)}</span><br>
-            <span style="font-size:11px;color:var(--muted);">Reason: ${esc(item.reason)}${item.remark ? " (" + esc(item.remark) + ")" : ""} • Channel: ${esc(item.channel)} • Applied: ${esc(item.time)}</span>
-          </div>
-        `).join("") || '<div class="rec" style="color:var(--muted);">Abhi tak koi leave apply nahi ki gayi.</div>';
-      };
-
-      window.submitSelfLeave = function(e) {
-        e.preventDefault();
-        const f = document.getElementById("spLvFrom").value;
-        const t = document.getElementById("spLvTo").value;
-        const r = document.getElementById("spLvReason").value;
-        const rem = document.getElementById("spRemarkTxt").value.trim();
-        const ch = document.getElementById("spLvChan").value;
-        if (r === "Personal Reason" && !rem) {
-          alert("Personal Reason ke liye remark likhna zaroori hai.");
-          return;
-        }
-        const key = "om_staff_leave_apps_" + empCode;
-        const list = J(key, []);
-        const entry = {
-          from: f, to: t, reason: r, remark: rem, channel: ch,
-          status: "Pending", time: new Date().toLocaleString("en-IN"),
-          empCode: empCode, branchCode: branchCode
-        };
-        list.unshift(entry);
-        W(key, list);
-
-        // Also store in shared manager queue
-        const mgrQueue = J("om_mgr_leave_queue_v1", []);
-        mgrQueue.unshift(entry);
-        W("om_mgr_leave_queue_v1", mgrQueue);
-
-        triggerTelegramAlert(`Leave Applied by ${empCode} (${f} to ${t}) via ${ch}`);
-        renderSelfLeaveHistory();
-        alert("Leave request submit ho gayi!");
-      };
-
-      window.submitSelfAdv = function(e) {
-        e.preventDefault();
-        const amt = document.getElementById("spAdvAmt").value;
-        const dt = document.getElementById("spAdvDt").value;
-        const rsn = document.getElementById("spAdvRsn").value.trim();
-        const box = document.getElementById("spAdvList");
-        box.innerHTML = `<div class="rec"><b>Advance ₹${esc(amt)}</b> on ${esc(dt)} — <span class="pill-pd">Pending</span> (${esc(rsn)})</div>` + box.innerHTML;
-        triggerTelegramAlert(`Advance Request ₹${amt} by ${empCode} (${rsn})`);
-      };
-
-      // Quick 2-minute Fees Collection modal handler for Manager / Admin
-      window.openQuickFeeDesk = function(preselectName) {
-        let m = document.getElementById("quickFeeModal");
-        if (!m) {
-          m = document.createElement("div");
-          m.id = "quickFeeModal";
-          m.className = "modal-ov";
-          m.innerHTML = `
-            <div class="modal-box">
-              <div class="m-top"><h3>💳 2-Min Fees Collection Desk</h3><button type="button" class="x-btn" onclick="document.getElementById('quickFeeModal').classList.remove('open')">&times;</button></div>
-              <div class="fg"><label>Search Gym Member Name *</label><input class="fc" id="qfMemberSearch" placeholder="Type member name (e.g. Member Name)..." oninput="qfUpdateMemberInfo()"></div>
-              <div id="qfMemberSummary" class="rec" style="border-color:var(--gold);">
-                <div><b>Member:</b> <span id="qfMName">Member Name</span> &bull; <b>Status:</b> <span style="color:var(--rose)">Fees Baaki (₹1,200)</span></div>
-                <div style="font-size:11px;color:var(--muted);margin-top:3px;">Current Plan: 3 Months (₹1,200) &bull; Last Paid: 06-10-2026 &bull; Next Due: 06-11-2026</div>
-              </div>
-              <div class="fg">
-                <label>Select Plan *</label>
-                <select class="fc" id="qfPlanSel" onchange="qfCalcAmount()">
-                  <option value="500">1 Month Plan — ₹500</option>
-                  <option value="1200" selected>3 Months Plan — ₹1,200</option>
-                  <option value="2000">6 Months Plan — ₹2,000</option>
-                </select>
-              </div>
-              <div class="fg">
-                <label>Payment Mode *</label>
-                <select class="fc" id="qfPayMode" onchange="qfToggleOnlineFields()">
-                  <option value="Cash">💵 Cash (Nagad)</option>
-                  <option value="Online">📱 Online (UTR + Screenshot)</option>
-                </select>
-              </div>
-              <div id="qfOnlineBox" style="display:none;">
-                <div class="fg"><label>UTR Number *</label><input class="fc" id="qfUtr" placeholder="Enter 12-digit UTR"></div>
-                <div class="fg"><label>Payment Screenshot *</label><input type="file" accept="image/*" class="fc" id="qfScr"></div>
-              </div>
-              <button type="button" class="big-btn" onclick="qfGenerateReceipt()">Generate Fee Receipt (Photo &amp; PDF)</button>
-              <div id="qfReceiptOut" style="margin-top:10px;"></div>
-            </div>
-          `;
-          document.body.appendChild(m);
-        }
-        if (preselectName) {
-          document.getElementById("qfMemberSearch").value = preselectName;
-          document.getElementById("qfMName").textContent = preselectName;
-        }
-        m.classList.add("open");
-      };
-
-      window.qfUpdateMemberInfo = function() {
-        const val = document.getElementById("qfMemberSearch").value.trim() || "Member";
-        document.getElementById("qfMName").textContent = val;
-      };
-
-      window.qfToggleOnlineFields = function() {
-        const mode = document.getElementById("qfPayMode").value;
-        document.getElementById("qfOnlineBox").style.display = (mode === "Online") ? "block" : "none";
-      };
-
-      window.qfGenerateReceipt = function() {
-        const nm = document.getElementById("qfMName").textContent;
-        const amt = document.getElementById("qfPlanSel").value;
-        const mode = document.getElementById("qfPayMode").value;
-        const utr = document.getElementById("qfUtr").value.trim();
-        if (mode === "Online" && !utr) {
-          alert("Online payment ke liye UTR number zaroori hai.");
-          return;
-        }
-        const recId = "REC-" + Date.now().toString().slice(-5);
-        triggerTelegramAlert(`Fee Received ₹${amt} (${mode}) from ${nm} in ${gymOrBranchName} [${recId}]`);
-        document.getElementById("qfReceiptOut").innerHTML = `
-          <div class="rec" style="border-color:var(--emerald);">
-            <b style="color:var(--emerald);">✔ Fee Receipt Generated (${esc(recId)})</b><br>
-            Member: <b>${esc(nm)}</b> &bull; Amount: <b>₹${esc(amt)}</b> &bull; Mode: <b>${esc(mode)}</b>${utr ? " &bull; UTR: " + esc(utr) : ""}<br>
-            <div style="margin-top:6px;font-size:11px;color:var(--cyan);">Photo &amp; PDF Receipt Ready — Sent to Customer via WhatsApp/SMS.</div>
-          </div>
-        `;
-      };
-
-      window.removeStaffWithReason = function(staffName) {
-        const reason = prompt(`"${staffName}" ko remove/hatane ka reason likhein (mandatory):`);
-        if (!reason || !reason.trim()) {
-          alert("Staff ko hatane ke liye reason likhna zaroori hai.");
-          return;
-        }
-        triggerTelegramAlert(`Staff Removed: ${staffName} | Reason: ${reason.trim()}`);
-        alert(`Staff "${staffName}" removed. Reason logged: ${reason.trim()}`);
-      };
-
-      window.removeMemberWithReason = function(memberName) {
-        const reason = prompt(`"${memberName}" ko remove/hatane ka reason likhein (mandatory):`);
-        if (!reason || !reason.trim()) {
-          alert("Gym member ko hatane ke liye reason likhna zaroori hai.");
-          return;
-        }
-        triggerTelegramAlert(`Member Removed: ${memberName} | Reason: ${reason.trim()}`);
-        alert(`Member "${memberName}" removed. Reason logged: ${reason.trim()}`);
-      };
-
-      // Lock top branch dropdown to the logged-in branch for Staff and Manager
-      window.addEventListener("DOMContentLoaded", function() {
-        const brSel = document.getElementById("branchSel");
-        if ((isStaff || isMgr) && brSel) {
-          brSel.value = branchCode;
-          brSel.disabled = true;
-          curBr = branchCode;
-          if (typeof syncDashboard === "function") syncDashboard();
-        }
-      });
-
-      if (isStaff) {
-        window.addEventListener("DOMContentLoaded", function() {
-          const p1 = document.getElementById("page1");
-          if (p1) {
-            p1.innerHTML = `
-              <div class="box-card" style="border-color:var(--cyan);">
-                <div style="background:#081229;border:1px solid var(--border-hl);border-radius:10px;padding:9px 11px;margin-bottom:10px;font-size:11.5px;">
-                  <div><b>Employee Code:</b> <span style="color:var(--gold)">${esc(empCode)}</span> &bull; <b>Branch Code:</b> <span style="color:var(--cyan)">${esc(branchCode)}</span></div>
-                  <div style="color:var(--muted);margin-top:2px;"><b>Branch:</b> ${esc(gymOrBranchName)}</div>
-                </div>
-
-                <h2 style="font-size:16px;color:var(--cyan);">👤 Staff Self-Service Portal (Read-Only)</h2>
-                <p style="font-size:11.5px;color:var(--muted);margin-top:3px;">
-                  Keval apna data access karein: Attendance &amp; Selfie, Monthly Earned Salary, Leave, Advance, Bonus &amp; Share Link.
-                </p>
-
-                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
-                  <button type="button" class="sub-btn" onclick="switchSelfTab('spAtt')">Attendance</button>
-                  <button type="button" class="sub-btn" onclick="switchSelfTab('spSal')">See Your Salary</button>
-                  <button type="button" class="sub-btn" onclick="switchSelfTab('spLeave')">Apply Leave</button>
-                  <button type="button" class="sub-btn" onclick="switchSelfTab('spAdv')">Advance</button>
-                  <button type="button" class="sub-btn" onclick="switchSelfTab('spBonus')">Your Bonus</button>
-                  <button type="button" class="sub-btn" onclick="switchSelfTab('spShare')">Share Link</button>
-                </div>
-
-                <div id="spAtt" style="margin-top:10px;">
-                  <div class="rec">
-                    <b>Your Total Attendance: 22/30</b> &bull; <span class="pill-ok">22 Present &bull; 8 Off/Absent</span>
-                    <div style="font-size:11px;color:var(--muted);margin-top:4px;">First punch &amp; selfie priority active. Logout / Exit Day-End attendance supported with selfie.</div>
-
-                    <div class="fg" style="margin-top:8px;">
-                      <label>Location Mode</label>
-                      <select id="selfLocModeSel" class="fc">
-                        <option value="Inside Gym">Inside Gym</option>
-                        <option value="Outside Gym">Outside Gym</option>
-                      </select>
-                    </div>
-
-                    <div class="fg">
-                      <label>Entry Selfie Photo (Camera / Gallery)</label>
-                      <input type="file" id="selfEntrySelfieInp" accept="image/*" capture="user" class="fc" onchange="handleSelfieFilePreview(this,'entrySelfiePrev')">
-                      <div class="preview-row" id="entrySelfiePrev"></div>
-                    </div>
-
-                    <button type="button" class="big-btn" style="margin-top:0;padding:10px;font-size:12px;" onclick="markAttendanceWithSelfie('MARK YOUR ATTENDANCE','entrySelfiePrev','selfPunchStatus')">👉 MARK YOUR ATTENDANCE</button>
-
-                    <div class="fg" style="margin-top:10px;">
-                      <label>Logout / Exit Day-End Selfie Photo</label>
-                      <input type="file" id="selfExitSelfieInp" accept="image/*" capture="user" class="fc" onchange="handleSelfieFilePreview(this,'exitSelfiePrev')">
-                      <div class="preview-row" id="exitSelfiePrev"></div>
-                      <button type="button" class="sub-btn" style="width:100%;margin-top:6px;" onclick="markAttendanceWithSelfie('OUT','exitSelfiePrev','selfPunchStatus')">Logout / Exit Day-End Attendance</button>
-                    </div>
-
-                    <div id="selfPunchStatus" style="margin-top:8px;font-size:11.5px;"></div>
-                  </div>
-
-                  <div class="rec">
-                    <b>Date-Wise Calendar Check:</b>
-                    <input type="date" id="spDateInp" class="fc" value="2026-11-22" onchange="showSelfDateInfo()" style="margin-top:6px;">
-                    <div id="spDateOut" style="margin-top:6px;font-size:11.5px;color:var(--cyan);">2026-11-22 — Present (1st Selfie Priority)</div>
-                  </div>
-                </div>
-
-                <div id="spSal" style="display:none;margin-top:10px;">
-                  <div class="rec">
-                    <b>Profile (Read-Only):</b> ${esc(empCode)} • Branch ${esc(branchCode)} • ${esc(gymOrBranchName)}
-                    <div style="margin-top:6px;">Monthly Salary ₹10,000 / 30 days = ₹333.33/day. 20 days earned = <b style="color:var(--emerald)">₹6,666.67</b></div>
-                  </div>
-                </div>
-
-                <div id="spLeave" style="display:none;margin-top:10px;">
-                  <form class="rec" onsubmit="submitSelfLeave(event)">
-                    <div class="fg"><label>From Date</label><input type="date" id="spLvFrom" class="fc" value="2026-11-23" required></div>
-                    <div class="fg"><label>To Date</label><input type="date" id="spLvTo" class="fc" value="2026-11-24" required></div>
-                    <div class="fg"><label>Reason</label><select id="spLvReason" class="fc" onchange="toggleSpRemark()"><option>Exam</option><option>Marriage</option><option>Birthday</option><option>Anniversary</option><option>Medical Leave</option><option value="Personal Reason">Personal Reason</option></select></div>
-                    <div class="fg" id="spRemarkWrap" style="display:none;"><label>Personal Reason Remark *</label><input type="text" id="spRemarkTxt" class="fc" placeholder="Enter personal reason"></div>
-                    <div class="fg"><label>Notify Via</label><select id="spLvChan" class="fc"><option>WhatsApp</option><option>Email</option><option>Telegram</option></select></div>
-                    <button type="submit" class="big-btn" style="margin-top:0;">Apply For Leave</button>
-                  </form>
-                  <div id="spLvList"></div>
-                </div>
-
-                <div id="spAdv" style="display:none;margin-top:10px;">
-                  <form class="rec" onsubmit="submitSelfAdv(event)">
-                    <div class="fg"><label>Amount (₹)</label><input type="number" id="spAdvAmt" class="fc" value="2000" required></div>
-                    <div class="fg"><label>Required Date</label><input type="date" id="spAdvDt" class="fc" value="2026-11-25" required></div>
-                    <div class="fg"><label>Reason</label><input type="text" id="spAdvRsn" class="fc" placeholder="Reason" required></div>
-                    <button type="submit" class="big-btn" style="margin-top:0;">Request Advance</button>
-                  </form>
-                  <div id="spAdvList"></div>
-                </div>
-
-                <div id="spBonus" style="display:none;margin-top:10px;">
-                  <div class="rec">Bonus Eligibility: Shown for eligible categories (hidden for sweeper/lower categories).</div>
-                </div>
-
-                <div id="spShare" style="display:none;margin-top:10px;">
-                  <div class="rec">Share Link: <b style="color:var(--cyan)">https://5brothersfitnessclubunnao-sys.github.io/orgdesk-web/login.html</b></div>
-                </div>
-
-                <button type="button" class="big-btn" onclick="logoutUser()">Logout</button>
-              </div>
-            `;
-            renderSelfLeaveHistory();
-          }
-          ["tb2", "tb3", "tb4"].forEach(id => {
-            const b = document.getElementById(id);
-            if (b) b.style.display = "none";
-          });
-        });
-      }
-
-      // Manager: Locked strictly to their own branch metrics, attendance, selfie, 2-min fee collection, and leave approvals
-      if (isMgr) {
-        window.addEventListener("DOMContentLoaded", function() {
-          const p1 = document.getElementById("page1");
-          if (p1) {
-            p1.innerHTML = `
-              <div class="box-card" style="border-color:var(--gold);">
-                <div style="background:#11182C;border:1px solid var(--border-hl);border-radius:10px;padding:9px 11px;margin-bottom:10px;font-size:11.5px;">
-                  <div><b>Manager Code:</b> <span style="color:var(--gold)">${esc(empCode)}</span> &bull; <b>Locked Branch:</b> <span style="color:var(--cyan)">${esc(branchCode)}</span></div>
-                  <div style="color:var(--muted);margin-top:2px;"><b>${esc(gymOrBranchName)}</b></div>
-                </div>
-
-                <div class="grid2" style="margin-bottom:10px;">
-                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Branch Live Collection</span><div style="font-size:17px;font-weight:900;color:var(--gold);">₹3,00,000</div></div>
-                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Total Gym Members</span><div style="font-size:17px;font-weight:900;color:var(--cyan);">50 Members</div></div>
-                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Gym Members Present / Absent</span><div style="font-size:12px;font-weight:800;"><span style="color:var(--emerald)">Present: 32</span> / <span style="color:var(--rose)">Absent: 18</span></div></div>
-                  <div class="rec"><span style="color:var(--muted);font-size:10.5px;">Total Staff (Present / Absent)</span><div style="font-size:12px;font-weight:800;">10 (<span style="color:var(--emerald)">P: 9</span> / <span style="color:var(--rose)">A: 1</span>)</div></div>
-                </div>
-
-                <div class="rec" style="border-color:var(--rose);">
-                  <b style="color:var(--rose);">💸 Fees Baaki Register:</b> Member Name (21 din late — ₹1,200), Deepak Chauhan (₹500)
-                  <button type="button" class="big-btn" style="padding:10px;font-size:12px;margin-top:8px;" onclick="openQuickFeeDesk('Member Name')">💳 2-Min Fees Collect / Receipt</button>
-                </div>
-
-                <div class="rec">
-                  <b style="color:var(--gold);">📸 Apni Attendance &amp; Selfie</b>
-                  <input type="file" id="mgrSelfieInp" accept="image/*" capture="user" class="fc" style="margin-top:6px;" onchange="handleSelfieFilePreview(this,'mgrSelfiePrev')">
-                  <div class="preview-row" id="mgrSelfiePrev"></div>
-                  <button type="button" class="big-btn" style="padding:10px;font-size:12px;" onclick="markAttendanceWithSelfie('MANAGER SELFIE','mgrSelfiePrev','mgrPunchStatus')">👉 Mark My Attendance with Selfie</button>
-                  <div id="mgrPunchStatus" style="margin-top:6px;font-size:11.5px;"></div>
-                </div>
-
-                <div class="rec">
-                  <b style="color:var(--cyan);">📋 Staff Leave Requests</b>
-                  <div id="mgrLeaveInbox" style="margin-top:6px;"></div>
-                </div>
-
-                <div class="rec">
-                  <b style="color:var(--gold);">👥 Staff List (Reason Mandatory on Remove)</b>
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-                    <span>Vikram Yadav (STF-001-TR1)</span>
-                    <button type="button" class="sub-btn" style="color:var(--rose);" onclick="removeStaffWithReason('Vikram Yadav')">Remove</button>
-                  </div>
-                </div>
-              </div>
-            `;
-            const lvBox = document.getElementById("mgrLeaveInbox");
-            const q = J("om_mgr_leave_queue_v1", []);
-            if (lvBox) {
-              lvBox.innerHTML = q.length ? q.map(it => `<div class="rec"><b>${esc(it.empCode)}</b> (${esc(it.from)} to ${esc(it.to)}) — ${esc(it.reason)} [${esc(it.status)}]</div>`).join("") : '<div style="font-size:11px;color:var(--muted);">Koi new leave request nahi hai.</div>';
-            }
-          }
-          // Restrict tabs 2, 3, 4 for Manager so they cannot view other branches or global admin data
-          ["tb2", "tb3", "tb4"].forEach(id => {
-            const b = document.getElementById(id);
-            if (b) b.style.display = "none";
-          });
-        });
-      }
-    })();
-
-seedData();
-    syncDashboard();
-    runSplash();
-  </script>
-
-  <!-- NEW FEATURE ADD-ON: PAGE 4 ADMISSION & JOINING QUICK DESK -->
-  <div class="modal-ov" id="page4FormsOv">
-    <div class="modal-box">
-      <div class="m-top"><h3>Page 4: Admission &amp; Joining Quick Desk</h3><button type="button" class="x-btn" onclick="closeMod('page4FormsOv')">&times;</button></div>
-      <div class="grid2" style="margin-bottom:10px">
-        <button type="button" class="sub-btn" onclick="closeMod('page4FormsOv');openMod('modAdmission')">Open Full Admission Form</button>
-        <button type="button" class="sub-btn" onclick="closeMod('page4FormsOv');openMod('modJoining')">Open Full Staff Joining Form</button>
-      </div>
-      <form class="rec" onsubmit="saveAddonFormRecord(event)">
-        <div class="fg"><label>Form Type</label>
-          <select class="fc" id="p4FormType"><option value="Admission Form">Admission Form</option><option value="Joining Form">Joining Form</option></select>
-        </div>
-        <div class="fg"><label>Name *</label><input class="fc" id="p4Name" required placeholder="Full Name"></div>
-        <div class="fg"><label>Mobile *</label><input class="fc" id="p4Phone" required maxlength="10" placeholder="10-digit mobile"></div>
-        <div class="fg"><label>Plan / Role &amp; Amount (₹)</label><input class="fc" id="p4PlanAmt" value="Monthly Plan - ₹500"></div>
-        <button type="submit" class="big-btn" style="margin-top:0">Save Record</button>
-      </form>
-      <div id="p4SavedBox" style="margin-top:10px"></div>
-    </div>
-  </div>
-
-  <!-- NEW FEATURE ADD-ON: SIDE AI COPILOT -->
-  <button type="button" id="sideAiFab" onclick="toggleSideAiDrawer()" style="position:fixed;right:14px;bottom:14px;z-index:99998;background:linear-gradient(135deg,#F5A623,#D97706);color:#050813;border:2px solid #050813;border-radius:999px;padding:10px 14px;font-weight:900;font-size:12px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.45)">🤖 Side AI</button>
-  <div id="sideAiPanel" style="display:none;position:fixed;right:12px;bottom:64px;width:min(350px,calc(100vw - 24px));max-height:60vh;background:#0A1124;border:1.5px solid #22D3EE;border-radius:14px;z-index:99999;padding:12px;overflow-y:auto;box-shadow:0 12px 28px rgba(0,0,0,0.75)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <b style="color:#22D3EE;font-size:13px">🤖 Side AI Assistant</b>
-      <button type="button" class="sub-btn" onclick="toggleSideAiDrawer(false)">✕</button>
-    </div>
-    <input class="fc" id="sideAiInput" placeholder="Ask: dues, staff, members, name..." onkeydown="if(event.key==='Enter')askSideAi()">
-    <button type="button" class="big-btn" style="padding:8px;font-size:12px" onclick="askSideAi()">Ask AI</button>
-    <div id="sideAiOutput" class="rec" style="margin-top:8px">Ask about dues, staff count, or member name.</div>
-  </div>
-
-  <script>
-    (function attachNewFeatures() {
-      const ONE_HOUR_MS = 60 * 60 * 1000;
-
-      function touchActivity() {
-        try {
-          if (localStorage.getItem("om_session_active") === "1") {
-            localStorage.setItem("om_last_activity_time", String(Date.now()));
-          }
-        } catch (e) {}
-      }
-
-      function enforceOneHourSession() {
-        try {
-          const activeFlag = localStorage.getItem("om_session_active");
-          const lastAct = Number(localStorage.getItem("om_last_activity_time") || 0);
-          if (activeFlag === "1" && lastAct && (Date.now() - lastAct > ONE_HOUR_MS)) {
-            localStorage.setItem("om_session_active", "0");
-            localStorage.removeItem("om_last_activity_time");
-            localStorage.removeItem("om_logged_user");
-            alert("1 ghante ki nishkriyta ke baad session lock ho gaya hai.");
-            location.replace("login.html");
-          }
-        } catch (e) {}
-      }
-
-      ["mousedown", "mousemove", "keydown", "touchstart", "scroll"].forEach(function (ev) {
-        window.addEventListener(ev, touchActivity, { passive: true });
-      });
-      setInterval(enforceOneHourSession, 60000);
-
-      window.openAddonPage4 = function () {
-        renderAddonForms();
-        if (typeof openMod === "function") openMod("page4FormsOv");
-      };
-
-      window.saveAddonFormRecord = function (ev) {
-        ev.preventDefault();
-        const fType = document.getElementById("p4FormType").value;
-        const nm = document.getElementById("p4Name").value.trim();
-        const ph = document.getElementById("p4Phone").value.replace(/\D/g, "").slice(-10);
-        const info = document.getElementById("p4PlanAmt").value.trim();
-        const key = "om_page4_forms_v1";
-        const arr = J(key, []);
-        arr.unshift({ type: fType, name: nm, phone: ph, info: info, at: new Date().toISOString().slice(0, 10) });
-        W(key, arr);
-        document.getElementById("p4Name").value = "";
-        document.getElementById("p4Phone").value = "";
-        renderAddonForms();
-        alert(fType + " saved!");
-      };
-
-      function renderAddonForms() {
-        const box = document.getElementById("p4SavedBox");
-        if (!box) return;
-        const arr = J("om_page4_forms_v1", []);
-        box.innerHTML = arr.slice(0, 5).map(function (r) {
-          return `<div class="rec"><b>${esc(r.name)}</b> <span class="pill-ok">${esc(r.type)}</span><div style="font-size:11px;color:var(--muted)">Ph: ${esc(r.phone || "-")} • ${esc(r.info || "")}</div></div>`;
-        }).join("");
-      }
-
-      window.toggleSideAiDrawer = function (force) {
-        const p = document.getElementById("sideAiPanel");
-        if (!p) return;
-        const next = typeof force === "boolean" ? force : (p.style.display !== "block");
-        p.style.display = next ? "block" : "none";
-      };
-
-      window.askSideAi = function () {
-        const q = (document.getElementById("sideAiInput").value || "").trim().toLowerCase();
-        const out = document.getElementById("sideAiOutput");
-        if (!q || !out) return;
-        const stf = J(K_STF, []);
-        const adm = J(K_ADM, []);
-        if (q.includes("due") || q.includes("bakaya") || q.includes("fees") || q.includes("collection")) {
-          out.innerHTML = `<b>Live Collection &amp; Dues:</b> Total Collection ₹2,23,200 • Fees Collection ₹1,84,800 • Supplement ₹38,400.`;
-        } else if (q.includes("staff") || q.includes("employee") || q.includes("salary")) {
-          out.innerHTML = `<b>Staff Summary:</b> Total Staff Records: <b>${stf.length}</b> • Use "Staff Salary &amp; Payroll" or "Department-Wise Staff" for full details.`;
-        } else {
-          const hit = stf.filter(function (s) { return String(s.name || "").toLowerCase().includes(q) || String(s.id || "").toLowerCase().includes(q); });
-          if (hit.length) {
-            out.innerHTML = hit.map(function (s) {
-              return `<div><b>${esc(s.name)}</b> (${esc(s.id)}) • Dept: ${esc(s.dept)} • Salary: ₹${Number(s.salary || 0).toLocaleString("en-IN")}</div>`;
-            }).join("");
-          } else {
-            out.innerHTML = `Searched "${esc(q)}" across ${stf.length} staff &amp; ${adm.length} new admissions. Try "staff", "fees", or a name.`;
-          }
-        }
-      };
-    })();
-  </script>
-
-<script>
-(function enhanceRolePortalsV2() {
-  function getRoleInfo() {
-    var role = String(localStorage.getItem("bfc_role") || localStorage.getItem("om_active_role") || "owner").toLowerCase();
-    var loggedUser = String(localStorage.getItem("om_logged_user") || "");
-    var tSess = {};
-    try { tSess = JSON.parse(localStorage.getItem("om_team_session") || "{}") || {}; } catch (e) {}
-    var prof = {};
-    try { prof = Object.assign({}, JSON.parse(localStorage.getItem("om_last_org_profile") || "{}"), JSON.parse(localStorage.getItem("om_org_profile") || "{}")); } catch (e) {}
-    return {
-      role: role,
-      name: tSess.empName || loggedUser || prof.ownerName || "User",
-      empId: tSess.empCode || tSess.empId || "EMP-001",
-      post: tSess.department || tSess.role || (role === "manager" ? "Branch Manager" : (role === "staff" ? "Staff" : "Gym Owner")),
-      branch: String(tSess.orgId || prof.orgId || "001"),
-      gymName: prof.gymName || prof.orgName || "Gym",
-      address: prof.address || "Main Road, City Center",
-      ownerEmail: prof.email || "owner@gym.com"
-    };
-  }
-
-  function renderRoleBanner() {
-    var info = getRoleInfo();
-    var el = document.getElementById("roleIdentityBanner");
-    if (!el) return;
-    if (info.role === "manager") {
-      el.style.display = "block";
-      document.getElementById("ribTitle").textContent = "Welcome Mr. " + info.name;
-      document.getElementById("ribMeta").textContent = "Post / Role: " + info.post + " • Employee ID: " + info.empId + " • Branch: " + info.gymName + " (" + info.branch + ")";
-      document.getElementById("ribAddr").textContent = "Address: " + info.address;
-    } else if (info.role === "staff") {
-      el.style.display = "block";
-      document.getElementById("ribTitle").textContent = "Name: " + info.name + " • Employee ID: " + info.empId;
-      document.getElementById("ribMeta").textContent = "Branch: " + info.gymName + " (" + info.branch + ") • Post: " + info.post;
-      document.getElementById("ribAddr").textContent = "";
-    } else {
-      el.style.display = "none";
-    }
-  }
-
-  // Mask female member address (***) and phone (**) when viewed by Manager
-  window.formatMemberForManager = function(m) {
-    m = m || {};
-    var isFemale = /^(f|female|महिला)/i.test(String(m.gender || ""));
-    var ph = String(m.phone || "");
-    var addr = String(m.address || "");
-    if (isFemale) {
-      ph = ph ? (ph.slice(0, 2) + "**" + ph.slice(-2)) : "**";
-      addr = addr ? (addr.slice(0, 4) + "***") : "***";
-    }
-    return {
-      name: m.name || "-",
-      dob: m.dob || "-",
-      phone: ph,
-      address: addr
-    };
-  };
-
-  // Add separate "Live Staff" button inside modAtt without mixing with Member count
-  window.showSeparateLiveStaffCount = function() {
-    var stf = (typeof J === "function" && typeof K_STF !== "undefined") ? J(K_STF, []) : [];
-    alert("Live Staff Count (Separate from Gym Members): " + stf.length + " Staff");
-  };
-
-  // Add Staff / Employee private complaint to Admin Email (hidden from Manager)
-  window.submitPrivateComplaintToAdmin = function(genderType, problemText) {
-    var info = getRoleInfo();
-    var txt = String(problemText || "").trim();
-    if (!txt) { alert("Please enter complaint details."); return; }
-    var logs = [];
-    try { logs = JSON.parse(localStorage.getItem("om_admin_only_complaints_v1") || "[]") || []; } catch (e) {}
-    logs.unshift({
-      gender: genderType || "Unspecified",
-      by: info.name,
-      empId: info.empId,
-      branch: info.branch,
-      text: txt,
-      at: new Date().toISOString()
-    });
-    try { localStorage.setItem("om_admin_only_complaints_v1", JSON.stringify(logs)); } catch (e) {}
-    if (info.ownerEmail) {
-      window.location.href = "mailto:" + encodeURIComponent(info.ownerEmail) + "?subject=" + encodeURIComponent("Private Complaint (" + (genderType || "Staff") + ") - " + info.name) + "&body=" + encodeURIComponent(txt);
-    }
-    alert("Complaint sent directly to Admin Email (Manager cannot view or edit this).");
-  };
-
-  // Manager leave request to Gym Owner
-  window.submitManagerLeaveToOwner = function(fromDate, toDate, reason) {
-    var info = getRoleInfo();
-    var list = [];
-    try { list = JSON.parse(localStorage.getItem("om_mgr_to_owner_leaves_v1") || "[]") || []; } catch (e) {}
-    list.unshift({
-      managerName: info.name,
-      empId: info.empId,
-      branch: info.branch,
-      from: fromDate,
-      to: toDate,
-      reason: reason,
-      status: "Pending Gym Owner Approval",
-      at: new Date().toISOString()
-    });
-    try { localStorage.setItem("om_mgr_to_owner_leaves_v1", JSON.stringify(list)); } catch (e) {}
-    alert("Leave request sent to Gym Owner for approval.");
-  };
-
-  window.addEventListener("DOMContentLoaded", function() {
-    renderRoleBanner();
-    var attBox = document.querySelector("#modAtt .modal-box");
-    if (attBox && !document.getElementById("btnSeparateLiveStaff")) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.id = "btnSeparateLiveStaff";
-      btn.className = "sub-btn";
-      btn.style.cssText = "width:100%;margin-bottom:8px;color:var(--gold);border-color:var(--gold)";
-      btn.textContent = "👥 Live Staff Count (Separate from Members)";
-      btn.onclick = window.showSeparateLiveStaffCount;
-      var target = document.getElementById("modAtt").querySelector(".rec:nth-of-type(2)");
-      if (target && target.parentNode) target.parentNode.insertBefore(btn, target.nextSibling);
-    }
-  });
-})();
 </script>
 
 <script>
@@ -2577,147 +1037,351 @@ seedData();
 </script>
 
 <script>
-(function enhanceFirstPlan99AndLicense() {
-  function refreshActivePlanBanner() {
-    var box = document.getElementById("activePlanBanner");
-    if (!box) return;
-    var activePlan = null;
-    try { activePlan = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null"); } catch (e) {}
-    if (activePlan && activePlan.amount) {
-      box.innerHTML = `<span class="pill-ok">ACTIVE PLAN</span> <b style="color:var(--emerald)">You have already a ₹${esc(activePlan.amount)} plan (${esc(activePlan.name || "First Plan")})</b>`;
-    } else {
-      box.innerHTML = `<span class="pill-pd">TRIAL / NO PAID PLAN YET</span> <span style="color:var(--muted)">Select ₹99 First Plan or enter a License Key below.</span>`;
-    }
-  }
-
-  window.activateBasePlan99 = function() {
-    var planObj = { name: "First Plan (Base)", amount: 99, activatedAt: new Date().toISOString() };
-    try { localStorage.setItem("om_active_subscription_plan", JSON.stringify(planObj)); } catch (e) {}
-    refreshActivePlanBanner();
-    alert("You have already a ₹99 plan — First Plan activated!");
-  };
-
-  var origLockLic = window.lockLic;
-  window.lockLic = function() {
-    var inp = document.getElementById("licInp");
-    var val = inp ? inp.value.trim() : "";
-    if (val) {
-      var planObj = { name: "Licensed Plan (" + val + ")", amount: 99, key: val, activatedAt: new Date().toISOString() };
-      try { localStorage.setItem("om_active_subscription_plan", JSON.stringify(planObj)); } catch (e) {}
-    }
-    if (typeof origLockLic === "function") origLockLic();
-    refreshActivePlanBanner();
-  };
-
-  window.addEventListener("DOMContentLoaded", refreshActivePlanBanner);
-  document.addEventListener("click", function(ev) {
-    if (ev.target && ev.target.closest && ev.target.closest('[onclick*="modLicense"]')) {
-      setTimeout(refreshActivePlanBanner, 50);
-    }
-  });
+// Plan activation is server-confirmed only. LocalStorage/license text cannot unlock features.
+(function () {
+  window.activateBasePlan99 = function () { alert("Plan activate karne ke liye Plans page par request bhejein. Payment verification ke baad plan unlock hoga."); location.href = "plans.html"; };
+  window.lockLic = function () { alert("License key ko browser mein save karke plan unlock nahi kiya ja sakta. Master Admin verification zaroori hai."); };
 })();
 </script>
 
 <script src="plan-bridge.js"></script>
 
+<script src="tenant-access.js"></script>
+
+
+
 <script>
-(function enforceRoleAndPlanAccessControl() {
-  function isMasterAdminUser() {
-    try {
-      if (localStorage.getItem("om_is_master_admin") === "1") return true;
-      var logged = String(localStorage.getItem("om_logged_user") || "").toLowerCase();
-      if (logged.indexOf("saurabhsingh007604@gmail.com") !== -1) return true;
-    } catch (e) {}
-    return false;
-  }
+window.requestPlanSelection = function(amt, label) {
+  try {
+    localStorage.setItem("om_selected_plan_preview", JSON.stringify({ amount: amt, name: label }));
+  } catch (e) {}
+  alert(label + " chuna gaya hai. Plans page (plans.html) par jaakar details aur activation request dekhein.");
+  location.href = "plans.html";
+};
+</script>
 
-  function hasPurchasedPlan() {
-    if (isMasterAdminUser()) return true;
-    try {
-      var p = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null");
-      if (p && Number(p.amount) > 0) return true;
-    } catch (e) {}
-    return false;
-  }
 
-  function promptPurchasePlan() {
-    var msg = "Please purchase this plan before use";
-    if (confirm(msg + "\n\nक्या आप अभी Plans पेज (plans.html) खोलना चाहते हैं?")) {
-      location.href = "plans.html";
-    }
-  }
 
+
+
+<script>
+(function fullFeatureSuiteV5() {
   window.addEventListener("DOMContentLoaded", function () {
-    if (!isMasterAdminUser()) {
-      var hasCustomData = false;
-      try {
-        var stf = JSON.parse(localStorage.getItem("om_final_staff_v1") || "[]");
-        var adm = JSON.parse(localStorage.getItem("om_final_adm_v1") || "[]");
-        var ext = JSON.parse(localStorage.getItem("om_final_ext_v1") || "[]");
-        if ((stf && stf.length > 0) || (adm && adm.length > 0) || (ext && ext.length > 0)) {
-          hasCustomData = true;
-        }
-      } catch (e) {}
-
-      if (!hasCustomData) {
-        ["vTotalCol", "vFeesCol", "vMembers", "vAdmissions", "vExtraCol"].forEach(function (id) {
-          var el = document.getElementById(id);
-          if (el) el.textContent = id.indexOf("Col") !== -1 ? "₹0" : "0";
-        });
-        var vCash = document.getElementById("vCashOnline");
-        if (vCash) vCash.textContent = "₹0 Cash / ₹0 Online";
-        var vNet = document.getElementById("vNetPnl");
-        if (vNet) vNet.textContent = "₹0";
-        var vEmp = document.getElementById("vEmpCount");
-        if (vEmp) vEmp.textContent = "0 Staff";
+    // 6. Active plan banner at top when owner has an active plan
+    try {
+      var planObj = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null");
+      if (planObj && planObj.status === "active" && Number(planObj.amount || 0) > 0 && !document.getElementById("activePlanTopBanner")) {
+        var topB = document.createElement("div");
+        topB.id = "activePlanTopBanner";
+        topB.className = "box-card";
+        topB.style.cssText = "border-color:var(--emerald);background:rgba(52,211,153,0.08);margin:8px 14px 0";
+        topB.innerHTML = `<div style="font-size:16px;font-weight:900;color:var(--emerald)">Your This Plan: ${esc(planObj.name || ("Plan ₹" + planObj.amount))}</div>`;
+        var navEl = document.querySelector("nav.tabs");
+        if (navEl && navEl.parentNode) navEl.parentNode.insertBefore(topB, navEl.nextSibling);
       }
+    } catch (e) {}
+
+    // 2. Clean professional demo preview copy
+    var demoBanner = document.getElementById("ownerTopActionBanner");
+    if (demoBanner) {
+      demoBanner.innerHTML = demoBanner.innerHTML.replace(
+        /Abhi aap ye plan dekh sakte hain demo ke roop me; logout karte hi saari detail reset ho jayegi\. Please purchase our ₹999 plan\./g,
+        "Demo Preview Mode: Aap is plan ke features ka preview dekh sakte hain; logout karne par demo session reset ho jayega. Poori suvidha ke liye kripya ₹999 plan purchase karein."
+      );
+    }
+
+    // 3 & 4. Add-On Extra Service & Unique QR / Smart Attendance inside Page 4
+    var p4 = document.getElementById("page4");
+    if (false) {
+      var box = document.createElement("div");
+      box.id = "p4AddOnAndQrBox";
+      box.className = "box-card";
+      box.style.borderColor = "var(--cyan)";
+      box.innerHTML = `
+        <b style="color:var(--cyan);font-size:13.5px;display:block;margin-bottom:8px">✨ Add-On Service &amp; Member Unique QR / Smart Attendance</b>
+        <div class="fg">
+          <label>Admitted Member Name / Mobile (Mandatory — Must Exist in Admission) *</label>
+          <input class="fc" id="aoMemberQuery" placeholder="Search admitted member name or mobile">
+        </div>
+        <div class="grid2">
+          <div class="fg">
+            <label>Add-On Service *</label>
+            <select class="fc" id="aoServiceSel">
+              <option value="Personal Training">Personal Training</option>
+              <option value="Sauna & Steam">Sauna &amp; Steam</option>
+              <option value="Diet & Transformation">Diet &amp; Transformation</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Amount (₹) *</label>
+            <input type="number" class="fc" id="aoAmtInp" value="2500">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="fg">
+            <label>Trainer Name (or Friend / Family if none) *</label>
+            <input class="fc" id="aoTrainerInp" placeholder="Trainer Name or Friend / Family">
+          </div>
+          <div class="fg">
+            <label>Expiry Date *</label>
+            <input type="date" class="fc" id="aoExpDateInp" value="2026-12-24">
+          </div>
+        </div>
+        <button type="button" class="big-btn" style="margin-top:0" onclick="activateMemberAddOnService()">Activate Add-On Service &amp; Generate Receipt</button>
+        <div id="aoReceiptBox" style="margin-top:10px"></div>
+
+        <hr style="border-color:var(--border);margin:14px 0">
+        <b style="color:var(--gold);font-size:13px;display:block;margin-bottom:6px">🎫 Member Unique QR (DOB Check) &amp; Smart Attendance</b>
+        <div class="grid2">
+          <div class="fg"><label>Member DOB (for QR Fees View)</label><input type="date" class="fc" id="qrMemberDobInp"></div>
+          <div class="fg"><label>Attendance Mode</label>
+            <select class="fc" id="smartAttModeSel">
+              <option value="QR Scan">Attendance with QR Scan</option>
+              <option value="Mobile & Name">Attendance with Mobile No &amp; Name</option>
+              <option value="Unique QR Card">Attendance with Unique QR Card</option>
+            </select>
+          </div>
+        </div>
+        <button type="button" class="big-btn sec" style="margin-top:0" onclick="generateMemberUniqueQrAndAtt()">Generate Unique QR &amp; Mark Smart Attendance</button>
+        <div id="memberQrOut" style="margin-top:8px"></div>
+      `;
+      p4.insertBefore(box, p4.firstChild.nextSibling);
     }
   });
 
-  document.addEventListener("submit", function (ev) {
-    if (!hasPurchasedPlan()) {
-      ev.preventDefault();
-      ev.stopImmediatePropagation();
-      promptPurchasePlan();
-    }
-  }, true);
-
-  document.addEventListener("click", function (ev) {
-    if (hasPurchasedPlan()) return;
-    var t = ev.target;
-    if (!t || !t.closest) return;
-    if (t.closest(".tab-btn") || t.closest(".x-btn") || t.closest('[onclick*="closeMod"]') || t.closest('[onclick*="openMod"]')) {
+  window.activateMemberAddOnService = function () {
+    var q = (document.getElementById("aoMemberQuery").value || "").trim().toLowerCase();
+    var admList = [];
+    try { admList = JSON.parse(localStorage.getItem("om_final_adm_v1") || "[]") || []; } catch (e) {}
+    var matched = admList.find(function (m) {
+      return (m.name && String(m.name).toLowerCase().includes(q)) || (m.phone && String(m.phone).includes(q));
+    });
+    if (!q || !matched) {
+      alert("Extra service keval pehle se admitted gym member ke liye active hogi. Kripya valid admitted member ka naam/mobile daalein.");
       return;
     }
-    var btn = t.closest('button[type="submit"], .big-btn');
-    if (btn && !btn.closest("#page1") && !btn.closest("#page2") && !btn.closest("#page3") && !btn.closest("#page4")) {
-      ev.preventDefault();
-      ev.stopImmediatePropagation();
-      promptPurchasePlan();
-    }
-  }, true);
+
+    var srv = document.getElementById("aoServiceSel").value;
+    var amt = Number(document.getElementById("aoAmtInp").value || 0);
+    var trainer = (document.getElementById("aoTrainerInp").value || "").trim() || "Friend / Family";
+    var expDt = document.getElementById("aoExpDateInp").value;
+    var startDt = new Date().toISOString().slice(0, 10);
+
+    var prof = {};
+    try { prof = JSON.parse(localStorage.getItem("om_active_gym_profile") || "{}") || {}; } catch (e) {}
+    var gymTitle = prof.gymName || "Gym";
+    var mgrSign = prof.ownerName || "Manager";
+
+    alert("Your service has been activated");
+
+    document.getElementById("aoReceiptBox").innerHTML = `
+      <div class="rec" style="background:#fff;color:#0f172a;border-radius:10px;padding:12px">
+        <div style="font-weight:900;font-size:14px">${esc(gymTitle)} — ADD-ON SERVICE RECEIPT</div>
+        <div>Member: <b>${esc(matched.name)}</b> • Status: <b>Already Plan Active</b></div>
+        <div>Add-On Service: <b>${esc(srv)}</b> • Amount: <b>₹${amt.toLocaleString("en-IN")}</b></div>
+        <div>Trainer / Assigned: <b>${esc(trainer)}</b></div>
+        <div>Start Date: <b>${esc(startDt)}</b> • Expiry Date: <b>${esc(expDt)}</b></div>
+        <div style="margin-top:6px;font-weight:800">Stamp / Authorized Signature: <i>${esc(mgrSign)}</i></div>
+      </div>
+    `;
+  };
+
+  window.generateMemberUniqueQrAndAtt = function () {
+    var mode = document.getElementById("smartAttModeSel").value;
+    var dob = document.getElementById("qrMemberDobInp").value || "Not Provided";
+    var qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=" + encodeURIComponent("OM_MEMBER_QR_" + Date.now());
+    document.getElementById("memberQrOut").innerHTML = `
+      <div class="rec">
+        <div><b>Mode:</b> ${esc(mode)} • <b>DOB:</b> ${esc(dob)}</div>
+        <img src="${qrCodeUrl}" alt="Unique Member QR" style="background:#fff;padding:4px;border-radius:8px;width:96px;height:96px;margin-top:6px">
+      </div>
+    `;
+  };
 })();
 </script>
 
 
 <script>
-(function ensureCleanLoginSession() {
-  try {
-    var profRaw = localStorage.getItem("om_active_gym_profile") || localStorage.getItem("om_org_profile") || localStorage.getItem("om_last_org_profile");
-    if (profRaw) {
-      var prof = JSON.parse(profRaw);
-      if (prof && (prof.gymName || prof.orgName)) {
-        if (!localStorage.getItem("bfc_role")) localStorage.setItem("bfc_role", prof.role || "owner");
-        if (!localStorage.getItem("om_active_role")) localStorage.setItem("om_active_role", prof.role || "owner");
-        if (!localStorage.getItem("om_session_active")) localStorage.setItem("om_session_active", "1");
-        if (!localStorage.getItem("om_last_activity_time")) localStorage.setItem("om_last_activity_time", String(Date.now()));
-        if (!localStorage.getItem("om_logged_user")) {
-          localStorage.setItem("om_logged_user", (prof.ownerName || prof.gymName || prof.orgName) + " (" + (prof.role || "owner") + ")");
+(function upgradeModExtraAndAttendanceV7() {
+  window.esFilterMembers = function () {
+    var q = ((document.getElementById("esMemberSearch") || {}).value || "").trim().toLowerCase();
+    var out = document.getElementById("esMemberSugOut");
+    if (!out) return;
+    if (!q) { out.innerHTML = ""; return; }
+    var adm = (typeof J === "function" && typeof K_ADM !== "undefined") ? J(K_ADM, []) : [];
+    var hits = adm.filter(function (m) {
+      return String(m.name || "").toLowerCase().includes(q) || String(m.phone || "").includes(q);
+    });
+    out.innerHTML = hits.slice(0, 5).map(function (m) {
+      return `<div class="rec" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="esPickMember('${esc(m.name)}')">
+        <span><b>${esc(m.name)}</b> • ${esc(m.phone || "-")}</span>
+        <span class="pill-ok">Select</span>
+      </div>`;
+    }).join("") || '<div class="rec">No admitted member found.</div>';
+  };
+
+  window.esPickMember = function (nm) {
+    var nInp = document.getElementById("esName");
+    var sInp = document.getElementById("esMemberSearch");
+    var out = document.getElementById("esMemberSugOut");
+    if (nInp) nInp.value = nm;
+    if (sInp) sInp.value = nm;
+    if (out) out.innerHTML = "";
+  };
+
+  window.esRecalcTotal = function () {
+    var pAmt = Number((document.getElementById("esPlanAmt") || {}).value || 0);
+    var eAmt = Number((document.getElementById("esAmt") || {}).value || 0);
+    var totInp = document.getElementById("esTotalPayable");
+    if (totInp) totInp.value = String(pAmt + eAmt);
+  };
+
+  window.addEventListener("DOMContentLoaded", function () {
+    esRecalcTotal();
+    // Keep staff late/outside punch & 40-staff check hidden from quick attendance modal unless Admin opens it
+    var modAtt = document.getElementById("modAtt");
+    if (modAtt) {
+      var recs = modAtt.querySelectorAll(".rec");
+      recs.forEach(function (r) {
+        if (/Staff Outside \/ Late Attendance Punch/i.test(r.textContent || "")) {
+          r.style.display = "none";
         }
-      }
+      });
+      var btns = modAtt.querySelectorAll("button");
+      btns.forEach(function (b) {
+        if (/40-Staff Selfie Check/i.test(b.textContent || "")) {
+          b.style.display = "none";
+        }
+      });
     }
-  } catch (e) {}
+  });
 })();
+</script>
+
+
+
+
+<script>
+(function(){
+  function role(){ return String((window.omSecureSession&&window.omSecureSession.role)||localStorage.getItem("bfc_role")||"guest").toLowerCase(); }
+  window.openPay=function(view){
+    if(view==="records" && role()!=="owner"){ alert("Fees Records sirf Owner ke liye hain."); return; }
+    window.__payView=view; document.getElementById("payTitle").innerHTML = view==="records" ? "&#128210; Fees Records" : "&#128179; Pay Fees";
+    openMod("modExtra");
+  };
+  window.loadPayFrame=function(){ document.getElementById("payFrame").src="pay.html"+(window.__payView==="records"?"?view=records":"")+"#"+Date.now(); };
+  window.loadAttFrame=function(){
+    document.getElementById("attFrame").src="attendance.html#"+Date.now();
+    var r=role(); document.getElementById("attStaffTools").style.display=(r==="owner"||r==="manager")?"grid":"none";
+  };
+  window.omStaffPunchSubmit=function(){ punchStaffAtt(); };
+  window.openQuickFeeDesk=function(){ openPay("pay"); };
+  window.addEventListener("load",function(){
+    if(role()!=="owner"){ var s=document.createElement("style"); s.textContent=".om-owner-only{display:none!important}"; document.head.appendChild(s); }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  try {
+    if (localStorage.getItem("bfc_role") || localStorage.getItem("om_active_role") || localStorage.getItem("om_prime_master_auth") === "1") {
+      localStorage.setItem("om_session_active", "1");
+      localStorage.removeItem("om_logged_out_flag");
+    }
+  } catch(e){}
+  window.addEventListener("pageshow", function(event) {
+    try {
+      if (event.persisted && localStorage.getItem("om_logged_out_flag") === "1") {
+        window.location.replace("login.html?logout=1");
+      }
+    } catch (e) {}
+  });
+})();
+</script>
+
+<script>
+function refreshLiveBoardMembershipStatus() {
+  try {
+    var sub = JSON.parse(localStorage.getItem("om_active_subscription_plan") || "null");
+    var metaEl = document.getElementById("liveBoardMeta");
+    if (!metaEl) return;
+    if (sub && String(sub.status).toLowerCase() === "active" && Number(sub.amount || 0) > 0) {
+      metaEl.innerHTML = '<b style="color:var(--emerald);font-size:12.5px">🟢 Active Membership: ' + (sub.name || ('Plan ₹' + sub.amount)) + '</b> <span style="font-size:11px;color:var(--cyan)">(' + (sub.licenseKey || 'Active') + ')</span>';
+    } else {
+      metaEl.innerHTML = '<b style="color:var(--rose);font-size:12.5px">🔴 No Active Plan</b> &bull; <a href="plans.html" style="color:var(--gold);text-decoration:underline;font-weight:700">Please Upgrade</a>';
+    }
+  } catch(e) {}
+}
+window.addEventListener("DOMContentLoaded", refreshLiveBoardMembershipStatus);
+window.addEventListener("storage", refreshLiveBoardMembershipStatus);
+setInterval(refreshLiveBoardMembershipStatus, 2000);
+</script>
+
+
+<script>
+let uploadTimer = null;
+let lastUploadedHash = localStorage.getItem("om_last_uploaded_data_hash") || "";
+
+function startDataUpload(event) {
+  if (event) event.preventDefault();
+  const fileInput = document.getElementById("routerFileInput");
+  if (!fileInput || !fileInput.files.length) {
+    alert("Kripya CSV/Excel file select karein.");
+    return;
+  }
+
+  const file = fileInput.files[0];
+  const fileKey = file.name + "_" + file.size + "_" + file.lastModified;
+
+  // Anti-Duplicate Check
+  if (fileKey === lastUploadedHash) {
+    alert("You are Already Uploaded this File or data");
+    return;
+  }
+
+  const statusEl = document.getElementById("uploadStatusArea");
+  let seconds = 0;
+  statusEl.innerHTML = '<div class="rec" style="border-color:var(--gold)"><span style="color:var(--gold);font-weight:700">⌛ Processing &amp; Uploading: <b id="upSec">00:00</b>... Please wait</span></div>';
+  
+  if (uploadTimer) clearInterval(uploadTimer);
+  uploadTimer = setInterval(() => {
+    seconds++;
+    let s = seconds < 10 ? "0" + seconds : seconds;
+    let m = Math.floor(seconds / 60);
+    let ms = m < 10 ? "0" + m : m;
+    const secEl = document.getElementById("upSec");
+    if (secEl) secEl.innerText = `${ms}:${s}`;
+  }, 1000);
+
+  setTimeout(() => {
+    clearInterval(uploadTimer);
+    localStorage.setItem("om_last_uploaded_data_hash", fileKey);
+    localStorage.setItem("om_last_uploaded_filename", file.name);
+    lastUploadedHash = fileKey;
+    statusEl.innerHTML = `
+      <div class="rec" style="border-color:var(--emerald);background:rgba(52,211,153,0.1)">
+        <b style="color:var(--emerald);font-size:13.5px">✅ Your data has been uploaded</b>
+        <div style="font-size:11.5px;color:var(--muted);margin:4px 0 8px">File: <b>${file.name}</b> (${Math.round(file.size/1024)} KB)</div>
+        <button type="button" class="sub-btn" style="background:#7f1d1d;color:#fee2e2;border:1px solid #ef4444" onclick="deleteLastUploadedData()">
+          🗑️ Del Your Old last data
+        </button>
+      </div>
+    `;
+  }, 3000);
+}
+
+function deleteLastUploadedData() {
+  var lastFile = localStorage.getItem("om_last_uploaded_filename") || "selected file";
+  if (confirm("Kya aap file (" + lastFile + ") ka last data delete karna chahte hain?")) {
+    localStorage.removeItem("om_last_uploaded_data_hash");
+    localStorage.removeItem("om_last_uploaded_filename");
+    lastUploadedHash = "";
+    var fileInput = document.getElementById("routerFileInput");
+    if (fileInput) fileInput.value = "";
+    document.getElementById("uploadStatusArea").innerHTML = '<div class="rec" style="border-color:var(--rose);color:var(--rose)">Last uploaded data successfully removed.</div>';
+  }
+}
 </script>
 
 </body>
