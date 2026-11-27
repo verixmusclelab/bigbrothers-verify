@@ -317,6 +317,10 @@ th{color:#ffcc00;}
   </div>
 
   <div id="sectionAdmin" style="display:none;">
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <button type="button" onclick="openCollection()" style="flex:1;padding:10px;border:none;border-radius:8px;background:#00ff99;color:#000;font-weight:bold;cursor:pointer;">💰 Total Collection</button>
+      <button type="button" onclick="openRemoveList()" style="flex:1;padding:10px;border:none;border-radius:8px;background:#ff4444;color:#fff;font-weight:bold;cursor:pointer;">🗑️ Member Remove</button>
+    </div>
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:8px;">
       <div style="display:flex; align-items:center; gap:6px;">
         <button type="button" onclick="showFeeTab()" style="background:#333; color:#ffcc00; border:1px solid #ffcc00; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:11px; cursor:pointer;">⬅️ Back</button>
@@ -486,6 +490,43 @@ th{color:#ffcc00;}
   </div>
 </div>
 
+<div id="removeModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:900;display:none;overflow-y:auto;padding:14px;">
+  <div style="max-width:460px;margin:0 auto;color:#fff;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><b style="color:#ff6666;">🗑️ Member Remove</b><button type="button" onclick="closeRemoveList()" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:5px 12px;cursor:pointer;">✕ बंद करें</button></div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:8px;">Remove दबाते ही सदस्य और उसकी पेमेंट एंट्री हट जाएँगी।</div>
+    <input type="text" id="rmSearch" oninput="renderRemoveList()" placeholder="🔍 नाम / मोबाइल खोजें" style="background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:8px;width:100%;">
+    <div id="rmStatus" style="font-size:12px;color:#ffcc00;margin:8px 0;"></div>
+    <button type="button" id="rmUndo" onclick="undoRemove()" style="display:none;width:100%;margin-bottom:8px;padding:9px;border:none;border-radius:6px;background:#ffcc00;color:#000;font-weight:bold;cursor:pointer;"></button>
+    <div id="rmList"></div>
+  </div>
+</div>
+
+<div id="collectionModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:900;display:none;overflow-y:auto;padding:14px;">
+  <div style="max-width:460px;margin:0 auto;color:#fff;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><b style="color:#00ff99;">💰 Total Collection</b><button type="button" onclick="closeCollection()" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:5px 12px;cursor:pointer;">✕ बंद करें</button></div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;">
+      <label style="flex:1;font-size:11px;">कब से<input type="date" id="colFrom" onchange="renderCollection()" style="background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:8px;width:100%;"></label>
+      <label style="flex:1;font-size:11px;">कब तक<input type="date" id="colTo" onchange="renderCollection()" style="background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:8px;width:100%;"></label>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;">
+      <button type="button" onclick="setColRange('today')" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:5px 12px;cursor:pointer;flex:1;">आज</button>
+      <button type="button" onclick="setColRange('month')" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:5px 12px;cursor:pointer;flex:1;">यह महीना</button>
+      <button type="button" onclick="setColRange('all')" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:5px 12px;cursor:pointer;flex:1;">सब</button>
+    </div>
+    <div id="colSummary"></div>
+    <details style="background:#181818;border:1px solid #444;border-radius:8px;padding:8px;margin:10px 0;">
+      <summary style="cursor:pointer;color:#ffcc00;font-weight:bold;">➕ Supplement बिक्री जोड़ें</summary>
+      <form onsubmit="addSupplement(event)" style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
+        <input type="text" id="supName" placeholder="ग्राहक / सामान का नाम" required style="background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:8px;width:100%;">
+        <input type="number" id="supAmt" placeholder="राशि ₹" min="1" required style="background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:8px;width:100%;">
+        <select id="supMode" style="background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:8px;width:100%;"><option value="Cash">Cash</option><option value="Online">Online</option></select>
+        <button type="submit" style="padding:9px;border:none;border-radius:6px;background:#00ff99;color:#000;font-weight:bold;cursor:pointer;">सेव करें</button>
+      </form>
+    </details>
+    <div id="colList"></div>
+  </div>
+</div>
+
 <div id="receiptModal">
   <div class="receipt-wrapper">
     <div style="display:flex; justify-content:flex-start; margin-bottom:8px;" data-html2canvas-ignore="true">
@@ -566,7 +607,7 @@ const db = firebase.firestore();
 
 async function syncListToCloud(list) {
   try {
-    const items = (list || []).filter(m => m && m.name && (m.id || m.phone));
+    const items = notRemoved((list || []).filter(m => m && m.name && (m.id || m.phone)));
     for (let i = 0; i < items.length; i += 400) {
       const batch = db.batch();
       items.slice(i, i + 400).forEach(m => {
@@ -588,9 +629,13 @@ async function syncListToCloud(list) {
 // cloud par bhejo jo cloud me nahi hain. (Isse purana local data cloud ka naya data overwrite nahi karega.)
 async function loadMembersFromCloud() {
   try {
+    await syncRemovedFromCloud();
     const snap = await db.collection("members").get();
     const cloud = [];
-    snap.forEach(d => cloud.push({ id: d.id, ...d.data() }));
+    snap.forEach(d => {
+      const x = { id: d.id, ...d.data() };
+      if (!removedMap()[memberKey(x)]) cloud.push(x);
+    });
 
     const cloudIds = new Set(cloud.map(c => String(c.id)));
     const cloudPhones = new Set(cloud.map(c => String(c.phone || "").trim()).filter(Boolean));
@@ -603,11 +648,12 @@ async function loadMembersFromCloud() {
       return !cloudIds.has(id) && !(ph && cloudPhones.has(ph));
     });
 
-    const merged = [...cloud, ...localOnly];
+    const merged = notRemoved([...cloud, ...localOnly]);
     localStorage.setItem("bbf_master_records_v4", JSON.stringify(merged));
     localStorage.setItem("5BFC_MEMBERS", JSON.stringify(merged));
 
     if (localOnly.length) syncListToCloud(localOnly);
+    await syncPayments();
 
     if (document.getElementById("adminTableBody")) {
       try { renderAdminTable(); } catch (e) {}
@@ -704,10 +750,11 @@ function getMasterList() {
     }
   });
 
-  let finalList = Array.from(uniqueMap.values());
+  let finalList = notRemoved(Array.from(uniqueMap.values()));
   if (finalList.length === 0) {
-    localStorage.setItem("bbf_master_records_v4", JSON.stringify(INITIAL_MEMBERS));
-    return INITIAL_MEMBERS;
+    const initial = notRemoved(INITIAL_MEMBERS);
+    localStorage.setItem("bbf_master_records_v4", JSON.stringify(initial));
+    return initial;
   }
   return finalList;
 }
@@ -1219,6 +1266,8 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
   const cycleJoin = (!data.adminEdited && member && member.joinDate) || data.joinDateVal || payDate;
   const nextDue = computeNextDue(member, cycleJoin, payDate, data.months, data.isAdvance);
   const validTill = formatDateDMY(nextDue);
+  const payType = paymentType(member, cycleJoin, payDate);
+  if (!member) allowAgain({ name: data.name, phone: data.phone });
 
   if (existingIndex >= 0) {
     list[existingIndex].nextDue = nextDue;
@@ -1271,6 +1320,7 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
   const saved = member || list[list.length - 1];
   saved.lastReceipt = receipt; // "Only Receipt" के लिए आखिरी भुगतान
   persistList(list);
+  addPayment({ id: receipt.billId, name: receipt.name, memberKey: memberKey(saved), amount: receipt.paidAmt, mode: shortMode, type: payType, date: payDate });
   renderReceipt(receipt, saved.id);
 
   if (showHurray) {
@@ -1717,6 +1767,16 @@ function toggleMemberPaidById(identifier) {
   let currentPaid = (list[idx].status === 'Paid' || list[idx].manualStatus === 'Paid');
   let nextStatus = currentPaid ? "Pending" : "Paid";
 
+  // रजिस्टर से Paid करने पर भी Collection में एंट्री, वापस Pending पर वही एंट्री हटे
+  const tm = list[idx];
+  const markId = "MARK-" + tm.id + "-" + todayStr();
+  if (nextStatus === "Paid") {
+    const gone = readJson("5bfc_deleted_payments", []).filter(x => x !== markId);
+    localStorage.setItem("5bfc_deleted_payments", JSON.stringify(gone));
+    addPayment({ id: markId, name: tm.name, memberKey: memberKey(tm), amount: Number(tm.amount) || planInfoOf(tm).base, mode: tm.payMode === "Online" ? "Online" : "Cash", type: paymentType(tm, tm.joinDate, todayStr()), date: todayStr() });
+  } else if (getPayments().some(p => p.id === markId)) {
+    deletePayment(markId);
+  }
   list[idx].status = nextStatus;
   list[idx].manualStatus = nextStatus;
   list[idx].fees = nextStatus;
@@ -1798,8 +1858,10 @@ function handleManualAddSubmit(e) {
     idSubmitted: (type === "student" ? false : true)
   };
 
+  allowAgain(newMember);
   list.push(newMember);
   persistList(list);
+  if (status === "Paid") addPayment({ id: "ADM-" + newMember.id, name: name, memberKey: memberKey(newMember), amount: amt, mode: "Cash", type: "admission", date: todayStr() });
   alert(`✅ नया सदस्य "${name}" सफलतापूर्वक जोड़ दिया गया है!`);
   closeAddMemberModal();
   renderAdminTable();
@@ -1865,6 +1927,235 @@ function closeBillModalAndReset() {
   renderRefTags();
   updatePlanPrices();
   initFormState();
+}
+
+// ===== HATAYE GAYE MEMBERS (dobara wapas na aayein) =====
+function memberKey(m) {
+  const ph = String((m && m.phone) || "").trim();
+  const nm = String((m && m.name) || "").trim().toLowerCase();
+  return ph ? ph + "|" + nm : "id:" + String(m && m.id) + "|" + nm;
+}
+function readJson(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (e) { return fallback; } }
+function removedMap() { return readJson("5bfc_deleted", {}); }   // key -> "ok" | "pending"
+function saveRemoved(map) { localStorage.setItem("5bfc_deleted", JSON.stringify(map)); }
+function notRemoved(list) { const r = removedMap(); return list.filter(m => !r[memberKey(m)]); }
+function cloudWait(promise) {
+  return Promise.race([promise, new Promise((_, no) => setTimeout(() => no(new Error("timeout")), 8000))]);
+}
+const removedDoc = key => db.collection("deleted_members").doc(encodeURIComponent(key));
+
+function purgeLocal(key) {
+  ["bbf_master_records_v4", "5BFC_MEMBERS", "5bfc_admissions"].forEach(k => {
+    const arr = readJson(k, null);
+    if (Array.isArray(arr)) localStorage.setItem(k, JSON.stringify(arr.filter(m => memberKey(m) !== key)));
+  });
+}
+
+// cloud से सदस्य व पेमेंट की हर कॉपी हटाना
+async function purgeCloud(key) {
+  await cloudWait(removedDoc(key).set({ key: key }));
+  for (const col of ["members", "public_members", "admissions", "payments"]) {
+    const snap = await cloudWait(db.collection(col).get());
+    const jobs = [];
+    snap.forEach(d => {
+      const x = { id: d.id, ...d.data() };
+      if ((col === "payments" ? x.memberKey : memberKey(x)) === key) jobs.push(db.collection(col).doc(d.id).delete());
+    });
+    await cloudWait(Promise.all(jobs));
+  }
+}
+
+async function syncRemovedFromCloud() {
+  try {
+    const snap = await cloudWait(db.collection("deleted_members").get());
+    const local = removedMap();
+    const map = {};
+    snap.forEach(d => { const k = d.data().key; if (k) map[k] = "ok"; });
+    Object.keys(local).forEach(k => { if (local[k] === "pending") map[k] = "pending"; });
+    saveRemoved(map);
+    Object.keys(map).forEach(purgeLocal);
+    for (const k of Object.keys(map).filter(k => map[k] === "pending")) {
+      await purgeCloud(k);
+      const now = removedMap(); if (now[k]) { now[k] = "ok"; saveRemoved(now); }
+    }
+  } catch (err) { console.error("Removed list sync failed", err); }
+}
+
+// वही सदस्य दोबारा जोड़ा जाए तो रोक हटाना
+function allowAgain(m) {
+  const map = removedMap();
+  const key = memberKey(m);
+  if (!map[key]) return;
+  delete map[key];
+  saveRemoved(map);
+  Promise.resolve().then(() => removedDoc(key).delete()).catch(e => console.error(e));
+}
+
+// ===== MEMBER REMOVE SCREEN =====
+let lastRemoved = null;
+
+function openRemoveList() {
+  document.getElementById("rmSearch").value = "";
+  document.getElementById("rmStatus").innerText = "";
+  document.getElementById("removeModal").style.display = "block";
+  renderRemoveList();
+}
+function closeRemoveList() {
+  document.getElementById("removeModal").style.display = "none";
+  lastRemoved = null;
+  document.getElementById("rmUndo").style.display = "none";
+  renderAdminTable();
+}
+function renderRemoveList() {
+  const q = document.getElementById("rmSearch").value.trim().toLowerCase();
+  const box = document.getElementById("rmList");
+  const list = getMasterList()
+    .filter(m => !q || String(m.name || "").toLowerCase().includes(q) || String(m.phone || "").includes(q))
+    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+  box.innerHTML = "";
+  list.forEach((m, i) => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #333;padding:8px 0;";
+    const info = document.createElement("div");
+    info.innerText = (i + 1) + ". " + (m.name || "(बिना नाम)") + "\n" + (m.phone || "-") + " | जॉइनिंग: " + formatDateDMY(m.joinDate);
+    info.style.fontSize = "12px";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.innerText = "Remove";
+    btn.style.cssText = "background:#ff3333;color:#fff;border:none;border-radius:6px;padding:8px 12px;font-weight:bold;cursor:pointer;";
+    btn.onclick = () => removeMember(m);
+    row.append(info, btn);
+    box.appendChild(row);
+  });
+  if (!list.length) box.innerText = "कोई सदस्य नहीं।";
+}
+
+async function removeMember(m) {
+  const key = memberKey(m);
+  const status = document.getElementById("rmStatus");
+  const payments = getPayments().filter(p => p.memberKey === key);
+  lastRemoved = { member: m, payments: payments };
+  const map = removedMap(); map[key] = "pending"; saveRemoved(map);
+  purgeLocal(key);
+  savePayments(getPayments().filter(p => p.memberKey !== key));
+  renderRemoveList();
+  const undo = document.getElementById("rmUndo");
+  undo.innerText = "↩️ गलती हुई? \"" + m.name + "\" वापस लाएँ";
+  undo.style.display = "block";
+  status.innerText = "⏳ " + m.name + " हटाया जा रहा है...";
+  lastRemoved.job = purgeCloud(key).then(() => {
+    const now = removedMap(); if (now[key]) { now[key] = "ok"; saveRemoved(now); }
+    status.innerText = "✅ " + m.name + " हर जगह से हट गया।";
+  }).catch(err => {
+    console.error(err);
+    status.innerText = "⚠️ " + m.name + " इस फ़ोन से हट गया, पर cloud से नहीं हट पाया (" + (err.code || err.message) + ")। इंटरनेट / Firebase rules जाँचें।";
+  });
+}
+
+async function undoRemove() {
+  const u = lastRemoved;
+  if (!u) return;
+  lastRemoved = null;
+  document.getElementById("rmUndo").style.display = "none";
+  await u.job;
+  allowAgain(u.member);
+  const list = getMasterList().filter(x => memberKey(x) !== memberKey(u.member));
+  list.push(u.member);
+  persistList(list);
+  u.payments.forEach(addPayment);
+  document.getElementById("rmStatus").innerText = "↩️ " + u.member.name + " वापस आ गया।";
+  renderRemoveList();
+}
+
+// ===== COLLECTION (हर पेमेंट का हिसाब) =====
+const PAY_TYPES = { admission: "🆕 New Admission", newfee: "🟢 नए सदस्यों की फीस", oldfee: "🔵 पुराने सदस्यों की फीस", supplement: "💊 Supplement" };
+function getPayments() { return readJson("5bfc_payments", []); }
+function savePayments(list) { localStorage.setItem("5bfc_payments", JSON.stringify(list)); }
+
+// New Admission = पहली पेमेंट; नया सदस्य = जॉइनिंग को 3 महीने पूरे नहीं हुए
+function paymentType(member, joinDate, payDate) {
+  const paidBefore = !!member && !!(member.lastReceipt || member.lastPaid || member.status === "Paid" || member.manualStatus === "Paid");
+  if (!paidBefore) return "admission";
+  return payDate < addMonths(joinDate || payDate, 3) ? "newfee" : "oldfee";
+}
+function putPayment(p) {
+  return Promise.resolve().then(() => db.collection("payments").doc(p.id).set(p)).then(() => {
+    savePayments(getPayments().map(x => x.id === p.id ? { ...x, synced: true } : x));
+  }).catch(e => console.error("Payment cloud save failed", e));
+}
+function addPayment(p) {
+  if (!(p.amount > 0)) return;
+  const entry = { ...p, synced: false };
+  savePayments([...getPayments().filter(x => x.id !== p.id), entry]);
+  putPayment({ ...entry, synced: true });
+}
+function deletePayment(id) {
+  savePayments(getPayments().filter(x => x.id !== id));
+  const gone = readJson("5bfc_deleted_payments", []); gone.push(id);
+  localStorage.setItem("5bfc_deleted_payments", JSON.stringify(gone));
+  Promise.resolve().then(() => db.collection("payments").doc(id).delete()).catch(e => console.error(e));
+}
+async function syncPayments() {
+  try {
+    const snap = await cloudWait(db.collection("payments").get());
+    const gone = new Set(readJson("5bfc_deleted_payments", []));
+    const map = new Map();
+    snap.forEach(d => {
+      if (gone.has(d.id)) db.collection("payments").doc(d.id).delete().catch(() => {});
+      else map.set(d.id, { ...d.data(), id: d.id, synced: true });
+    });
+    const pending = getPayments().filter(p => !p.synced && !map.has(p.id));
+    pending.forEach(p => map.set(p.id, p));
+    const removed = removedMap();
+    savePayments([...map.values()].filter(p => !removed[p.memberKey]));
+    pending.forEach(p => putPayment({ ...p, synced: true }));
+    if (document.getElementById("collectionModal").style.display === "block") renderCollection();
+  } catch (err) { console.error("Payments sync failed", err); }
+}
+
+function openCollection() {
+  document.getElementById("collectionModal").style.display = "block";
+  setColRange("month");
+  syncPayments();
+}
+function closeCollection() { document.getElementById("collectionModal").style.display = "none"; }
+function setColRange(kind) {
+  const t = todayStr();
+  document.getElementById("colFrom").value = kind === "all" ? "" : (kind === "today" ? t : t.slice(0, 8) + "01");
+  document.getElementById("colTo").value = kind === "all" ? "" : t;
+  renderCollection();
+}
+function renderCollection() {
+  const from = document.getElementById("colFrom").value, to = document.getElementById("colTo").value;
+  const list = getPayments().filter(p => (!from || p.date >= from) && (!to || p.date <= to)).sort((a, b) => b.date.localeCompare(a.date));
+  const sum = arr => arr.reduce((t, p) => t + Number(p.amount || 0), 0);
+  const money = n => "₹" + n.toLocaleString("en-IN");
+  const card = (label, value, big) => `<div style="display:flex;justify-content:space-between;background:#181818;border:1px solid ${big ? "#00ff99" : "#444"};border-radius:8px;padding:10px;margin-bottom:6px;font-size:${big ? 16 : 13}px;"><span>${label}</span><b style="color:#ffcc00;">${value}</b></div>`;
+  document.getElementById("colSummary").innerHTML =
+    card("कुल Collection", money(sum(list)), true) +
+    Object.keys(PAY_TYPES).map(k => card(PAY_TYPES[k] + " (" + list.filter(p => p.type === k).length + ")", money(sum(list.filter(p => p.type === k))))).join("") +
+    card("💵 Cash / 📱 Online", money(sum(list.filter(p => p.mode === "Cash"))) + " / " + money(sum(list.filter(p => p.mode === "Online"))));
+  const box = document.getElementById("colList");
+  box.innerHTML = list.length ? "" : "इस अवधि में कोई पेमेंट एंट्री नहीं।";
+  list.forEach(p => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #333;padding:7px 0;font-size:12px;";
+    const info = document.createElement("div");
+    info.innerText = p.name + " — " + money(Number(p.amount)) + "\n" + formatDateDMY(p.date) + " | " + p.mode + " | " + (PAY_TYPES[p.type] || p.type);
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.innerText = "🗑️";
+    btn.style.cssText = "background:#333;border:1px solid #ff4444;border-radius:6px;padding:6px 9px;cursor:pointer;";
+    btn.onclick = () => { if (confirm("यह पेमेंट एंट्री हटाएँ? " + p.name + " " + money(Number(p.amount)))) { deletePayment(p.id); renderCollection(); } };
+    row.append(info, btn);
+    box.appendChild(row);
+  });
+}
+function addSupplement(e) {
+  e.preventDefault();
+  addPayment({ id: "SUP-" + Date.now().toString(36), name: document.getElementById("supName").value.trim(), memberKey: "",
+    amount: Number(document.getElementById("supAmt").value), mode: document.getElementById("supMode").value, type: "supplement", date: todayStr() });
+  e.target.reset();
+  renderCollection();
 }
 </script>
 </body>
