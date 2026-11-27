@@ -540,6 +540,11 @@ th{color:#ffcc00;}
       <button type="button" class="dl-btn" id="dlBtn" onclick="downloadImageAndPDF()">📥 Image & PDF Download</button>
       <button type="button" class="wa-btn" id="waBtn">📲 WhatsApp</button>
     </div>
+    <div data-html2canvas-ignore="true">
+      <button type="button" id="shareBtn" onclick="shareReceipt()" style="display:none;width:100%;background:#ffcc00;color:#000;border:none;padding:10px;border-radius:6px;margin-top:8px;font-weight:bold;cursor:pointer;">📤 रसीद सेव / शेयर करें</button>
+      <div id="dlStatus" style="font-size:12px;color:#fff;margin-top:8px;"></div>
+      <img id="dlPreview" alt="रसीद" style="display:none;width:100%;margin-top:8px;border-radius:6px;">
+    </div>
     <button type="button" onclick="closeBillModalAndReset()" style="width:100%; background:#333; color:#fff; border:none; padding:9px; border-radius:6px; margin-top:8px; cursor:pointer;" data-html2canvas-ignore="true">बंद करें (Reset)</button>
   </div>
 </div>
@@ -1277,6 +1282,9 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
 
 // रसीद स्क्रीन भरना (नई रसीद और Only Receipt दोनों के लिए)
 function renderReceipt(r, memberId) {
+  receiptFiles = [];
+  ["shareBtn", "dlPreview"].forEach(id => document.getElementById(id).style.display = "none");
+  document.getElementById("dlStatus").innerText = "";
   const validTill = formatDateDMY(r.nextDue);
   const paidDateFormatted = formatDateDMY(r.paidDate);
   const joinDateFormatted = formatDateDMY(r.joinDate);
@@ -1349,8 +1357,13 @@ function drawReceiptQr(memberId, billId) {
   if (!/^https?:$/.test(location.protocol)) { note.innerText = "QR तभी बनेगा जब यह पेज ऑनलाइन (https लिंक पर) खुला हो।"; return; }
   if (typeof QRCode === "undefined") { note.innerText = "QR लाइब्रेरी लोड नहीं हुई। इंटरनेट जाँचें।"; return; }
   const url = location.origin + location.pathname + "?m=" + encodeURIComponent(memberId) + "&r=" + encodeURIComponent(billId);
-  new QRCode(holder, { text: url, width: 110, height: 110 });
-  box.style.display = "flex";
+  try {
+    new QRCode(holder, { text: url, width: 110, height: 110, correctLevel: (QRCode.CorrectLevel || {}).M });
+    box.style.display = "flex";
+  } catch (err) {
+    console.error(err);
+    note.innerText = "QR नहीं बन पाया, रसीद बिना QR के है।";
+  }
 }
 
 // --- ONLY RECEIPT ---
@@ -1395,6 +1408,11 @@ function searchOnlyReceipt() {
 
 function chooseOnlyReceipt(m) {
   orMember = m;
+  // Admin Unlock चालू हो तो मोबाइल अंक नहीं पूछे जाएँगे
+  if (adminUnlocked) {
+    if (!showReceiptFor(m)) document.getElementById("orMsg").innerText = "इस सदस्य का कोई भुगतान रिकॉर्ड नहीं मिला।";
+    return;
+  }
   document.getElementById("orResults").innerHTML = "";
   document.getElementById("orMsg").innerText = "";
   document.getElementById("orName").innerText = m.name;
@@ -1416,6 +1434,21 @@ function lastReceiptOf(m) {
     cat: m.type === "student" ? "विद्यार्थी" : "जॉब / व्यापार", planText: "—", planAmt: null, paidAmt: m.amount,
     specialDiscount: 0, dueAmt: null, nextDue: currentNextDue(m, join)
   };
+}
+
+function showReceiptFor(m) {
+  const receipt = lastReceiptOf(m);
+  if (!receipt) return false;
+  closeOnlyReceipt();
+  renderReceipt(receipt, m.id);
+  proceedToReceiptFromHurray();
+  return true;
+}
+
+// Admin रजिस्टर (PIN से खुलता है) से सीधी रसीद
+function adminReceipt(identifier) {
+  const m = getMasterList().find(x => String(x.id) === String(identifier) || String(x.phone) === String(identifier));
+  if (m && !showReceiptFor(m)) alert("इस सदस्य का कोई भुगतान रिकॉर्ड नहीं मिला।");
 }
 
 function verifyOnlyReceipt(e) {
@@ -1462,28 +1495,62 @@ function proceedToReceiptFromHurray() {
   }, 500);
 }
 
-function downloadImageAndPDF() {
+let receiptFiles = [];
+
+function saveBlob(blob, fileName) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 60000);
+}
+
+async function downloadImageAndPDF() {
   const element = document.getElementById("printablePages");
   const billId = document.getElementById("billId").innerText || "Receipt";
+  const status = document.getElementById("dlStatus");
+  const preview = document.getElementById("dlPreview");
+  receiptFiles = [];
+  document.getElementById("shareBtn").style.display = "none";
+  preview.style.display = "none";
 
-  html2canvas(element, { scale: 2, backgroundColor: "#ffffff", useCORS: true }).then(canvas => {
-    const imgData = canvas.toDataURL("image/png");
-    let imgLink = document.createElement("a");
-    imgLink.download = "Bill_" + billId + ".png";
-    imgLink.href = imgData;
-    imgLink.click();
+  if (typeof html2canvas === "undefined") {
+    status.innerText = "❌ डाउनलोड लाइब्रेरी लोड नहीं हुई। इंटरनेट चालू करके पेज दोबारा खोलें।";
+    return;
+  }
+  status.innerText = "⏳ रसीद तैयार हो रही है...";
+  try {
+    const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#ffffff", useCORS: true, imageTimeout: 5000 });
+    const png = await new Promise((ok, fail) => canvas.toBlob(x => x ? ok(x) : fail(new Error("इमेज नहीं बनी")), "image/png"));
+    receiptFiles.push(new File([png], "Bill_" + billId + ".png", { type: "image/png" }));
+    preview.src = URL.createObjectURL(png);
+    preview.style.display = "block";
+    saveBlob(png, "Bill_" + billId + ".png");
 
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a5"
-    });
-    const imgWidth = 130;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-    pdf.save("Bill_" + billId + ".pdf");
-  });
+    if (window.jspdf) {
+      const pdf = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a5" });
+      // पूरी रसीद एक पन्ने में आए
+      const ratio = Math.min(128 / canvas.width, 190 / canvas.height);
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 10, 10, canvas.width * ratio, canvas.height * ratio);
+      const pdfBlob = pdf.output("blob");
+      receiptFiles.push(new File([pdfBlob], "Bill_" + billId + ".pdf", { type: "application/pdf" }));
+      setTimeout(() => saveBlob(pdfBlob, "Bill_" + billId + ".pdf"), 800);
+    }
+    if (navigator.canShare && navigator.canShare({ files: receiptFiles })) {
+      document.getElementById("shareBtn").style.display = "block";
+    }
+    status.innerText = (window.jspdf ? "✅ Image और PDF तैयार हैं।" : "⚠️ Image तैयार है, PDF लाइब्रेरी लोड नहीं हुई।") +
+      " डाउनलोड न हो तो बटन दोबारा दबाएँ, या नीचे की फोटो को दबाकर रखें और सेव करें।";
+  } catch (err) {
+    console.error(err);
+    status.innerText = "❌ रसीद डाउनलोड नहीं हुई: " + (err.message || err);
+  }
+}
+
+function shareReceipt() {
+  navigator.share({ files: receiptFiles }).catch(err => console.log("Share cancel/fail", err));
 }
 
 function showFeeTab() {
@@ -1623,6 +1690,7 @@ function renderAdminTable() {
             ${isPaid ? 'Pending' : '✓ Paid'}
           </button>
           <button type="button" onclick="showMemberDetailById('${m.id || m.phone}')" style="padding:4px 6px; background:#ffcc00; color:#000; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">👁</button>
+          <button type="button" title="रसीद" onclick="adminReceipt('${m.id || m.phone}')" style="padding:4px 6px; background:#25D366; color:#000; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">🧾</button>
           <button type="button" onclick="deleteMemberById('${m.id || m.phone}')" style="padding:4px 6px; background:#ff3333; color:#fff; border:none; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">🗑️</button>
         </div>
       </td>
