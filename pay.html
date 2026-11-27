@@ -6,6 +6,7 @@
 <title>5 Brother's Fitness Club - Fees Portal</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <style>
@@ -194,6 +195,8 @@ th{color:#ffcc00;}
     <div class="tab-btn" id="tabBtnAdmin" onclick="openAdminRecords()">📋 रजिस्टर व रिकॉर्ड्स</div>
   </div>
 
+  <button type="button" onclick="openOnlyReceipt()" style="width:100%;margin-bottom:10px;padding:10px;border-radius:8px;border:1.5px solid #ffcc00;background:#181818;color:#ffcc00;font-weight:bold;font-size:13px;cursor:pointer;">🧾 Only Receipt (पुरानी रसीद निकालें)</button>
+
   <div id="sectionFees">
     <div class="field-group">
       <label>🔍 सदस्य खोजें (Live Auto Search - नाम / मोबाइल)</label>
@@ -299,6 +302,14 @@ th{color:#ffcc00;}
 
         <div id="refTagsContainer" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
         <div id="refDiscountText" style="font-size:10px;color:#00ff99;font-weight:bold;margin-top:5px;display:none;"></div>
+      </div>
+
+      <div class="field-group">
+        <label class="checkbox-container">
+          <input type="checkbox" id="chkAdvance" onchange="checkLateStatus()">
+          <span>एडवांस पेमेंट (अगले चक्र की फीस पहले जमा)</span>
+        </label>
+        <div id="nextDueText" style="font-size:12px;color:#ffcc00;font-weight:bold;margin-top:5px;"></div>
       </div>
 
       <button type="submit" class="btn-submit">💳 भुगतान आगे बढ़ाएं (Proceed to Pay)</button>
@@ -452,6 +463,29 @@ th{color:#ffcc00;}
 </div>
 
 <!-- OFFICIAL RECEIPT MODAL -->
+<div id="onlyReceiptModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:900;align-items:flex-start;justify-content:center;padding:20px 14px;overflow-y:auto;">
+  <div style="width:100%;max-width:400px;background:#181818;border:1.5px solid #ffcc00;border-radius:12px;padding:14px;color:#fff;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <b style="color:#ffcc00;">🧾 Only Receipt</b>
+      <button type="button" onclick="closeOnlyReceipt()" style="background:#333;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:4px 10px;cursor:pointer;">✕</button>
+    </div>
+    <div class="field-group">
+      <label>🔍 अपना नाम खोजें</label>
+      <input type="text" id="orSearch" oninput="searchOnlyReceipt()" placeholder="नाम टाइप करें" autocomplete="off">
+    </div>
+    <div id="orResults"></div>
+    <form id="orVerify" style="display:none;" onsubmit="verifyOnlyReceipt(event)">
+      <div style="margin-bottom:8px;font-weight:bold;" id="orName"></div>
+      <div class="field-group">
+        <label>रजिस्टर्ड मोबाइल के शुरू के 4 या आखिरी 4 अंक</label>
+        <input type="password" id="orDigits" inputmode="numeric" maxlength="4" autocomplete="off" required>
+      </div>
+      <button type="submit" class="btn-submit">रसीद देखें व डाउनलोड करें</button>
+    </form>
+    <div id="orMsg" style="color:#ff6666;font-size:12px;margin-top:8px;"></div>
+  </div>
+</div>
+
 <div id="receiptModal">
   <div class="receipt-wrapper">
     <div style="display:flex; justify-content:flex-start; margin-bottom:8px;" data-html2canvas-ignore="true">
@@ -482,6 +516,11 @@ th{color:#ffcc00;}
         <div class="r-row"><span>जमा फीस:</span><b id="rGymFee" style="color:green; font-size:13px;"></b></div>
         <div class="r-row"><span>बकाया राशि:</span><b id="rDueFee" style="color:#ff3333;"></b></div>
         <div class="r-row"><span>वैधता / अगला भुगतान:</span><b id="rValidTill" style="color:#b37400;"></b></div>
+        <div id="rQrBox" style="display:none;flex-direction:column;align-items:center;margin-top:10px;position:relative;z-index:2;">
+          <div id="rQr" style="background:#fff;padding:6px;"></div>
+          <div style="font-size:9px;color:#555;">स्कैन करके यह रसीद डाउनलोड करें</div>
+        </div>
+        <div id="rQrNote" data-html2canvas-ignore="true" style="font-size:10px;color:#b91c1c;margin-top:6px;"></div>
         <div class="receipt-footer-stamp">
           <div class="receipt-sign-box">
             <img src="https://i.ibb.co/mVtxCHkp/IMG-20261021-164158.jpg" alt="Signature" crossorigin="anonymous" class="receipt-sign-img">
@@ -669,7 +708,9 @@ function getMasterList() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  loadMembersFromCloud();
+  ["feeDuration", "feeCategory", "mFeeJoinDate"].forEach(id => document.getElementById(id).addEventListener("change", showNextDue));
+  cloudReady = loadMembersFromCloud();
+  openReceiptFromLink();
   const today = todayStr();
   document.getElementById("mFeePaidDate").value = today;
   document.getElementById("mFeePrevPaidDate").value = today;
@@ -775,7 +816,7 @@ function suggestionHTML(matches) {
   if (!matches.length) return `<div style="color:#ff6666; font-size:11px; text-align:center; padding:6px;">कोई सदस्य नहीं मिला (नया सदस्य)।</div>`;
   let html = `<div style="font-size:10px; color:#ffcc00; margin-bottom:6px; font-weight:bold;">मिलते-जुलते सदस्य (${matches.length}) - चुनें:</div>`;
   matches.slice(0, 6).forEach(m => {
-    const maskedPhone = m.phone ? (m.phone.slice(0, 4) + "****" + m.phone.slice(-2)) : "N/A";
+    const maskedPhone = m.phone ? ("********" + m.phone.slice(-2)) : "N/A";
     const isPaid = (m.status === 'Paid' || m.manualStatus === 'Paid' || m.fees === 'Paid');
     const p = planInfoOf(m);
     html += `
@@ -834,6 +875,7 @@ function onIdentityInput(src) {
 }
 
 function clearSelection() {
+  document.getElementById("chkAdvance").checked = false;
   selectedMember = null;
   adminUnlocked = false;
   document.getElementById("mFeeJoinDate").value = todayStr();
@@ -848,6 +890,7 @@ function selectMember(identifier) {
 
   selectedMember = m;
   adminUnlocked = false;
+  document.getElementById("chkAdvance").checked = false;
 
   document.getElementById("mFeeName").value = m.name || "";
   const fatherName = m.father || m.parentName || "";
@@ -959,6 +1002,7 @@ function toggleAdminUnlock() {
 }
 
 function initFormState() {
+  document.getElementById("chkAdvance").checked = false;
   selectedMember = null;
   adminUnlocked = false;
   hideSugBoxes();
@@ -970,27 +1014,70 @@ function initFormState() {
   checkLateStatus();
 }
 
+// --- FEES CYCLE: तारीख हमेशा जॉइनिंग तारीख से चलती है ---
+function addMonths(dStr, n) {
+  const [y, m, d] = dStr.split("-").map(Number);
+  const first = new Date(y, m - 1 + n, 1);
+  const last = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+  return first.getFullYear() + "-" + String(first.getMonth() + 1).padStart(2, "0") + "-" + String(Math.min(d, last)).padStart(2, "0");
+}
+
+// जिस चक्र में payDate आती है उसका क्रमांक (0 = जॉइनिंग वाला महीना)
+function cycleIndex(joinDate, payDate) {
+  let k = 0;
+  while (k < 1200 && addMonths(joinDate, k + 1) <= payDate) k++;
+  return k;
+}
+
+// सदस्य की अभी की अगली फीस तारीख (पुराने रिकॉर्ड में lastPaid से निकलती है)
+function currentNextDue(m, joinDate) {
+  if (!m || !joinDate) return "";
+  if (m.joinDate && m.joinDate !== joinDate) return ""; // Admin ने जॉइनिंग तारीख बदली
+  if (m.nextDue) return m.nextDue;
+  if (!m.lastPaid) return "";
+  const months = parseInt(m.planMonths) || planInfoOf(m).months;
+  return addMonths(joinDate, cycleIndex(joinDate, m.lastPaid) + months);
+}
+
+// भुगतान के बाद अगली फीस तारीख
+function computeNextDue(m, joinDate, payDate, months, advance) {
+  const isPaid = !!m && (m.status === "Paid" || m.manualStatus === "Paid");
+  const prev = (m && (m.nextDue || isPaid)) ? currentNextDue(m, joinDate) : "";
+  const k = cycleIndex(joinDate, payDate);
+  // तारीख अभी आई नहीं है: दोबारा रसीद से कुछ नहीं बदलेगा, सिर्फ एडवांस से आगे बढ़ेगी
+  if (prev && payDate < prev) {
+    return advance ? addMonths(joinDate, cycleIndex(joinDate, prev) + months) : prev;
+  }
+  return addMonths(joinDate, k + months);
+}
+
 function getLateDaysDetails() {
   const joinDateVal = document.getElementById("mFeeJoinDate").value;
   const paidDateVal = document.getElementById("mFeePaidDate").value;
-  const prevPaidVal = document.getElementById("mFeePrevPaidDate").value;
-  if (!joinDateVal || !paidDateVal) return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
-  
-  const refDateStr = prevPaidVal || joinDateVal;
-  const refD = new Date(refDateStr);
-  const payD = new Date(paidDateVal);
+  const onTime = { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
+  if (!selectedMember || !joinDateVal || !paidDateVal) return onTime;
 
-  refD.setMonth(refD.getMonth() + 1);
-
-  if (payD > refD) {
-    const diffMs = payD - refD;
-    const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const dueDate = currentNextDue(selectedMember, joinDateVal) || joinDateVal;
+  if (paidDateVal > dueDate) {
+    const days = Math.round((new Date(paidDateVal) - new Date(dueDate)) / 86400000);
     return { isLate: true, days: days, text: `${days} दिन लेट ⚠️` };
   }
-  return { isLate: false, days: 0, text: "समय पर (On Time) ✅" };
+  return onTime;
+}
+
+function showNextDue() {
+  const el = document.getElementById("nextDueText");
+  const join = document.getElementById("mFeeJoinDate").value;
+  const paid = document.getElementById("mFeePaidDate").value;
+  if (!join || !paid) { el.innerText = ""; return; }
+  const dur = document.getElementById("feeDuration");
+  const months = parseInt((dur.options[dur.selectedIndex] || { getAttribute: () => 1 }).getAttribute("data-months")) || 1;
+  const next = computeNextDue(selectedMember, join, paid, months, document.getElementById("chkAdvance").checked);
+  el.innerText = "📅 अगली फीस तारीख: " + formatDateDMY(next);
 }
 
 function checkLateStatus() {
+  showNextDue();
   const lateInfo = getLateDaysDetails();
   const warn = document.getElementById("lateWarningBox");
 
@@ -1004,6 +1091,7 @@ function checkLateStatus() {
 
 function handleInitialSubmit(e) {
   e.preventDefault();
+  const isAdvance = document.getElementById("chkAdvance").checked;
 
   if (!selectedMember && !adminUnlocked) {
     const ph = document.getElementById("mFeePhone").value.trim();
@@ -1049,7 +1137,14 @@ function handleInitialSubmit(e) {
 
   const lateInfo = getLateDaysDetails();
 
+  if (isAdvance) {
+    const m = selectedMember;
+    const next = computeNextDue(m, joinDateVal, paidDateVal, months, true);
+    if (!confirm("एडवांस पेमेंट: अगली फीस तारीख " + formatDateDMY(next) + " हो जाएगी। आगे बढ़ें?")) return;
+  }
+
   pendingPaymentData = { 
+    isAdvance,
     name, phone, father, cat, planText, months, planAmt, paidAmt, 
     specialDiscount, dueAmt, mode, paidDateVal, joinDateVal, prevPaidDateVal, lateInfo,
     planBase: parseFloat(durSelect.value) || 0,
@@ -1104,10 +1199,6 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
   const data = pendingPaymentData;
   if (!data) return;
 
-  let baseDateForNext = data.paidDateVal ? new Date(data.paidDateVal) : new Date();
-  baseDateForNext.setMonth(baseDateForNext.getMonth() + data.months);
-  const validTill = baseDateForNext.toLocaleDateString('en-GB');
-
   const paidDateFormatted = formatDateDMY(data.paidDateVal);
   const joinDateFormatted = formatDateDMY(data.joinDateVal);
   const prevDateFormatted = formatDateDMY(data.prevPaidDateVal);
@@ -1117,7 +1208,16 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
     ? list.findIndex(x => x.id != null && x.id.toString() === data.memberId.toString())
     : list.findIndex(x => x.phone === data.phone && (x.name || "").toLowerCase() === data.name.toLowerCase());
   
+  const member = existingIndex >= 0 ? list[existingIndex] : null;
+  const payDate = data.paidDateVal || todayStr();
+  // बिना Admin के सदस्य की सेव की हुई जॉइनिंग तारीख ही मान्य है
+  const cycleJoin = (!data.adminEdited && member && member.joinDate) || data.joinDateVal || payDate;
+  const nextDue = computeNextDue(member, cycleJoin, payDate, data.months, data.isAdvance);
+  const validTill = formatDateDMY(nextDue);
+
   if (existingIndex >= 0) {
+    list[existingIndex].nextDue = nextDue;
+    if (!list[existingIndex].joinDate) list[existingIndex].joinDate = cycleJoin;
     list[existingIndex].status = "Paid";
     list[existingIndex].manualStatus = "Paid";
     list[existingIndex].fees = "Paid";
@@ -1151,38 +1251,62 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
       planBase: data.planBase,
       planMonths: data.months,
       joinDate: data.joinDateVal,
+      nextDue: nextDue,
       idSubmitted: true
     });
   }
   
+  const receipt = {
+    billId: "5BFC-" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase(),
+    modeText: modeText, joinDate: cycleJoin, paidDate: payDate, prevPaid: data.prevPaidDateVal || "",
+    lateText: data.lateInfo.text, name: data.name, father: data.father, phone: data.phone,
+    cat: data.cat, planText: data.planText, planAmt: data.planAmt, paidAmt: data.paidAmt,
+    specialDiscount: data.specialDiscount, dueAmt: data.dueAmt, nextDue: nextDue
+  };
+  const saved = member || list[list.length - 1];
+  saved.lastReceipt = receipt; // "Only Receipt" के लिए आखिरी भुगतान
   persistList(list);
+  renderReceipt(receipt, saved.id);
 
-  const billId = "5BFC-" + Date.now().toString().slice(-4);
-  document.getElementById("billId").innerText = billId;
-  document.getElementById("rMode").innerText = modeText;
-  document.getElementById("rJoinDate").innerText = joinDateFormatted;
-  document.getElementById("billDate").innerText = paidDateFormatted;
-  document.getElementById("rLateStatus").innerText = data.lateInfo.text;
-  document.getElementById("rName").innerText = data.name;
-  document.getElementById("rFather").innerText = data.father;
-  document.getElementById("rPhone").innerText = data.phone;
-  document.getElementById("rPlanDetails").innerText = `${data.cat} | ${data.planText}`;
-  document.getElementById("rGymFee").innerText = "₹" + data.paidAmt;
+  if (showHurray) {
+    document.getElementById("hurrayModal").style.display = "flex";
+  } else {
+    proceedToReceiptFromHurray();
+  }
+}
+
+// रसीद स्क्रीन भरना (नई रसीद और Only Receipt दोनों के लिए)
+function renderReceipt(r, memberId) {
+  const validTill = formatDateDMY(r.nextDue);
+  const paidDateFormatted = formatDateDMY(r.paidDate);
+  const joinDateFormatted = formatDateDMY(r.joinDate);
+  const prevDateFormatted = formatDateDMY(r.prevPaid);
+
+  document.getElementById("billId").innerText = r.billId;
+  document.getElementById("rMode").innerText = r.modeText;
+  document.getElementById("rJoinDate").innerText = formatDateDMY(r.joinDate);
+  document.getElementById("billDate").innerText = formatDateDMY(r.paidDate);
+  document.getElementById("rLateStatus").innerText = r.lateText;
+  document.getElementById("rName").innerText = r.name;
+  document.getElementById("rFather").innerText = r.father;
+  document.getElementById("rPhone").innerText = r.phone;
+  document.getElementById("rPlanDetails").innerText = `${r.cat} | ${r.planText}`;
+  document.getElementById("rGymFee").innerText = "₹" + r.paidAmt;
 
   const discRow = document.getElementById("rDiscountRow");
-  if (data.specialDiscount > 0) {
+  if (r.specialDiscount > 0) {
     discRow.style.display = "flex";
-    document.getElementById("rDiscount").innerText = "-₹" + data.specialDiscount + " (छूट)";
+    document.getElementById("rDiscount").innerText = "-₹" + r.specialDiscount + " (छूट)";
   } else {
     discRow.style.display = "none";
   }
 
-  document.getElementById("rDueFee").innerText = data.dueAmt > 0 ? ("₹" + data.dueAmt) : "₹0";
+  document.getElementById("rDueFee").innerText = r.dueAmt == null ? "—" : "₹" + r.dueAmt;
   document.getElementById("rValidTill").innerText = validTill;
 
   let specialDiscountMsg = "";
-  if (data.specialDiscount > 0) {
-    specialDiscountMsg = `• *विशेष छूट:* ₹${data.specialDiscount} (Special Discount) 🎁\n`;
+  if (r.specialDiscount > 0) {
+    specialDiscountMsg = `• *विशेष छूट:* ₹${r.specialDiscount} (Special Discount) 🎁\n`;
   }
 
   let prevPayMsg = "";
@@ -1193,31 +1317,141 @@ function finalizeReceiptAndUnlock(modeText, shortMode, showHurray) {
   const msg = `🏋️‍♂️ *5 BROTHER'S FITNESS CLUB*
 *Official Payment & Fee Slip*
 ━━━━━━━━━━━━━━━━━━━━
-*सदस्य:* ${data.name}
-*रसीद संख्या:* #${billId}
+*सदस्य:* ${r.name}
+*रसीद संख्या:* #${r.billId}
 
 📅 *तारीख विवरण (Date Details):*
 • *जॉइनिंग तिथि:* ${joinDateFormatted}
 • *भुगतान तिथि:* ${paidDateFormatted}
-• *विलंब स्थिति:* ${data.lateInfo.text}
+• *विलंब स्थिति:* ${r.lateText}
 ${prevPayMsg}
 💰 *शुल्क व भुगतान विवरण:*
-• *चुना गया प्लान:* ${data.cat} (₹${data.planAmt})
-• *जमा राशि:* ₹${data.paidAmt} (${modeText})
-${specialDiscountMsg}• *बकाया राशि:* ₹${data.dueAmt} ${data.dueAmt === 0 ? '(कोई बकाया नहीं)' : '⚠️'}
+• *चुना गया प्लान:* ${r.cat} ${r.planAmt == null ? "" : "(₹" + r.planAmt + ")"}
+• *जमा राशि:* ₹${r.paidAmt} (${r.modeText})
+${specialDiscountMsg}• *बकाया राशि:* ${r.dueAmt == null ? '—' : '₹' + r.dueAmt + (r.dueAmt === 0 ? ' (कोई बकाया नहीं)' : ' ⚠️')}
 • *अगला भुगतान:* ${validTill}
-• *खाता स्थिति:* सक्रिय (Active)
 ━━━━━━━━━━━━━━━━━━━━
 📍 उमराव खेड़ा, अकरमपुर, उन्नाव
 📞 संपर्क: 9140417259`;
 
-  document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + data.phone + "?text=" + encodeURIComponent(msg), "_blank");
+  document.getElementById("waBtn").onclick = () => window.open("https://wa.me/91" + r.phone + "?text=" + encodeURIComponent(msg), "_blank");
+  drawReceiptQr(memberId, r.billId);
+}
 
-  if (showHurray) {
-    document.getElementById("hurrayModal").style.display = "flex";
-  } else {
-    proceedToReceiptFromHurray();
+// हर रसीद का अलग QR: इसी पेज का लिंक + सदस्य + बिल नंबर
+function drawReceiptQr(memberId, billId) {
+  const box = document.getElementById("rQrBox");
+  const holder = document.getElementById("rQr");
+  const note = document.getElementById("rQrNote");
+  holder.innerHTML = "";
+  box.style.display = "none";
+  note.innerText = "";
+  if (!/^https?:$/.test(location.protocol)) { note.innerText = "QR तभी बनेगा जब यह पेज ऑनलाइन (https लिंक पर) खुला हो।"; return; }
+  if (typeof QRCode === "undefined") { note.innerText = "QR लाइब्रेरी लोड नहीं हुई। इंटरनेट जाँचें।"; return; }
+  const url = location.origin + location.pathname + "?m=" + encodeURIComponent(memberId) + "&r=" + encodeURIComponent(billId);
+  new QRCode(holder, { text: url, width: 110, height: 110 });
+  box.style.display = "flex";
+}
+
+// --- ONLY RECEIPT ---
+let orMember = null;
+let orTries = 0;
+let orWantedBill = "";
+let cloudReady = null;
+
+function openOnlyReceipt() {
+  orMember = null;
+  orWantedBill = "";
+  ["orSearch", "orDigits"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("orResults").innerHTML = "";
+  document.getElementById("orMsg").innerText = "";
+  document.getElementById("orVerify").style.display = "none";
+  document.getElementById("onlyReceiptModal").style.display = "flex";
+}
+
+function closeOnlyReceipt() {
+  document.getElementById("onlyReceiptModal").style.display = "none";
+}
+
+function searchOnlyReceipt() {
+  const q = document.getElementById("orSearch").value.trim().toLowerCase();
+  const box = document.getElementById("orResults");
+  box.innerHTML = "";
+  document.getElementById("orVerify").style.display = "none";
+  document.getElementById("orMsg").innerText = "";
+  if (q.length < 2) return;
+  const hits = getMasterList().filter(m => (m.name || "").toLowerCase().includes(q)).slice(0, 8);
+  if (!hits.length) { document.getElementById("orMsg").innerText = "कोई सदस्य नहीं मिला।"; return; }
+  hits.forEach(m => {
+    const b = document.createElement("button");
+    b.type = "button";
+    const father = m.father || m.parentName;
+    b.innerText = m.name + (father && father !== "-" ? " (पिता: " + father + ")" : "");
+    b.style.cssText = "display:block;width:100%;text-align:left;background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:9px;margin-bottom:5px;cursor:pointer;";
+    b.onclick = () => chooseOnlyReceipt(m);
+    box.appendChild(b);
+  });
+}
+
+function chooseOnlyReceipt(m) {
+  orMember = m;
+  document.getElementById("orResults").innerHTML = "";
+  document.getElementById("orMsg").innerText = "";
+  document.getElementById("orName").innerText = m.name;
+  document.getElementById("orDigits").value = "";
+  document.getElementById("orVerify").style.display = "block";
+  document.getElementById("orDigits").focus();
+}
+
+// आखिरी रसीद; पुराने भुगतान के लिए सिर्फ रिकॉर्ड में मौजूद जानकारी
+function lastReceiptOf(m) {
+  if (m.lastReceipt) return m.lastReceipt;
+  const isPaid = m.status === "Paid" || m.manualStatus === "Paid";
+  if (!isPaid || !m.lastPaid || !m.amount) return null;
+  const join = m.joinDate || m.lastPaid;
+  return {
+    billId: "5BFC-OLD-" + m.id + "-" + m.lastPaid.replace(/-/g, ""),
+    modeText: (m.payMode || "—") + " (पुराने रिकॉर्ड से)", joinDate: join, paidDate: m.lastPaid, prevPaid: "",
+    lateText: "—", name: m.name, father: m.father || m.parentName || "-", phone: m.phone,
+    cat: m.type === "student" ? "विद्यार्थी" : "जॉब / व्यापार", planText: "—", planAmt: null, paidAmt: m.amount,
+    specialDiscount: 0, dueAmt: null, nextDue: currentNextDue(m, join)
+  };
+}
+
+function verifyOnlyReceipt(e) {
+  e.preventDefault();
+  const msg = document.getElementById("orMsg");
+  if (!orMember) return;
+  if (orTries >= 5) { msg.innerText = "बहुत बार गलत अंक डाले गए। पेज दोबारा खोलें।"; return; }
+  const typed = document.getElementById("orDigits").value.trim();
+  const phone = String(orMember.phone || "").replace(/\D/g, "");
+  if (!/^\d{4}$/.test(typed) || phone.length < 10 || (typed !== phone.slice(0, 4) && typed !== phone.slice(-4))) {
+    orTries++;
+    msg.innerText = "❌ अंक रजिस्टर्ड मोबाइल से मेल नहीं खाते।";
+    return;
   }
+  const receipt = lastReceiptOf(orMember);
+  if (!receipt) { msg.innerText = "इस सदस्य का कोई भुगतान रिकॉर्ड नहीं मिला।"; return; }
+  if (orWantedBill && orWantedBill !== receipt.billId) alert("स्कैन की गई रसीद के बाद नया भुगतान हुआ है। सबसे आखिरी रसीद दिखाई जा रही है।");
+  orTries = 0;
+  closeOnlyReceipt();
+  renderReceipt(receipt, orMember.id);
+  proceedToReceiptFromHurray();
+}
+
+// QR स्कैन करके खुला लिंक
+async function openReceiptFromLink() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get("m");
+  if (!id) return;
+  closeFeesWelcome();
+  openOnlyReceipt();
+  document.getElementById("orMsg").innerText = "रिकॉर्ड लोड हो रहा है...";
+  await cloudReady;
+  const m = getMasterList().find(x => String(x.id) === id);
+  if (!m) { document.getElementById("orMsg").innerText = "रिकॉर्ड नहीं मिला। इंटरनेट जाँचें या नाम से खोजें।"; return; }
+  chooseOnlyReceipt(m);
+  orWantedBill = params.get("r") || "";
 }
 
 function proceedToReceiptFromHurray() {
