@@ -857,7 +857,8 @@ header .menu{color:#00ff66;margin-top:8px;font-weight:800;font-size:13px}
         var rows = [];
         var fName = (file.name || "").toLowerCase();
         if (fName.endsWith(".csv")) {
-          var lines = String(e.target.result || "").split(/?
+          var lines = String(e.target.result || "").split(/
+?
 /).filter(function(l) { return l.trim(); });
           if (lines.length > 1) {
             var headers = lines[0].split(",").map(function(h) { return h.trim().toLowerCase().replace(/^"|"$/g, ""); });
