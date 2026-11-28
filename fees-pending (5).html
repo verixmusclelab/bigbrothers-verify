@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Fees Pending & Late Payment Register</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<style>
+:root {
+  --bg: #070B14;
+  --card: #0F172A;
+  --card-inner: #070E1F;
+  --border: #23355C;
+  --border-gold: rgba(255, 184, 0, 0.45);
+  --gold: #FFB800;
+  --cyan: #38BDF8;
+  --green: #22C55E;
+  --red: #EF4444;
+  --orange: #F97316;
+  --tx: #FFFFFF;
+  --mut: #94A3B8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+body {
+  background: radial-gradient(1200px 500px at 50% -10%, #16224a 0%, #070B14 60%) fixed #070B14;
+  color: var(--tx);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 14px 12px 90px;
+  min-height: 100vh;
+}
+.top-nav {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.btn-back {
+  background: linear-gradient(135deg, #FFC83D, #FFA800);
+  color: #1a1200; font-weight: 900; font-size: 12px; padding: 8px 14px;
+  border-radius: 10px; border: none; text-decoration: none; cursor: pointer; display: inline-block;
+}
+.header-card {
+  background: linear-gradient(160deg, #16213f, #101830);
+  border: 1.5px solid var(--border-gold);
+  border-radius: 18px; padding: 16px 14px; text-align: center; margin-bottom: 14px;
+}
+.header-card h1 { color: var(--gold); font-size: 20px; font-weight: 900; letter-spacing: 0.5px; }
+.header-card p { color: #fff; font-size: 12px; font-weight: 700; margin-top: 4px; }
+.kpi-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;
+}
+.kpi-box {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 12px;
+}
+.kpi-box.pending-kpi { border-color: var(--red); background: rgba(239, 68, 68, 0.08); }
+.kpi-box.paid-kpi { border-color: var(--green); background: rgba(34, 197, 94, 0.08); }
+.kpi-lbl { font-size: 11px; font-weight: 800; color: var(--mut); text-transform: uppercase; }
+.kpi-val { font-size: 24px; font-weight: 900; margin: 4px 0 2px; }
+.kpi-sub { font-size: 11px; color: var(--mut); font-weight: 600; }
+.filter-bar {
+  background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 10px;
+  margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px;
+}
+.filter-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ft-btn {
+  padding: 11px 8px; border-radius: 10px; font-size: 12.5px; font-weight: 900; cursor: pointer;
+  border: 1.5px solid var(--border); background: #070E1F; color: var(--mut); text-align: center;
+}
+.ft-btn.active-pending {
+  background: linear-gradient(135deg, #EF4444, #B91C1C); color: #fff; border-color: #EF4444;
+}
+.ft-btn.active-all {
+  background: linear-gradient(135deg, #FFC83D, #FFA800); color: #000; border-color: var(--gold);
+}
+.search-inp {
+  width: 100%; background: #070E1F; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; color: #fff; font-size: 13px; outline: none;
+}
+.member-card {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px;
+  margin-bottom: 12px;
+}
+.member-card.is-pending {
+  border-color: var(--red); background: linear-gradient(160deg, rgba(239, 68, 68, 0.08), rgba(15, 23, 42, 0.95));
+}
+.member-card.is-paid {
+  border-color: var(--green);
+}
+.day-badge {
+  display: inline-block; background: #FFB800; color: #000; font-size: 11px; font-weight: 900;
+  padding: 3px 8px; border-radius: 6px;
+}
+.status-pill {
+  font-size: 10.5px; font-weight: 900; padding: 3px 9px; border-radius: 999px; text-transform: uppercase;
+}
+.status-pill.red { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid #EF4444; }
+.status-pill.green { background: rgba(34, 197, 94, 0.18); color: #86efac; border: 1px solid #22C55E; }
+.m-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.m-name { font-size: 15px; font-weight: 900; color: #fff; }
+.m-phone { font-size: 11.5px; color: var(--mut); margin-top: 2px; }
+.info-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px;
+  background: var(--card-inner); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 9px 11px; font-size: 11.5px; margin: 8px 0;
+}
+.info-row span { color: var(--mut); display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 3px; }
+.info-row b { color: #fff; font-size: 12px; }
+.date-edit-inp {
+  width: 100%; background: #0f1b36; border: 1px solid var(--gold); color: #ffd166;
+  border-radius: 6px; padding: 5px 7px; font-size: 11.5px; font-weight: 700;
+}
+.due-alert-line {
+  font-size: 12px; font-weight: 800; padding: 6px 8px; border-radius: 8px; margin-bottom: 10px;
+}
+.due-alert-line.bad { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px dashed #EF4444; }
+.due-alert-line.ok { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px dashed #22C55E; }
+.card-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.btn-act {
+  flex: 1 1 45%; padding: 10px; border-radius: 8px; font-size: 11.5px; font-weight: 900;
+  cursor: pointer; border: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+}
+.btn-pay { background: linear-gradient(135deg, #22C55E, #16A34A); color: #02200D; }
+.btn-late { background: linear-gradient(135deg, #FFB800, #EA580C); color: #000; }
+.btn-unpaid { background: linear-gradient(135deg, #EF4444, #B91C1C); color: #fff; }
+.btn-del { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid #EF4444; flex: 0 0 auto; padding: 10px 14px; }
+.btn-wa { background: #25D366; color: #fff; text-decoration: none; }
+
+.modal-ov {
+  display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88);
+  z-index: 99999; align-items: center; justify-content: center; padding: 12px; overflow-y: auto;
+}
+.modal-ov.open { display: flex; }
+.modal-box {
+  background: #0F172A; border: 2px solid var(--gold); border-radius: 16px;
+  width: 100%; max-width: 460px; padding: 16px;
+}
+.fg { margin-bottom: 10px; }
+.fg label { display: block; font-size: 11.5px; color: var(--mut); font-weight: 700; margin-bottom: 4px; }
+.fc {
+  width: 100%; background: #070E1F; border: 1px solid var(--border); color: #fff;
+  border-radius: 9px; padding: 9px 11px; font-size: 12.5px;
+}
+.receipt-box {
+  background: #ffffff; color: #111111; border-radius: 12px; padding: 14px; margin-top: 10px; font-size: 12px;
+}
+.toast-msg {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: #0B1226; border: 2px solid var(--green); color: #fff;
+  padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 900;
+  z-index: 999999; display: none; text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="index.html" class="btn-back">⬅ Dashboard</a>
+  <a href="pay.html?m=fees" class="btn-back" style="background:#22C55E;color:#000">💳 Pay Fees Portal</a>
+</div>
+
+<div class="header-card">
+  <div style="font-size:28px;margin-bottom:4px">📅</div>
+  <h1 id="gymTitleHeader">FEES PENDING &amp; LATE PAYMENT REGISTER</h1>
+  <p>1 से 31 तारीख अनुसार बकाया व लेट पेमेंट रसीद रजिस्टर</p>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi-box pending-kpi">
+    <div class="kpi-lbl">⚠️ Pending Payment</div>
+    <div class="kpi-val" style="color:var(--red)" id="valPendingCount">0</div>
+    <div class="kpi-sub" id="valPendingAmount">कुल बकाया: ₹0</div>
+  </div>
+  <div class="kpi-box paid-kpi">
+    <div class="kpi-lbl">✅ Already Paid</div>
+    <div class="kpi-val" style="color:var(--green)" id="valPaidCount">0</div>
+    <div class="kpi-sub" id="valTotalMembers">कुल सदस्य: 0</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-tabs">
+    <button type="button" class="ft-btn active-pending" id="btnFilterPending">
+      ⚠️ केवल बकाया फीस (<span id="tabPendingBadge">0</span>)
+    </button>
+    <button type="button" class="ft-btn" id="btnFilterAll">
+      📋 सभी 1 से 31 तारीख (<span id="tabAllBadge">0</span>)
+    </button>
+  </div>
+  <input type="text" id="memberSearchBox" class="search-inp" placeholder="🔎 नाम या 10 अंक मोबाइल से खोजें...">
+</div>
+
+<div id="membersContainer">
+  <div style="text-align:center;padding:30px;color:var(--mut)">लोड हो रहा है...</div>
+</div>
+
+<!-- LATE PAYMENT RECEIVE MODAL -->
+<div class="modal-ov" id="latePayModal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px">
+      <h3 style="color:var(--gold);font-size:15px">🕒 Late Payment Receive &amp; Receipt</h3>
+      <button type="button" id="btnCloseLateModal" style="background:none;border:none;color:#fb7185;font-size:20px;font-weight:900;cursor:pointer">&times;</button>
+    </div>
+
+    <div id="lateMemberSummary" style="font-size:12px;color:#cbd5e1;margin-bottom:10px"></div>
+
+    <div class="fg">
+      <label>Due Date (देय तिथि) *</label>
+      <input type="date" class="fc" id="lpDueDateInp">
+    </div>
+
+    <div class="fg">
+      <label>Payment Receive Date (जिस तारीख को पेमेंट मिला) *</label>
+      <input type="date" class="fc" id="lpReceiveDateInp">
+    </div>
+
+    <div class="fg">
+      <label>Amount Received (₹) *</label>
+      <input type="number" class="fc" id="lpAmountInp">
+    </div>
+
+    <div id="lpLateCalcBanner" style="background:#1a1118;border:1px solid var(--gold);border-radius:9px;padding:9px;font-size:12px;color:#ffd166;font-weight:800;margin-bottom:10px"></div>
+
+    <button type="button" class="btn-act btn-pay" style="width:100%" id="btnSaveLateReceipt">
+      ✅ Receive Payment &amp; Generate Late Receipt
+    </button>
+
+    <div id="lateReceiptOutput" class="receipt-box" style="display:none"></div>
+  </div>
+</div>
+
+<div id="toastNotification" class="toast-msg"></div>
+
+<script>
+(function () {
+  var firebaseConfig = {
+    apiKey: "AIzaSyAHEMISEIDSzZz-m2OQT5EPyhTRF-mXqjQ",
+    authDomain: "bfc-gym-215ae.firebaseapp.com",
+    projectId: "bfc-gym-215ae",
+    storageBucket: "bfc-gym-215ae.firebasestorage.app",
+    messagingSenderId: "886920088571",
+    appId: "1:886920088571:web:c4bc478d246a2700b0d95e"
+  };
+  var db = null;
+  try {
+    if (window.firebase) {
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      if (typeof firebase.firestore === "function") db = firebase.firestore();
+    }
+  } catch (e) {}
+
+  var currentFilter = "PENDING";
+  var cachedMembers = [];
+  var activeLateMemberId = null;
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  function formatDateDMY(dStr) {
+    if (!dStr || dStr === "--") return "--";
+    var p = String(dStr).slice(0, 10).split("-");
+    return p.length === 3 ? (p[2] + "/" + p[1] + "/" + p[0]) : dStr;
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById("toastNotification");
+    if (!t) return;
+    t.textContent = msg;
+    t.style.display = "block";
+    setTimeout(function () { t.style.display = "none"; }, 2500);
+  }
+
+  function readStorageArray(key) {
+    try {
+      var arr = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function getAllSystemMembers() {
+    var master = readStorageArray("bbf_master_records_v4");
+    var bfc = readStorageArray("5BFC_MEMBERS");
+    var adm = readStorageArray("5bfc_admissions");
+    var erp = readStorageArray("om_erp_mem_v2");
+
+    var map = new Map();
+    var all = master.concat(bfc, adm, erp);
+    all.forEach(function (m, idx) {
+      if (!m || !m.name) return;
+      var uid = String(m.id || m.phone || ("gen_" + idx)).trim();
+      var phoneKey = (m.phone && String(m.phone).length >= 10) ? String(m.phone).trim() : uid;
+      var key = phoneKey + "|" + String(m.name || "").trim().toLowerCase();
+      if (!map.has(key)) {
+        if (!m.id) m.id = uid;
+        if (!m.father && m.parentName) m.father = m.parentName;
+        if (!m.parentName && m.father) m.parentName = m.father;
+        map.set(key, m);
+      }
+    });
+    return Array.from(map.values());
+  }
+
+  function saveSystemMembersEverywhere(list) {
+    var keys = ["bbf_master_records_v4", "5BFC_MEMBERS", "5bfc_admissions", "om_erp_mem_v2"];
+    keys.forEach(function (k) {
+      try { localStorage.setItem(k, JSON.stringify(list)); } catch (e) {}
+    });
+  }
+
+  function shiftMonthsISO(dateStr, deltaMonths) {
+    if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return "";
+    var parts = dateStr.split("-").map(Number);
+    var year = parts[0], monthIdx = parts[1] - 1, day = parts[2];
+    var targetMonthTotal = year * 12 + monthIdx + parseInt(deltaMonths, 10);
+    var ty = Math.floor(targetMonthTotal / 12);
+    var tm = ((targetMonthTotal % 12) + 12) % 12;
+    var lastDay = new Date(ty, tm + 1, 0).getDate();
+    var clampedDay = Math.min(day, lastDay);
+    return String(ty).padStart(4, "0") + "-" + String(tm + 1).padStart(2, "0") + "-" + String(clampedDay).padStart(2, "0");
+  }
+
+  function analyzeMemberDue(m) {
+    var today = todayISO();
+    var joinDate = m.joinDate || m.lastPaid || today;
+    var months = parseInt(m.planMonths, 10) || 1;
+    var planAmt = Number(m.amount || m.planBase || (m.type === "student" ? 300 : 500));
+
+    var nextDue = m.validTill || "";
+    if (!nextDue || !/^\d{4}-\d{2}-\d{2}$/.test(nextDue)) {
+      var anchor = m.lastPaid || joinDate;
+      nextDue = shiftMonthsISO(anchor, months);
+    }
+
+    var rawStatus = String(m.status || m.manualStatus || m.fees || "").trim().toLowerCase();
+    var isPaid = (rawStatus === "paid" || rawStatus === "already paid");
+
+    var joinDay = 32;
+    if (joinDate && joinDate.indexOf("-") !== -1) {
+      var parts = joinDate.split("-");
+      if (parts.length === 3) joinDay = parseInt(parts[2], 10) || 32;
+    }
+
+    return {
+      joinDay: joinDay,
+      joinDate: joinDate,
+      nextDue: nextDue,
+      isPaid: isPaid,
+      planAmt: planAmt
+    };
+  }
+
+  function loadAndProcessMembers() {
+    var list = getAllSystemMembers();
+    list.sort(function (a, b) {
+      var aD = analyzeMemberDue(a).joinDay;
+      var bD = analyzeMemberDue(b).joinDay;
+      if (aD !== bD) return aD - bD;
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    });
+    cachedMembers = list;
+    renderRegister();
+  }
+
+  function setFilterMode(mode) {
+    currentFilter = mode;
+    document.getElementById("btnFilterPending").className = "ft-btn" + (mode === "PENDING" ? " active-pending" : "");
+    document.getElementById("btnFilterAll").className = "ft-btn" + (mode === "ALL" ? " active-all" : "");
+    renderRegister();
+  }
+
+  function updateLastPaidDateDirect(memberId, newDateVal) {
+    if (!newDateVal) return;
+    var list = getAllSystemMembers();
+    var idx = list.findIndex(function (x) { return String(x.id) === String(memberId); });
+    if (idx < 0) return;
+    list[idx].lastPaid = newDateVal;
+    saveSystemMembersEverywhere(list);
+    if (db) {
+      db.collection("members").doc(String(memberId)).set({ lastPaid: newDateVal }, { merge: true }).catch(function () {});
+      db.collection("public_members").doc(String(memberId)).set({ lastPaid: newDateVal }, { merge: true }).catch(function () {});
+    }
+    showToast("Last payment date updated: " + formatDateDMY(newDateVal));
+    loadAndProcessMembers();
+  }
+
+  function markMemberAlreadyPaid(memberId) {
+    var list = getAllSystemMembers();
+    var idx = list.findIndex(function (x) { return String(x.id) === String(memberId); });
+    if (idx < 0) return;
+
+    var m = list[idx];
+    var today = todayISO();
+    var months = parseInt(m.planMonths, 10) || 1;
+    var newValidTill = shiftMonthsISO(today, months);
+
+    m.status = "Paid";
+    m.manualStatus = "Paid";
+    m.fees = "Paid";
+    m.lastPaid = today;
+    m.validTill = newValidTill;
+    m.dueAmount = 0;
+    m.dueFee = 0;
+    m.dueV = 2;
+
+    saveSystemMembersEverywhere(list);
+
+    if (db) {
+      try {
+        var clean = JSON.parse(JSON.stringify(m));
+        db.collection("members").doc(String(memberId)).set(clean, { merge: true }).catch(function () {});
+        db.collection("public_members").doc(String(memberId)).set(clean, { merge: true }).catch(function () {});
+      } catch (e) {}
+    }
+
+    showToast("✅ " + m.name + " poore system me Paid mark ho gaya.");
+    loadAndProcessMembers();
+  }
+
+  function markNoPaymentReceived(memberId) {
+    var list = getAllSystemMembers();
+    var idx = list.findIndex(function (x) { return String(x.id) === String(memberId); });
+    if (idx < 0) return;
+
+    var m = list[idx];
+    var planAmt = Number(m.amount || m.planBase || 500);
+
+    m.status = "Pending";
+    m.manualStatus = "Pending";
+    m.fees = "Pending";
+    m.dueAmount = planAmt;
+    m.dueFee = planAmt;
+
+    saveSystemMembersEverywhere(list);
+
+    if (db) {
+      try {
+        var clean = JSON.parse(JSON.stringify(m));
+        db.collection("members").doc(String(memberId)).set(clean, { merge: true }).catch(function () {});
+        db.collection("public_members").doc(String(memberId)).set(clean, { merge: true }).catch(function () {});
+      } catch (e) {}
+    }
+
+    showToast("❌ " + m.name + " — No Payment Received Yet (Pending Payment)");
+    loadAndProcessMembers();
+  }
+
+  function openLatePaymentModal(memberId) {
+    var m = cachedMembers.find(function (x) { return String(x.id) === String(memberId); });
+    if (!m) return;
+    var analysis = analyzeMemberDue(m);
+    activeLateMemberId = memberId;
+
+    document.getElementById("lateMemberSummary").innerHTML = "<b>" + m.name + "</b> &bull; 📞 " + (m.phone || "N/A");
+    document.getElementById("lpDueDateInp").value = analysis.nextDue || todayISO();
+    document.getElementById("lpReceiveDateInp").value = todayISO();
+    document.getElementById("lpAmountInp").value = analysis.planAmt;
+    document.getElementById("lateReceiptOutput").style.display = "none";
+    updateLateDaysCalc();
+    document.getElementById("latePayModal").classList.add("open");
+  }
+
+  function closeLatePayModal() {
+    document.getElementById("latePayModal").classList.remove("open");
+    activeLateMemberId = null;
+  }
+
+  function updateLateDaysCalc() {
+    var dueStr = document.getElementById("lpDueDateInp").value;
+    var recStr = document.getElementById("lpReceiveDateInp").value;
+    var banner = document.getElementById("lpLateCalcBanner");
+    if (!dueStr || !recStr || !banner) return;
+
+    var d1 = new Date(dueStr + "T00:00:00");
+    var d2 = new Date(recStr + "T00:00:00");
+    var diffDays = Math.round((d2 - d1) / 86400000);
+
+    if (diffDays > 0) {
+      banner.textContent = "⚠️ Payment Received " + diffDays + " Days Late (Due: " + formatDateDMY(dueStr) + " -> Received: " + formatDateDMY(recStr) + ")";
+    } else if (diffDays === 0) {
+      banner.textContent = "✔ Payment Received On Due Date (" + formatDateDMY(recStr) + ")";
+    } else {
+      banner.textContent = "✔ Payment Received " + Math.abs(diffDays) + " Days Early (" + formatDateDMY(recStr) + ")";
+    }
+  }
+
+  function saveLatePaymentAndReceipt() {
+    if (!activeLateMemberId) return;
+    var list = getAllSystemMembers();
+    var idx = list.findIndex(function (x) { return String(x.id) === String(activeLateMemberId); });
+    if (idx < 0) return;
+
+    var m = list[idx];
+    var dueStr = document.getElementById("lpDueDateInp").value || todayISO();
+    var recStr = document.getElementById("lpReceiveDateInp").value || todayISO();
+    var amt = Number(document.getElementById("lpAmountInp").value || m.amount || 500);
+    var months = parseInt(m.planMonths, 10) || 1;
+    var nextCycleDue = shiftMonthsISO(recStr, months);
+
+    var diffDays = Math.round((new Date(recStr + "T00:00:00") - new Date(dueStr + "T00:00:00")) / 86400000);
+    var lateStatusText = diffDays > 0
+      ? (diffDays + " दिन लेट पेमेंट मिला (Late by " + diffDays + " Days)")
+      : (diffDays === 0 ? "देय तिथि पर पेमेंट मिला (On Time)" : (Math.abs(diffDays) + " दिन पहले पेमेंट मिला"));
+
+    m.status = "Paid";
+    m.manualStatus = "Paid";
+    m.fees = "Paid";
+    m.lastPaid = recStr;
+    m.validTill = nextCycleDue;
+    m.dueAmount = 0;
+    m.dueFee = 0;
+    m.lastLateDays = Math.max(0, diffDays);
+
+    saveSystemMembersEverywhere(list);
+
+    if (db) {
+      try {
+        var clean = JSON.parse(JSON.stringify(m));
+        db.collection("members").doc(String(activeLateMemberId)).set(clean, { merge: true }).catch(function () {});
+        db.collection("public_members").doc(String(activeLateMemberId)).set(clean, { merge: true }).catch(function () {});
+      } catch (e) {}
+    }
+
+    var recBox = document.getElementById("lateReceiptOutput");
+    recBox.style.display = "block";
+    recBox.innerHTML =
+      '<div style="text-align:center;border-bottom:2px dashed #111;padding-bottom:6px;margin-bottom:8px">' +
+        '<b style="font-size:14px">LATE PAYMENT RECEIPT</b><br>' +
+        '<small>Member: <b>' + m.name + '</b> &bull; Ph: ' + (m.phone || "N/A") + '</small>' +
+      '</div>' +
+      '<div><b>Due Date:</b> ' + formatDateDMY(dueStr) + '</div>' +
+      '<div><b>Payment Receive Date:</b> ' + formatDateDMY(recStr) + '</div>' +
+      '<div style="color:#b91c1c;font-weight:900;margin:4px 0"><b>Late Status:</b> ' + lateStatusText + '</div>' +
+      '<div><b>Amount Received:</b> <b style="color:#15803d">₹' + amt + '</b></div>' +
+      '<div><b>Next Due Date:</b> ' + formatDateDMY(nextCycleDue) + '</div>';
+
+    showToast("✅ Payment received (" + lateStatusText + ")");
+    loadAndProcessMembers();
+  }
+
+  function removeMemberPermanently(memberId, memberName) {
+    if (!confirm('क्या आप सचमुच "' + memberName + '" को पूरे सिस्टम से हमेशा के लिए हटाना चाहते हैं?')) return;
+
+    var list = getAllSystemMembers().filter(function (x) { return String(x.id) !== String(memberId); });
+    saveSystemMembersEverywhere(list);
+
+    try {
+      var adm = readStorageArray("5bfc_admissions").filter(function (x) { return String(x.id) !== String(memberId); });
+      localStorage.setItem("5bfc_admissions", JSON.stringify(adm));
+    } catch (e) {}
+
+    if (db) {
+      try {
+        db.collection("members").doc(String(memberId)).delete().catch(function () {});
+        db.collection("public_members").doc(String(memberId)).delete().catch(function () {});
+      } catch (e) {}
+    }
+
+    showToast('🗑️ "' + memberName + '" पूरे सिस्टम से हट गया।');
+    loadAndProcessMembers();
+  }
+
+  function renderRegister() {
+    var container = document.getElementById("membersContainer");
+    var q = (document.getElementById("memberSearchBox").value || "").trim().toLowerCase();
+
+    var pendingCount = 0;
+    var pendingTotalAmt = 0;
+    var paidCount = 0;
+    var totalCount = cachedMembers.length;
+    var displayList = [];
+
+    cachedMembers.forEach(function (m) {
+      var analysis = analyzeMemberDue(m);
+      if (!analysis.isPaid) {
+        pendingCount++;
+        pendingTotalAmt += analysis.planAmt;
+      } else {
+        paidCount++;
+      }
+
+      if (q) {
+        var n = String(m.name || "").toLowerCase();
+        var p = String(m.phone || "");
+        var f = String(m.father || m.parentName || "").toLowerCase();
+        if (n.indexOf(q) === -1 && p.indexOf(q) === -1 && f.indexOf(q) === -1) return;
+      }
+
+      if (currentFilter === "PENDING" && analysis.isPaid) return;
+      displayList.push({ member: m, analysis: analysis });
+    });
+
+    document.getElementById("valPendingCount").textContent = String(pendingCount);
+    document.getElementById("valPendingAmount").textContent = "कुल बकाया: ₹" + pendingTotalAmt.toLocaleString("en-IN");
+    document.getElementById("valPaidCount").textContent = String(paidCount);
+    document.getElementById("valTotalMembers").textContent = "कुल सदस्य: " + String(totalCount);
+    document.getElementById("tabPendingBadge").textContent = String(pendingCount);
+    document.getElementById("tabAllBadge").textContent = String(totalCount);
+
+    if (!displayList.length) {
+      container.innerHTML =
+        '<div style="background:#0F172A;border:1.5px dashed var(--border);border-radius:14px;padding:32px 16px;text-align:center;">' +
+          '<div style="font-size:40px;margin-bottom:8px">📋</div>' +
+          '<h3 style="color:#fff;font-size:16px;font-weight:900;">कोई रिकॉर्ड नहीं मिला</h3>' +
+        '</div>';
+      return;
+    }
+
+    var html = "";
+    displayList.forEach(function (item) {
+      var m = item.member;
+      var analysis = item.analysis;
+      var cardClass = analysis.isPaid ? "is-paid" : "is-pending";
+      var statusPill = analysis.isPaid
+        ? '<span class="status-pill green">🟢 Already Paid</span>'
+        : '<span class="status-pill red">🔴 Pending Payment</span>';
+
+      var dueAlert = analysis.isPaid
+        ? '<div class="due-alert-line ok">✔ Already Paid • अगली देय तारीख: ' + formatDateDMY(analysis.nextDue) + '</div>'
+        : '<div class="due-alert-line bad">⚠️ Pending Payment • देय तिथि: ' + formatDateDMY(analysis.nextDue) + ' (₹' + analysis.planAmt + ' बाकी)</div>';
+
+      var waText = "नमस्ते *" + m.name + "*,\nआपकी फीस (₹" + analysis.planAmt + ") Pending है। देय तिथि: *" + formatDateDMY(analysis.nextDue) + "*।";
+      var lastPaidVal = (m.lastPaid && /^\d{4}-\d{2}-\d{2}$/.test(String(m.lastPaid).slice(0, 10)))
+        ? String(m.lastPaid).slice(0, 10)
+        : todayISO();
+
+      html +=
+        '<div class="member-card ' + cardClass + '" data-mid="' + encodeURIComponent(String(m.id)) + '" data-mname="' + encodeURIComponent(String(m.name)) + '">' +
+          '<div class="m-header">' +
+            '<div>' +
+              '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">' +
+                '<span class="day-badge">' + analysis.joinDay + ' तारीख</span>' +
+                '<span class="m-name">' + m.name + '</span>' +
+              '</div>' +
+              '<div class="m-phone">📞 ' + (m.phone || "N/A") + ' &bull; पिता: ' + (m.father || m.parentName || "-") + '</div>' +
+            '</div>' +
+            '<div>' + statusPill + '</div>' +
+          '</div>' +
+          dueAlert +
+          '<div class="info-grid">' +
+            '<div class="info-row"><span>जॉइनिंग तारीख</span><b>' + formatDateDMY(analysis.joinDate) + '</b></div>' +
+            '<div class="info-row">' +
+              '<span>पिछला भुगतान (Date Change)</span>' +
+              '<input type="date" class="date-edit-inp row-last-paid-inp" value="' + lastPaidVal + '">' +
+            '</div>' +
+            '<div class="info-row"><span>देय तारीख</span><b style="color:var(--gold)">' + formatDateDMY(analysis.nextDue) + '</b></div>' +
+            '<div class="info-row"><span>मासिक प्लान शुल्क</span><b style="color:var(--cyan)">₹' + analysis.planAmt + '</b></div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<button type="button" class="btn-act btn-pay row-btn-paid">✅ Already Paid</button>' +
+            '<button type="button" class="btn-act btn-late row-btn-late">🕒 Late Payment Receive</button>' +
+            '<button type="button" class="btn-act btn-unpaid row-btn-unpaid">❌ No Payment Received Yet</button>' +
+            '<a class="btn-act btn-wa" href="https://wa.me/91' + (m.phone || "") + '?text=' + encodeURIComponent(waText) + '" target="_blank">💬 WhatsApp</a>' +
+            '<button type="button" class="btn-act btn-del row-btn-del">🗑️ हटाएं</button>' +
+          '</div>' +
+        '</div>';
+    });
+
+    container.innerHTML = html;
+  }
+
+  function bindAllEvents() {
+    document.getElementById("btnFilterPending").addEventListener("click", function () { setFilterMode("PENDING"); });
+    document.getElementById("btnFilterAll").addEventListener("click", function () { setFilterMode("ALL"); });
+    document.getElementById("memberSearchBox").addEventListener("input", renderRegister);
+    document.getElementById("btnCloseLateModal").addEventListener("click", closeLatePayModal);
+    document.getElementById("lpDueDateInp").addEventListener("change", updateLateDaysCalc);
+    document.getElementById("lpReceiveDateInp").addEventListener("change", updateLateDaysCalc);
+    document.getElementById("btnSaveLateReceipt").addEventListener("click", saveLatePaymentAndReceipt);
+
+    document.getElementById("membersContainer").addEventListener("click", function (ev) {
+      var card = ev.target.closest(".member-card");
+      if (!card) return;
+      var mid = decodeURIComponent(card.getAttribute("data-mid") || "");
+      var mname = decodeURIComponent(card.getAttribute("data-mname") || "");
+
+      if (ev.target.closest(".row-btn-paid")) {
+        markMemberAlreadyPaid(mid);
+      } else if (ev.target.closest(".row-btn-late")) {
+        openLatePaymentModal(mid);
+      } else if (ev.target.closest(".row-btn-unpaid")) {
+        markNoPaymentReceived(mid);
+      } else if (ev.target.closest(".row-btn-del")) {
+        removeMemberPermanently(mid, mname);
+      }
+    });
+
+    document.getElementById("membersContainer").addEventListener("change", function (ev) {
+      var inp = ev.target.closest(".row-last-paid-inp");
+      if (!inp) return;
+      var card = inp.closest(".member-card");
+      if (!card) return;
+      var mid = decodeURIComponent(card.getAttribute("data-mid") || "");
+      updateLastPaidDateDirect(mid, inp.value);
+    });
+  }
+
+  function syncFromCloudOnStart() {
+    if (!db) return;
+    db.collection("public_members").get().then(function (snap) {
+      if (snap.empty) return;
+      var cloudMembers = [];
+      snap.forEach(function (d) { cloudMembers.push(Object.assign({ id: d.id }, d.data())); });
+      var local = getAllSystemMembers();
+      var map = new Map();
+      cloudMembers.forEach(function (m) { map.set(String(m.id), m); });
+      local.forEach(function (m) {
+        if (!map.has(String(m.id))) map.set(String(m.id), m);
+      });
+      saveSystemMembersEverywhere(Array.from(map.values()));
+      loadAndProcessMembers();
+    }).catch(function () {});
+  }
+
+  window.addEventListener("DOMContentLoaded", function () {
+    bindAllEvents();
+    loadAndProcessMembers();
+    syncFromCloudOnStart();
+  });
+})();
+</script>
+</body>
+</html>
