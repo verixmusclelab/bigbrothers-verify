@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Fees Pending & Due Date Register — 5 Brother's Fitness Club</title>
+<link rel="stylesheet" href="theme.css">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="auth-gate.js" data-mode="ondemand"></script>
+<style>
+:root {
+  --bg: #070B14;
+  --card: #0F172A;
+  --card-inner: #070E1F;
+  --border: #23355C;
+  --border-gold: rgba(255, 184, 0, 0.45);
+  --gold: #FFB800;
+  --gold-glow: rgba(255, 184, 0, 0.25);
+  --cyan: #38BDF8;
+  --green: #22C55E;
+  --red: #EF4444;
+  --orange: #F97316;
+  --tx: #FFFFFF;
+  --mut: #94A3B8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+body {
+  background: radial-gradient(1200px 500px at 50% -10%, #16224a 0%, #070B14 60%) fixed #070B14;
+  color: var(--tx);
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 14px 12px 90px;
+  min-height: 100vh;
+}
+
+/* Header */
+.top-nav {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px;
+}
+.btn-back {
+  background: linear-gradient(135deg, #FFC83D, #FFA800);
+  color: #1a1200; font-weight: 900; font-size: 12px; padding: 8px 14px;
+  border-radius: 10px; border: none; text-decoration: none; cursor: pointer; display: inline-block;
+}
+.header-card {
+  background: linear-gradient(160deg, #16213f, #101830);
+  border: 1.5px solid var(--border-gold);
+  border-radius: 18px; padding: 16px 14px; text-align: center; margin-bottom: 14px;
+  box-shadow: 0 0 30px rgba(255, 184, 0, 0.15);
+}
+.header-card h1 { color: var(--gold); font-size: 20px; font-weight: 900; letter-spacing: 0.5px; }
+.header-card p { color: #fff; font-size: 12px; font-weight: 700; margin-top: 4px; }
+.header-card .sub-tag { color: var(--mut); font-size: 11px; margin-top: 2px; }
+
+/* KPI summary stats */
+.kpi-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;
+}
+.kpi-box {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 12px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.kpi-box.pending-kpi { border-color: var(--red); background: rgba(239, 68, 68, 0.08); }
+.kpi-box.paid-kpi { border-color: var(--green); background: rgba(34, 197, 94, 0.08); }
+.kpi-lbl { font-size: 11px; font-weight: 800; color: var(--mut); text-transform: uppercase; }
+.kpi-val { font-size: 24px; font-weight: 900; margin: 4px 0 2px; }
+.kpi-sub { font-size: 11px; color: var(--mut); font-weight: 600; }
+
+/* Filter Controls */
+.filter-bar {
+  background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 10px;
+  margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px;
+}
+.filter-tabs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.ft-btn {
+  padding: 11px 8px; border-radius: 10px; font-size: 12.5px; font-weight: 900; cursor: pointer;
+  border: 1.5px solid var(--border); background: #070E1F; color: var(--mut); text-align: center;
+  transition: all 0.2s ease;
+}
+.ft-btn.active-pending {
+  background: linear-gradient(135deg, #EF4444, #B91C1C); color: #fff; border-color: #EF4444;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.35);
+}
+.ft-btn.active-all {
+  background: linear-gradient(135deg, #FFC83D, #FFA800); color: #000; border-color: var(--gold);
+  box-shadow: 0 0 16px rgba(255, 184, 0, 0.35);
+}
+.search-inp {
+  width: 100%; background: #070E1F; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; color: #fff; font-size: 13px; outline: none;
+}
+.search-inp:focus { border-color: var(--gold); }
+
+/* Member List Items */
+.member-card {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px;
+  margin-bottom: 10px; position: relative; transition: border-color 0.2s;
+}
+.member-card.is-overdue {
+  border-color: var(--red); background: linear-gradient(160deg, rgba(239, 68, 68, 0.08), rgba(15, 23, 42, 0.95));
+}
+.member-card.is-ontime {
+  border-color: var(--green);
+}
+.member-card.is-today {
+  border-color: var(--orange); box-shadow: 0 0 15px rgba(249, 115, 22, 0.25);
+}
+
+.day-badge {
+  display: inline-block; background: #FFB800; color: #000; font-size: 11px; font-weight: 900;
+  padding: 3px 8px; border-radius: 6px; letter-spacing: 0.3px;
+}
+.status-pill {
+  font-size: 10.5px; font-weight: 900; padding: 3px 9px; border-radius: 999px; text-transform: uppercase;
+}
+.status-pill.red { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid #EF4444; }
+.status-pill.green { background: rgba(34, 197, 94, 0.18); color: #86efac; border: 1px solid #22C55E; }
+.status-pill.orange { background: rgba(249, 115, 22, 0.18); color: #fdba74; border: 1px solid #F97316; }
+
+.m-header {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+}
+.m-name { font-size: 15px; font-weight: 900; color: #fff; }
+.m-phone { font-size: 11.5px; color: var(--mut); margin-top: 2px; }
+
+.info-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px;
+  background: var(--card-inner); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 9px 11px; font-size: 11.5px; margin: 8px 0;
+}
+.info-row span { color: var(--mut); display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.info-row b { color: #fff; font-size: 12px; }
+
+.due-alert-line {
+  font-size: 12px; font-weight: 800; padding: 6px 8px; border-radius: 8px; margin-bottom: 10px;
+}
+.due-alert-line.bad { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px dashed #EF4444; }
+.due-alert-line.ok { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px dashed #22C55E; }
+.due-alert-line.soon { background: rgba(249, 115, 22, 0.15); color: #fdba74; border: 1px dashed #F97316; }
+
+/* Action Buttons */
+.card-actions {
+  display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;
+}
+.btn-act {
+  flex: 1 1 45%; padding: 10px; border-radius: 8px; font-size: 11.5px; font-weight: 900;
+  cursor: pointer; border: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+}
+.btn-pay {
+  background: linear-gradient(135deg, #22C55E, #16A34A); color: #02200D;
+}
+.btn-del {
+  background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid #EF4444; flex: 0 0 auto; padding: 10px 14px;
+}
+.btn-wa {
+  background: #25D366; color: #fff; text-decoration: none;
+}
+
+/* Toast */
+.toast-msg {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: #0B1226; border: 2px solid var(--green); color: #fff;
+  padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 900;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 999999; display: none; text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="index.html" class="btn-back">⬅ Master Dashboard</a>
+  <a href="pay.html?m=fees" class="btn-back" style="background:#22C55E;color:#000">💳 Pay Fees Portal</a>
+</div>
+
+<div class="header-card">
+  <div style="font-size:28px;margin-bottom:4px">📅</div>
+  <h1 id="gymTitleHeader">5 BROTHER'S FITNESS CLUB</h1>
+  <p>तारीख अनुसार फीस व बकाया रजिस्टर (1 से 31 तारीख)</p>
+  <div class="sub-tag">उमराव खेड़ा, अकरमपुर, उन्नाव &bull; मासिक नवीनीकरण ट्रैकर</div>
+</div>
+
+<!-- KPI Summary -->
+<div class="kpi-grid">
+  <div class="kpi-box pending-kpi">
+    <div class="kpi-lbl">⚠️ कुल बकाया सदस्य (Pending)</div>
+    <div class="kpi-val" style="color:var(--red)" id="valPendingCount">0</div>
+    <div class="kpi-sub" id="valPendingAmount">कुल बकाया: ₹0</div>
+  </div>
+  <div class="kpi-box paid-kpi">
+    <div class="kpi-lbl">✅ समय पर चुकता (Paid)</div>
+    <div class="kpi-val" style="color:var(--green)" id="valPaidCount">0</div>
+    <div class="kpi-sub" id="valTotalMembers">कुल सदस्य: 0</div>
+  </div>
+</div>
+
+<!-- Filter & Search Bar -->
+<div class="filter-bar">
+  <div class="filter-tabs">
+    <button type="button" class="ft-btn active-pending" id="btnFilterPending" onclick="setFilterMode('PENDING')">
+      ⚠️ केवल बकाया फीस (<span id="tabPendingBadge">0</span>)
+    </button>
+    <button type="button" class="ft-btn" id="btnFilterAll" onclick="setFilterMode('ALL')">
+      📋 सभी 1 से 31 तारीख (<span id="tabAllBadge">0</span>)
+    </button>
+  </div>
+  <input type="text" id="memberSearchBox" class="search-inp" placeholder="🔎 नाम या 10 अंक मोबाइल से खोजें..." oninput="renderRegister()">
+</div>
+
+<!-- Member List Output -->
+<div id="membersContainer">
+  <div style="text-align:center;padding:30px;color:var(--mut)">लोड हो रहा है...</div>
+</div>
+
+<div id="toastNotification" class="toast-msg"></div>
+
+<script>
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyAHEMISEIDSzZz-m2OQT5EPyhTRF-mXqjQ",
+  authDomain: "bfc-gym-215ae.firebaseapp.com",
+  projectId: "bfc-gym-215ae",
+  storageBucket: "bfc-gym-215ae.firebasestorage.app",
+  messagingSenderId: "886920088571",
+  appId: "1:886920088571:web:c4bc478d246a2700b0d95e"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let currentFilter = "PENDING"; // 'PENDING' or 'ALL'
+let cachedMembers = [];
+
+function todayISO() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function formatDateDMY(dStr) {
+  if (!dStr || dStr === "--") return "--";
+  const p = dStr.split('-');
+  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : dStr;
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toastNotification");
+  t.innerText = msg;
+  t.style.display = "block";
+  setTimeout(() => { t.style.display = "none"; }, 2500);
+}
+
+// Read from all unified gym keys
+function getAllSystemMembers() {
+  let master = JSON.parse(localStorage.getItem("bbf_master_records_v4") || "[]");
+  let bfc = JSON.parse(localStorage.getItem("5BFC_MEMBERS") || "[]");
+  let adm = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]");
+  let erp = JSON.parse(localStorage.getItem("om_erp_mem_v2") || "[]");
+
+  let map = new Map();
+  [...master, ...bfc, ...adm, ...erp].forEach((m, idx) => {
+    if (!m) return;
+    let uid = String(m.id || m.phone || ("gen_" + idx)).trim();
+    let phoneKey = (m.phone && String(m.phone).length >= 10) ? String(m.phone).trim() : uid;
+    let key = phoneKey + "|" + String(m.name || "").trim().toLowerCase();
+
+    if (!map.has(key)) {
+      if (!m.id) m.id = uid;
+      if (!m.father && m.parentName) m.father = m.parentName;
+      if (!m.parentName && m.father) m.parentName = m.father;
+      map.set(key, m);
+    }
+  });
+
+  return Array.from(map.values());
+}
+
+// Save everywhere across local storage and sync to Firebase
+function saveSystemMembersEverywhere(list) {
+  localStorage.setItem("bbf_master_records_v4", JSON.stringify(list));
+  localStorage.setItem("5BFC_MEMBERS", JSON.stringify(list));
+  localStorage.setItem("5bfc_admissions", JSON.stringify(list));
+  localStorage.setItem("om_erp_mem_v2", JSON.stringify(list));
+}
+
+// Shift months ISO
+function shiftMonthsISO(dateStr, deltaMonths) {
+  if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return "";
+  const parts = dateStr.split("-").map(Number);
+  const year = parts[0], monthIdx = parts[1] - 1, day = parts[2];
+  const targetMonthTotal = year * 12 + monthIdx + parseInt(deltaMonths, 10);
+  const ty = Math.floor(targetMonthTotal / 12);
+  const tm = ((targetMonthTotal % 12) + 12) % 12;
+  const lastDay = new Date(ty, tm + 1, 0).getDate();
+  const clampedDay = Math.min(day, lastDay);
+  return String(ty).padStart(4, "0") + "-" + String(tm + 1).padStart(2, "0") + "-" + String(clampedDay).padStart(2, "0");
+}
+
+// Calculate due date & late status
+function analyzeMemberDue(m) {
+  const today = todayISO();
+  const joinDate = m.joinDate || m.lastPaid || today;
+  const months = parseInt(m.planMonths, 10) || 1;
+  const planAmt = Number(m.amount || m.planBase || (m.type === "student" ? 300 : 500));
+  
+  // Calculate next due date
+  let nextDue = m.validTill || "";
+  if (!nextDue || !/^\d{4}-\d{2}-\d{2}$/.test(nextDue)) {
+    let anchor = m.lastPaid || joinDate;
+    nextDue = shiftMonthsISO(anchor, months);
+  }
+
+  // Days difference
+  let lateDays = 0;
+  let isOverdue = false;
+  let isDueToday = false;
+
+  if (nextDue) {
+    let dueD = new Date(nextDue + "T00:00:00");
+    let nowD = new Date(today + "T00:00:00");
+    let diff = Math.round((nowD - dueD) / 86400000);
+
+    if (diff > 0) {
+      lateDays = diff;
+      isOverdue = true;
+    } else if (diff === 0) {
+      isDueToday = true;
+    }
+  }
+
+  // Check paid status
+  const rawStatus = String(m.status || m.manualStatus || m.fees || "").trim().toLowerCase();
+  let isPaid = (rawStatus === "paid" || rawStatus === "active") && !isOverdue;
+
+  // Extract Joining Day of month (1 to 31)
+  let joinDay = 32;
+  if (joinDate && joinDate.includes("-")) {
+    let parts = joinDate.split("-");
+    if (parts.length === 3) joinDay = parseInt(parts[2], 10) || 32;
+  }
+
+  return {
+    joinDay,
+    joinDate,
+    nextDue,
+    isOverdue,
+    isDueToday,
+    lateDays,
+    isPaid: isPaid && !isOverdue,
+    planAmt
+  };
+}
+
+function loadAndProcessMembers() {
+  let list = getAllSystemMembers();
+  
+  // Sort from Day 1 to Day 31 based on joining date
+  list.sort((a, b) => {
+    let analysisA = analyzeMemberDue(a);
+    let analysisB = analyzeMemberDue(b);
+    if (analysisA.joinDay !== analysisB.joinDay) {
+      return analysisA.joinDay - analysisB.joinDay;
+    }
+    return String(a.name || "").localeCompare(String(b.name || ""));
+  });
+
+  cachedMembers = list;
+  renderRegister();
+}
+
+function setFilterMode(mode) {
+  currentFilter = mode;
+  document.getElementById("btnFilterPending").className = "ft-btn" + (mode === "PENDING" ? " active-pending" : "");
+  document.getElementById("btnFilterAll").className = "ft-btn" + (mode === "ALL" ? " active-all" : "");
+  renderRegister();
+}
+
+function renderRegister() {
+  const container = document.getElementById("membersContainer");
+  const q = (document.getElementById("memberSearchBox").value || "").trim().toLowerCase();
+
+  let pendingCount = 0;
+  let pendingTotalAmt = 0;
+  let paidCount = 0;
+  let totalCount = cachedMembers.length;
+
+  let displayList = [];
+
+  cachedMembers.forEach(m => {
+    const analysis = analyzeMemberDue(m);
+    if (!analysis.isPaid) {
+      pendingCount++;
+      pendingTotalAmt += analysis.planAmt;
+    } else {
+      paidCount++;
+    }
+
+    // Search filter
+    if (q) {
+      let n = String(m.name || "").toLowerCase();
+      let p = String(m.phone || "");
+      let f = String(m.father || m.parentName || "").toLowerCase();
+      if (!n.includes(q) && !p.includes(q) && !f.includes(q)) return;
+    }
+
+    // Filter tab: Pending Only vs All
+    if (currentFilter === "PENDING" && analysis.isPaid) {
+      return;
+    }
+
+    displayList.push({ member: m, analysis });
+  });
+
+  document.getElementById("valPendingCount").innerText = pendingCount;
+  document.getElementById("valPendingAmount").innerText = "कुल बकाया: ₹" + pendingTotalAmt.toLocaleString("en-IN");
+  document.getElementById("valPaidCount").innerText = paidCount;
+  document.getElementById("valTotalMembers").innerText = "कुल सदस्य: " + totalCount;
+  document.getElementById("tabPendingBadge").innerText = pendingCount;
+  document.getElementById("tabAllBadge").innerText = totalCount;
+
+  if (!displayList.length) {
+    container.innerHTML = `
+      <div style="background:#0F172A;border:1.5px dashed var(--border);border-radius:14px;padding:32px 16px;text-align:center;">
+        <div style="font-size:42px;margin-bottom:8px">${currentFilter === "PENDING" ? "🎉" : "📋"}</div>
+        <h3 style="color:${currentFilter === "PENDING" ? "var(--green)" : "#fff"};font-size:16px;font-weight:900;">
+          ${currentFilter === "PENDING" ? "कोई बकाया फीस नहीं मिली!" : "कोई सदस्य रिकॉर्ड नहीं मिला।"}
+        </h3>
+        <p style="font-size:12px;color:var(--mut);margin-top:4px;">
+          ${currentFilter === "PENDING" ? "सभी सदस्यों की फीस चुकता है या खोजे गए नाम में कोई बकाया नहीं है।" : "खोजे गए फ़िल्टर के अनुसार कोई सदस्य मौजूद नहीं है।"}
+        </p>
+      </div>`;
+    return;
+  }
+
+  let html = "";
+  displayList.forEach(({ member: m, analysis }) => {
+    let cardClass = analysis.isOverdue ? "is-overdue" : (analysis.isDueToday ? "is-today" : "is-ontime");
+    let statusPill = analysis.isOverdue 
+      ? `<span class="status-pill red">🔴 फीस बकाया (${analysis.lateDays} दिन लेट)</span>`
+      : (analysis.isDueToday 
+          ? `<span class="status-pill orange">🟡 आज महीना पूरा हुआ</span>`
+          : `<span class="status-pill green">🟢 Paid (सक्रिय)</span>`);
+
+    let dueAlert = analysis.isOverdue
+      ? `<div class="due-alert-line bad">⚠️ ${analysis.lateDays} दिन पहले महीना पूरा हो चुका है! देय तिथि: ${formatDateDMY(analysis.nextDue)} (₹${analysis.planAmt} बाकी)</div>`
+      : (analysis.isDueToday
+          ? `<div class="due-alert-line soon">🔔 आज इस सदस्य का महीना पूरा हो रहा है! देय तारीख: ${formatDateDMY(analysis.nextDue)}</div>`
+          : `<div class="due-alert-line ok">✔ फीस चुकता है। अगला महीना पूरा होगा: ${formatDateDMY(analysis.nextDue)}</div>`);
+
+    let waMessage = `🏋️ *5 BROTHER'S FITNESS CLUB*\nनमस्ते *${m.name}*,\nआपकी जिम फीस की अवधि *${formatDateDMY(analysis.nextDue)}* को पूरी हो चुकी है।\nकृपया अपनी बकाया फीस ₹${analysis.planAmt} समय पर जमा करके रसीद प्राप्त करें।\nधन्यवाद!\n📞 9140417259`;
+
+    html += `
+      <div class="member-card ${cardClass}">
+        <div class="m-header">
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="day-badge">${analysis.joinDay} तारीख की जॉइनिंग</span>
+              <span class="m-name">${m.name}</span>
+            </div>
+            <div class="m-phone">📞 ${m.phone || "N/A"} &bull; पिता: ${m.father || m.parentName || "-"}</div>
+          </div>
+          <div>${statusPill}</div>
+        </div>
+
+        ${dueAlert}
+
+        <div class="info-grid">
+          <div class="info-row">
+            <span>जॉइनिंग तारीख</span>
+            <b>${formatDateDMY(analysis.joinDate)}</b>
+          </div>
+          <div class="info-row">
+            <span>पिछला भुगतान</span>
+            <b>${formatDateDMY(m.lastPaid) || "N/A"}</b>
+          </div>
+          <div class="info-row">
+            <span>महीना पूरा होने की तारीख</span>
+            <b style="color:var(--gold)">${formatDateDMY(analysis.nextDue)}</b>
+          </div>
+          <div class="info-row">
+            <span>मासिक प्लान शुल्क</span>
+            <b style="color:var(--cyan)">₹${analysis.planAmt} (${m.type === "student" ? "विद्यार्थी" : "जॉब / व्यापार"})</b>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button type="button" class="btn-act btn-pay" onclick="markMemberAlreadyPaid('${m.id}')">
+            ✅ Mark Already Paid (पूरे सिस्टम में Paid करें)
+          </button>
+          <a class="btn-act btn-wa" href="https://wa.me/91${m.phone}?text=${encodeURIComponent(waMessage)}" target="_blank">
+            💬 WhatsApp
+          </a>
+          <button type="button" class="btn-act btn-del" onclick="removeMemberPermanently('${m.id}', '${m.name}')" title="पूरे सिस्टम से डिलीट करें">
+            🗑️ हटाएं
+          </button>
+        </div>
+      </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// 1-CLICK MARK AS ALREADY PAID (Syncs across whole system and cloud)
+async function markMemberAlreadyPaid(memberId) {
+  let list = getAllSystemMembers();
+  let idx = list.findIndex(x => String(x.id) === String(memberId));
+  if (idx < 0) {
+    alert("सदस्य नहीं मिला!");
+    return;
+  }
+
+  let m = list[idx];
+  let today = todayISO();
+  let analysis = analyzeMemberDue(m);
+  let months = parseInt(m.planMonths, 10) || 1;
+  let newValidTill = shiftMonthsISO(today, months);
+
+  // Update in local object
+  m.status = "Paid";
+  m.manualStatus = "Paid";
+  m.fees = "Paid";
+  m.lastPaid = today;
+  m.validTill = newValidTill;
+  m.dueAmount = 0;
+  m.dueFee = 0;
+  m.dueV = 2;
+  m.lastPaidAt = new Date().toISOString();
+
+  // Save everywhere locally
+  saveSystemMembersEverywhere(list);
+
+  // Sync to Firestore Cloud (both collections)
+  try {
+    let clean = JSON.parse(JSON.stringify(m));
+    await db.collection("members").doc(String(memberId)).set(clean, { merge: true });
+    await db.collection("public_members").doc(String(memberId)).set(clean, { merge: true });
+  } catch (err) {
+    console.warn("Cloud sync error:", err);
+  }
+
+  showToast(`✅ "${m.name}" को पूरे सिस्टम में ALREADY PAID मार्क कर दिया गया है!`);
+  loadAndProcessMembers();
+}
+
+// 1-CLICK PERMANENT DELETE FROM WHOLE SYSTEM
+async function removeMemberPermanently(memberId, memberName) {
+  let confirmMsg = `⚠️ क्या आप सचमुच "${memberName}" को पूरे सिस्टम से हमेशा के लिए हटाना (Delete) चाहते हैं?\n\nयह सदस्य Master Register, Attendance, Fees और Cloud Database सभी जगह से हमेशा के लिए हट जाएगा।`;
+  if (!confirm(confirmMsg)) return;
+
+  // 1. Remove from all local storage lists
+  let list = getAllSystemMembers().filter(x => String(x.id) !== String(memberId));
+  saveSystemMembersEverywhere(list);
+
+  // 2. Also remove from admissions or other keys
+  try {
+    let adm = JSON.parse(localStorage.getItem("5bfc_admissions") || "[]").filter(x => String(x.id) !== String(memberId));
+    localStorage.setItem("5bfc_admissions", JSON.stringify(adm));
+  } catch (e) {}
+
+  // 3. Delete from Firebase Firestore Cloud
+  try {
+    await db.collection("members").doc(String(memberId)).delete();
+    await db.collection("public_members").doc(String(memberId)).delete();
+  } catch (err) {
+    console.warn("Cloud delete error:", err);
+  }
+
+  showToast(`🗑️ "${memberName}" को पूरे सिस्टम से हमेशा के लिए हटा दिया गया।`);
+  loadAndProcessMembers();
+}
+
+// Initial Sync from Cloud on load
+async function syncFromCloudOnStart() {
+  try {
+    const snap = await db.collection("public_members").get();
+    if (!snap.empty) {
+      let cloudMembers = [];
+      snap.forEach(d => cloudMembers.push({ id: d.id, ...d.data() }));
+
+      let local = getAllSystemMembers();
+      let map = new Map();
+      cloudMembers.forEach(m => map.set(String(m.id), m));
+      local.forEach(m => {
+        if (!map.has(String(m.id))) map.set(String(m.id), m);
+      });
+
+      let merged = Array.from(map.values());
+      saveSystemMembersEverywhere(merged);
+    }
+  } catch (e) {
+    console.warn("Cloud initial load:", e);
+  }
+  loadAndProcessMembers();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadAndProcessMembers();
+  syncFromCloudOnStart();
+});
+</script>
+</body>
+</html>
