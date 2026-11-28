@@ -482,7 +482,7 @@ th{color:#ffcc00;}
       <div style="margin-bottom:8px;font-weight:bold;" id="orName"></div>
       <div class="field-group">
         <label>रजिस्टर्ड मोबाइल के शुरू के 4 या आखिरी 4 अंक</label>
-        <input type="password" id="orDigits" inputmode="numeric" maxlength="4" autocomplete="off" required>
+        <input type="hidden" id="orDigits">
       </div>
       <button type="submit" class="btn-submit">रसीद देखें व डाउनलोड करें</button>
     </form>
@@ -1458,17 +1458,7 @@ function searchOnlyReceipt() {
 
 function chooseOnlyReceipt(m) {
   orMember = m;
-  // Admin Unlock चालू हो तो मोबाइल अंक नहीं पूछे जाएँगे
-  if (adminUnlocked) {
-    if (!showReceiptFor(m)) document.getElementById("orMsg").innerText = "इस सदस्य का कोई भुगतान रिकॉर्ड नहीं मिला।";
-    return;
-  }
-  document.getElementById("orResults").innerHTML = "";
-  document.getElementById("orMsg").innerText = "";
-  document.getElementById("orName").innerText = m.name;
-  document.getElementById("orDigits").value = "";
-  document.getElementById("orVerify").style.display = "block";
-  document.getElementById("orDigits").focus();
+  if (!showReceiptFor(m)) document.getElementById("orMsg").innerText = "इस सदस्य का कोई भुगतान रिकॉर्ड नहीं मिला।";
 }
 
 // आखिरी रसीद; पुराने भुगतान के लिए सिर्फ रिकॉर्ड में मौजूद जानकारी
