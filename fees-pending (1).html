@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>5BFC — Fees Pending</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="auth-gate.js" data-mode="ondemand"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#050505;color:#fff;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh;padding:12px}
+.wrap{max-width:560px;margin:0 auto}
+.card{background:#111;border:1.5px solid #ffcc00;border-radius:12px;padding:14px;margin-bottom:12px}
+.gold{color:#ffcc00}.green{color:#00ff66}.red{color:#ff5555}.muted{color:#888;font-size:11px}
+input{width:100%;background:#181818;border:1px solid #444;color:#fff;padding:11px;border-radius:8px;font-size:14px;outline:none}
+input:focus{border-color:#ffcc00}
+.btn{border:none;border-radius:8px;padding:9px 12px;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-gold{background:#ffcc00;color:#000}.btn-green{background:#00ff66;color:#000}.btn-dark{background:#333;color:#fff}.btn-wa{background:#25D366;color:#fff}.btn-blue{background:#1e88e5;color:#fff}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+.tab{text-align:center;padding:9px 1px;border-radius:8px;background:#1a1a1a;border:1px solid #333;color:#aaa;font-size:10px;font-weight:700;cursor:pointer}
+.tab.on{background:#ffcc00;color:#000;border-color:#ffcc00}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat{background:#181818;border-radius:8px;padding:9px;text-align:center}
+.stat b{display:block;font-size:18px;color:#ffcc00}.stat span{font-size:10px;color:#888}
+.m{background:#0e0e0e;border:1px solid #333;border-left:4px solid #ff9900;border-radius:10px;padding:12px;margin-bottom:8px}
+.m.exp{border-left-color:#ff3333;background:#170a0a}
+.m.soon{border-left-color:#ffcc00}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.b-red{background:#440000;color:#ff9a9a}.b-yel{background:#443800;color:#ffd84d}.b-or{background:#442200;color:#ffaa44}
+.dates{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.dates div{background:#181818;border-radius:8px;padding:7px 4px;text-align:center;font-size:12px;font-weight:700}
+.dates div b{display:block;font-size:9px;color:#888;font-weight:600;margin-bottom:2px}
+.amts{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:#ccc;padding-top:8px;border-top:1px dashed #333}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.hide{display:none!important}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+a.home{background:#ffcc00;color:#000;text-decoration:none;font-weight:700;font-size:11px;padding:6px 12px;border-radius:6px}
+h1{font-size:16px;color:#ffcc00;text-align:center;margin-bottom:4px}
+.login{max-width:360px;margin:80px auto;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loginScreen" class="login card">
+    <div style="font-size:28px;margin-bottom:8px">🔒</div>
+    <h1>Fees Pending</h1>
+    <p class="muted" style="margin-bottom:12px">5 Brother's Fitness Club — Admin Only</p>
+    <button class="btn btn-gold" style="width:100%" onclick="tryLogin()">🔐 Secure Login</button>
+    <p class="muted" id="loginMsg" style="margin-top:10px"></p>
+  </div>
+
+  <div id="mainScreen" class="hide">
+    <div class="topbar">
+      <a class="home" href="app.html">⬅ Home</a>
+      <span class="gold" style="font-size:11px;font-weight:700">5 BROTHER'S FITNESS</span>
+      <button class="btn btn-dark" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="card">
+      <h1>💰 Fees Pending List</h1>
+      <p class="muted" style="text-align:center;margin-bottom:10px">सिर्फ़ वो members जिनकी fees बाकी है या membership खत्म हो चुकी है</p>
+      <div class="stats">
+        <div class="stat"><b id="sCount">0</b><span>कुल Pending</span></div>
+        <div class="stat"><b id="sDue" class="red">₹0</b><span>कुल बकाया रकम</span></div>
+        <div class="stat"><b id="sExp" style="color:#ff9900">0</b><span>Expired</span></div>
+      </div>
+      <input id="q" type="search" placeholder="🔍 नाम / मोबाइल / पिता का नाम लिखते ही खोज..." oninput="render()" autocomplete="off">
+      <div class="tabs">
+        <div class="tab on" data-t="all" onclick="setTab('all')">सभी</div>
+        <div class="tab" data-t="due" onclick="setTab('due')">💸 बकाया</div>
+        <div class="tab" data-t="expired" onclick="setTab('expired')">⛔ Expired</div>
+        <div class="tab" data-t="soon" onclick="setTab('soon')">⚠️ ≤3 दिन</div>
+        <div class="tab" data-t="left" onclick="setTab('left')">🚪 Left</div>
+      </div>
+      <button class="btn btn-dark" style="width:100%" onclick="load()">🔄 Refresh</button>
+      <p class="muted" id="loadMsg" style="margin-top:6px;text-align:center"></p>
+    </div>
+
+    <div id="list"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var css=document.createElement("style");
+  css.textContent=".bfcov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px}.bfcdg{background:#181818;border:2px solid #ffcc00;border-radius:14px;padding:16px;width:100%;max-width:340px;color:#fff;font-size:14px}.bfcdg .m{white-space:pre-line;margin-bottom:12px;line-height:1.5}.bfcdg input{width:100%;background:#000;border:1.5px solid #555;color:#fff;padding:12px;border-radius:8px;font-size:18px;text-align:center;margin-bottom:12px;outline:none}.bfcdg .b{display:flex;gap:8px;justify-content:flex-end}.bfcdg button{border:0;border-radius:8px;padding:10px 16px;font-weight:800;font-size:13px;cursor:pointer;background:#333;color:#fff}.bfcdg button.ok{background:#ffcc00;color:#000}";
+  document.head.appendChild(css);
+  function dlg(msg,o){return new Promise(function(res){
+    var x=document.createElement("div");x.className="bfcov";
+    var d=document.createElement("div");d.className="bfcdg";
+    var m=document.createElement("div");m.className="m";m.textContent=msg;d.appendChild(m);
+    var inp=null;
+    if(o.input){inp=document.createElement("input");inp.value=o.value||"";if(o.pin){inp.type="password";inp.inputMode="numeric";inp.autocomplete="off";}d.appendChild(inp);}
+    var b=document.createElement("div");b.className="b";
+    function done(v){x.remove();res(v);}
+    if(!o.alertOnly){var c=document.createElement("button");c.textContent="रद्द";c.onclick=function(){done(o.input?null:false)};b.appendChild(c);}
+    var k=document.createElement("button");k.className="ok";k.textContent="ठीक है";k.onclick=function(){done(o.input?inp.value:true)};b.appendChild(k);
+    d.appendChild(b);x.appendChild(d);document.body.appendChild(x);
+    if(inp){inp.focus();inp.addEventListener("keydown",function(e){if(e.key==="Enter")k.click()});}
+  });}
+  window.bfcPrompt=function(m,v,pin){return dlg(m,{input:1,value:v,pin:pin})};
+  window.bfcConfirm=function(m){return dlg(m,{})};
+  window.alert=function(m){dlg(String(m),{alertOnly:1})};
+})();
+</script>
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyA9z1gXZDB3W0lJxyHV9x2vWeb0Ees7z-g",
+  authDomain: "brother-s-fitness-club.firebaseapp.com",
+  projectId: "brother-s-fitness-club",
+  storageBucket: "brother-s-fitness-club.firebasestorage.app",
+  messagingSenderId: "781489019006",
+  appId: "1:781489019006:web:4a230698f2195e7208202f"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+var LS_KEYS = ["5BFC_MEMBERS", "bbf_master_records_v4", "bbf_members_v1"];
+var GYM_NO = "9140417259";
+var ROWS = [], EX = [], TAB = "all", LS_EX = "5BFC_EX_MEMBERS";
+
+var $ = function(id){ return document.getElementById(id); };
+function num(x){ var n = Number(x); return isNaN(n) ? 0 : n; }
+function pad(n){ return String(n).padStart(2,"0"); }
+function iso(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function rs(n){ return "₹" + Math.round(num(n)).toLocaleString("en-IN"); }
+function parseDate(s){
+  if(!s || s==="N/A") return null;
+  var im = String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(im) return new Date(+im[1], +im[2]-1, +im[3]);
+  var m = String(s).match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+  if(m){ var y = m[3].length===2 ? "20"+m[3] : m[3]; return new Date(+y, +m[2]-1, +m[1]); }
+  var d = new Date(s); return isNaN(d) ? null : d;
+}
+function showDate(s){ var d = parseDate(s); return d ? pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear() : "—"; }
+function daysLeft(end){
+  var d = parseDate(end); if(!d) return 9999;
+  var t = new Date(); t.setHours(0,0,0,0); d.setHours(0,0,0,0);
+  return Math.round((d - t)/86400000);
+}
+function planMonths(plan){
+  var p = String(plan||"").toLowerCase(), n = p.match(/(\d+)/);
+  if(/year|yr|saal|साल|वर्ष/.test(p)) return n ? Math.min(+n[1],5)*12 : 12;
+  return n && +n[1]>0 ? +n[1] : 1;
+}
+function calcEnd(joinStr, plan){
+  var d = parseDate(joinStr); if(!d) return "";
+  var months = planMonths(plan);
+  var lastDay = new Date(d.getFullYear(), d.getMonth()+months+1, 0).getDate();
+  var next = new Date(d.getFullYear(), d.getMonth()+months, Math.min(d.getDate(), lastDay));
+  next.setDate(next.getDate()-1);
+  return iso(next);
+}
+
+async function tryLogin(){
+  if(!window.bfcLogin){ $("loginMsg").textContent = "auth-gate.js nahi mili"; return; }
+  var ok = await window.bfcLogin();
+  if(ok) openMain();
+}
+function openMain(){ $("loginScreen").classList.add("hide"); $("mainScreen").classList.remove("hide"); load(); }
+async function logout(){ if(window.bfcLogout) await window.bfcLogout(); location.reload(); }
+(async function(){ try{ if(window.bfcIsAdmin && (await window.bfcIsAdmin())) openMain(); }catch(e){} })();
+
+function normalize(m, docId){
+  var join = m.joinDate || m.joiningDate || m.admDate || m.startDate || "";
+  var plan = m.plan || m.planName || "1 Month";
+  var end = m.endDate || m.expiryDate || m.expDate || m.validTill || "";
+  if(!end && join) end = calcEnd(join, plan);
+  var total = num(m.totalFee || m.fee || m.feesAmount || 0);
+  var paid = num(m.paidFee || m.paid || 0);
+  return {
+    id: String(m.id || docId || m.code || ""),
+    docId: docId || "",
+    code: m.code || "",
+    name: m.name || m.fullName || m.admFullName || "",
+    parent: m.parentName || m.fatherName || m.admParentName || "",
+    phone: String(m.phone || m.mobile || m.admPhone || "").replace(/\D/g,"").slice(-10),
+    plan: plan, join: join, end: end,
+    total: total, paid: paid,
+    dueField: (m.dueFee === undefined || m.dueFee === null || m.dueFee === "") ? null : num(m.dueFee),
+    explicit: String(m.manualStatus || m.fees || m.status || "").toLowerCase(),
+    editedAt: num(m.editedAt || m.updatedAt || 0),
+    raw: m
+  };
+}
+
+function feeState(r){
+  var e = r.explicit;
+  var markedPaid = /paid|जमा/.test(e) && !/un|part|pend|due|बाकी/.test(e);
+  var dl = daysLeft(r.end);
+  
+  var due = 0;
+  if(markedPaid && (r.dueField === null || r.dueField === 0)){
+    due = 0;
+  } else if(r.dueField !== null && r.dueField > 0){
+    due = r.dueField;
+  } else if(r.total > 0 && r.paid < r.total){
+    due = r.total - r.paid;
+  }
+
+  var expired = dl < 0;
+  var soon = dl >= 0 && dl <= 3;
+  var isPending = (due > 0) || expired || (!markedPaid && due > 0);
+
+  return { due: due, dl: dl, expired: expired, soon: soon, pending: isPending };
+}
+
+function readLocal(){
+  var out = [];
+  LS_KEYS.forEach(function(k){
+    try{ var a = JSON.parse(localStorage.getItem(k)||"[]"); if(Array.isArray(a)) a.forEach(function(m){ out.push(normalize(m)); }); }catch(e){}
+  });
+  return out;
+}
+function newer(a, b){ return (b.editedAt||0) >= (a.editedAt||0) ? b : a; }
+
+async function load(){
+  $("list").innerHTML = '<p class="muted" style="text-align:center;padding:20px">Loading...</p>';
+  var map = new Map(), msg = ""; EX = [];
+  readLocal().forEach(function(r){ if(r.name || r.phone){ var k = r.id || r.code; map.set(k, map.has(k) ? newer(map.get(k), r) : r); } });
+  var exSet = new Set();
+  try{
+    var snap = await db.collection("members").get();
+    snap.forEach(function(d){
+      var r = normalize(d.data(), d.id);
+      var k = r.id || r.code;
+      if(map.has(k)){ var old = map.get(k); var w = newer(old, r); w.docId = r.docId || old.docId; map.set(k, w); }
+      else map.set(k, r);
+    });
+    var ex = await db.collection("ex_members").get();
+    ex.forEach(function(d){
+      var x = d.data() || {};
+      EX.push(normalizeEx(x, d.id));
+      exSet.add(String(x.id||d.id));
+      if(x.phone) exSet.add(String(x.phone).slice(-10));
+    });
+  }catch(e){
+    console.error(e);
+    msg = "⚠️ Cloud offline mode";
+  }
+  
+  readLocalEx().forEach(function(x){ if(!EX.some(function(y){ return y.id===x.id; })) EX.push(x); });
+
+  ROWS = Array.from(map.values()).filter(function(r){
+    if(exSet.has(r.id) || (r.phone && exSet.has(r.phone))) return false;
+    return true;
+  });
+  $("loadMsg").textContent = msg || ("कुल Active members: " + ROWS.length);
+  render();
+}
+
+function setTab(t){
+  TAB = t;
+  document.querySelectorAll(".tab").forEach(function(el){ el.classList.toggle("on", el.getAttribute("data-t")===t); });
+  render();
+}
+
+function render(){
+  var q = ($("q").value||"").toLowerCase().trim();
+  var all = ROWS.map(function(r){ return { r: r, s: feeState(r) }; }).filter(function(x){ return x.s.pending; });
+  var totalDue = all.reduce(function(a,x){ return a + x.s.due; }, 0);
+  $("sCount").textContent = all.length;
+  $("sDue").textContent = rs(totalDue);
+  $("sExp").textContent = all.filter(function(x){ return x.s.expired; }).length;
+  if(TAB==="left"){ renderLeft(q); return; }
+
+  var list = all.filter(function(x){
+    if(TAB==="due" && x.s.due<=0) return false;
+    if(TAB==="expired" && !x.s.expired) return false;
+    if(TAB==="soon" && !x.s.soon) return false;
+    if(!q) return true;
+    var bag = [x.r.name, x.r.parent, x.r.phone, x.r.code, x.r.plan].join(" ").toLowerCase();
+    return q.split(/\s+/).every(function(w){ return bag.indexOf(w) >= 0; });
+  }).sort(function(a,b){ return a.s.dl - b.s.dl; });
+
+  if(!list.length){ $("list").innerHTML = '<div class="card"><p class="muted" style="text-align:center">🎉 सब ठीक है — कोई Pending नहीं</p></div>'; return; }
+  $("list").innerHTML = list.map(function(x){
+    var r = x.r, s = x.s, jd = parseDate(r.join);
+    var cls = s.expired ? "exp" : (s.soon ? "soon" : "");
+    var badge = s.expired ? '<span class="badge b-red">⛔ '+Math.abs(s.dl)+' दिन से Expired</span>'
+      : s.soon ? '<span class="badge b-yel">⚠️ '+(s.dl===0?"आज खत्म":s.dl+" दिन बाकी")+'</span>'
+      : '<span class="badge b-or">💸 बकाया</span>';
+    var dateBox = '<div><b>JOINING</b>'+showDate(r.join)+'</div><div><b>FEES DATE</b>'+(jd?("हर माह "+jd.getDate()+" को"):"—")+'</div><div class="'+(s.expired?"red":"green")+'"><b>FEES EXPIRE</b>'+showDate(r.end)+'</div>';
+    return '<div class="m '+cls+'">'
+      + '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div>'
+      + '<div style="font-weight:700;font-size:15px">'+esc(r.name||"—")+'</div>'
+      + '<div class="muted">S/O: '+esc(r.parent||"—")+' · '+esc(r.phone||"—")+'</div>'
+      + '<div class="muted">'+esc(r.code)+(r.plan?" · "+esc(r.plan):"")+'</div>'
+      + '</div><div>'+badge+'</div></div>'
+      + '<div class="dates">'+dateBox+'</div>'
+      + '<div class="amts"><span>Total: <b>'+(r.total?rs(r.total):"—")+'</b></span><span>जमा: <b class="green">'+rs(r.paid)+'</b></span><span>बाकी: <b class="red">'+(s.due>0?rs(s.due):"—")+'</b></span></div>'
+      + '<div class="row">'
+      + (r.phone.length===10 ? '<button class="btn btn-wa" data-a="wa" data-k="'+esc(r.id)+'">💬 WhatsApp</button><a class="btn btn-blue" href="tel:'+esc(r.phone)+'">📞 Call</a>' : '')
+      + '<button class="btn btn-green" data-a="paid" data-k="'+esc(r.id)+'">✅ Paid मार्क (1 माह Renew)</button><button class="btn btn-dark" data-a="left" data-k="'+esc(r.id)+'">🚪 Gym छोड़ दिया</button>'
+      + '</div></div>';
+  }).join("");
+}
+
+$("list").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-a]"); if(!b) return;
+  var r = ROWS.find(function(x){ return x.id === b.getAttribute("data-k"); }); if(!r) return;
+  var a = b.getAttribute("data-a");
+  if(a==="wa") remind(r); else if(a==="paid") markPaid(r); else if(a==="left") markLeft(r);
+});
+
+function remind(r){
+  var s = feeState(r), dl = s.dl, nm = r.name || "सदस्य", end = showDate(r.end);
+  var when = dl < 0 ? "आपकी जिम सदस्यता "+end+" को समाप्त हो चुकी है ("+Math.abs(dl)+" दिन पहले)।"
+           : dl === 0 ? "आपकी जिम सदस्यता आज ("+end+") समाप्त हो रही है।"
+           : dl <= 3 ? "आपकी जिम सदस्यता "+end+" को समाप्त होने वाली है।"
+           : "आपकी जिम फीस अभी बाकी है।";
+  var msg = "🙏 नमस्ते "+nm+" जी,\n\n*5 Brother's Fitness Club*:\n" + when + (s.due>0 ? "\nबकाया फीस: *"+rs(s.due)+"*" : "") + "\n\nकृपया समय से फीस जमा करके अपनी सदस्यता जारी रखें। धन्यवाद!\n📞 "+GYM_NO;
+  window.open("https://wa.me/91"+r.phone+"?text="+encodeURIComponent(msg), "_blank");
+}
+
+async function markPaid(r){
+  if(!(await bfcConfirm(r.name+" की फीस जमा मानकर आज से 1 महीने के लिए Renew/Paid करें?"))) return;
+  var now = Date.now(), today = iso(new Date());
+  var newEnd = calcEnd(today, r.plan || "1 Month");
+  var tot = r.total > 0 ? r.total : (r.paid || 500);
+
+  var patch = {
+    totalFee: tot,
+    paidFee: tot,
+    dueFee: 0,
+    status: "Full Paid",
+    fees: "Paid",
+    manualStatus: "Paid",
+    joinDate: today,
+    endDate: newEnd,
+    expiryDate: newEnd,
+    paidOn: today,
+    editedAt: now
+  };
+
+  LS_KEYS.forEach(function(k){
+    try{
+      var arr = JSON.parse(localStorage.getItem(k)||"[]"); if(!Array.isArray(arr)) return;
+      var ch = false;
+      arr.forEach(function(x,i){
+        if(String(x.id)===r.id || (r.code && String(x.code||"")===r.code)){
+          arr[i] = Object.assign({}, x, patch); ch = true;
+        }
+      });
+      if(ch) localStorage.setItem(k, JSON.stringify(arr));
+    }catch(e){}
+  });
+
+  var cloudOk = true;
+  try{
+    await db.collection("members").doc(String(r.docId || r.id)).set(patch, { merge: true });
+    await db.collection("fees_log").add({ memberId: String(r.id), name: r.name, phone: r.phone, amount: tot, date: today, at: now });
+  }catch(e){ cloudOk = false; console.error(e); }
+
+  alert(cloudOk ? "✅ "+r.name+" — Fees Paid और 1 माह Renew हो गया!" : "⚠️ Local update हुआ, internet check karein");
+  await load();
+}
+
+function clean(o){ return JSON.parse(JSON.stringify(o)); }
+function normalizeEx(x, docId){
+  var n = normalize(x, docId);
+  return { id: String(x.id || docId || ""), docId: docId || "", name: n.name, parent: n.parent, phone: n.phone, code: n.code, plan: n.plan,
+    oldJoin: x.lastJoinDate || n.join, oldEnd: x.lastEndDate || n.end, left: x.leftDate || "", total: n.total, raw: x };
+}
+function readLocalEx(){ try{ var a = JSON.parse(localStorage.getItem(LS_EX)||"[]"); return Array.isArray(a) ? a.map(function(x){ return normalizeEx(x, x.id); }) : []; }catch(e){ return []; } }
+function saveLocalEx(arr){ try{ localStorage.setItem(LS_EX, JSON.stringify(arr)); }catch(e){} }
+
+async function markLeft(r){
+  if(!(await bfcConfirm(r.name+" को Gym Left मार्क करना है?\n\nये Pending से हटकर Ex-members में सुरक्षित रहेंगे."))) return;
+  var now = Date.now();
+  var full = Object.assign({}, r.raw, { id: r.id, code: r.code, name: r.name, phone: r.phone, parentName: r.parent,
+    leftDate: iso(new Date()), lastJoinDate: r.join, lastEndDate: r.end, exSavedAt: now });
+  
+  try{
+    await db.collection("ex_members").doc(String(r.id)).set(clean(full));
+    await db.collection("members").doc(String(r.docId || r.id)).delete();
+    if(r.docId && r.docId !== r.id) { try{ await db.collection("members").doc(String(r.id)).delete(); }catch(e){} }
+  }catch(e){ console.error(e); }
+
+  LS_KEYS.forEach(function(k){
+    try{
+      var arr = JSON.parse(localStorage.getItem(k)||"[]"); if(!Array.isArray(arr)) return;
+      var out = arr.filter(function(x){ return !(String(x.id)===r.id || (r.code && String(x.code||"")===r.code)); });
+      localStorage.setItem(k, JSON.stringify(out));
+    }catch(e){}
+  });
+
+  var ex = readLocalEx().map(function(x){ return x.raw; }).filter(function(x){ return String(x.id) !== r.id; });
+  ex.push(clean(full)); saveLocalEx(ex);
+
+  alert("🚪 "+r.name+" को Left mark kar diya gaya hai.");
+  await load();
+}
+
+function renderLeft(q){
+  var list = EX.filter(function(x){
+    if(!q) return true;
+    return q.split(/\s+/).every(function(w){ return [x.name,x.parent,x.phone,x.code].join(" ").toLowerCase().indexOf(w) >= 0; });
+  }).sort(function(a,b){ return String(b.left).localeCompare(String(a.left)); });
+  if(!list.length){ $("list").innerHTML = '<div class="card"><p class="muted" style="text-align:center">कोई Left member नहीं मिला</p></div>'; return; }
+  $("list").innerHTML = list.map(function(x){
+    return '<div class="m"><div style="font-weight:700;font-size:15px">'+esc(x.name||"—")+'</div>'
+      + '<div class="muted">S/O: '+esc(x.parent||"—")+' · '+esc(x.phone||"—")+'</div>'
+      + '<div class="muted">'+esc(x.code)+(x.plan?" · "+esc(x.plan):"")+'</div>'
+      + '<div class="dates"><div><b>पुरानी JOINING</b>'+showDate(x.oldJoin)+'</div><div><b>पुरानी EXPIRY</b>'+showDate(x.oldEnd)+'</div><div class="red"><b>छोड़ा</b>'+showDate(x.left)+'</div></div>'
+      + '<div class="row"><button class="btn btn-gold" data-xa="rejoin" data-k="'+esc(x.id)+'">🔁 Rejoining</button></div></div>';
+  }).join("");
+}
+
+$("list").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-xa]"); if(!b) return;
+  var x = EX.find(function(y){ return y.id === b.getAttribute("data-k"); }); if(x) rejoin(x);
+});
+
+async function rejoin(x){
+  var today = iso(new Date());
+  var inp = await bfcPrompt("🔁 "+x.name+" — Rejoining\nनई Joining तारीख (YYYY-MM-DD):", today);
+  if(!inp) return;
+  var nj = inp.trim(), now = Date.now(), old = x.raw || {};
+  var end = calcEnd(nj, x.plan || "1 Month");
+  var rec = Object.assign({}, old, {
+    id: x.id, joinDate: nj, endDate: end, expiryDate: end,
+    status: "Pending", fees: "Pending", manualStatus: "Pending", dueFee: x.total || 500, paidFee: 0, editedAt: now
+  });
+  delete rec.leftDate; delete rec.lastJoinDate; delete rec.lastEndDate; delete rec.exSavedAt;
+
+  await db.collection("members").doc(String(x.id)).set(clean(rec));
+  await db.collection("ex_members").doc(String(x.docId || x.id)).delete();
+
+  var k = LS_KEYS[0], arr = JSON.parse(localStorage.getItem(k)||"[]");
+  arr = arr.filter(function(m){ return String(m.id) !== x.id; }); arr.push(clean(rec));
+  localStorage.setItem(k, JSON.stringify(arr));
+
+  saveLocalEx(readLocalEx().map(function(y){ return y.raw; }).filter(function(y){ return String(y.id) !== x.id; }));
+  alert("✅ "+x.name+" wapas active member ban gaye!");
+  TAB = "all"; load();
+}
+</script>
+</body>
+</html>
